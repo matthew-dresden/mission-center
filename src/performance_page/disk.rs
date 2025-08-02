@@ -267,8 +267,7 @@ mod imp {
                 );
 
             if disk.smart_interface.is_some() {
-                this.description.set_margin_top(0);
-                this.description.set_spacing(5);
+                this.description.set_margin_top(1);
 
                 this.button_smart.set_visible(true);
                 this.button_smart.connect_clicked({
@@ -302,8 +301,7 @@ mod imp {
             }
 
             if disk.ejectable {
-                this.description.set_margin_top(0);
-                this.description.set_spacing(5);
+                this.description.set_margin_top(1);
 
                 this.button_eject.set_visible(disk.ejectable);
                 this.button_eject.connect_clicked({
