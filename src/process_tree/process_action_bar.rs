@@ -28,11 +28,12 @@ macro_rules! setup_action {
                 }
             }
         });
-        $actions.add_action(&$action_obj);
+        $actions.add_action($action_obj);
     };
 }
 
 mod imp {
+    use std::cell::Cell;
     use super::*;
     use crate::app;
     use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
@@ -56,15 +57,15 @@ mod imp {
         #[template_child]
         pub context_menu: TemplateChild<gtk::PopoverMenu>,
 
-        pub action_stop: gio::SimpleAction,
-        pub action_force_stop: gio::SimpleAction,
-        pub action_suspend: gio::SimpleAction,
-        pub action_continue: gio::SimpleAction,
-        pub action_hangup: gio::SimpleAction,
-        pub action_interrupt: gio::SimpleAction,
-        pub action_user_one: gio::SimpleAction,
-        pub action_user_two: gio::SimpleAction,
-        pub action_details: gio::SimpleAction,
+        pub action_stop: Cell<gio::SimpleAction>,
+        pub action_force_stop: Cell<gio::SimpleAction>,
+        pub action_suspend: Cell<gio::SimpleAction>,
+        pub action_continue: Cell<gio::SimpleAction>,
+        pub action_hangup: Cell<gio::SimpleAction>,
+        pub action_interrupt: Cell<gio::SimpleAction>,
+        pub action_user_one: Cell<gio::SimpleAction>,
+        pub action_user_two: Cell<gio::SimpleAction>,
+        pub action_details: Cell<gio::SimpleAction>,
     }
 
     impl Default for ProcessActionBar {
@@ -76,15 +77,15 @@ mod imp {
 
                 context_menu: Default::default(),
 
-                action_stop: gio::SimpleAction::new("stop", None),
-                action_force_stop: gio::SimpleAction::new("force-stop", None),
-                action_suspend: gio::SimpleAction::new("suspend", None),
-                action_continue: gio::SimpleAction::new("continue", None),
-                action_hangup: gio::SimpleAction::new("hangup", None),
-                action_interrupt: gio::SimpleAction::new("interrupt", None),
-                action_user_one: gio::SimpleAction::new("user-one", None),
-                action_user_two: gio::SimpleAction::new("user-two", None),
-                action_details: gio::SimpleAction::new("details", None),
+                action_stop: Cell::new(gio::SimpleAction::new("stop", None)),
+                action_force_stop: Cell::new(gio::SimpleAction::new("force-stop", None)),
+                action_suspend: Cell::new(gio::SimpleAction::new("suspend", None)),
+                action_continue: Cell::new(gio::SimpleAction::new("continue", None)),
+                action_hangup: Cell::new(gio::SimpleAction::new("hangup", None)),
+                action_interrupt: Cell::new(gio::SimpleAction::new("interrupt", None)),
+                action_user_one: Cell::new(gio::SimpleAction::new("user-one", None)),
+                action_user_two: Cell::new(gio::SimpleAction::new("user-two", None)),
+                action_details: Cell::new(gio::SimpleAction::new("details", None)),
             }
         }
     }
@@ -131,6 +132,42 @@ mod imp {
     impl BoxImpl for ProcessActionBar {}
 
     impl ProcessActionBar {
+        pub fn action_stop(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_stop.as_ptr() }
+        }
+
+        pub fn action_force_stop(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_force_stop.as_ptr() }
+        }
+
+        pub fn action_suspend(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_suspend.as_ptr() }
+        }
+
+        pub fn action_continue(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_continue.as_ptr() }
+        }
+
+        pub fn action_hangup(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_hangup.as_ptr() }
+        }
+
+        pub fn action_interrupt(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_interrupt.as_ptr() }
+        }
+
+        pub fn action_user_one(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_user_one.as_ptr() }
+        }
+
+        pub fn action_user_two(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_user_two.as_ptr() }
+        }
+
+        pub fn action_details(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_details.as_ptr() }
+        }
+
         pub fn configure(
             &self,
             imp: &crate::process_tree::column_view_frame::imp::ColumnViewFrame,
@@ -190,17 +227,17 @@ mod imp {
             });
             actions.add_action(&action);
 
-            setup_action!(actions, this, self.action_stop, terminate_process);
-            setup_action!(actions, this, self.action_force_stop, kill_process);
-            setup_action!(actions, this, self.action_suspend, suspend_process);
-            setup_action!(actions, this, self.action_continue, continue_process);
-            setup_action!(actions, this, self.action_hangup, hangup_process);
-            setup_action!(actions, this, self.action_interrupt, interrupt_process);
-            setup_action!(actions, this, self.action_user_one, user_signal_one_process);
-            setup_action!(actions, this, self.action_user_two, user_signal_two_process);
+            setup_action!(actions, this, self.action_stop(), terminate_process);
+            setup_action!(actions, this, self.action_force_stop(), kill_process);
+            setup_action!(actions, this, self.action_suspend(), suspend_process);
+            setup_action!(actions, this, self.action_continue(), continue_process);
+            setup_action!(actions, this, self.action_hangup(), hangup_process);
+            setup_action!(actions, this, self.action_interrupt(), interrupt_process);
+            setup_action!(actions, this, self.action_user_one(), user_signal_one_process);
+            setup_action!(actions, this, self.action_user_two(), user_signal_two_process);
 
-            self.action_details.set_enabled(false);
-            self.action_details.connect_activate({
+            self.action_details().set_enabled(false);
+            self.action_details().connect_activate({
                 let this = this.downgrade();
                 move |_action, _| {
                     let Some(this) = this.upgrade() else {
@@ -218,7 +255,7 @@ mod imp {
                     };
                 }
             });
-            actions.add_action(&self.action_details);
+            actions.add_action(self.action_details());
         }
 
         pub fn handle_changed_selection(&self, row_model: &RowModel) {
@@ -239,15 +276,15 @@ mod imp {
         }
 
         fn toggle_actions_enabled(&self, enabled: bool) {
-            self.action_stop.set_enabled(enabled);
-            self.action_force_stop.set_enabled(enabled);
-            self.action_suspend.set_enabled(enabled);
-            self.action_continue.set_enabled(enabled);
-            self.action_hangup.set_enabled(enabled);
-            self.action_interrupt.set_enabled(enabled);
-            self.action_user_one.set_enabled(enabled);
-            self.action_user_two.set_enabled(enabled);
-            self.action_details.set_enabled(enabled);
+            self.action_stop().set_enabled(enabled);
+            self.action_force_stop().set_enabled(enabled);
+            self.action_suspend().set_enabled(enabled);
+            self.action_continue().set_enabled(enabled);
+            self.action_hangup().set_enabled(enabled);
+            self.action_interrupt().set_enabled(enabled);
+            self.action_user_one().set_enabled(enabled);
+            self.action_user_two().set_enabled(enabled);
+            self.action_details().set_enabled(enabled);
         }
     }
 }

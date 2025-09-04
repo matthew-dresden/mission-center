@@ -130,14 +130,15 @@ fn special_shortcuts(
         false
     }
 
-    fn crl_e(window: &MissionCenterWindow) -> bool {
+    fn ctrl_e(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.stop", None);
+            let _ = WidgetExt::activate_action(&*imp.apps_page.imp().process_action_bar, "apps-page.stop", None);
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page, "win.selected-svc-stop", None);
+            let _ = WidgetExt::activate_action(&*imp.services_page.imp().process_action_bar, "apps-page.stop", None);
+            let _ = WidgetExt::activate_action(&*imp.services_page.imp().service_action_bar, "services-page.selected-svc-stop", None);
             return true;
         }
 
@@ -147,21 +148,27 @@ fn special_shortcuts(
     fn apps_force_stop(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
-        let result = window.apps_page_active();
-        if result {
-            let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.force-stop", None);
+        if window.apps_page_active() {
+            let _ = WidgetExt::activate_action(&*imp.apps_page.imp().process_action_bar, "apps-page.force-stop", None);
+            return true;
+        } else if window.services_page_active() {
+            let _ = WidgetExt::activate_action(&*imp.services_page.imp().process_action_bar, "apps-page.force-stop", None);
+            let _ = WidgetExt::activate_action(&*imp.services_page.imp().service_action_bar, "services-page.selected-svc-stop", None);
+            return true;
         }
-        result
+
+        false
     }
 
     fn ctrl_i(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.details", None);
+            let _ = WidgetExt::activate_action(&*imp.apps_page.imp().process_action_bar, "apps-page.details", None);
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page, "services-page.details", None);
+            let _ = WidgetExt::activate_action(&*imp.services_page.imp().process_action_bar, "apps-page.details", None);
+            let _ = WidgetExt::activate_action(&*imp.services_page.imp().service_action_bar, "services-page.details", None);
             return true;
         }
 
@@ -207,8 +214,8 @@ fn special_shortcuts(
         ctrl_shortcuts.insert(gdk::Key::c, graph_copy);
         ctrl_shortcuts.insert(gdk::Key::L, ctrl_l);
         ctrl_shortcuts.insert(gdk::Key::l, ctrl_l);
-        ctrl_shortcuts.insert(gdk::Key::E, crl_e);
-        ctrl_shortcuts.insert(gdk::Key::e, crl_e);
+        ctrl_shortcuts.insert(gdk::Key::E, ctrl_e);
+        ctrl_shortcuts.insert(gdk::Key::e, ctrl_e);
         ctrl_shortcuts.insert(gdk::Key::X, apps_force_stop);
         ctrl_shortcuts.insert(gdk::Key::x, apps_force_stop);
         ctrl_shortcuts.insert(gdk::Key::I, ctrl_i);
@@ -591,12 +598,6 @@ mod imp {
             // Not clear how actions actually become usable, what I know is that they need to be
             // created and configured at object construction otherwise they flat out don't work.
             // And since these actions *need* to be tied to the window they are created here.
-            self.obj()
-                .add_action(&gio::SimpleAction::new("selected-svc-start", None));
-            self.obj()
-                .add_action(&gio::SimpleAction::new("selected-svc-stop", None));
-            self.obj()
-                .add_action(&gio::SimpleAction::new("selected-svc-restart", None));
         }
 
         fn configure_theme_selection(&self) {

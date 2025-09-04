@@ -201,69 +201,35 @@ mod imp {
                 };
             }
 
-            if let Some(window) = app!().window() {
-                let svc_start_action = window
-                    .lookup_action("selected-svc-start")
-                    .and_then(|a| a.downcast::<gio::SimpleAction>().ok())
-                    .unwrap_or_else(|| {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get `selected-svc-start` action from MissionCenterWindow"
-                        );
-                        gio::SimpleAction::new("selected-svc-start", None)
+            self.service_start().connect_activate({
+                let this = imp.obj().downgrade();
+                move |_action, _| {
+                    make_magpie_request(this.clone(), |sys_info, service_name| {
+                        sys_info.start_service(service_name.to_owned());
                     });
-                let svc_stop_action = window
-                    .lookup_action("selected-svc-stop")
-                    .and_then(|a| a.downcast::<gio::SimpleAction>().ok())
-                    .unwrap_or_else(|| {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get `selected-svc-stop` action from MissionCenterWindow"
-                        );
-                        gio::SimpleAction::new("selected-svc-stop", None)
+                }
+            });
+            actions.add_action(self.service_start());
+
+            self.service_stop().connect_activate({
+                let this = imp.obj().downgrade();
+                move |_action, _| {
+                    make_magpie_request(this.clone(), |sys_info, service_name| {
+                        sys_info.stop_service(service_name.to_owned());
                     });
-                let svc_restart_action = window
-                    .lookup_action("selected-svc-restart")
-                    .and_then(|a| a.downcast::<gio::SimpleAction>().ok())
-                    .unwrap_or_else(|| {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get `selected-svc-restart` action from MissionCenterWindow"
-                        );
-                        gio::SimpleAction::new("selected-svc-restart", None)
+                }
+            });
+            actions.add_action(self.service_stop());
+
+            self.service_restart().connect_activate({
+                let this = imp.obj().downgrade();
+                move |_action, _| {
+                    make_magpie_request(this.clone(), |sys_info, service_name| {
+                        sys_info.restart_service(service_name.to_owned());
                     });
-
-                svc_start_action.connect_activate({
-                    let this = imp.obj().downgrade();
-                    move |_action, _| {
-                        make_magpie_request(this.clone(), |sys_info, service_name| {
-                            sys_info.start_service(service_name.to_owned());
-                        });
-                    }
-                });
-
-                svc_stop_action.connect_activate({
-                    let this = imp.obj().downgrade();
-                    move |_action, _| {
-                        make_magpie_request(this.clone(), |sys_info, service_name| {
-                            sys_info.stop_service(service_name.to_owned());
-                        });
-                    }
-                });
-
-                svc_restart_action.connect_activate({
-                    let this = imp.obj().downgrade();
-                    move |_action, _| {
-                        make_magpie_request(this.clone(), |sys_info, service_name| {
-                            sys_info.restart_service(service_name.to_owned());
-                        });
-                    }
-                });
-
-                self.service_start.set(svc_start_action);
-                self.service_restart.set(svc_restart_action);
-                self.service_stop.set(svc_stop_action);
-            }
+                }
+            });
+            actions.add_action(self.service_restart());
         }
 
         pub fn handle_changed_selection(&self, row_model: &RowModel) {
