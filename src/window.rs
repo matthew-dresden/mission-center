@@ -134,11 +134,23 @@ fn special_shortcuts(
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.apps_page.imp().process_action_bar, "apps-page.stop", None);
+            let _ = WidgetExt::activate_action(
+                &*imp.apps_page.imp().process_action_bar,
+                "apps-page.stop",
+                None,
+            );
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page.imp().process_action_bar, "apps-page.stop", None);
-            let _ = WidgetExt::activate_action(&*imp.services_page.imp().service_action_bar, "services-page.selected-svc-stop", None);
+            let _ = WidgetExt::activate_action(
+                &*imp.services_page.imp().process_action_bar,
+                "apps-page.stop",
+                None,
+            );
+            let _ = WidgetExt::activate_action(
+                &*imp.services_page.imp().service_action_bar,
+                "services-page.selected-svc-stop",
+                None,
+            );
             return true;
         }
 
@@ -149,11 +161,23 @@ fn special_shortcuts(
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.apps_page.imp().process_action_bar, "apps-page.force-stop", None);
+            let _ = WidgetExt::activate_action(
+                &*imp.apps_page.imp().process_action_bar,
+                "apps-page.force-stop",
+                None,
+            );
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page.imp().process_action_bar, "apps-page.force-stop", None);
-            let _ = WidgetExt::activate_action(&*imp.services_page.imp().service_action_bar, "services-page.selected-svc-stop", None);
+            let _ = WidgetExt::activate_action(
+                &*imp.services_page.imp().process_action_bar,
+                "apps-page.force-stop",
+                None,
+            );
+            let _ = WidgetExt::activate_action(
+                &*imp.services_page.imp().service_action_bar,
+                "services-page.selected-svc-stop",
+                None,
+            );
             return true;
         }
 
@@ -164,11 +188,23 @@ fn special_shortcuts(
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.apps_page.imp().process_action_bar, "apps-page.details", None);
+            let _ = WidgetExt::activate_action(
+                &*imp.apps_page.imp().process_action_bar,
+                "apps-page.details",
+                None,
+            );
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page.imp().process_action_bar, "apps-page.details", None);
-            let _ = WidgetExt::activate_action(&*imp.services_page.imp().service_action_bar, "services-page.details", None);
+            let _ = WidgetExt::activate_action(
+                &*imp.services_page.imp().process_action_bar,
+                "apps-page.details",
+                None,
+            );
+            let _ = WidgetExt::activate_action(
+                &*imp.services_page.imp().service_action_bar,
+                "services-page.details",
+                None,
+            );
             return true;
         }
 

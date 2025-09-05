@@ -33,13 +33,13 @@ macro_rules! setup_action {
 }
 
 mod imp {
-    use std::cell::Cell;
     use super::*;
     use crate::app;
     use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
     use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
     use crate::process_tree::util::calculate_anchor_point;
     use adw::glib::{g_critical, VariantTy};
+    use std::cell::Cell;
 
     #[derive(Properties, gtk::CompositeTemplate)]
     #[properties(wrapper_type = super::ProcessActionBar)]
@@ -233,8 +233,18 @@ mod imp {
             setup_action!(actions, this, self.action_continue(), continue_process);
             setup_action!(actions, this, self.action_hangup(), hangup_process);
             setup_action!(actions, this, self.action_interrupt(), interrupt_process);
-            setup_action!(actions, this, self.action_user_one(), user_signal_one_process);
-            setup_action!(actions, this, self.action_user_two(), user_signal_two_process);
+            setup_action!(
+                actions,
+                this,
+                self.action_user_one(),
+                user_signal_one_process
+            );
+            setup_action!(
+                actions,
+                this,
+                self.action_user_two(),
+                user_signal_two_process
+            );
 
             self.action_details().set_enabled(false);
             self.action_details().connect_activate({

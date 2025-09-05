@@ -320,7 +320,8 @@ mod imp {
 
                         if li.service_enabled() != this.switch_enabled.is_active() {
                             this.list_item_enabled_user_change.set(false);
-                            this.switch_enabled.set_active(this.list_item().service_enabled());
+                            this.switch_enabled
+                                .set_active(this.list_item().service_enabled());
                         }
                     }
                 }

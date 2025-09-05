@@ -114,7 +114,7 @@ mod imp {
                 user: Cell::new(Default::default()),
                 group: Cell::new(Default::default()),
                 description: Cell::new(Default::default()),
-                
+
                 command_line: Cell::new(Default::default()),
 
                 children: RefCell::new(gio::ListStore::new::<super::RowModel>()),
@@ -327,7 +327,7 @@ pub struct RowModelBuilder {
     running: bool,
     stopped: bool,
     failed: bool,
-    
+
     user: glib::GString,
     group: glib::GString,
     description: glib::GString,
@@ -359,7 +359,7 @@ impl RowModelBuilder {
             running: false,
             stopped: false,
             failed: false,
-            
+
             user: Default::default(),
             group: Default::default(),
             description: Default::default(),

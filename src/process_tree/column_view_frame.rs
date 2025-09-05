@@ -198,12 +198,16 @@ pub(crate) mod imp {
 
             if let Some(process_action_bar) = process_action_bar {
                 process_action_bar.imp().configure(self);
-                process_action_bar.imp().handle_changed_selection(&self.selected_item.borrow());
+                process_action_bar
+                    .imp()
+                    .handle_changed_selection(&self.selected_item.borrow());
             }
 
             if let Some(service_action_bar) = service_action_bar {
                 service_action_bar.imp().configure(self);
-                service_action_bar.imp().handle_changed_selection(&self.selected_item.borrow());
+                service_action_bar
+                    .imp()
+                    .handle_changed_selection(&self.selected_item.borrow());
             }
 
             configure_column_frame(self);

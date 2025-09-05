@@ -8,19 +8,17 @@ use gtk::{gio, glib, subclass::prelude::*};
 use crate::process_tree::row_model::{ContentType, RowModel};
 
 mod imp {
-    use std::cell::Cell;
     use super::*;
     use crate::app;
-    use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
-    use adw::glib::{g_critical, VariantTy};
-    use gtk::glib::WeakRef;
     use crate::magpie_client::MagpieClient;
     use crate::process_tree::column_view_frame::ColumnViewFrame;
     use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
+    use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
+    use adw::glib::{g_critical, VariantTy};
+    use gtk::glib::WeakRef;
+    use std::cell::Cell;
 
-    fn find_selected_item(
-        this: WeakRef<ColumnViewFrame>,
-    ) -> Option<(ColumnViewFrame, RowModel)> {
+    fn find_selected_item(this: WeakRef<ColumnViewFrame>) -> Option<(ColumnViewFrame, RowModel)> {
         let this_obj = match this.upgrade() {
             Some(this) => this,
             None => {
@@ -33,10 +31,7 @@ mod imp {
         };
         let this = this_obj.imp();
 
-        let selected_item = this
-            .selected_item
-            .borrow()
-            .clone();
+        let selected_item = this.selected_item.borrow().clone();
 
         Some((this_obj, selected_item))
     }
@@ -161,8 +156,7 @@ mod imp {
 
                     let selected_item = imp.selected_item.borrow();
 
-                    if selected_item.content_type() == ContentType::Service
-                    {
+                    if selected_item.content_type() == ContentType::Service {
                         ServiceDetailsDialog::new(imp.selected_item.borrow().clone())
                             .present(Some(&this));
                     };
