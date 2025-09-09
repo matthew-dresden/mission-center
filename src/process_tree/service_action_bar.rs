@@ -175,9 +175,11 @@ mod imp {
 
                     if selected_item.content_type() == ContentType::Service {
                         let dialog = ServiceDetailsDialog::new(imp.selected_item.borrow().clone());
-                        dialog.insert_action_group("services-page", Some(slef.imp().service_ation_group()));
-                        dialog
-                            .present(Some(&this));
+                        dialog.insert_action_group(
+                            "services-page",
+                            Some(slef.imp().service_ation_group()),
+                        );
+                        dialog.present(Some(&this));
                     };
                 }
             });

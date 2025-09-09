@@ -74,7 +74,7 @@ macro_rules! services_label_cell_factory {
         services_label_cell_factory!($property, ContentType::SectionHeader, $setter)
     }};
 
-    ($property: literal, $skip_content: expr, $setter: expr) => {{
+    ($property: literal, $skip_content: pat, $setter: expr) => {{
         use gtk::prelude::*;
 
         use crate::process_tree::row_model::{ContentType, RowModel};
@@ -137,11 +137,12 @@ macro_rules! services_label_cell_factory {
                     .as_ref()
             };
 
-            if model.content_type() == ContentType::SectionHeader
-                || model.content_type() == $skip_content
-            {
-                label.set_label("");
-                return;
+            match model.content_type() {
+                $skip_content => {
+                    label.set_label("");
+                    return;
+                }
+                _ => {}
             }
 
             let value = model.property_value($property);

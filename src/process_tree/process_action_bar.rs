@@ -19,13 +19,24 @@ macro_rules! setup_action {
                 let this = this.imp();
 
                 let selected_item = this.selected_item.borrow();
-                if selected_item.content_type() == ContentType::SectionHeader {
+                // cost savings
+                if selected_item.content_type() != ContentType::Process
+                    && selected_item.content_type() != ContentType::App
+                {
                     return;
                 }
 
                 if let Ok(magpie_client) = app!().sys_info() {
-                    magpie_client.$magpie_function(selected_item.pid());
-                }
+                    match selected_item.content_type() {
+                        ContentType::Process => {
+                            magpie_client.$magpie_function(vec![selected_item.pid()]);
+                        }
+                        ContentType::App => {
+                            magpie_client.$magpie_function(app_pids(&*selected_item));
+                        }
+                        _ => {}
+                    }
+                } // log this?
             }
         });
     };
@@ -37,7 +48,9 @@ mod imp {
     use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
     use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
     use crate::process_tree::util::calculate_anchor_point;
+    use adw::gdk;
     use adw::glib::{g_critical, VariantTy};
+    use gtk::gio::SimpleActionGroup;
     use std::cell::Cell;
 
     #[derive(Properties, gtk::CompositeTemplate)]
@@ -65,7 +78,8 @@ mod imp {
         pub action_user_one: Cell<gio::SimpleAction>,
         pub action_user_two: Cell<gio::SimpleAction>,
         pub action_details: Cell<gio::SimpleAction>,
-        pub action_show_context_menu: Cell<gio::SimpleAction>,
+
+        pub action_group: Cell<gio::SimpleActionGroup>,
     }
 
     impl Default for ProcessActionBar {
@@ -86,7 +100,8 @@ mod imp {
                 action_user_one: Cell::new(gio::SimpleAction::new("user-one", None)),
                 action_user_two: Cell::new(gio::SimpleAction::new("user-two", None)),
                 action_details: Cell::new(gio::SimpleAction::new("details", None)),
-                action_show_context_menu: Cell::new(gio::SimpleAction::new("show-context-menu", None)),
+
+                action_group: Cell::new(Default::default()),
             }
         }
     }
@@ -122,8 +137,8 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            let actions = gio::SimpleActionGroup::new();
-            self.obj().insert_action_group("apps-page", Some(&actions));
+            let actions = self.action_group();
+            self.obj().insert_action_group("apps-page", Some(actions));
 
             actions.add_action(self.action_stop());
             actions.add_action(self.action_force_stop());
@@ -134,7 +149,7 @@ mod imp {
             actions.add_action(self.action_user_one());
             actions.add_action(self.action_user_two());
             actions.add_action(self.action_details());
-            actions.add_action(self.action_show_context_menu());
+            // actions.add_action(self.action_show_context_menu());
         }
     }
 
@@ -183,8 +198,8 @@ mod imp {
             unsafe { &*self.action_details.as_ptr() }
         }
 
-        pub fn action_show_context_menu(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_show_context_menu.as_ptr() }
+        pub fn action_group(&self) -> &gio::SimpleActionGroup {
+            unsafe { &*self.action_group.as_ptr() }
         }
 
         pub fn configure(
@@ -193,9 +208,9 @@ mod imp {
         ) {
             let this = imp.obj();
 
-            self.action_show_context_menu().connect_activate({
+            imp.action_show_context_menu().connect_activate({
                 let this = this.downgrade();
-                let slef = self.downgrade();
+                let slef = self.obj().downgrade();
                 move |_action, entry| {
                     let Some(slef) = slef.upgrade() else {
                         return;
@@ -225,44 +240,39 @@ mod imp {
                     };
 
                     let anchor_widget = upgrade_weak_ptr(anchor_widget as _);
-                    let (anchor, show_arrow) = calculate_anchor_point(&this, &anchor_widget, x, y);
+                    let (anchor, show_arrow) = calculate_anchor_point(&slef, &anchor_widget, x, y);
 
                     if select_item(&model, &id) {
                         match imp.selected_item.borrow().content_type() {
                             // should never trigger
-                            ContentType::SectionHeader => {}
-                            ContentType::Service => {
-                                slef.context_menu.set_pointing_to(Some(&anchor));
-                                slef.context_menu.popup();
+                            ContentType::Process | ContentType::App => {
+                                slef.imp().context_menu.set_pointing_to(Some(&anchor));
+                                slef.imp().context_menu.popup();
                             }
-                            ContentType::Process | ContentType::App => {}
+                            _ => {}
                         }
                     }
                 }
             });
 
-            setup_action!(this, self.action_stop(), terminate_process);
-            setup_action!(this, self.action_force_stop(), kill_process);
-            setup_action!(this, self.action_suspend(), suspend_process);
-            setup_action!(this, self.action_continue(), continue_process);
-            setup_action!(this, self.action_hangup(), hangup_process);
-            setup_action!(this, self.action_interrupt(), interrupt_process);
-            setup_action!(
-                this,
-                self.action_user_one(),
-                user_signal_one_process
-            );
-            setup_action!(
-                this,
-                self.action_user_two(),
-                user_signal_two_process
-            );
+            setup_action!(this, self.action_stop(), terminate_processes);
+            setup_action!(this, self.action_force_stop(), kill_processes);
+            setup_action!(this, self.action_suspend(), suspend_processes);
+            setup_action!(this, self.action_continue(), continue_processes);
+            setup_action!(this, self.action_hangup(), hangup_processes);
+            setup_action!(this, self.action_interrupt(), interrupt_processes);
+            setup_action!(this, self.action_user_one(), user_signal_one_processes);
+            setup_action!(this, self.action_user_two(), user_signal_two_processes);
 
             self.action_details().set_enabled(false);
             self.action_details().connect_activate({
                 let this = this.downgrade();
+                let slef = self.obj().downgrade();
                 move |_action, _| {
                     let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let Some(slef) = slef.upgrade() else {
                         return;
                     };
                     let imp = this.imp();
@@ -272,8 +282,9 @@ mod imp {
                     if selected_item.content_type() == ContentType::Process
                         || selected_item.content_type() == ContentType::App
                     {
-                        ProcessDetailsDialog::new(imp.selected_item.borrow().clone())
-                            .present(Some(&this));
+                        let dialog = ProcessDetailsDialog::new(imp.selected_item.borrow().clone());
+                        dialog.insert_action_group("apps-page", Some(slef.imp().action_group()));
+                        dialog.present(Some(&this));
                     };
                 }
             });
@@ -341,4 +352,40 @@ fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {
     }
 
     false
+}
+
+fn app_pids(row_model: &RowModel) -> Vec<u32> {
+    let children = row_model.children();
+    let mut result = Vec::with_capacity(children.n_items() as usize);
+
+    for i in 0..children.n_items() {
+        let Some(child) = children
+            .item(i)
+            .and_then(|i| i.downcast::<RowModel>().ok())
+            .and_then(|rm| find_stoppable_child(&rm))
+        else {
+            continue;
+        };
+        result.push(child.pid());
+    }
+
+    result
+}
+
+fn find_stoppable_child(row_model: &RowModel) -> Option<RowModel> {
+    if row_model.name() != "bwrap" {
+        return Some(row_model.clone());
+    }
+
+    let children = row_model.children();
+    for i in 0..children.n_items() {
+        let Some(child) = children.item(i).and_then(|i| i.downcast::<RowModel>().ok()) else {
+            continue;
+        };
+        if let Some(rm) = find_stoppable_child(&child) {
+            return Some(rm);
+        }
+    }
+
+    None
 }

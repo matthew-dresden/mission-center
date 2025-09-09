@@ -27,7 +27,11 @@ use gtk::glib;
 use gtk::prelude::*;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    services_label_cell_factory!("pid", ContentType::Service, label_formatter)
+    services_label_cell_factory!(
+        "pid",
+        ContentType::SectionHeader | ContentType::Service | ContentType::App,
+        label_formatter
+    )
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {

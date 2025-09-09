@@ -19,7 +19,7 @@ pub(crate) mod imp {
     use adw::glib::g_critical;
     use adw::ToggleGroup;
     use arrayvec::ArrayString;
-    use gtk::glib::WeakRef;
+    use gtk::glib::{VariantTy, WeakRef};
     use std::cell::{Cell, OnceCell};
     use textdistance::{Algorithm, Levenshtein};
 
@@ -57,6 +57,10 @@ pub(crate) mod imp {
 
         #[property(get, set)]
         pub show_column_separators: Cell<bool>,
+
+        pub action_show_context_menu: Cell<gio::SimpleAction>,
+
+        pub action_group: Cell<gio::SimpleActionGroup>,
     }
 
     impl Default for ColumnViewFrame {
@@ -79,6 +83,13 @@ pub(crate) mod imp {
                 use_merged_stats: Cell::new(false),
 
                 show_column_separators: Cell::new(false),
+
+                action_show_context_menu: Cell::new(gio::SimpleAction::new(
+                    "show-context-menu",
+                    Some(VariantTy::TUPLE),
+                )),
+
+                action_group: Cell::new(Default::default()),
             }
         }
     }
@@ -161,6 +172,11 @@ pub(crate) mod imp {
 
             let column_view_title = self.column_view.first_child();
             adjust_view_header_alignment(column_view_title);
+
+            self.action_group()
+                .add_action(self.action_show_context_menu());
+            self.obj()
+                .insert_action_group("apps-page", Some(self.action_group()));
         }
     }
 
@@ -173,6 +189,14 @@ pub(crate) mod imp {
     impl BoxImpl for ColumnViewFrame {}
 
     impl ColumnViewFrame {
+        pub fn action_show_context_menu(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_show_context_menu.as_ptr() }
+        }
+
+        pub fn action_group(&self) -> &gio::SimpleActionGroup {
+            unsafe { &*self.action_group.as_ptr() }
+        }
+
         pub fn setup(
             &self,
             section_item_1: &RowModel,
