@@ -8,7 +8,7 @@ use gtk::{gio, glib, subclass::prelude::*};
 use crate::process_tree::row_model::{ContentType, RowModel};
 
 macro_rules! setup_action {
-    ($actions: expr, $this: expr, $action_obj: expr, $magpie_function: ident) => {
+    ($this: expr, $action_obj: expr, $magpie_function: ident) => {
         $action_obj.set_enabled(false);
         $action_obj.connect_activate({
             let this = $this.downgrade();
@@ -28,7 +28,6 @@ macro_rules! setup_action {
                 }
             }
         });
-        $actions.add_action($action_obj);
     };
 }
 
@@ -66,6 +65,7 @@ mod imp {
         pub action_user_one: Cell<gio::SimpleAction>,
         pub action_user_two: Cell<gio::SimpleAction>,
         pub action_details: Cell<gio::SimpleAction>,
+        pub action_show_context_menu: Cell<gio::SimpleAction>,
     }
 
     impl Default for ProcessActionBar {
@@ -86,6 +86,7 @@ mod imp {
                 action_user_one: Cell::new(gio::SimpleAction::new("user-one", None)),
                 action_user_two: Cell::new(gio::SimpleAction::new("user-two", None)),
                 action_details: Cell::new(gio::SimpleAction::new("details", None)),
+                action_show_context_menu: Cell::new(gio::SimpleAction::new("show-context-menu", None)),
             }
         }
     }
@@ -120,6 +121,20 @@ mod imp {
 
         fn constructed(&self) {
             self.parent_constructed();
+
+            let actions = gio::SimpleActionGroup::new();
+            self.obj().insert_action_group("apps-page", Some(&actions));
+
+            actions.add_action(self.action_stop());
+            actions.add_action(self.action_force_stop());
+            actions.add_action(self.action_suspend());
+            actions.add_action(self.action_continue());
+            actions.add_action(self.action_hangup());
+            actions.add_action(self.action_interrupt());
+            actions.add_action(self.action_user_one());
+            actions.add_action(self.action_user_two());
+            actions.add_action(self.action_details());
+            actions.add_action(self.action_show_context_menu());
         }
     }
 
@@ -168,17 +183,17 @@ mod imp {
             unsafe { &*self.action_details.as_ptr() }
         }
 
+        pub fn action_show_context_menu(&self) -> &gio::SimpleAction {
+            unsafe { &*self.action_show_context_menu.as_ptr() }
+        }
+
         pub fn configure(
             &self,
             imp: &crate::process_tree::column_view_frame::imp::ColumnViewFrame,
         ) {
             let this = imp.obj();
 
-            let actions = gio::SimpleActionGroup::new();
-            self.obj().insert_action_group("apps-page", Some(&actions));
-
-            let action = gio::SimpleAction::new("show-context-menu", Some(VariantTy::TUPLE));
-            action.connect_activate({
+            self.action_show_context_menu().connect_activate({
                 let this = this.downgrade();
                 let slef = self.downgrade();
                 move |_action, entry| {
@@ -225,22 +240,19 @@ mod imp {
                     }
                 }
             });
-            actions.add_action(&action);
 
-            setup_action!(actions, this, self.action_stop(), terminate_process);
-            setup_action!(actions, this, self.action_force_stop(), kill_process);
-            setup_action!(actions, this, self.action_suspend(), suspend_process);
-            setup_action!(actions, this, self.action_continue(), continue_process);
-            setup_action!(actions, this, self.action_hangup(), hangup_process);
-            setup_action!(actions, this, self.action_interrupt(), interrupt_process);
+            setup_action!(this, self.action_stop(), terminate_process);
+            setup_action!(this, self.action_force_stop(), kill_process);
+            setup_action!(this, self.action_suspend(), suspend_process);
+            setup_action!(this, self.action_continue(), continue_process);
+            setup_action!(this, self.action_hangup(), hangup_process);
+            setup_action!(this, self.action_interrupt(), interrupt_process);
             setup_action!(
-                actions,
                 this,
                 self.action_user_one(),
                 user_signal_one_process
             );
             setup_action!(
-                actions,
                 this,
                 self.action_user_two(),
                 user_signal_two_process
@@ -265,7 +277,6 @@ mod imp {
                     };
                 }
             });
-            actions.add_action(self.action_details());
         }
 
         pub fn handle_changed_selection(&self, row_model: &RowModel) {

@@ -58,6 +58,8 @@ mod imp {
         pub service_stop: Cell<gio::SimpleAction>,
         pub service_restart: Cell<gio::SimpleAction>,
         pub service_details: Cell<gio::SimpleAction>,
+
+        pub service_ation_group: Cell<gio::SimpleActionGroup>,
     }
 
     impl Default for ServiceActionBar {
@@ -73,6 +75,8 @@ mod imp {
                 service_stop: Cell::new(gio::SimpleAction::new("selected-svc-stop", None)),
                 service_restart: Cell::new(gio::SimpleAction::new("selected-svc-restart", None)),
                 service_details: Cell::new(gio::SimpleAction::new("details", None)),
+
+                service_ation_group: Cell::new(Default::default()),
             }
         }
     }
@@ -107,6 +111,15 @@ mod imp {
 
         fn constructed(&self) {
             self.parent_constructed();
+
+            let actions = self.service_ation_group();
+            self.obj()
+                .insert_action_group("services-page", Some(actions));
+
+            actions.add_action(self.service_start());
+            actions.add_action(self.service_stop());
+            actions.add_action(self.service_restart());
+            actions.add_action(self.service_details());
         }
     }
 
@@ -135,21 +148,25 @@ mod imp {
             unsafe { &*self.service_details.as_ptr() }
         }
 
+        pub fn service_ation_group(&self) -> &gio::SimpleActionGroup {
+            unsafe { &*self.service_ation_group.as_ptr() }
+        }
+
         pub fn configure(
             &self,
             imp: &crate::process_tree::column_view_frame::imp::ColumnViewFrame,
         ) {
             let this = imp.obj();
 
-            let actions = gio::SimpleActionGroup::new();
-            self.obj()
-                .insert_action_group("services-page", Some(&actions));
-
             self.service_details().set_enabled(false);
             self.service_details().connect_activate({
                 let this = this.downgrade();
+                let slef = self.obj().downgrade();
                 move |_action, _| {
                     let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let Some(slef) = slef.upgrade() else {
                         return;
                     };
                     let imp = this.imp();
@@ -157,12 +174,13 @@ mod imp {
                     let selected_item = imp.selected_item.borrow();
 
                     if selected_item.content_type() == ContentType::Service {
-                        ServiceDetailsDialog::new(imp.selected_item.borrow().clone())
+                        let dialog = ServiceDetailsDialog::new(imp.selected_item.borrow().clone());
+                        dialog.insert_action_group("services-page", Some(slef.imp().service_ation_group()));
+                        dialog
                             .present(Some(&this));
                     };
                 }
             });
-            actions.add_action(self.service_details());
 
             fn make_magpie_request(
                 this: WeakRef<ColumnViewFrame>,
@@ -203,7 +221,6 @@ mod imp {
                     });
                 }
             });
-            actions.add_action(self.service_start());
 
             self.service_stop().connect_activate({
                 let this = imp.obj().downgrade();
@@ -213,7 +230,6 @@ mod imp {
                     });
                 }
             });
-            actions.add_action(self.service_stop());
 
             self.service_restart().connect_activate({
                 let this = imp.obj().downgrade();
@@ -223,7 +239,6 @@ mod imp {
                     });
                 }
             });
-            actions.add_action(self.service_restart());
         }
 
         pub fn handle_changed_selection(&self, row_model: &RowModel) {

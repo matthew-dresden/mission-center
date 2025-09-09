@@ -71,7 +71,7 @@ template $ServiceDetailsDialog: Adw.Dialog {
                 homogeneous: true;
 
                 Button start {
-                  action-name: "win.selected-svc-start";
+                  action-name: "services-page.selected-svc-start";
                   tooltip-text: _("Start service");
 
                   child: Box {
@@ -86,7 +86,7 @@ template $ServiceDetailsDialog: Adw.Dialog {
                 }
 
                 Button stop {
-                  action-name: "win.selected-svc-stop";
+                  action-name: "services-page.selected-svc-stop";
                   tooltip-text: _("Stop service");
 
                   child: Box {
@@ -102,7 +102,7 @@ template $ServiceDetailsDialog: Adw.Dialog {
               }
 
               Button restart {
-                action-name: "win.selected-svc-restart";
+                action-name: "services-page.selected-svc-restart";
                 tooltip-text: _("Restart service");
 
                 child: Box {
