@@ -154,6 +154,8 @@ pub(crate) mod imp {
     impl ObjectImpl for ServicesPage {
         fn constructed(&self) {
             self.parent_constructed();
+
+            self.service_action_bar.set_visible(false);
         }
     }
 

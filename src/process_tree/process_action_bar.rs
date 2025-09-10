@@ -292,7 +292,6 @@ mod imp {
                 }
                 ContentType::SectionHeader => {
                     self.toggle_actions_enabled(false);
-                    self.obj().set_visible(true);
                 }
                 ContentType::Service => {
                     self.toggle_actions_enabled(false);

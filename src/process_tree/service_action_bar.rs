@@ -254,9 +254,20 @@ mod imp {
 
                     self.service_details().set_enabled(true);
                 }
+                ContentType::SectionHeader => {
+                    self.service_details().set_enabled(false);
+
+                    self.service_stop().set_enabled(false);
+                    self.service_start().set_enabled(false);
+                    self.service_restart().set_enabled(false);
+                }
                 _ => {
                     self.obj().set_visible(false);
                     self.service_details().set_enabled(false);
+
+                    self.service_stop().set_enabled(false);
+                    self.service_start().set_enabled(false);
+                    self.service_restart().set_enabled(false);
                 }
             }
         }
