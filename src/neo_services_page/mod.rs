@@ -124,7 +124,7 @@ pub(crate) mod imp {
             self.collapse_label.set_visible(false);
 
             self.top_legend.set_orientation(Vertical);
-            
+
             self.process_action_bar.imp().collapse();
             self.service_action_bar.imp().collapse();
         }
@@ -133,7 +133,7 @@ pub(crate) mod imp {
             self.collapse_label.set_visible(true);
 
             self.top_legend.set_orientation(Horizontal);
-            
+
             self.process_action_bar.imp().expand();
             self.service_action_bar.imp().expand();
         }
