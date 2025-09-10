@@ -132,6 +132,19 @@ mod imp {
     impl BoxImpl for ServiceActionBar {}
 
     impl ServiceActionBar {
+        pub fn collapse(&self) {
+            self.service_stop_label.set_visible(false);
+            self.service_start_label.set_visible(false);
+            self.service_restart_label.set_visible(false);
+            self.service_details_label.set_visible(false);
+        }
+
+        pub fn expand(&self) {
+            self.service_stop_label.set_visible(true);
+            self.service_start_label.set_visible(true);
+            self.service_restart_label.set_visible(true);
+            self.service_details_label.set_visible(true);
+        }
         pub fn service_start(&self) -> &gio::SimpleAction {
             unsafe { &*self.service_start.as_ptr() }
         }

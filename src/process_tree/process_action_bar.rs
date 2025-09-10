@@ -162,6 +162,18 @@ mod imp {
     impl BoxImpl for ProcessActionBar {}
 
     impl ProcessActionBar {
+        pub fn collapse(&self) {
+            self.stop_label.set_visible(false);
+            self.force_stop_label.set_visible(false);
+            self.details_label.set_visible(false);
+        }
+        
+        pub fn expand(&self) {
+            self.stop_label.set_visible(true);
+            self.force_stop_label.set_visible(true);
+            self.details_label.set_visible(true);
+        }
+        
         pub fn action_stop(&self) -> &gio::SimpleAction {
             unsafe { &*self.action_stop.as_ptr() }
         }

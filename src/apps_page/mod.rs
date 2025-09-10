@@ -108,12 +108,16 @@ mod imp {
             self.collapse_label.set_visible(false);
 
             self.h2.set_visible(false);
+
+            self.process_action_bar.imp().collapse();
         }
 
         pub fn expand(&self) {
             self.collapse_label.set_visible(true);
 
             self.h2.set_visible(true);
+
+            self.process_action_bar.imp().expand();
         }
     }
 
