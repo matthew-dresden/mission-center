@@ -1,7 +1,3 @@
-use std::fmt::Write;
-
-use adw::glib::translate::from_glib_full;
-use adw::glib::{gobject_ffi, Object, ParamSpec, Properties, Value};
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
 
@@ -12,9 +8,8 @@ mod imp {
     use crate::app;
     use crate::magpie_client::MagpieClient;
     use crate::process_tree::column_view_frame::ColumnViewFrame;
-    use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
     use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
-    use adw::glib::{g_critical, VariantTy};
+    use adw::glib::g_critical;
     use gtk::glib::WeakRef;
     use std::cell::Cell;
 
@@ -36,8 +31,7 @@ mod imp {
         Some((this_obj, selected_item))
     }
 
-    #[derive(Properties, gtk::CompositeTemplate)]
-    #[properties(wrapper_type = super::ServiceActionBar)]
+    #[derive(gtk::CompositeTemplate)]
     #[template(
         resource = "/io/missioncenter/MissionCenter/ui/process_column_view/service_action_bar.ui"
     )]
@@ -97,18 +91,6 @@ mod imp {
     }
 
     impl ObjectImpl for ServiceActionBar {
-        fn properties() -> &'static [ParamSpec] {
-            Self::derived_properties()
-        }
-
-        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
-            self.derived_set_property(id, value, pspec)
-        }
-
-        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
-            self.derived_property(id, pspec)
-        }
-
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -279,15 +261,6 @@ mod imp {
             }
         }
     }
-}
-
-fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
-    let ptr = unsafe { gobject_ffi::g_weak_ref_get(ptr as *mut _) };
-    if ptr.is_null() {
-        return None;
-    }
-    let obj: Object = unsafe { from_glib_full(ptr) };
-    obj.downcast::<gtk::Widget>().ok()
 }
 
 glib::wrapper! {

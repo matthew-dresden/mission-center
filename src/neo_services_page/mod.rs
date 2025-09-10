@@ -18,15 +18,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::{Cell, OnceCell, RefCell};
+use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
-use std::fmt::Write;
 
 use crate::magpie_client::App;
-use adw::glib::{ParamSpec, Properties, Value};
 use adw::prelude::*;
-use glib::translate::from_glib_full;
-use glib::{gobject_ffi, Object};
 use gtk::Orientation::Horizontal;
 use gtk::{gio, glib, subclass::prelude::*};
 
@@ -42,8 +38,7 @@ pub(crate) mod imp {
     use crate::process_tree::service_action_bar::ServiceActionBar;
     use gtk::Orientation::{Horizontal, Vertical};
 
-    #[derive(Properties, gtk::CompositeTemplate)]
-    #[properties(wrapper_type = super::ServicesPage)]
+    #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/services_page/page.ui")]
     pub struct ServicesPage {
         #[template_child]
@@ -157,18 +152,6 @@ pub(crate) mod imp {
     }
 
     impl ObjectImpl for ServicesPage {
-        fn properties() -> &'static [ParamSpec] {
-            Self::derived_properties()
-        }
-
-        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
-            self.derived_set_property(id, value, pspec)
-        }
-
-        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
-            self.derived_property(id, pspec)
-        }
-
         fn constructed(&self) {
             self.parent_constructed();
         }
@@ -351,31 +334,4 @@ impl ServicesPage {
     pub fn running_apps(&self) -> HashMap<String, App> {
         self.imp().running_apps.borrow().clone()
     }
-}
-
-fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
-    let ptr = unsafe { gobject_ffi::g_weak_ref_get(ptr as *mut _) };
-    if ptr.is_null() {
-        return None;
-    }
-    let obj: Object = unsafe { from_glib_full(ptr) };
-    obj.downcast::<gtk::Widget>().ok()
-}
-
-fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {
-    for i in 0..model.n_items() {
-        if let Some(item) = model
-            .item(i)
-            .and_then(|i| i.downcast::<gtk::TreeListRow>().ok())
-            .and_then(|row| row.item())
-            .and_then(|obj| obj.downcast::<RowModel>().ok())
-        {
-            if item.content_type() != ContentType::SectionHeader && item.id() == id {
-                model.select_item(i, false);
-                return true;
-            }
-        }
-    }
-
-    false
 }

@@ -21,7 +21,6 @@
 use std::cmp::Ordering;
 
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::process_tree::row_model::ContentType;
 use crate::services_label_cell_factory;
 use gtk::glib;
 use gtk::prelude::*;

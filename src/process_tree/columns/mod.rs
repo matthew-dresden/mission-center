@@ -17,14 +17,12 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-use arrayvec::ArrayString;
 use gtk::glib;
 use gtk::prelude::*;
 use std::cmp::Ordering;
-use std::fmt::Write;
 
 use crate::i18n::i18n;
-use crate::process_tree::row_model::{ContentType, RowModel, SectionType};
+use crate::process_tree::row_model::RowModel;
 
 pub use cpu::label_formatter as cpu_label_formatter;
 pub use cpu::list_item_factory as cpu_list_item_factory;
@@ -53,8 +51,6 @@ pub use pid::sorter as pid_sorter;
 pub use shared_memory::label_formatter as shared_memory_label_formatter;
 pub use shared_memory::list_item_factory as shared_memory_list_item_factory;
 pub use shared_memory::sorter as shared_memory_sorter;
-
-use crate::{settings, DataType};
 
 mod cpu;
 mod drive;

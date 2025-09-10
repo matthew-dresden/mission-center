@@ -1,7 +1,5 @@
-use std::fmt::Write;
-
 use adw::glib::translate::from_glib_full;
-use adw::glib::{gobject_ffi, Object, ParamSpec, Properties, Value};
+use adw::glib::{gobject_ffi, Object};
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
 
@@ -46,15 +44,11 @@ mod imp {
     use super::*;
     use crate::app;
     use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
-    use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
     use crate::process_tree::util::calculate_anchor_point;
-    use adw::gdk;
-    use adw::glib::{g_critical, VariantTy};
-    use gtk::gio::SimpleActionGroup;
+    use adw::glib::g_critical;
     use std::cell::Cell;
 
-    #[derive(Properties, gtk::CompositeTemplate)]
-    #[properties(wrapper_type = super::ProcessActionBar)]
+    #[derive(gtk::CompositeTemplate)]
     #[template(
         resource = "/io/missioncenter/MissionCenter/ui/process_column_view/process_action_bar.ui"
     )]
@@ -122,18 +116,6 @@ mod imp {
     }
 
     impl ObjectImpl for ProcessActionBar {
-        fn properties() -> &'static [ParamSpec] {
-            Self::derived_properties()
-        }
-
-        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
-            self.derived_set_property(id, value, pspec)
-        }
-
-        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
-            self.derived_property(id, pspec)
-        }
-
         fn constructed(&self) {
             self.parent_constructed();
 

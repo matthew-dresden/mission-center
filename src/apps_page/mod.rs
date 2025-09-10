@@ -22,30 +22,22 @@ use std::cell::{Cell, OnceCell, RefCell};
 use std::collections::HashMap;
 use std::fmt::Write;
 
-use adw::glib::{ParamSpec, Properties, Value};
 use adw::prelude::*;
 use arrayvec::ArrayString;
-use glib::translate::from_glib_full;
-use glib::{gobject_ffi, Object};
 use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::magpie_client::App;
 
 use crate::i18n::{i18n, ni18n_f};
-use crate::process_tree::models::{
-    base_model, filter_list_model, sort_list_model, tree_list_model, update_apps, update_processes,
-};
-use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::process_tree::models::{update_apps, update_processes};
 
 mod imp {
     use super::*;
     use crate::process_tree::column_view_frame::ColumnViewFrame;
-    use crate::process_tree::columns::adjust_view_header_alignment;
     use crate::process_tree::process_action_bar::ProcessActionBar;
     use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
-    #[derive(Properties, gtk::CompositeTemplate)]
-    #[properties(wrapper_type = super::AppsPage)]
+    #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/apps_page/page.ui")]
     pub struct AppsPage {
         #[template_child]
@@ -139,18 +131,6 @@ mod imp {
     }
 
     impl ObjectImpl for AppsPage {
-        fn properties() -> &'static [ParamSpec] {
-            Self::derived_properties()
-        }
-
-        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
-            self.derived_set_property(id, value, pspec)
-        }
-
-        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
-            self.derived_property(id, pspec)
-        }
-
         fn constructed(&self) {
             self.parent_constructed();
         }
@@ -277,31 +257,4 @@ impl AppsPage {
     pub fn running_apps(&self) -> HashMap<String, App> {
         self.imp().running_apps.borrow().clone()
     }
-}
-
-fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
-    let ptr = unsafe { gobject_ffi::g_weak_ref_get(ptr as *mut _) };
-    if ptr.is_null() {
-        return None;
-    }
-    let obj: Object = unsafe { from_glib_full(ptr) };
-    obj.downcast::<gtk::Widget>().ok()
-}
-
-fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {
-    for i in 0..model.n_items() {
-        if let Some(item) = model
-            .item(i)
-            .and_then(|i| i.downcast::<gtk::TreeListRow>().ok())
-            .and_then(|row| row.item())
-            .and_then(|obj| obj.downcast::<RowModel>().ok())
-        {
-            if item.content_type() != ContentType::SectionHeader && item.id() == id {
-                model.select_item(i, false);
-                return true;
-            }
-        }
-    }
-
-    false
 }
