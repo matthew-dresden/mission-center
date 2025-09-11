@@ -160,8 +160,6 @@ pub(crate) mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            self.service_action_bar.set_visible(false);
-
             let actions = gio::SimpleActionGroup::new();
             actions.add_action(&self.action_collapse_all);
 
