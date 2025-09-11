@@ -253,9 +253,9 @@ pub(crate) mod imp {
         ) -> gtk::FilterListModel {
             let Some(window) = app!().window() else {
                 g_critical!(
-            "MissionCenter::ServicesPage",
-            "Failed to get MissionCenterWindow instance; searching and filtering will not function"
-        );
+                    "MissionCenter::ServicesPage",
+                    "Failed to get MissionCenterWindow instance; searching and filtering will not function"
+                );
                 return gtk::FilterListModel::new(Some(tree_list_model), None::<gtk::CustomFilter>);
             };
 
@@ -336,15 +336,9 @@ pub(crate) mod imp {
 
             window.imp().header_search_entry.connect_search_changed({
                 let filter = filter.downgrade();
-                let window = window.downgrade();
                 move |_| {
-                    if let Some(window) = window.upgrade() {
-                        if !window.services_page_active() {
-                            return;
-                        }
-                        if let Some(filter) = filter.upgrade() {
-                            filter.changed(gtk::FilterChange::Different);
-                        }
+                    if let Some(filter) = filter.upgrade() {
+                        filter.changed(gtk::FilterChange::Different);
                     }
                 }
             });
