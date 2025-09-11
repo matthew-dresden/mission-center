@@ -36,6 +36,7 @@ mod imp {
     use crate::process_tree::column_view_frame::ColumnViewFrame;
     use crate::process_tree::process_action_bar::ProcessActionBar;
     use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
+    use adw::glib::g_critical;
 
     #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/apps_page/page.ui")]
@@ -62,6 +63,8 @@ mod imp {
 
         pub app_icons: RefCell<HashMap<u32, String>>,
         pub selected_item: RefCell<RowModel>,
+
+        pub action_collapse_all: gio::SimpleAction,
     }
 
     impl Default for AppsPage {
@@ -91,6 +94,8 @@ mod imp {
 
                 app_icons: RefCell::new(HashMap::new()),
                 selected_item: RefCell::new(RowModelBuilder::new().build()),
+
+                action_collapse_all: gio::SimpleAction::new("collapse-all", None),
             }
         }
     }
@@ -133,6 +138,62 @@ mod imp {
     impl ObjectImpl for AppsPage {
         fn constructed(&self) {
             self.parent_constructed();
+
+            let actions = gio::SimpleActionGroup::new();
+            actions.add_action(&self.action_collapse_all);
+
+            self.action_collapse_all.connect_activate({
+                let this = self.obj().downgrade();
+                move |_action, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+
+                    let Some(selection_model) = imp
+                        .column_view
+                        .imp()
+                        .column_view
+                        .model()
+                        .and_then(|model| model.downcast::<gtk::SingleSelection>().ok())
+                    else {
+                        g_critical!(
+                            "MissionCenter::AppsPage",
+                            "Failed to get model for `collapse-all` action"
+                        );
+                        return;
+                    };
+
+                    let mut count = 0;
+                    for i in 0..selection_model.n_items() {
+                        let Some(row) = selection_model
+                            .item(i)
+                            .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
+                        else {
+                            return;
+                        };
+
+                        let Some(row_model) =
+                            row.item().and_then(|item| item.downcast::<RowModel>().ok())
+                        else {
+                            continue;
+                        };
+
+                        if row_model.content_type() != ContentType::SectionHeader {
+                            continue;
+                        }
+
+                        row.set_expanded(false);
+                        count += 1;
+
+                        if count >= 2 {
+                            break;
+                        }
+                    }
+                }
+            });
+
+            self.obj().insert_action_group("apps-page", Some(&actions));
         }
     }
 
