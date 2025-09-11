@@ -69,7 +69,7 @@ fn configure_sorting(column_view: &gtk::ColumnView, settings: &gio::Settings) {
         255 => return,
         _ => {
             g_critical!(
-                "MissionCenter::ServicesPage",
+                "MissionCenter::ProcessTree",
                 "Unknown column sorting order retrieved from settings, sorting in ascending order as a fallback"
             );
             gtk::SortType::Ascending

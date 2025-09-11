@@ -1,4 +1,4 @@
-/* neo_services_page/columns/name.rs
+/* process_tree/columns/name.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -22,7 +22,7 @@ use std::cmp::Ordering;
 
 use adw::prelude::*;
 
-use crate::process_tree::columns::{compare_column_entries_by, sort_order, ServicesNameCell};
+use crate::process_tree::columns::{compare_column_entries_by, sort_order, NameCell};
 use crate::process_tree::row_model::RowModel;
 use crate::widgets::ListCell;
 
@@ -34,7 +34,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
             return;
         };
 
-        let name_cell = ServicesNameCell::new();
+        let name_cell = NameCell::new();
 
         let list_cell = ListCell::new("apps-page.show-context-menu");
         list_cell.set_is_tree_view(true);
@@ -86,7 +86,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
 
         let name_cell = unsafe {
             list_item
-                .data::<ServicesNameCell>("list_item")
+                .data::<NameCell>("list_item")
                 .unwrap_unchecked()
                 .as_ref()
         };
@@ -116,7 +116,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
 
         let name_cell = unsafe {
             list_item
-                .data::<ServicesNameCell>("list_item")
+                .data::<NameCell>("list_item")
                 .unwrap_unchecked()
                 .as_ref()
         };
@@ -131,7 +131,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
         unsafe {
             let _ = list_item.steal_data::<gtk::TreeExpander>("expander");
             let _ = list_item.steal_data::<ListCell>("list_cell");
-            let _ = list_item.steal_data::<ServicesNameCell>("list_item");
+            let _ = list_item.steal_data::<NameCell>("list_item");
         }
     });
 

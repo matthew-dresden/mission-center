@@ -253,7 +253,7 @@ pub(crate) mod imp {
         ) -> gtk::FilterListModel {
             let Some(window) = app!().window() else {
                 g_critical!(
-                    "MissionCenter::ServicesPage",
+                    "MissionCenter::ProcessTree",
                     "Failed to get MissionCenterWindow instance; searching and filtering will not function"
                 );
                 return gtk::FilterListModel::new(Some(tree_list_model), None::<gtk::CustomFilter>);

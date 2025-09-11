@@ -247,6 +247,13 @@ impl ServicesPage {
             Some(&imp.service_legend),
         );
 
+        imp.user_section.children().append(
+            &RowModelBuilder::new()
+                .content_type(ContentType::SectionHeader)
+                .name(&i18n("Not Implemented"))
+                .build()
+        );
+
         // Select the first item in the list
         // selection_model.set_selected(0);
 
@@ -280,7 +287,7 @@ impl ServicesPage {
             SectionType::SecondSection,
         );
 
-        models::update_services(
+/*        models::update_services(
             &readings.running_processes,
             &readings.services,
             &imp.user_section.children(),
@@ -289,7 +296,7 @@ impl ServicesPage {
             imp.column_view.imp().use_merged_stats.get(),
             SectionType::FirstSection,
         );
-
+*/
         self.update_section_labels(&readings.services);
 
         let _ = std::mem::replace(

@@ -217,7 +217,7 @@ mod imp {
 
                     let Some(model) = imp.column_view.model() else {
                         g_critical!(
-                            "MissionCenter::ServicesPage",
+                            "MissionCenter::ProcessActionBar",
                             "Failed to get model for `show-context-menu` action"
                         );
                         return;
@@ -227,7 +227,7 @@ mod imp {
                         entry.and_then(|s| s.get::<(String, u64, f64, f64)>())
                     else {
                         g_critical!(
-                            "MissionCenter::ServicesPage",
+                            "MissionCenter::ProcessActionBar",
                             "Failed to get service name and button from show-context-menu action"
                         );
                         return;

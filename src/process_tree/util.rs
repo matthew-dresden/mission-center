@@ -13,7 +13,7 @@ pub fn calculate_anchor_point(
 
     let Some(anchor_widget) = widget else {
         g_warning!(
-            "MissionCenter::ServicesPage",
+            "MissionCenter::ProcessTree",
             "Failed to get anchor widget, popup will display in an arbitrary location"
         );
         return (gdk::Rectangle::new(0, 0, 0, 0), false);
@@ -25,7 +25,7 @@ pub fn calculate_anchor_point(
                 Some(p) => gdk::Rectangle::new(p.x().round() as i32, p.y().round() as i32, 1, 1),
                 None => {
                     g_critical!(
-                    "MissionCenter::ServicesPage",
+                    "MissionCenter::ProcessTree",
                     "Failed to compute_point, context menu will not be anchored to mouse position"
                 );
                     gdk::Rectangle::new(x.round() as i32, y.round() as i32, 1, 1)
@@ -44,7 +44,7 @@ pub fn calculate_anchor_point(
                 )
             } else {
                 g_warning!(
-                "MissionCenter::ServicesPage",
+                "MissionCenter::ProcessTree",
                 "Failed to get bounds for menu button, popup will display in an arbitrary location"
             );
                 gdk::Rectangle::new(0, 0, 0, 0)

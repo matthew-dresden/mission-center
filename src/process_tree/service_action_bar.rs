@@ -18,8 +18,8 @@ mod imp {
             Some(this) => this,
             None => {
                 g_critical!(
-                    "MissionCenter::ServicesPage",
-                    "Failed to get ServicesPage instance for action"
+                    "MissionCenter::ServiceActionBar",
+                    "Failed to get ColumnView instance for action"
                 );
                 return None;
             }
@@ -189,7 +189,7 @@ mod imp {
                     Some((this, item)) => (this, item),
                     None => {
                         g_critical!(
-                            "MissionCenter::ServicesPage",
+                            "MissionCenter::ServiceActionBar",
                             "Failed to get selected item for action"
                         );
                         return;
@@ -202,7 +202,7 @@ mod imp {
                     }
                     Err(e) => {
                         g_critical!(
-                            "MissionCenter::ServicesPage",
+                            "MissionCenter::ServiceActionBar",
                             "Failed to get sys_info from MissionCenterApplication: {}",
                             e
                         );

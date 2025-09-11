@@ -1,4 +1,4 @@
-/* neo_services_page/columns/pid.rs
+/* process_tree/columns/pid.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -21,12 +21,12 @@
 use std::cmp::Ordering;
 
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::services_label_cell_factory;
+use crate::label_cell_factory;
 use gtk::glib;
 use gtk::prelude::*;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    services_label_cell_factory!(
+    label_cell_factory!(
         "pid",
         ContentType::SectionHeader | ContentType::Service | ContentType::App,
         label_formatter

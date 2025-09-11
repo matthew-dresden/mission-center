@@ -1,4 +1,4 @@
-/* neo_services_page/columns/gpu.rs
+/* process_tree/columns/gpu.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -24,10 +24,10 @@ use gtk::prelude::*;
 
 pub use super::cpu_label_formatter as label_formatter;
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::services_label_cell_factory;
+use crate::label_cell_factory;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    services_label_cell_factory!("gpu-usage", label_formatter)
+    label_cell_factory!("gpu-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {

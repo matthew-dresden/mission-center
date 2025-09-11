@@ -1,4 +1,4 @@
-/* neo_services_page/columns/label_cell.rs
+/* process_tree/columns/label_cell.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -83,7 +83,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for LabelCell {
-        const NAME: &'static str = "ServicesLabelCell";
+        const NAME: &'static str = "LabelCell";
         type Type = super::LabelCell;
         type ParentType = adw::Bin;
 

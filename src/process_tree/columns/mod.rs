@@ -1,4 +1,4 @@
-/* neo_services_page/columns/mod.rs
+/* process_tree/columns/mod.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -42,7 +42,7 @@ pub use memory::list_item_factory as memory_list_item_factory;
 pub use memory::sorter as memory_sorter;
 pub use name::list_item_factory as name_list_item_factory;
 pub use name::sorter as name_sorter;
-pub use name_cell::ServicesNameCell;
+pub use name_cell::NameCell;
 pub use network::label_formatter as network_label_formatter;
 pub use network::list_item_factory as network_list_item_factory;
 pub use network::sorter as network_sorter;
@@ -65,9 +65,9 @@ mod pid;
 mod shared_memory;
 
 #[macro_export]
-macro_rules! services_label_cell_factory {
+macro_rules! label_cell_factory {
     ($property: literal, $setter: expr) => {{
-        services_label_cell_factory!($property, ContentType::SectionHeader, $setter)
+        label_cell_factory!($property, ContentType::SectionHeader, $setter)
     }};
 
     ($property: literal, $skip_content: pat, $setter: expr) => {{

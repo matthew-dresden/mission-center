@@ -1,4 +1,4 @@
-/* neo_services_page/columns/network.rs
+/* process_tree/columns/network.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -24,10 +24,10 @@ use gtk::glib;
 use gtk::prelude::*;
 
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::{services_label_cell_factory, settings, DataType};
+use crate::{label_cell_factory, settings, DataType};
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    services_label_cell_factory!("network-usage", label_formatter)
+    label_cell_factory!("network-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {

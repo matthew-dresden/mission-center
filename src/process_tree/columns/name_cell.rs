@@ -1,4 +1,4 @@
-/* neo_services_page/columns/name_cell.rs
+/* process_tree/columns/name_cell.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -58,7 +58,7 @@ mod imp {
     use super::*;
     use std::time::Duration;
 
-    pub struct ServicesNameCell {
+    pub struct NameCell {
         icon: gtk::Image,
         name: gtk::Label,
 
@@ -72,7 +72,7 @@ mod imp {
         expander: RefCell<glib::WeakRef<gtk::TreeExpander>>,
     }
 
-    impl Default for ServicesNameCell {
+    impl Default for NameCell {
         fn default() -> Self {
             Self {
                 icon: gtk::Image::new(),
@@ -90,7 +90,7 @@ mod imp {
         }
     }
 
-    impl ServicesNameCell {
+    impl NameCell {
         pub fn bind(&self, model: &RowModel, list_cell: &ListCell, expander: &gtk::TreeExpander) {
             let this = self.obj().downgrade();
 
@@ -204,7 +204,7 @@ mod imp {
                 }
                 Err(e) => {
                     if !e.matches(FileError::Noent) {
-                        g_critical!("MissionCenter::ServicesPage", "Failed to load icon: {}", e);
+                        g_critical!("MissionCenter::ProcessTree", "Failed to load icon: {}", e);
                         return;
                     }
                 }
@@ -313,9 +313,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ServicesNameCell {
-        const NAME: &'static str = "ServicesNameCell";
-        type Type = super::ServicesNameCell;
+    impl ObjectSubclass for NameCell {
+        const NAME: &'static str = "NameCell";
+        type Type = super::NameCell;
         type ParentType = gtk::Box;
 
         fn class_init(_klass: &mut Self::Class) {}
@@ -323,7 +323,7 @@ mod imp {
         fn instance_init(_obj: &glib::subclass::InitializingObject<Self>) {}
     }
 
-    impl ObjectImpl for ServicesNameCell {
+    impl ObjectImpl for NameCell {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -334,22 +334,22 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for ServicesNameCell {
+    impl WidgetImpl for NameCell {
         fn realize(&self) {
             self.parent_realize();
         }
     }
 
-    impl BoxImpl for ServicesNameCell {}
+    impl BoxImpl for NameCell {}
 }
 
 glib::wrapper! {
-    pub struct ServicesNameCell(ObjectSubclass<imp::ServicesNameCell>)
+    pub struct NameCell(ObjectSubclass<imp::NameCell>)
         @extends gtk::Box, gtk::Widget,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable;
 }
 
-impl ServicesNameCell {
+impl NameCell {
     pub fn new() -> Self {
         glib::Object::builder().build()
     }
