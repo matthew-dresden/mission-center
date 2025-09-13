@@ -251,7 +251,7 @@ impl ServicesPage {
             &RowModelBuilder::new()
                 .content_type(ContentType::SectionHeader)
                 .name(&i18n("Not Implemented"))
-                .build()
+                .build(),
         );
 
         // Select the first item in the list
@@ -287,16 +287,16 @@ impl ServicesPage {
             SectionType::SecondSection,
         );
 
-/*        models::update_services(
-            &readings.running_processes,
-            &readings.services,
-            &imp.user_section.children(),
-            &imp.app_icons.borrow(),
-            "application-x-executable-symbolic",
-            imp.column_view.imp().use_merged_stats.get(),
-            SectionType::FirstSection,
-        );
-*/
+        /*        models::update_services(
+                    &readings.running_processes,
+                    &readings.services,
+                    &imp.user_section.children(),
+                    &imp.app_icons.borrow(),
+                    "application-x-executable-symbolic",
+                    imp.column_view.imp().use_merged_stats.get(),
+                    SectionType::FirstSection,
+                );
+        */
         self.update_section_labels(&readings.services);
 
         let _ = std::mem::replace(

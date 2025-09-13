@@ -32,21 +32,22 @@ use std::env;
 fn service_to_section_type(_service: &Service) -> SectionType {
     SectionType::SecondSection
     /*    if let Some(user) = service.user.as_ref() {
-        // todo have magpie set user or not
-        if env::var_os("USER")
-            .map(|u| u.to_str().map(|u| u != user))
-            .flatten()
-            .unwrap_or(true)
-            || user.is_empty()
-        {
-            SectionType::SecondSection
+            // todo have magpie set user or not
+            if env::var_os("USER")
+                .map(|u| u.to_str().map(|u| u != user))
+                .flatten()
+                .unwrap_or(true)
+                || user.is_empty()
+            {
+                SectionType::SecondSection
+            } else {
+                SectionType::FirstSection
+            }
         } else {
-            SectionType::FirstSection
+            SectionType::SecondSection
         }
-    } else {
-        SectionType::SecondSection
-    }
-*/}
+    */
+}
 
 fn get_service_icon(service: &Service) -> String {
     if service.running {
