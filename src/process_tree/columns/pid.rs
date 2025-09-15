@@ -20,10 +20,11 @@
 
 use std::cmp::Ordering;
 
-use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::label_cell_factory;
 use gtk::glib;
 use gtk::prelude::*;
+
+use super::{compare_column_entries_by, sort_order, LabelCell};
+use crate::label_cell_factory;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
     label_cell_factory!(

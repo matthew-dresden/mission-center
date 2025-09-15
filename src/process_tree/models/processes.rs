@@ -18,19 +18,22 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
+use std::collections::{HashMap, HashSet};
+
 use gtk::gio;
 use gtk::glib::g_critical;
 use gtk::prelude::*;
+
 use magpie_types::apps::icon::Icon;
 use magpie_types::apps::App;
 use magpie_types::processes::{Process, ProcessUsageStats};
 use magpie_types::services::Service;
-use std::collections::{HashMap, HashSet};
-use std::env;
+
+use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
 fn service_to_section_type(_service: &Service) -> SectionType {
     SectionType::SecondSection
+    // use std::env;
     /*    if let Some(user) = service.user.as_ref() {
             // todo have magpie set user or not
             if env::var_os("USER")

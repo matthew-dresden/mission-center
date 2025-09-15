@@ -1,4 +1,4 @@
-/* process_tree/process_details_dialog
+/* process_tree/service_details_dialog.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -24,12 +24,11 @@ use std::num::NonZeroU32;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, g_warning, ParamSpec, Properties, SignalHandlerId, Value};
 
-use crate::process_tree::row_model::RowModel;
 use crate::{app, i18n::*};
+use crate::process_tree::row_model::RowModel;
 
 mod imp {
     use super::*;
-    use crate::process_tree::row_model::RowModel;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::ServiceDetailsDialog)]

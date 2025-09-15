@@ -1,9 +1,33 @@
+/* process_tree/process_action_bar.rs
+ *
+ * Copyright 2025 Mission Center Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 use adw::glib::translate::from_glib_full;
 use adw::glib::{gobject_ffi, Object};
+use adw::glib::g_critical;
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::app;
+use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
+use crate::process_tree::util::calculate_anchor_point;
 
 macro_rules! setup_action {
     ($this: expr, $action_obj: expr, $magpie_function: ident) => {
@@ -42,11 +66,6 @@ macro_rules! setup_action {
 
 mod imp {
     use super::*;
-    use crate::app;
-    use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
-    use crate::process_tree::util::calculate_anchor_point;
-    use adw::glib::g_critical;
-    use std::cell::Cell;
 
     #[derive(gtk::CompositeTemplate)]
     #[template(
@@ -63,17 +82,17 @@ mod imp {
         #[template_child]
         pub context_menu: TemplateChild<gtk::PopoverMenu>,
 
-        pub action_stop: Cell<gio::SimpleAction>,
-        pub action_force_stop: Cell<gio::SimpleAction>,
-        pub action_suspend: Cell<gio::SimpleAction>,
-        pub action_continue: Cell<gio::SimpleAction>,
-        pub action_hangup: Cell<gio::SimpleAction>,
-        pub action_interrupt: Cell<gio::SimpleAction>,
-        pub action_user_one: Cell<gio::SimpleAction>,
-        pub action_user_two: Cell<gio::SimpleAction>,
-        pub action_details: Cell<gio::SimpleAction>,
+        pub action_stop: gio::SimpleAction,
+        pub action_force_stop: gio::SimpleAction,
+        pub action_suspend: gio::SimpleAction,
+        pub action_continue: gio::SimpleAction,
+        pub action_hangup: gio::SimpleAction,
+        pub action_interrupt: gio::SimpleAction,
+        pub action_user_one: gio::SimpleAction,
+        pub action_user_two: gio::SimpleAction,
+        pub action_details: gio::SimpleAction,
 
-        pub action_group: Cell<gio::SimpleActionGroup>,
+        pub action_group: gio::SimpleActionGroup,
     }
 
     impl Default for ProcessActionBar {
@@ -85,17 +104,17 @@ mod imp {
 
                 context_menu: Default::default(),
 
-                action_stop: Cell::new(gio::SimpleAction::new("stop", None)),
-                action_force_stop: Cell::new(gio::SimpleAction::new("force-stop", None)),
-                action_suspend: Cell::new(gio::SimpleAction::new("suspend", None)),
-                action_continue: Cell::new(gio::SimpleAction::new("continue", None)),
-                action_hangup: Cell::new(gio::SimpleAction::new("hangup", None)),
-                action_interrupt: Cell::new(gio::SimpleAction::new("interrupt", None)),
-                action_user_one: Cell::new(gio::SimpleAction::new("user-one", None)),
-                action_user_two: Cell::new(gio::SimpleAction::new("user-two", None)),
-                action_details: Cell::new(gio::SimpleAction::new("details", None)),
+                action_stop: gio::SimpleAction::new("stop", None),
+                action_force_stop: gio::SimpleAction::new("force-stop", None),
+                action_suspend: gio::SimpleAction::new("suspend", None),
+                action_continue: gio::SimpleAction::new("continue", None),
+                action_hangup: gio::SimpleAction::new("hangup", None),
+                action_interrupt: gio::SimpleAction::new("interrupt", None),
+                action_user_one: gio::SimpleAction::new("user-one", None),
+                action_user_two: gio::SimpleAction::new("user-two", None),
+                action_details: gio::SimpleAction::new("details", None),
 
-                action_group: Cell::new(Default::default()),
+                action_group: Default::default(),
             }
         }
     }
@@ -119,18 +138,18 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            let actions = self.action_group();
+            let actions = &self.action_group;
             self.obj().insert_action_group("apps-page", Some(actions));
 
-            actions.add_action(self.action_stop());
-            actions.add_action(self.action_force_stop());
-            actions.add_action(self.action_suspend());
-            actions.add_action(self.action_continue());
-            actions.add_action(self.action_hangup());
-            actions.add_action(self.action_interrupt());
-            actions.add_action(self.action_user_one());
-            actions.add_action(self.action_user_two());
-            actions.add_action(self.action_details());
+            actions.add_action(&self.action_stop);
+            actions.add_action(&self.action_force_stop);
+            actions.add_action(&self.action_suspend);
+            actions.add_action(&self.action_continue);
+            actions.add_action(&self.action_hangup);
+            actions.add_action(&self.action_interrupt);
+            actions.add_action(&self.action_user_one);
+            actions.add_action(&self.action_user_two);
+            actions.add_action(&self.action_details);
             // actions.add_action(self.action_show_context_menu());
         }
     }
@@ -154,46 +173,6 @@ mod imp {
             self.stop_label.set_visible(true);
             self.force_stop_label.set_visible(true);
             self.details_label.set_visible(true);
-        }
-
-        pub fn action_stop(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_stop.as_ptr() }
-        }
-
-        pub fn action_force_stop(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_force_stop.as_ptr() }
-        }
-
-        pub fn action_suspend(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_suspend.as_ptr() }
-        }
-
-        pub fn action_continue(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_continue.as_ptr() }
-        }
-
-        pub fn action_hangup(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_hangup.as_ptr() }
-        }
-
-        pub fn action_interrupt(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_interrupt.as_ptr() }
-        }
-
-        pub fn action_user_one(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_user_one.as_ptr() }
-        }
-
-        pub fn action_user_two(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_user_two.as_ptr() }
-        }
-
-        pub fn action_details(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_details.as_ptr() }
-        }
-
-        pub fn action_group(&self) -> &gio::SimpleActionGroup {
-            unsafe { &*self.action_group.as_ptr() }
         }
 
         pub fn configure(
@@ -249,17 +228,17 @@ mod imp {
                 }
             });
 
-            setup_action!(this, self.action_stop(), terminate_processes);
-            setup_action!(this, self.action_force_stop(), kill_processes);
-            setup_action!(this, self.action_suspend(), suspend_processes);
-            setup_action!(this, self.action_continue(), continue_processes);
-            setup_action!(this, self.action_hangup(), hangup_processes);
-            setup_action!(this, self.action_interrupt(), interrupt_processes);
-            setup_action!(this, self.action_user_one(), user_signal_one_processes);
-            setup_action!(this, self.action_user_two(), user_signal_two_processes);
+            setup_action!(this, &self.action_stop, terminate_processes);
+            setup_action!(this, &self.action_force_stop, kill_processes);
+            setup_action!(this, &self.action_suspend, suspend_processes);
+            setup_action!(this, &self.action_continue, continue_processes);
+            setup_action!(this, &self.action_hangup, hangup_processes);
+            setup_action!(this, &self.action_interrupt, interrupt_processes);
+            setup_action!(this, &self.action_user_one, user_signal_one_processes);
+            setup_action!(this, &self.action_user_two, user_signal_two_processes);
 
-            self.action_details().set_enabled(false);
-            self.action_details().connect_activate({
+            (&self.action_details).set_enabled(false);
+            (&self.action_details).connect_activate({
                 let this = this.downgrade();
                 let slef = self.obj().downgrade();
                 move |_action, _| {
@@ -277,7 +256,8 @@ mod imp {
                         || selected_item.content_type() == ContentType::App
                     {
                         let dialog = ProcessDetailsDialog::new(imp.selected_item.borrow().clone());
-                        dialog.insert_action_group("apps-page", Some(slef.imp().action_group()));
+                        let self1 = &slef.imp();
+                        dialog.insert_action_group("apps-page", Some(&self1.action_group));
                         dialog.present(Some(&this));
                     };
                 }
@@ -301,15 +281,15 @@ mod imp {
         }
 
         fn toggle_actions_enabled(&self, enabled: bool) {
-            self.action_stop().set_enabled(enabled);
-            self.action_force_stop().set_enabled(enabled);
-            self.action_suspend().set_enabled(enabled);
-            self.action_continue().set_enabled(enabled);
-            self.action_hangup().set_enabled(enabled);
-            self.action_interrupt().set_enabled(enabled);
-            self.action_user_one().set_enabled(enabled);
-            self.action_user_two().set_enabled(enabled);
-            self.action_details().set_enabled(enabled);
+            (&self.action_stop).set_enabled(enabled);
+            (&self.action_force_stop).set_enabled(enabled);
+            (&self.action_suspend).set_enabled(enabled);
+            (&self.action_continue).set_enabled(enabled);
+            (&self.action_hangup).set_enabled(enabled);
+            (&self.action_interrupt).set_enabled(enabled);
+            (&self.action_user_one).set_enabled(enabled);
+            (&self.action_user_two).set_enabled(enabled);
+            (&self.action_details).set_enabled(enabled);
         }
     }
 }

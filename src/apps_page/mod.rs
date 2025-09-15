@@ -25,18 +25,17 @@ use std::fmt::Write;
 use adw::prelude::*;
 use arrayvec::ArrayString;
 use gtk::{gio, glib, subclass::prelude::*};
+use adw::glib::g_critical;
 
 use crate::magpie_client::App;
-
 use crate::i18n::{i18n, ni18n_f};
 use crate::process_tree::models::{update_apps, update_processes};
+use crate::process_tree::column_view_frame::ColumnViewFrame;
+use crate::process_tree::process_action_bar::ProcessActionBar;
+use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
 mod imp {
     use super::*;
-    use crate::process_tree::column_view_frame::ColumnViewFrame;
-    use crate::process_tree::process_action_bar::ProcessActionBar;
-    use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
-    use adw::glib::g_critical;
 
     #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/apps_page/page.ui")]

@@ -157,7 +157,7 @@ fn special_shortcuts(
         false
     }
 
-    fn apps_force_stop(window: &MissionCenterWindow) -> bool {
+    fn force_stop(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
         if window.apps_page_active() {
@@ -252,8 +252,8 @@ fn special_shortcuts(
         ctrl_shortcuts.insert(gdk::Key::l, ctrl_l);
         ctrl_shortcuts.insert(gdk::Key::E, ctrl_e);
         ctrl_shortcuts.insert(gdk::Key::e, ctrl_e);
-        ctrl_shortcuts.insert(gdk::Key::X, apps_force_stop);
-        ctrl_shortcuts.insert(gdk::Key::x, apps_force_stop);
+        ctrl_shortcuts.insert(gdk::Key::X, force_stop);
+        ctrl_shortcuts.insert(gdk::Key::x, force_stop);
         ctrl_shortcuts.insert(gdk::Key::I, ctrl_i);
         ctrl_shortcuts.insert(gdk::Key::i, ctrl_i);
         ctrl_shortcuts.insert(gdk::Key::R, services_restart);

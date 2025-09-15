@@ -1,27 +1,48 @@
+/* process_tree/column_view_frame.rs
+ *
+ * Copyright 2025 Mission Center Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 use std::cell::RefCell;
 use std::fmt::Write;
+use std::cell::{Cell, OnceCell};
 
-use adw::glib::{ParamSpec, Properties, Value};
+use arrayvec::ArrayString;
+
+use textdistance::{Algorithm, Levenshtein};
+
+use adw::glib::{ParamSpec, Properties, Value, g_critical};
 use adw::prelude::*;
+use adw::ToggleGroup;
 use gtk::{gio, glib, subclass::prelude::*};
+use gtk::glib::{VariantTy, WeakRef};
 
 use crate::process_tree::columns::*;
 use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::i18n::i18n;
+use crate::process_tree::process_action_bar::ProcessActionBar;
+use crate::process_tree::row_model::RowModelBuilder;
+use crate::process_tree::service_action_bar::ServiceActionBar;
+use crate::process_tree::settings::configure_column_frame;
+use crate::{app, settings, DataType};
 
 pub(crate) mod imp {
     use super::*;
-    use crate::i18n::i18n;
-    use crate::process_tree::process_action_bar::ProcessActionBar;
-    use crate::process_tree::row_model::RowModelBuilder;
-    use crate::process_tree::service_action_bar::ServiceActionBar;
-    use crate::process_tree::settings::configure_column_frame;
-    use crate::{app, settings, DataType};
-    use adw::glib::g_critical;
-    use adw::ToggleGroup;
-    use arrayvec::ArrayString;
-    use gtk::glib::{VariantTy, WeakRef};
-    use std::cell::{Cell, OnceCell};
-    use textdistance::{Algorithm, Levenshtein};
 
     #[derive(Properties, gtk::CompositeTemplate)]
     #[properties(wrapper_type = super::ColumnViewFrame)]

@@ -1,17 +1,36 @@
+/* process_tree/service_action_bar.rs
+ *
+ * Copyright 2025 Mission Center Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 use adw::prelude::*;
+use adw::glib::g_critical;
 use gtk::{gio, glib, subclass::prelude::*};
+use gtk::glib::WeakRef;
 
 use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::app;
+use crate::magpie_client::MagpieClient;
+use crate::process_tree::column_view_frame::ColumnViewFrame;
+use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
 
 mod imp {
     use super::*;
-    use crate::app;
-    use crate::magpie_client::MagpieClient;
-    use crate::process_tree::column_view_frame::ColumnViewFrame;
-    use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
-    use adw::glib::g_critical;
-    use gtk::glib::WeakRef;
-    use std::cell::Cell;
 
     fn find_selected_item(this: WeakRef<ColumnViewFrame>) -> Option<(ColumnViewFrame, RowModel)> {
         let this_obj = match this.upgrade() {
@@ -48,12 +67,12 @@ mod imp {
         #[template_child]
         pub service_context_menu: TemplateChild<gtk::PopoverMenu>,
 
-        pub service_start: Cell<gio::SimpleAction>,
-        pub service_stop: Cell<gio::SimpleAction>,
-        pub service_restart: Cell<gio::SimpleAction>,
-        pub service_details: Cell<gio::SimpleAction>,
+        pub service_start: gio::SimpleAction,
+        pub service_stop: gio::SimpleAction,
+        pub service_restart: gio::SimpleAction,
+        pub service_details: gio::SimpleAction,
 
-        pub service_ation_group: Cell<gio::SimpleActionGroup>,
+        pub service_ation_group: gio::SimpleActionGroup,
     }
 
     impl Default for ServiceActionBar {
@@ -65,12 +84,12 @@ mod imp {
                 service_details_label: Default::default(),
                 service_context_menu: Default::default(),
 
-                service_start: Cell::new(gio::SimpleAction::new("selected-svc-start", None)),
-                service_stop: Cell::new(gio::SimpleAction::new("selected-svc-stop", None)),
-                service_restart: Cell::new(gio::SimpleAction::new("selected-svc-restart", None)),
-                service_details: Cell::new(gio::SimpleAction::new("details", None)),
+                service_start: gio::SimpleAction::new("selected-svc-start", None),
+                service_stop: gio::SimpleAction::new("selected-svc-stop", None),
+                service_restart: gio::SimpleAction::new("selected-svc-restart", None),
+                service_details: gio::SimpleAction::new("details", None),
 
-                service_ation_group: Cell::new(Default::default()),
+                service_ation_group: Default::default(),
             }
         }
     }
@@ -94,14 +113,14 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            let actions = self.service_ation_group();
+            let actions = &self.service_ation_group;
             self.obj()
                 .insert_action_group("services-page", Some(actions));
 
-            actions.add_action(self.service_start());
-            actions.add_action(self.service_stop());
-            actions.add_action(self.service_restart());
-            actions.add_action(self.service_details());
+            actions.add_action(&self.service_start);
+            actions.add_action(&self.service_stop);
+            actions.add_action(&self.service_restart);
+            actions.add_action(&self.service_details);
         }
     }
 
@@ -127,25 +146,6 @@ mod imp {
             self.service_restart_label.set_visible(true);
             self.service_details_label.set_visible(true);
         }
-        pub fn service_start(&self) -> &gio::SimpleAction {
-            unsafe { &*self.service_start.as_ptr() }
-        }
-
-        pub fn service_stop(&self) -> &gio::SimpleAction {
-            unsafe { &*self.service_stop.as_ptr() }
-        }
-
-        pub fn service_restart(&self) -> &gio::SimpleAction {
-            unsafe { &*self.service_restart.as_ptr() }
-        }
-
-        pub fn service_details(&self) -> &gio::SimpleAction {
-            unsafe { &*self.service_details.as_ptr() }
-        }
-
-        pub fn service_ation_group(&self) -> &gio::SimpleActionGroup {
-            unsafe { &*self.service_ation_group.as_ptr() }
-        }
 
         pub fn configure(
             &self,
@@ -153,8 +153,8 @@ mod imp {
         ) {
             let this = imp.obj();
 
-            self.service_details().set_enabled(false);
-            self.service_details().connect_activate({
+            (&self.service_details).set_enabled(false);
+            (&self.service_details).connect_activate({
                 let this = this.downgrade();
                 let slef = self.obj().downgrade();
                 move |_action, _| {
@@ -170,9 +170,10 @@ mod imp {
 
                     if selected_item.content_type() == ContentType::Service {
                         let dialog = ServiceDetailsDialog::new(imp.selected_item.borrow().clone());
+                        let self1 = &slef.imp();
                         dialog.insert_action_group(
                             "services-page",
-                            Some(slef.imp().service_ation_group()),
+                            Some(&self1.service_ation_group),
                         );
                         dialog.present(Some(&this));
                     };
@@ -210,7 +211,7 @@ mod imp {
                 };
             }
 
-            self.service_start().connect_activate({
+            (&self.service_start).connect_activate({
                 let this = imp.obj().downgrade();
                 move |_action, _| {
                     make_magpie_request(this.clone(), |sys_info, service_name| {
@@ -219,7 +220,7 @@ mod imp {
                 }
             });
 
-            self.service_stop().connect_activate({
+            (&self.service_stop).connect_activate({
                 let this = imp.obj().downgrade();
                 move |_action, _| {
                     make_magpie_request(this.clone(), |sys_info, service_name| {
@@ -228,7 +229,7 @@ mod imp {
                 }
             });
 
-            self.service_restart().connect_activate({
+            (&self.service_restart).connect_activate({
                 let this = imp.obj().downgrade();
                 move |_action, _| {
                     make_magpie_request(this.clone(), |sys_info, service_name| {
@@ -243,31 +244,31 @@ mod imp {
                 ContentType::Service => {
                     self.obj().set_visible(true);
                     if row_model.service_running() {
-                        self.service_stop().set_enabled(true);
-                        self.service_start().set_enabled(false);
-                        self.service_restart().set_enabled(true);
+                        (&self.service_stop).set_enabled(true);
+                        (&self.service_start).set_enabled(false);
+                        (&self.service_restart).set_enabled(true);
                     } else {
-                        self.service_stop().set_enabled(false);
-                        self.service_start().set_enabled(true);
-                        self.service_restart().set_enabled(false);
+                        (&self.service_stop).set_enabled(false);
+                        (&self.service_start).set_enabled(true);
+                        (&self.service_restart).set_enabled(false);
                     }
 
-                    self.service_details().set_enabled(true);
+                    (&self.service_details).set_enabled(true);
                 }
                 ContentType::SectionHeader => {
-                    self.service_details().set_enabled(false);
+                    (&self.service_details).set_enabled(false);
 
-                    self.service_stop().set_enabled(false);
-                    self.service_start().set_enabled(false);
-                    self.service_restart().set_enabled(false);
+                    (&self.service_stop).set_enabled(false);
+                    (&self.service_start).set_enabled(false);
+                    (&self.service_restart).set_enabled(false);
                 }
                 _ => {
                     self.obj().set_visible(false);
-                    self.service_details().set_enabled(false);
+                    (&self.service_details).set_enabled(false);
 
-                    self.service_stop().set_enabled(false);
-                    self.service_start().set_enabled(false);
-                    self.service_restart().set_enabled(false);
+                    (&self.service_stop).set_enabled(false);
+                    (&self.service_start).set_enabled(false);
+                    (&self.service_restart).set_enabled(false);
                 }
             }
         }

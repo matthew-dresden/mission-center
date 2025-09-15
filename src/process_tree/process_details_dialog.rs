@@ -1,4 +1,4 @@
-/* process_tree/process_details_dialog
+/* process_tree/process_details_dialog.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -21,16 +21,15 @@
 use std::cell::RefCell;
 
 use adw::subclass::prelude::*;
+use adw::PreferencesRow;
 use gtk::glib::{self};
-use gtk::prelude::StaticTypeExt;
+use gtk::prelude::{WidgetExt, StaticTypeExt};
 
 use crate::process_tree::columns::*;
 use crate::process_tree::row_model::{ContentType, RowModel};
 
 mod imp {
     use super::*;
-    use adw::PreferencesRow;
-    use gtk::prelude::WidgetExt;
 
     #[derive(gtk::CompositeTemplate)]
     #[template(

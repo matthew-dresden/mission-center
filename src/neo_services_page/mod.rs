@@ -21,23 +21,23 @@
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 
-use crate::magpie_client::App;
 use adw::prelude::*;
-use gtk::Orientation::Horizontal;
 use gtk::{gio, glib, subclass::prelude::*};
+use gtk::glib::g_critical;
+use gtk::Orientation::{Horizontal, Vertical};
 
+use magpie_types::services::Service;
+
+use crate::magpie_client::App;
 use crate::i18n::{i18n, i18n_f};
 use crate::process_tree::models;
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
-use magpie_types::services::Service;
+use crate::process_tree::column_view_frame::ColumnViewFrame;
+use crate::process_tree::process_action_bar::ProcessActionBar;
+use crate::process_tree::service_action_bar::ServiceActionBar;
 
 pub(crate) mod imp {
     use super::*;
-    use crate::process_tree::column_view_frame::ColumnViewFrame;
-    use crate::process_tree::process_action_bar::ProcessActionBar;
-    use crate::process_tree::service_action_bar::ServiceActionBar;
-    use gtk::glib::g_critical;
-    use gtk::Orientation::{Horizontal, Vertical};
 
     #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/services_page/page.ui")]
