@@ -23,7 +23,7 @@ use std::cell::RefCell;
 use adw::subclass::prelude::*;
 use adw::PreferencesRow;
 use gtk::glib::{self};
-use gtk::prelude::{WidgetExt, StaticTypeExt};
+use gtk::prelude::{StaticTypeExt, WidgetExt};
 
 use crate::process_tree::columns::*;
 use crate::process_tree::row_model::{ContentType, RowModel};

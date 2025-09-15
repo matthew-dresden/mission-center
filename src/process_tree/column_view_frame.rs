@@ -19,24 +19,24 @@
  */
 
 use std::cell::RefCell;
-use std::fmt::Write;
 use std::cell::{Cell, OnceCell};
+use std::fmt::Write;
 
 use arrayvec::ArrayString;
 
 use textdistance::{Algorithm, Levenshtein};
 
-use adw::glib::{ParamSpec, Properties, Value, g_critical};
+use adw::glib::{g_critical, ParamSpec, Properties, Value};
 use adw::prelude::*;
 use adw::ToggleGroup;
-use gtk::{gio, glib, subclass::prelude::*};
 use gtk::glib::{VariantTy, WeakRef};
+use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::process_tree::columns::*;
-use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::i18n::i18n;
+use crate::process_tree::columns::*;
 use crate::process_tree::process_action_bar::ProcessActionBar;
 use crate::process_tree::row_model::RowModelBuilder;
+use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::process_tree::service_action_bar::ServiceActionBar;
 use crate::process_tree::settings::configure_column_frame;
 use crate::{app, settings, DataType};

@@ -18,15 +18,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::prelude::*;
 use adw::glib::g_critical;
-use gtk::{gio, glib, subclass::prelude::*};
+use adw::prelude::*;
 use gtk::glib::WeakRef;
+use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::app;
 use crate::magpie_client::MagpieClient;
 use crate::process_tree::column_view_frame::ColumnViewFrame;
+use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
 
 mod imp {
@@ -171,10 +171,8 @@ mod imp {
                     if selected_item.content_type() == ContentType::Service {
                         let dialog = ServiceDetailsDialog::new(imp.selected_item.borrow().clone());
                         let self1 = &slef.imp();
-                        dialog.insert_action_group(
-                            "services-page",
-                            Some(&self1.service_ation_group),
-                        );
+                        dialog
+                            .insert_action_group("services-page", Some(&self1.service_ation_group));
                         dialog.present(Some(&this));
                     };
                 }

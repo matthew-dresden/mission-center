@@ -18,15 +18,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use adw::glib::g_critical;
 use adw::glib::translate::from_glib_full;
 use adw::glib::{gobject_ffi, Object};
-use adw::glib::g_critical;
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::app;
 use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
+use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::process_tree::util::calculate_anchor_point;
 
 macro_rules! setup_action {

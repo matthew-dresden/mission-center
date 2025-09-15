@@ -24,8 +24,8 @@ use std::num::NonZeroU32;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, g_warning, ParamSpec, Properties, SignalHandlerId, Value};
 
-use crate::{app, i18n::*};
 use crate::process_tree::row_model::RowModel;
+use crate::{app, i18n::*};
 
 mod imp {
     use super::*;
