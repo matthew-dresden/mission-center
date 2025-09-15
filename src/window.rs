@@ -630,10 +630,6 @@ mod imp {
             });
             self.obj().add_action(&action);
             app.set_accels_for_action("win.close", &["<Control>W"]);
-
-            // Not clear how actions actually become usable, what I know is that they need to be
-            // created and configured at object construction otherwise they flat out don't work.
-            // And since these actions *need* to be tied to the window they are created here.
         }
 
         fn configure_theme_selection(&self) {
