@@ -1,4 +1,4 @@
-/* services_page/process_details_dialog
+/* performance_page/widgets/smart_data_dialog.rs
  *
  * Copyright 2025 Mission Center Developers
  *
