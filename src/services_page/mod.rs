@@ -46,6 +46,8 @@ mod services_list_item;
 
 mod imp {
     use super::*;
+    use adw::gio::ListStore;
+    use gtk::Orientation::{Horizontal, Vertical};
 
     pub struct Actions {
         pub start: gio::SimpleAction,
@@ -94,9 +96,19 @@ mod imp {
         #[template_child]
         pub column_view: TemplateChild<gtk::ColumnView>,
         #[template_child]
-        pub h1: TemplateChild<gtk::Label>,
+        pub top_legend: TemplateChild<gtk::Box>,
         #[template_child]
-        pub h2: TemplateChild<gtk::Label>,
+        pub service_legend: TemplateChild<adw::ToggleGroup>,
+        #[template_child]
+        pub total_service_box: TemplateChild<adw::Toggle>,
+        #[template_child]
+        pub running_service_box: TemplateChild<adw::Toggle>,
+        #[template_child]
+        pub failed_service_box: TemplateChild<adw::Toggle>,
+        #[template_child]
+        pub stopped_service_box: TemplateChild<adw::Toggle>,
+        #[template_child]
+        pub disabled_service_box: TemplateChild<adw::Toggle>,
         #[template_child]
         pub start: TemplateChild<gtk::Button>,
         #[template_child]
@@ -126,8 +138,13 @@ mod imp {
         fn default() -> Self {
             Self {
                 column_view: TemplateChild::default(),
-                h1: TemplateChild::default(),
-                h2: TemplateChild::default(),
+                top_legend: Default::default(),
+                service_legend: Default::default(),
+                total_service_box: Default::default(),
+                running_service_box: Default::default(),
+                failed_service_box: Default::default(),
+                stopped_service_box: Default::default(),
+                disabled_service_box: Default::default(),
                 start: TemplateChild::default(),
                 start_label: TemplateChild::default(),
                 stop: TemplateChild::default(),
@@ -164,7 +181,10 @@ mod imp {
             }
             self.details_label.set_visible(false);
 
-            self.h2.set_visible(false);
+            self.service_legend.set_margin_bottom(10);
+            self.top_legend.set_orientation(Vertical);
+
+            self.update_section_labels();
 
             self.name_column.set_fixed_width(1);
             self.name_column.set_expand(true);
@@ -180,7 +200,10 @@ mod imp {
             }
             self.details_label.set_visible(true);
 
-            self.h2.set_visible(true);
+            self.service_legend.set_margin_bottom(0);
+            self.top_legend.set_orientation(Horizontal);
+
+            self.update_section_labels();
 
             self.name_column.set_fixed_width(400);
             self.name_column.set_expand(false);
@@ -376,53 +399,77 @@ mod imp {
             };
 
             let filter = gtk::CustomFilter::new({
+                let this = self.obj().downgrade();
                 let window = window.downgrade();
                 move |obj| {
-                    use textdistance::{Algorithm, Levenshtein};
-
-                    let window = match window.upgrade() {
-                        None => return true,
-                        Some(w) => w,
-                    };
-                    let window = window.imp();
-
-                    if !window.search_button.is_active() {
-                        return true;
-                    }
-
-                    if window.header_search_entry.text().is_empty() {
-                        return true;
-                    }
-
                     let list_item = match obj.downcast_ref::<ServicesListItem>() {
                         None => return false,
                         Some(li) => li,
                     };
 
-                    let entry_name = list_item.name().to_lowercase();
-                    let pid = list_item.pid().to_string();
-                    let search_query = window.header_search_entry.text().to_lowercase();
+                    let searched = || {
+                        use textdistance::{Algorithm, Levenshtein};
 
-                    if entry_name.contains(&search_query)
-                        || (!pid.is_empty() && pid.contains(&search_query))
-                    {
-                        return true;
-                    }
+                        let window = match window.upgrade() {
+                            None => return true,
+                            Some(w) => w,
+                        };
+                        let window = window.imp();
 
-                    if search_query.contains(&entry_name)
-                        || (!pid.is_empty() && search_query.contains(&pid))
-                    {
-                        return true;
-                    }
+                        if !window.search_button.is_active() {
+                            return true;
+                        }
 
-                    let str_distance = Levenshtein::default()
-                        .for_str(&entry_name, &search_query)
-                        .ndist();
-                    if str_distance <= 0.6 {
-                        return true;
-                    }
+                        if window.header_search_entry.text().is_empty() {
+                            return true;
+                        }
 
-                    false
+                        let entry_name = list_item.name().to_lowercase();
+                        let pid = list_item.pid().to_string();
+                        let search_query = window.header_search_entry.text().to_lowercase();
+
+                        if entry_name.contains(&search_query)
+                            || (!pid.is_empty() && pid.contains(&search_query))
+                        {
+                            return true;
+                        }
+
+                        if search_query.contains(&entry_name)
+                            || (!pid.is_empty() && search_query.contains(&pid))
+                        {
+                            return true;
+                        }
+
+                        let str_distance = Levenshtein::default()
+                            .for_str(&entry_name, &search_query)
+                            .ndist();
+                        if str_distance <= 0.6 {
+                            return true;
+                        }
+
+                        false
+                    };
+
+                    let type_filter = || {
+                        let Some(this) = this.upgrade() else {
+                            return true;
+                        };
+
+                        let this = this.imp();
+
+                        match this.service_legend.active() {
+                            0 => true,
+                            1 => list_item.running(),
+                            2 => list_item.failed(),
+                            3 => list_item.enabled() && !list_item.failed() && !list_item.running(),
+                            4 => {
+                                !list_item.running() && !list_item.failed() && !list_item.enabled()
+                            }
+                            _ => true,
+                        }
+                    };
+
+                    searched() && type_filter()
                 }
             });
 
@@ -438,6 +485,15 @@ mod imp {
                         if let Some(filter) = filter.upgrade() {
                             filter.changed(gtk::FilterChange::Different);
                         }
+                    }
+                }
+            });
+
+            self.service_legend.connect_active_notify({
+                let filter = filter.downgrade();
+                move |_| {
+                    if let Some(filter) = filter.upgrade() {
+                        filter.changed(gtk::FilterChange::Different);
                     }
                 }
             });
@@ -512,29 +568,7 @@ mod imp {
                 model.append(&model_item_builder.build());
             }
 
-            let total_services = model.n_items();
-            let mut running_services = 0;
-            let mut failed_services = 0;
-            for i in 0..total_services {
-                let item = model.item(i).unwrap();
-                if let Some(item) = item.downcast_ref::<ServicesListItem>() {
-                    if item.running() {
-                        running_services += 1;
-                    } else if item.failed() {
-                        failed_services += 1;
-                    }
-                }
-            }
-
-            self.h1.set_text(&i18n_f(
-                "{} Running Services",
-                &[&running_services.to_string()],
-            ));
-
-            self.h2.set_text(&i18n_f(
-                "{} failed services out of a total of {}",
-                &[&failed_services.to_string(), &total_services.to_string()],
-            ));
+            self.update_section_labels();
 
             if let Some(selection_model) = self
                 .column_view
@@ -558,6 +592,60 @@ mod imp {
                     }
                 }
             }
+        }
+
+        fn update_section_labels(&self) {
+            let model = &self.model;
+            let total_services = model.n_items();
+            let mut disabled_services = 0;
+            let mut running_services = 0;
+            let mut stopped_services = 0;
+            let mut failed_services = 0;
+            for i in 0..total_services {
+                let item = model.item(i).unwrap();
+                if let Some(item) = item.downcast_ref::<ServicesListItem>() {
+                    if item.running() {
+                        running_services += 1;
+                    } else if item.failed() {
+                        failed_services += 1;
+                    } else if item.enabled() {
+                        stopped_services += 1;
+                    } else {
+                        disabled_services += 1;
+                    }
+                }
+            }
+
+            let total_string = total_services.to_string();
+            let running_string = running_services.to_string();
+            let stopped_string = stopped_services.to_string();
+            let failed_string = failed_services.to_string();
+            let disabled_string = disabled_services.to_string();
+
+            let (total_string, running_string, stopped_string, failed_string, disabled_string) =
+                if self.top_legend.orientation() == Horizontal {
+                    (
+                        i18n_f("{} Total", &[&total_string]),
+                        i18n_f("{} Running", &[&running_string]),
+                        i18n_f("{} Stopped", &[&stopped_string]),
+                        i18n_f("{} Failed", &[&failed_string]),
+                        i18n_f("{} Disabled", &[&disabled_string]),
+                    )
+                } else {
+                    (
+                        total_string,
+                        running_string,
+                        stopped_string,
+                        failed_string,
+                        disabled_string,
+                    )
+                };
+
+            self.total_service_box.set_label(Some(&total_string));
+            self.running_service_box.set_label(Some(&running_string));
+            self.stopped_service_box.set_label(Some(&stopped_string));
+            self.failed_service_box.set_label(Some(&failed_string));
+            self.disabled_service_box.set_label(Some(&disabled_string));
         }
     }
 

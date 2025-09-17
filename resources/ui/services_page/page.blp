@@ -35,37 +35,45 @@ template $ServicesPage : Box {
     child: Box {
       orientation: vertical;
 
-      Box {
+      Box top_legend {
         margin-bottom: 20;
 
         Box {
-          orientation: vertical;
+          valign: center;
+          spacing: 5;
 
-          spacing: 10;
+          Adw.ToggleGroup service_legend {
+            orientation: horizontal;
+            homogeneous: true;
 
-          hexpand: true;
+            Adw.Toggle total_service_box {
+              enabled: true;
+            }
 
-          Label h1 {
-            styles [
-              "title-1",
-            ]
+            Adw.Toggle running_service_box {
+              icon-name: "service-running";
+            }
 
-            ellipsize: end;
+            Adw.Toggle failed_service_box {
+              icon-name: "service-failed";
+            }
 
-            halign: start;
+            Adw.Toggle stopped_service_box {
+              icon-name: "service-stopped";
+            }
+
+            Adw.Toggle disabled_service_box {
+              icon-name: "service-disabled";
+            }
           }
 
-          Label h2 {
-            styles [
-              "faint-text",
-            ]
-
-            halign: start;
+          Box {
+            hexpand: true;
           }
         }
 
         Box {
-          valign: end;
+          valign: center;
           spacing: 5;
 
           Box {
