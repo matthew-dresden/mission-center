@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-21 06:25+0000\n"
-"PO-Revision-Date: 2025-08-16 12:02+0000\n"
-"Last-Translator: Yahor <k1llo2810@protonmail.com>\n"
+"PO-Revision-Date: 2025-09-07 08:42+0000\n"
+"Last-Translator: Yauheni Liavontsyeu <Evgeniy_Leontyev@proton.me>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/"
 "mission-center/mission-center/be/>\n"
 "Language: be\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.13\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -230,7 +230,6 @@ msgid "Column sorting is persisted across app restarts"
 msgstr "Сартаванне слупкоў захоўваецца пасля перазапуску праграмы"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:120
-#, fuzzy
 msgid "Column order is persisted across app restarts"
 msgstr "Сартаванне слупкоў захоўваецца пасля перазапуску праграмы"
 

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-21 06:25+0000\n"
-"PO-Revision-Date: 2024-11-17 12:01+0000\n"
+"PO-Revision-Date: 2025-08-27 13:01+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/he/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.13\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -44,14 +44,16 @@ msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
 msgstr ""
+"מעקב אחר השימוש במעבד, בזיכרון, בכונן, ברשת והמעבדים הגרפיים, בצירוף פירוק "
+"לפי יישומים ותהליך של הסטטיסטיקה הזאת"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 msgid "Features:"
-msgstr ""
+msgstr "יכולות:"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:21
 msgid "Monitor overall or per-thread CPU usage"
-msgstr ""
+msgstr "מעקב אחר שימוש במעבד לפי תהליכון או באופן כולל"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:22
 msgid ""
@@ -69,11 +71,11 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:25
 msgid "Monitor Disk utilization and transfer rates"
-msgstr ""
+msgstr "מעקב אחר שימוש בכונן וקצבי העברה"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:26
 msgid "Monitor network utilization and transfer speeds"
-msgstr ""
+msgstr "מעקב אחר שימוש ברשת ומהירויות העברה"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:27
 msgid ""
