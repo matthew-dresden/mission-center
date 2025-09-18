@@ -42,7 +42,11 @@ mod imp {
         title: TemplateChild<gtk::Label>,
 
         #[template_child]
-        id: TemplateChild<gtk::Label>,
+        id_value: TemplateChild<gtk::Label>,
+        #[template_child]
+        app_id_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pid_label: TemplateChild<gtk::Label>,
         #[template_child]
         kind: TemplateChild<gtk::Label>,
         #[template_child]
@@ -74,10 +78,12 @@ mod imp {
                 icon: TemplateChild::default(),
                 title: TemplateChild::default(),
 
-                id: TemplateChild::default(),
+                id_value: TemplateChild::default(),
+                app_id_label: TemplateChild::default(),
+                pid_label: TemplateChild::default(),
                 kind: TemplateChild::default(),
-                command_line_row: Default::default(),
-                command_line: Default::default(),
+                command_line_row: TemplateChild::default(),
+                command_line: TemplateChild::default(),
 
                 cpu: TemplateChild::default(),
                 memory: TemplateChild::default(),
@@ -96,10 +102,16 @@ mod imp {
         pub fn bind(&self) {
             let model = self.model.borrow();
 
-            if model.content_type() == ContentType::Service {
-                self.icon.set_pixel_size(24);
-            } else {
-                self.icon.set_pixel_size(16);
+            match model.content_type() {
+                ContentType::App => {
+                    self.app_id_label.set_visible(true);
+                    self.pid_label.set_visible(false);
+                }
+                ContentType::Process => {
+                    self.app_id_label.set_visible(false);
+                    self.pid_label.set_visible(true);
+                }
+                _ => {} // should never happen
             }
 
             let icon = model.icon();
@@ -119,7 +131,7 @@ mod imp {
 
             self.title.set_label(&model.name());
 
-            self.id.set_label(&model.id());
+            self.id_value.set_label(&model.id());
 
             let content_type: String = model.content_type().into();
             self.kind.set_label(&content_type);

@@ -70,13 +70,21 @@ template $ProcessDetailsDialog: Adw.Dialog {
                 margin-end: 12;
                 spacing: 12;
 
-                Label {
+                Label pid_label {
                   hexpand: true;
                   halign: start;
                   label: _("PID");
                 }
 
-                Label id {
+                Label app_id_label {
+                  visible: false;
+
+                  hexpand: true;
+                  halign: start;
+                  label: _("App ID");
+                }
+
+                Label id_value {
                   styles [
                     "dim-label",
                   ]
