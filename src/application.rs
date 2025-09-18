@@ -373,14 +373,9 @@ impl MissionCenterApplication {
             return;
         };
 
-        let about = &magpie.about_system();
+        let about = magpie.about_system();
 
-        let beans = about.os_info.name.clone();
-        let dialogue = adw::Dialog::builder()
-            .title(beans.clone().unwrap_or("".to_string()))
-            .build();
-
-        println!("{:?}", beans);
+        let dialogue = crate::widgets::about_system_dialog::AboutSystemDialog::new(about);
 
         let Some(window) = self.window() else {
             g_critical!(

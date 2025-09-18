@@ -1,0 +1,96 @@
+/* ui/widgets/about_system_dialog.blp
+ *
+ * Copyright 2024 Romeo Calota
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+using Gtk 4.0;
+using Adw 1;
+
+template $AboutSystemDialog: Adw.Dialog {
+  width-request: 360;
+
+  Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      title-widget: Box {
+        Label title {
+          styles [
+            "heading"
+          ]
+
+          label: _("System Info");
+        }
+      };
+    }
+
+    ScrolledWindow {
+      hscrollbar-policy: never;
+      propagate-natural-height: true;
+      propagate-natural-width: true;
+
+      Adw.Clamp {
+        maximum-size: 2000;
+
+        Box {
+          margin-start: 20;
+          margin-end: 20;
+          margin-top: 20;
+          margin-bottom: 20;
+
+          orientation: vertical;
+          spacing: 32;
+
+          Adw.PreferencesGroup {
+            hexpand: true;
+
+            title: _("OS Info");
+
+            Adw.PreferencesRow  {
+              activatable: false;
+              visible: bind os_name.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("OS Name");
+                }
+
+                Label os_name {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                  label: _("N/A");
+                }
+              };
+            }
+          }
+        }
+      }
+    }
+  }
+}
