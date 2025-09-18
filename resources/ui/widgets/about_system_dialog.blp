@@ -60,7 +60,7 @@ template $AboutSystemDialog: Adw.Dialog {
 
             title: _("OS Info");
 
-            Adw.PreferencesRow  {
+            Adw.PreferencesRow {
               activatable: false;
               visible: bind os_name.visible;
 
@@ -77,6 +77,99 @@ template $AboutSystemDialog: Adw.Dialog {
                 }
 
                 Label os_name {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                  label: _("N/A");
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Version");
+                }
+
+                Label version {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                  label: _("N/A");
+                }
+              };
+            }
+          }
+
+          Adw.PreferencesGroup {
+            hexpand: true;
+
+            title: _("Kernel Info");
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind kernel_release.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Kernel Release");
+                }
+
+                Label kernel_release {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                  label: _("N/A");
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind kernel_version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Version");
+                }
+
+                Label kernel_version {
                   styles [
                     "dim-label",
                   ]

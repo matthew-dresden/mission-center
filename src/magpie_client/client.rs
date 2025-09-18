@@ -20,10 +20,6 @@
 
 use arrayvec::ArrayString;
 use gtk::glib::{g_critical, g_debug};
-use std::num::NonZeroU32;
-use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
-use std::time::Duration;
-use std::{cell::RefCell, collections::HashMap, sync::Arc};
 use magpie_types::about::{about_response, About};
 use magpie_types::apps::apps_response;
 use magpie_types::apps::apps_response::AppList;
@@ -56,6 +52,10 @@ use magpie_types::prost::Message;
 use magpie_types::services::services_response;
 use magpie_types::services::services_response::ServiceList;
 pub use magpie_types::services::Service;
+use std::num::NonZeroU32;
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+use std::time::Duration;
+use std::{cell::RefCell, collections::HashMap, sync::Arc};
 
 use crate::magpie_client::flatpak_app_path;
 use crate::{flatpak_data_dir, is_flatpak, show_error_dialog_and_exit};

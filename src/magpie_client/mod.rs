@@ -552,9 +552,9 @@ impl MagpieClient {
         match self.sender.send(Message::AboutSystem) {
             Err(e) => {
                 g_critical!(
-                "MissionCenter::SysInfo",
-                "Error sending AboutResult to gatherer: {e}",
-            );
+                    "MissionCenter::SysInfo",
+                    "Error sending AboutResult to gatherer: {e}",
+                );
 
                 return About::default();
             }
@@ -578,7 +578,6 @@ impl MagpieClient {
                 About::default()
             }
         }
-
     }
 }
 

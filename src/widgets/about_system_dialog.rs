@@ -27,32 +27,69 @@ mod imp {
     use super::*;
     use adw::PreferencesRow;
     use gtk::prelude::WidgetExt;
+    use magpie_types::about::about::OsInfo;
 
     #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/widgets/about_system_dialog.ui")]
     pub struct AboutSystemDialog {
         #[template_child]
         os_name: TemplateChild<gtk::Label>,
+        #[template_child]
+        version: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        kernel_release: TemplateChild<gtk::Label>,
+        #[template_child]
+        kernel_version: TemplateChild<gtk::Label>,
     }
 
     impl Default for AboutSystemDialog {
         fn default() -> Self {
             Self {
-                os_name: TemplateChild::default(),
+                os_name: Default::default(),
+                version: Default::default(),
+                kernel_release: Default::default(),
+                kernel_version: Default::default(),
             }
         }
     }
 
     impl AboutSystemDialog {
+        fn bind_text(label: &TemplateChild<gtk::Label>, text: Option<String>) -> bool {
+            if let Some(text) = text {
+                label.set_text(&text);
+                label.set_visible(true);
+
+                true
+            } else {
+                label.set_visible(false);
+
+                false
+            }
+        }
+
+        fn format_kernel_release_string(os_info: &OsInfo) -> Option<String> {
+            match (os_info.os_type.clone(), os_info.kernel_release.clone()) {
+                (Some(kernel), Some(release)) => Some(format!("{kernel} {release}")),
+                (None, Some(release)) => Some(format!("Unknown {release}")),
+                (Some(kernel), None) => Some(kernel),
+                (None, None) => None,
+            }
+        }
+
         pub fn setup(&self, about: About) {
             let os_info = about.os_info;
-            
-            if let Some(os_name) = os_info.name {
-                self.os_name.set_text(&os_name);
-                self.os_name.set_visible(true);
-            } else {
-                self.os_name.set_visible(false);
-            }
+
+            let _ = Self::bind_text(&self.os_name, os_info.pretty_name.clone())
+                || Self::bind_text(&self.os_name, os_info.name.clone());
+            let _ = Self::bind_text(&self.version, os_info.version_id.clone())
+                || Self::bind_text(&self.os_name, os_info.version.clone());
+
+            let _ = Self::bind_text(
+                &self.kernel_release,
+                Self::format_kernel_release_string(&os_info),
+            );
+            let _ = Self::bind_text(&self.kernel_version, os_info.kernel_version.clone());
         }
     }
 
@@ -84,8 +121,7 @@ mod imp {
     }
 
     impl AdwDialogImpl for AboutSystemDialog {
-        fn closed(&self) {
-        }
+        fn closed(&self) {}
     }
 }
 
