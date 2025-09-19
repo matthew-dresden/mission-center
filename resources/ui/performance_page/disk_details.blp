@@ -169,6 +169,8 @@ template $DiskDetails: Box {
     }
 
     Box {
+      visible: bind active_time.visible;
+
       layout {
         column: '1';
         row: '2';
@@ -198,6 +200,8 @@ template $DiskDetails: Box {
     }
 
     Box {
+      visible: bind avg_response_time.visible;
+
       layout {
         column: '3';
         row: '2';
