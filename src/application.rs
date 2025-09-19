@@ -291,7 +291,7 @@ impl MissionCenterApplication {
         unsafe { (&*self.imp().settings.as_ptr()).as_ref().unwrap_unchecked() }.clone()
     }
 
-    pub fn sys_info(&self) -> Result<Ref<crate::magpie_client::MagpieClient>, BorrowError> {
+    pub fn sys_info(&self) -> Result<Ref<'_, crate::magpie_client::MagpieClient>, BorrowError> {
         match self.imp().sys_info.try_borrow() {
             Ok(sys_info_ref) => Ok(Ref::map(sys_info_ref, |sys_info_opt| match sys_info_opt {
                 Some(sys_info) => sys_info,

@@ -8,9 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-21 06:25+0000\n"
-"PO-Revision-Date: 2025-04-09 09:06+0000\n"
-"Last-Translator: rainy_sunset "
-"<rainy_sunset@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2025-08-13 07:02+0000\n"
+"Last-Translator: Yuta Sahara <shryt0206@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/ja/>\n"
 "Language: ja\n"
@@ -18,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -102,9 +101,8 @@ msgstr ""
 "の使用率、メモリ使用量、消費電力のモニタリング"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:33
-#, fuzzy
 msgid "Monitor system fans"
-msgstr "システムリソース使用状況を監視"
+msgstr "システムファンを監視"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:34
 msgid "See a breakdown of resource usage by app and process"
@@ -115,11 +113,11 @@ msgid "Supports a minified summary view for simple monitoring"
 msgstr "簡単なモニタリングのための縮小された概要ビューをサポート"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:36
-#, fuzzy
 msgid ""
 "Use hardware accelerated rendering for all the graphs in an effort to reduce "
 "CPU and overall resource usage"
-msgstr "OpenGLを利用した CPUとリソース全体の使用量の削減"
+msgstr "CPUとリソース全体の使用量の削減のためにすべてのグラフの描画でハードウェアアク"
+"セラレーションを使用します"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:39
 msgid "Uses GTK4 and Libadwaita"
@@ -166,7 +164,7 @@ msgstr "アダプター名:"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:52
 msgid "If light or dark interface style should be used"
-msgstr ""
+msgstr "ライトモードとダークモードのどちらを使用するか"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:58
 #: data/io.missioncenter.MissionCenter.gschema.xml:135
@@ -174,11 +172,10 @@ msgid "DEPRECATED! NO LONGER IN USE!"
 msgstr "廃止されました！もう使われていない！"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:64
-#, fuzzy
 msgid ""
 "How fast should the data be refreshed and the UI updated (in increments of "
 "50ms)"
-msgstr "データ／UIが更新される速度"
+msgstr "データ／UIが更新される速度(50ms単位で)"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:70
 msgid "How many points should be displayed on each chart?"
@@ -465,11 +462,12 @@ msgid "Name"
 msgstr "名前"
 
 #: resources/ui/apps_page/page.blp:198
-#, fuzzy
 msgid ""
 "Shared\n"
 "Memory"
-msgstr "メモリ"
+msgstr ""
+"共有\n"
+"メモリ"
 
 #: resources/ui/apps_page/page.blp:204 src/apps_page/columns/mod.rs:270
 #: src/apps_page/columns/mod.rs:278 src/performance_page/mod.rs:1130
@@ -650,9 +648,8 @@ msgid "Cpufreq governor:"
 msgstr "Cpufreqのガバナー:"
 
 #: resources/ui/performance_page/cpu_details.blp:325
-#, fuzzy
 msgid "Power preference:"
-msgstr "設定"
+msgstr "電源設定:"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
@@ -725,14 +722,12 @@ msgstr "PCIバスのアドレス:"
 
 #: resources/ui/performance_page/memory.blp:76
 #: resources/ui/performance_page/gpu.blp:162
-#, fuzzy
 msgid "Memory usage over "
-msgstr "メモリ使用率"
+msgstr "メモリ使用率 "
 
 #: resources/ui/performance_page/memory.blp:121
-#, fuzzy
 msgid "Swap usage over "
-msgstr "メモリ使用率"
+msgstr "スワップ使用率 "
 
 #: resources/ui/performance_page/memory.blp:172
 msgid "Memory composition"
@@ -873,9 +868,8 @@ msgstr "種類:"
 
 #: resources/ui/performance_page/gpu.blp:72
 #: resources/ui/performance_page/cpu.blp:63
-#, fuzzy
 msgid "Utilization over "
-msgstr "直近{}秒間の使用率"
+msgstr "直近{}秒間の使用率 "
 
 #: resources/ui/performance_page/gpu.blp:86
 #: resources/ui/performance_page/gpu.blp:135
@@ -884,9 +878,8 @@ msgid "100%"
 msgstr "100%"
 
 #: resources/ui/performance_page/gpu.blp:119
-#, fuzzy
 msgid "Video encode/decode utilization over "
-msgstr "ビデオエンコード"
+msgstr "ビデオエンコード "
 
 #: resources/ui/performance_page/gpu.blp:208
 msgid "Show Encode/Decode Usage"
@@ -939,14 +932,12 @@ msgid "Current Temperature"
 msgstr "温度"
 
 #: resources/ui/performance_page/fan.blp:61
-#, fuzzy
 msgid "Fan speed over "
-msgstr "メモリ使用率"
+msgstr "メモリ使用率 "
 
 #: resources/ui/performance_page/fan.blp:112
-#, fuzzy
 msgid "Temperature over "
-msgstr "温度"
+msgstr "温度 "
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
@@ -1019,9 +1010,8 @@ msgstr ""
 
 #: resources/ui/performance_page/network.blp:61
 #: resources/ui/performance_page/disk.blp:140
-#, fuzzy
 msgid "Throughput over "
-msgstr "スループット"
+msgstr "スループット "
 
 #: resources/ui/performance_page/network.blp:144
 msgid "Network Se_ttings"
@@ -1036,9 +1026,8 @@ msgid "Eject Disk"
 msgstr ""
 
 #: resources/ui/performance_page/disk.blp:99
-#, fuzzy
 msgid "Active time over "
-msgstr "アクティブな時間"
+msgstr "アクティブな時間 "
 
 #: resources/ui/performance_page/network_details.blp:63
 msgid "Receive"

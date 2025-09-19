@@ -252,8 +252,15 @@ Comments, suggestions, bug reports and contributions are welcome.
 
 ## License
 
-This program is released under the terms of the GNU General Public License (GNU GPL) version 3. You can find a copy of
-the license in the file COPYING.
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
+
+Please see COPYING file in the root of this repository for the complete license
+text. Alternatively see
+[the official license](https://www.gnu.org/licenses/gpl-3.0.html) as written
+by the Free Software Foundation.
 
 ## Code of Conduct
 

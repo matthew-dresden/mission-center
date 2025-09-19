@@ -229,15 +229,6 @@ mod imp {
                 i18n("Unknown")
             });
 
-            let cap = disk.formatted_bytes;
-            this.infobar_content
-                .formatted()
-                .set_text(&if let Some(cap) = cap {
-                    crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes, settings)
-                } else {
-                    i18n("Unknown")
-                });
-
             let is_system_disk = if disk.is_system {
                 i18n("Yes")
             } else {
@@ -377,6 +368,15 @@ mod imp {
             ));
 
             this.usage_graph.add_data_point(0, disk.busy_percent);
+
+            let cap = disk.formatted_bytes;
+            this.infobar_content
+                .formatted()
+                .set_text(&if let Some(cap) = cap {
+                    crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes, settings)
+                } else {
+                    i18n("Unknown")
+                });
 
             this.infobar_content
                 .active_time()

@@ -56,9 +56,11 @@ mod imp {
 
         #[property(get = Self::infobar_content, type = Option < gtk::Widget >)]
         pub infobar_content: OnceCell<gtk::Box>,
+        pub power_row: OnceCell<gtk::Box>,
 
         pub utilization: OnceCell<gtk::Label>,
         pub speed: OnceCell<gtk::Label>,
+        pub power_draw: OnceCell<gtk::Label>,
         pub processes: OnceCell<gtk::Label>,
         pub threads: OnceCell<gtk::Label>,
         pub handles: OnceCell<gtk::Label>,
@@ -92,8 +94,11 @@ mod imp {
                 graph_widgets: Cell::new(Vec::new()),
 
                 infobar_content: Default::default(),
+                power_row: Default::default(),
+
                 utilization: Default::default(),
                 speed: Default::default(),
+                power_draw: Default::default(),
                 processes: Default::default(),
                 threads: Default::default(),
                 handles: Default::default(),
@@ -438,6 +443,20 @@ mod imp {
                 ));
             }
 
+            let settings = settings!();
+            if let Some(power_draw) = this.power_draw.get() {
+                if let Some(power_draw_num) = dynamic_cpu_info.power_draw_w {
+                    power_draw.set_text(&crate::to_human_readable_nice(
+                        power_draw_num,
+                        &DataType::Watts,
+                        &settings,
+                    ))
+                } else {
+                    if let Some(power_row) = this.power_row.get() {
+                        power_row.set_visible(false)
+                    }
+                }
+            }
             if let Some(processes) = this.processes.get() {
                 processes.set_text(&format!("{}", dynamic_cpu_info.total_process_count));
             }
@@ -828,6 +847,16 @@ mod imp {
                 sidebar_content_builder
                     .object::<gtk::Label>("speed")
                     .expect("Could not find `speed` object in details pane"),
+            );
+            let _ = self.power_draw.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("power_draw")
+                    .expect("Could not find `power_draw` object in details pane"),
+            );
+            let _ = self.power_row.set(
+                sidebar_content_builder
+                    .object::<gtk::Box>("power_row")
+                    .expect("Could not find `power_row` object in details pane"),
             );
             let _ = self.processes.set(
                 sidebar_content_builder

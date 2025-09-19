@@ -78,6 +78,28 @@ Box root {
       }
     }
 
+    Box power_row {
+      orientation: vertical;
+      spacing: 3;
+
+      Label {
+        styles [
+          "caption",
+        ]
+
+        halign: start;
+        label: _("Power Draw");
+      }
+
+      Label power_draw {
+        styles [
+        "title-4",
+        ]
+
+        halign: start;
+      }
+    }
+
     Box mid_row {
       spacing: 15;
       width-request: 200;
