@@ -84,7 +84,6 @@ template $AboutSystemDialog: Adw.Dialog {
                   ellipsize: middle;
                   hexpand: true;
                   halign: end;
-                  label: _("N/A");
                 }
               };
             }
@@ -113,7 +112,6 @@ template $AboutSystemDialog: Adw.Dialog {
                   ellipsize: middle;
                   hexpand: true;
                   halign: end;
-                  label: _("N/A");
                 }
               };
             }
@@ -148,7 +146,6 @@ template $AboutSystemDialog: Adw.Dialog {
                   ellipsize: middle;
                   hexpand: true;
                   halign: end;
-                  label: _("N/A");
                 }
               };
             }
@@ -177,7 +174,68 @@ template $AboutSystemDialog: Adw.Dialog {
                   ellipsize: middle;
                   hexpand: true;
                   halign: end;
-                  label: _("N/A");
+                }
+              };
+            }
+          }
+
+          Adw.PreferencesGroup {
+            hexpand: true;
+
+            title: _("DE Info");
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind desktop_environment.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("DE");
+                }
+
+                Label desktop_environment {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind windowing_system.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Windowing System");
+                }
+
+                Label windowing_system {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
                 }
               };
             }

@@ -41,6 +41,11 @@ mod imp {
         kernel_release: TemplateChild<gtk::Label>,
         #[template_child]
         kernel_version: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        desktop_environment: TemplateChild<gtk::Label>,
+        #[template_child]
+        windowing_system: TemplateChild<gtk::Label>,
     }
 
     impl Default for AboutSystemDialog {
@@ -50,6 +55,8 @@ mod imp {
                 version: Default::default(),
                 kernel_release: Default::default(),
                 kernel_version: Default::default(),
+                desktop_environment: Default::default(),
+                windowing_system: Default::default(),
             }
         }
     }
@@ -80,16 +87,23 @@ mod imp {
         pub fn setup(&self, about: About) {
             let os_info = about.os_info;
 
+            println!("{:?}", os_info.clone());
+
             let _ = Self::bind_text(&self.os_name, os_info.pretty_name.clone())
                 || Self::bind_text(&self.os_name, os_info.name.clone());
             let _ = Self::bind_text(&self.version, os_info.version_id.clone())
-                || Self::bind_text(&self.os_name, os_info.version.clone());
+                || Self::bind_text(&self.version, os_info.version.clone());
 
             let _ = Self::bind_text(
                 &self.kernel_release,
                 Self::format_kernel_release_string(&os_info),
             );
             let _ = Self::bind_text(&self.kernel_version, os_info.kernel_version.clone());
+
+            let de_info = about.de_info;
+
+            let _ = Self::bind_text(&self.desktop_environment, de_info.desktop_environment.clone());
+            let _ = Self::bind_text(&self.windowing_system, de_info.windowing_system.clone());
         }
     }
 
