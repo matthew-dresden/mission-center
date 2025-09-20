@@ -18,17 +18,18 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::subclass::prelude::*;
 use glob::glob;
+
+use adw::subclass::prelude::*;
+use adw::glib::g_warning;
 use gtk::glib::{self};
-use gtk::prelude::{StaticTypeExt, WidgetExt};
+use gtk::prelude::WidgetExt;
+
 use magpie_types::about::About;
+use magpie_types::about::about::OsInfo;
 
 mod imp {
     use super::*;
-    use adw::PreferencesRow;
-    use gtk::prelude::WidgetExt;
-    use magpie_types::about::about::OsInfo;
 
     #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/widgets/about_system_dialog.ui")]
@@ -100,7 +101,10 @@ mod imp {
                                     pic.set_visible(true);
                                     return true;
                                 }
-                                Err(e) => println!("{:?}", e),
+                                Err(e) => g_warning!(
+                                    "MissionCenter::AboutPage",
+                                    "Failed to locate icon"
+                                ),
                             }
                         }
                     }
@@ -125,8 +129,6 @@ mod imp {
 
         pub fn setup(&self, about: About) {
             let os_info = about.os_info;
-
-            println!("{:?}", &os_info);
 
             let _ = Self::bind_text(&self.os_name, &os_info.pretty_name)
                 || Self::bind_text(&self.os_name, &os_info.name);
