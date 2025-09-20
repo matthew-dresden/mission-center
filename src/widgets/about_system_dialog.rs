@@ -19,6 +19,7 @@
  */
 
 use adw::subclass::prelude::*;
+use glob::glob;
 use gtk::glib::{self};
 use gtk::prelude::{StaticTypeExt, WidgetExt};
 use magpie_types::about::About;
@@ -45,7 +46,14 @@ mod imp {
         #[template_child]
         desktop_environment: TemplateChild<gtk::Label>,
         #[template_child]
+        desktop_environment_version: TemplateChild<gtk::Label>,
+        #[template_child]
         windowing_system: TemplateChild<gtk::Label>,
+        #[template_child]
+        virtual_terminal: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        logo: TemplateChild<gtk::Picture>,
     }
 
     impl Default for AboutSystemDialog {
@@ -56,20 +64,55 @@ mod imp {
                 kernel_release: Default::default(),
                 kernel_version: Default::default(),
                 desktop_environment: Default::default(),
+                desktop_environment_version: Default::default(),
                 windowing_system: Default::default(),
+                virtual_terminal: Default::default(),
+                logo: Default::default(),
             }
         }
     }
 
     impl AboutSystemDialog {
-        fn bind_text(label: &TemplateChild<gtk::Label>, text: Option<String>) -> bool {
+        fn bind_text(label: &TemplateChild<gtk::Label>, text: &Option<String>) -> bool {
             if let Some(text) = text {
-                label.set_text(&text);
+                label.set_text(text);
                 label.set_visible(true);
 
                 true
             } else {
                 label.set_visible(false);
+
+                false
+            }
+        }
+        fn bind_logo(pic: &TemplateChild<gtk::Picture>, img: &Option<String>) -> bool {
+            if let Some(value) = img {
+                let paths = [
+                    "pixmaps/",
+                    "icons/**/",
+                ];
+                let filenames = [
+                    "svg",
+                    "*",
+                ];
+                for path in paths {
+                    for filename in filenames {
+                        for entry in glob(&format!("/usr/share/{path}{}.{filename}", value)).expect("Failed to read glob pattern") {
+                            match entry {
+                                Ok(path) => {
+                                    pic.set_filename(Some(path));
+                                    pic.set_visible(true);
+                                    return true
+                                }
+                                Err(e) => println!("{:?}", e),
+                            }
+                        }
+                    }
+                }
+                pic.set_visible(false);
+                false
+            } else {
+                pic.set_visible(false);
 
                 false
             }
@@ -87,23 +130,26 @@ mod imp {
         pub fn setup(&self, about: About) {
             let os_info = about.os_info;
 
-            println!("{:?}", os_info.clone());
+            println!("{:?}", &os_info);
 
-            let _ = Self::bind_text(&self.os_name, os_info.pretty_name.clone())
-                || Self::bind_text(&self.os_name, os_info.name.clone());
-            let _ = Self::bind_text(&self.version, os_info.version_id.clone())
-                || Self::bind_text(&self.version, os_info.version.clone());
+            let _ = Self::bind_text(&self.os_name, &os_info.pretty_name)
+                || Self::bind_text(&self.os_name, &os_info.name);
+            let _ = Self::bind_text(&self.version, &os_info.version_id)
+                || Self::bind_text(&self.version, &os_info.version);
 
             let _ = Self::bind_text(
                 &self.kernel_release,
-                Self::format_kernel_release_string(&os_info),
+                &Self::format_kernel_release_string(&os_info),
             );
-            let _ = Self::bind_text(&self.kernel_version, os_info.kernel_version.clone());
+            let _ = Self::bind_text(&self.kernel_version, &os_info.kernel_version);
 
             let de_info = about.de_info;
 
-            let _ = Self::bind_text(&self.desktop_environment, de_info.desktop_environment.clone());
-            let _ = Self::bind_text(&self.windowing_system, de_info.windowing_system.clone());
+            let _ = Self::bind_text(&self.desktop_environment, &de_info.desktop_environment);
+            let _ = Self::bind_text(&self.desktop_environment_version, &de_info.version);
+            let _ = Self::bind_text(&self.windowing_system, &de_info.windowing_system);
+            let _ = Self::bind_text(&self.virtual_terminal, &de_info.virtual_terminal);
+            let _ = Self::bind_logo(&self.logo, &os_info.logo);
         }
     }
 

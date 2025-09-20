@@ -55,6 +55,11 @@ template $AboutSystemDialog: Adw.Dialog {
           orientation: vertical;
           spacing: 32;
 
+          Picture logo {
+            can-shrink: false;
+            content-fit: scale_down;
+          }
+
           Adw.PreferencesGroup {
             hexpand: true;
 
@@ -214,6 +219,34 @@ template $AboutSystemDialog: Adw.Dialog {
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind desktop_environment_version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("DE version");
+                }
+
+                Label desktop_environment_version {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
               visible: bind windowing_system.visible;
 
               child: Box {
@@ -229,6 +262,34 @@ template $AboutSystemDialog: Adw.Dialog {
                 }
 
                 Label windowing_system {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind virtual_terminal.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Virtual Terminal");
+                }
+
+                Label virtual_terminal {
                   styles [
                     "dim-label",
                   ]
