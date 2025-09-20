@@ -20,13 +20,13 @@
 
 use glob::glob;
 
-use adw::subclass::prelude::*;
 use adw::glib::g_warning;
+use adw::subclass::prelude::*;
 use gtk::glib::{self};
 use gtk::prelude::WidgetExt;
 
-use magpie_types::about::About;
 use magpie_types::about::about::OsInfo;
+use magpie_types::about::About;
 
 mod imp {
     use super::*;
@@ -101,10 +101,9 @@ mod imp {
                                     pic.set_visible(true);
                                     return true;
                                 }
-                                Err(e) => g_warning!(
-                                    "MissionCenter::AboutPage",
-                                    "Failed to locate icon"
-                                ),
+                                Err(e) => {
+                                    g_warning!("MissionCenter::AboutPage", "Failed to locate icon")
+                                }
                             }
                         }
                     }
