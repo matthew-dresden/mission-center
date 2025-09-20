@@ -94,7 +94,6 @@ pub(crate) mod imp {
             let failed_string = self.failed_services.get().to_string();
             let disabled_string = self.disabled_services.get().to_string();
 
-
             let (total_string, running_string, stopped_string, failed_string, disabled_string) =
                 // collapsed check
                 if self.top_legend.orientation() == Horizontal {
@@ -121,7 +120,6 @@ pub(crate) mod imp {
             self.failed_service_box.set_label(Some(&failed_string));
             self.disabled_service_box.set_label(Some(&disabled_string));
         }
-
     }
 
     impl Default for ServicesPage {
@@ -396,10 +394,9 @@ impl ServicesPage {
         imp.failed_services.set(failed_services);
         imp.disabled_services.set(disabled_services);
 
-
         imp.update_filter_labels();
     }
-    
+
     pub fn update_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
         let imp = self.imp();
 
