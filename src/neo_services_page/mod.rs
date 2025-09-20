@@ -78,6 +78,50 @@ pub(crate) mod imp {
         pub use_merged_stats: Cell<bool>,
 
         pub action_collapse_all: gio::SimpleAction,
+
+        pub total_services: Cell<u32>,
+        pub running_services: Cell<u32>,
+        pub failed_services: Cell<u32>,
+        pub stopped_services: Cell<u32>,
+        pub disabled_services: Cell<u32>,
+    }
+
+    impl ServicesPage {
+        pub(crate) fn update_filter_labels(&self) {
+            let total_string = self.total_services.get().to_string();
+            let running_string = self.running_services.get().to_string();
+            let stopped_string = self.stopped_services.get().to_string();
+            let failed_string = self.failed_services.get().to_string();
+            let disabled_string = self.disabled_services.get().to_string();
+
+
+            let (total_string, running_string, stopped_string, failed_string, disabled_string) =
+                // collapsed check
+                if self.top_legend.orientation() == Horizontal {
+                    (
+                        i18n_f("{} Total", &[&total_string]),
+                        i18n_f("{} Running", &[&running_string]),
+                        i18n_f("{} Stopped", &[&stopped_string]),
+                        i18n_f("{} Failed", &[&failed_string]),
+                        i18n_f("{} Disabled", &[&disabled_string]),
+                    )
+                } else {
+                    (
+                        total_string,
+                        running_string,
+                        stopped_string,
+                        failed_string,
+                        disabled_string,
+                    )
+                };
+
+            self.total_service_box.set_label(Some(&total_string));
+            self.running_service_box.set_label(Some(&running_string));
+            self.stopped_service_box.set_label(Some(&stopped_string));
+            self.failed_service_box.set_label(Some(&failed_string));
+            self.disabled_service_box.set_label(Some(&disabled_string));
+        }
+
     }
 
     impl Default for ServicesPage {
@@ -115,6 +159,12 @@ pub(crate) mod imp {
                 use_merged_stats: Cell::new(false),
 
                 action_collapse_all: gio::SimpleAction::new("collapse-all", None),
+
+                total_services: Cell::new(0),
+                running_services: Cell::new(0),
+                failed_services: Cell::new(0),
+                stopped_services: Cell::new(0),
+                disabled_services: Cell::new(0),
             }
         }
     }
@@ -127,6 +177,8 @@ pub(crate) mod imp {
 
             self.process_action_bar.imp().collapse();
             self.service_action_bar.imp().collapse();
+
+            self.update_filter_labels();
         }
 
         pub fn expand(&self) {
@@ -136,6 +188,8 @@ pub(crate) mod imp {
 
             self.process_action_bar.imp().expand();
             self.service_action_bar.imp().expand();
+
+            self.update_filter_labels();
         }
     }
 
@@ -334,41 +388,18 @@ impl ServicesPage {
             }
         }
 
-        let total_string = total_services.to_string();
-        let running_string = running_services.to_string();
-        let stopped_string = stopped_services.to_string();
-        let failed_string = failed_services.to_string();
-        let disabled_string = disabled_services.to_string();
-
         let imp = self.imp();
 
-        let (total_string, running_string, stopped_string, failed_string, disabled_string) =
-            // collapsed check
-            if imp.top_legend.orientation() == Horizontal {
-                (
-                    i18n_f("{} Total", &[&total_string]),
-                    i18n_f("{} Running", &[&running_string]),
-                    i18n_f("{} Stopped", &[&stopped_string]),
-                    i18n_f("{} Failed", &[&failed_string]),
-                    i18n_f("{} Disabled", &[&disabled_string]),
-                )
-            } else {
-                (
-                    total_string,
-                    running_string,
-                    stopped_string,
-                    failed_string,
-                    disabled_string,
-                )
-            };
+        imp.total_services.set(total_services as u32);
+        imp.running_services.set(running_services);
+        imp.stopped_services.set(stopped_services);
+        imp.failed_services.set(failed_services);
+        imp.disabled_services.set(disabled_services);
 
-        imp.total_service_box.set_label(Some(&total_string));
-        imp.running_service_box.set_label(Some(&running_string));
-        imp.stopped_service_box.set_label(Some(&stopped_string));
-        imp.failed_service_box.set_label(Some(&failed_string));
-        imp.disabled_service_box.set_label(Some(&disabled_string));
+
+        imp.update_filter_labels();
     }
-
+    
     pub fn update_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
         let imp = self.imp();
 
