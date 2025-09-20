@@ -87,22 +87,18 @@ mod imp {
         }
         fn bind_logo(pic: &TemplateChild<gtk::Picture>, img: &Option<String>) -> bool {
             if let Some(value) = img {
-                let paths = [
-                    "pixmaps/",
-                    "icons/**/",
-                ];
-                let filenames = [
-                    "svg",
-                    "*",
-                ];
+                let paths = ["pixmaps/", "icons/**/"];
+                let filenames = ["svg", "*"];
                 for path in paths {
                     for filename in filenames {
-                        for entry in glob(&format!("/usr/share/{path}{}.{filename}", value)).expect("Failed to read glob pattern") {
+                        for entry in glob(&format!("/usr/share/{path}{}.{filename}", value))
+                            .expect("Failed to read glob pattern")
+                        {
                             match entry {
                                 Ok(path) => {
                                     pic.set_filename(Some(path));
                                     pic.set_visible(true);
-                                    return true
+                                    return true;
                                 }
                                 Err(e) => println!("{:?}", e),
                             }
