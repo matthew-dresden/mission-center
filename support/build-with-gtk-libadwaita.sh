@@ -4,14 +4,15 @@
 
 set -e
 
+
 if [[ -z "$SRC_PATH" ]]; then
-    echo "SRC_PATH is not set or empty"
-    exit 1
+    echo "WARNING: SRC_PATH is not set or empty"
+    export SRC_PATH=/hostfs
 fi
 
 if [[ -z "$OUT_PATH" ]]; then
-    echo "OUT_PATH is not set or empty"
-    exit 1
+    echo "WARNING: OUT_PATH is not set or empty"
+    export OUT_PATH=/hostfs/_build/portable
 fi
 
 export HOME=/root
@@ -28,7 +29,7 @@ dpkg-reconfigure --frontend noninteractive tzdata
 apt-get install -y curl
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=1.87.0 -y
 
-apt-get install -y build-essential flex bison git gettext python3-pip python3-gi libudev-dev libdrm-dev libgbm-dev libdbus-1-dev libxslt-dev libpcre2-dev libfuse3-dev libgcrypt-dev libjpeg-turbo8-dev libpng-dev libisocodes-dev libepoxy-dev libxrandr-dev libxi-dev libxcursor-dev libxdamage-dev libxinerama-dev libgstreamer-plugins-bad1.0-dev libpixman-1-dev libfontconfig1-dev libxkbcommon-dev libcurl4-openssl-dev libyaml-dev libzstd-dev libgraphviz-dev librsvg2-2 libtiff5 libbrotli-dev shared-mime-info desktop-file-utils pkg-config gperf itstool xsltproc valac docbook-xsl libxml2-utils python3-packaging libssl-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev tk-dev python-openssl zstd
+apt-get install -y build-essential flex bison git gettext python3-pip python3-gi libudev-dev libdrm-dev libgbm-dev libdbus-1-dev libxslt-dev libpcre2-dev libfuse3-dev libgcrypt-dev libjpeg-turbo8-dev libpng-dev libisocodes-dev libepoxy-dev libxrandr-dev libxi-dev libxcursor-dev libxdamage-dev libxinerama-dev libgstreamer-plugins-bad1.0-dev libpixman-1-dev libfontconfig1-dev libxkbcommon-dev libcurl4-openssl-dev libyaml-dev libzstd-dev libgraphviz-dev libtiff5 libbrotli-dev shared-mime-info desktop-file-utils pkg-config gperf itstool xsltproc valac docbook-xsl libxml2-utils python3-packaging libssl-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev tk-dev python-openssl zstd
 
 curl https://pyenv.run | bash
 
@@ -43,6 +44,9 @@ pyenv global 3.10
 pip3 install cmake meson ninja
 
 mkdir -p $OUT_PATH && cd $OUT_PATH
+
+# Install some Rust dependencies
+cargo install --locked toml2json cargo-c
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/fribidi.html
 # ----------------------------------------------------------------------
@@ -59,7 +63,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/glib2.html
 # --------------------------------------------------------------------
-GLIB_VER=2.83.5
+GLIB_VER=2.85.4
 GLIB_VER_MM=$(echo $GLIB_VER | cut -f1-2 -d'.')
 # --------------------------------------------------------------------
 rm -rf /usr/include/glib-2.0/
@@ -72,6 +76,10 @@ meson setup ..          \
     --libdir=/usr/lib/$(arch)-linux-gnu \
     --buildtype=release                \
     -Dselinux=disabled                 \
+    -Dglib_debug=disabled              \
+    -Dglib_assert=false                \
+    -Dglib_checks=false                \
+    -Dtests=false                      \
     -Dman-pages=disabled
 ninja && ninja install && env DESTDIR=$OUT_PATH ninja install
 cd ../../ && rm -rf glib-$GLIB_VER*
@@ -79,7 +87,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/gobject-introspection.html
 # ------------------------------------------------------------------------------------
-GOBJ_INTRSPEC_VER=1.84.0
+GOBJ_INTRSPEC_VER=1.86.0
 GOBJ_INTRSPEC_VER_MM=$(echo $GOBJ_INTRSPEC_VER | cut -f1-2 -d'.')
 # ------------------------------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/gobject-introspection/$GOBJ_INTRSPEC_VER_MM/gobject-introspection-$GOBJ_INTRSPEC_VER.tar.xz
@@ -107,6 +115,10 @@ meson setup ..          \
     --libdir=/usr/lib/$(arch)-linux-gnu \
     --buildtype=release                \
     -Dselinux=disabled                 \
+    -Dglib_debug=disabled              \
+    -Dglib_assert=false                \
+    -Dglib_checks=false                \
+    -Dtests=false                      \
     -Dman-pages=disabled
 ninja && ninja install && env DESTDIR=$OUT_PATH ninja install
 cd ../../ && rm -rf glib-$GLIB_VER*
@@ -186,7 +198,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/cairo.html
 # --------------------------------------------------------------
-CAIRO_VER=1.18.2
+CAIRO_VER=1.18.4
 # --------------------------------------------------------------
 curl -LO https://gitlab.freedesktop.org/cairo/cairo/-/archive/$CAIRO_VER/cairo-$CAIRO_VER.tar.bz2
 tar xvf cairo-$CAIRO_VER.tar.bz2
@@ -209,7 +221,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/python-modules.html#pycairo
 # -------------------------------------------------------------------------------------
-PYCAIRO_VER=1.27.0
+PYCAIRO_VER=1.28.0
 # --------------------------------------------------------------
 curl -LO https://github.com/pygobject/pycairo/releases/download/v$PYCAIRO_VER/pycairo-$PYCAIRO_VER.tar.gz
 tar xvf pycairo-$PYCAIRO_VER.tar.gz
@@ -222,11 +234,11 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/python-modules.html#pygobject3
 # ----------------------------------------------------------------------------------------
-PYGOBJ_VER=3.50.0
+PYGOBJ_VER=3.54.2
 PYGOBJ_VER_MM=$(echo $PYGOBJ_VER | cut -f1-2 -d'.')
 # ----------------------------------------------------------------------------------------
-curl -LO https://download.gnome.org/sources/pygobject/$PYGOBJ_VER_MM/pygobject-$PYGOBJ_VER.tar.xz
-tar xvf pygobject-$PYGOBJ_VER.tar.xz
+curl -LO https://download.gnome.org/sources/pygobject/$PYGOBJ_VER_MM/pygobject-$PYGOBJ_VER.tar.gz
+tar xvf pygobject-$PYGOBJ_VER.tar.gz
 cd pygobject-$PYGOBJ_VER
 mkdir build && cd build
 meson setup --prefix=/usr --libdir=/usr/lib/$(arch)-linux-gnu --buildtype=release ..
@@ -236,7 +248,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/wayland.html
 # ----------------------------------------------------------------------
-WAYLAND_VER_REL=1.23.1-3
+WAYLAND_VER_REL=1.24.0-1
 WAYLAND_VER=$(echo $WAYLAND_VER_REL | cut -f1 -d'-')
 # ----------------------------------------------------------------------
 curl -LO https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/wayland/$WAYLAND_VER_REL/wayland_$WAYLAND_VER.orig.tar.gz
@@ -250,7 +262,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/wayland-protocols.html
 # --------------------------------------------------------------------------------
-WAYLAND_PROTO_VER_REL=1.41-1
+WAYLAND_PROTO_VER_REL=1.45-1
 WAYLAND_PROTO_VER=$(echo $WAYLAND_PROTO_VER_REL | cut -f1 -d'-')
 # ----------------------------------------------------------------------
 curl -LO https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/wayland-protocols/$WAYLAND_PROTO_VER_REL/wayland-protocols_$WAYLAND_PROTO_VER.orig.tar.xz
@@ -264,7 +276,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/adwaita-icon-theme.html
 # ---------------------------------------------------------------------------
-ADW_ICONS_VER=47.0
+ADW_ICONS_VER=49.0
 ADW_ICONS_VER_MM=$(echo $ADW_ICONS_VER | cut -f1 -d'.')
 # ---------------------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/adwaita-icon-theme/$ADW_ICONS_VER_MM/adwaita-icon-theme-$ADW_ICONS_VER.tar.xz
@@ -337,7 +349,7 @@ cd $OUT_PATH
 
 # GLSLC
 # -------------------------------------------------------------
-GLSLC_VER=2024.3
+GLSLC_VER=2025.3
 # -------------------------------------------------------------
 curl -LO https://github.com/google/shaderc/archive/refs/tags/v$GLSLC_VER.tar.gz
 tar xvf v$GLSLC_VER.tar.gz
@@ -356,9 +368,30 @@ ninja && ninja install
 cd ../../ && rm -rf v$GLSLC_VER* shaderc-$GLSLC_VER*
 cd $OUT_PATH
 
+# -------------------------------------------------------------
+LIBRSVG_VER=2.61.1
+LIBRSVG_VER_MM=$(echo $LIBRSVG_VER | cut -f1-2 -d'.')
+# -------------------------------------------------------------
+curl -LO https://download.gnome.org/sources/librsvg/$LIBRSVG_VER_MM/librsvg-$LIBRSVG_VER.tar.xz
+tar xvf librsvg-$LIBRSVG_VER.tar.xz
+cd librsvg-$LIBRSVG_VER
+mkdir build && cd build
+meson setup ..                          \
+    --prefix=/usr                       \
+    --libdir=/usr/lib/$(arch)-linux-gnu \
+    --buildtype=release                 \
+    -Dintrospection=enabled             \
+    -Dpixbuf=enabled                    \
+    -Ddocs=disabled                     \
+    -Dvala=disabled                     \
+    -Dtests=false
+ninja && ninja install && env DESTDIR=$OUT_PATH ninja install
+cd ../../ && rm -rf librsvg-$LIBRSVG_VER*
+cd $OUT_PATH
+
 # https://www.linuxfromscratch.org/blfs/view/stable/x/gtk4.html
 # -------------------------------------------------------------
-GTK_VER=4.18.4
+GTK_VER=4.20.1
 GTK_VER_MM=$(echo $GTK_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/gtk/$GTK_VER_MM/gtk-$GTK_VER.tar.xz
@@ -424,7 +457,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/libadwaita.html
 # -------------------------------------------------------------------
-LIBADW_VER=1.7.2
+LIBADW_VER=1.8.0
 LIBADW_VER_MM=$(echo $LIBADW_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/libadwaita/$LIBADW_VER_MM/libadwaita-$LIBADW_VER.tar.xz
@@ -494,8 +527,6 @@ mv bin bin.old && mkdir bin
 mv bin.old/gtk4-broadwayd bin/
 rm -rf bin.old
 
-cargo install toml2json
-
 export CC=clang
 export CXX=clang++
 export CC_LD=lld
@@ -510,7 +541,7 @@ ninja -C $BUILD_DIR && env DESTDIR=$OUT_PATH ninja -C $BUILD_DIR install
 glib-compile-schemas $OUT_PATH/usr/share/glib-2.0/schemas/
 
 cd $OUT_PATH
-rm -rfv usr/include/ usr/lib/{python3*,$(arch)-linux-gnu/{*.la,cairo/*.la,cmake,girepository-1.0,glib-2.0,gobject-introspection,graphene-1.0,pkgconfig,libvala*,vala-*,valadoc-*,libfontconfig.a,libgirepository*,libsass.so,libharfbuzz-{cairo*,gobject*,icu*},libwayland-cursor*,libwayland-server*}} usr/libexec/ usr/share/{aclocal,appstream,bash-completion,devhelp,gdb,gettext,glib-2.0/{codegen,dtds,gdb,gettext,valgrind},gobject-introspection-1.0,gtk-4.0/valgrind,gtk-doc,installed-tests,man,pkgconfig,thumbnailers,vala,vala-*,valadoc-*,wayland,wayland-protocols}
+rm -rfv usr/include/ usr/lib/{python3*,$(arch)-linux-gnu/{*.a,*.la,cairo/*.la,cmake,girepository-1.0,glib-2.0,gobject-introspection,graphene-1.0,pkgconfig,libvala*,vala-*,valadoc-*,libfontconfig.a,libgirepository*,libsass.so,libharfbuzz-{cairo*,gobject*,icu*},libwayland-cursor*,libwayland-server*}} usr/libexec/ usr/share/{aclocal,appstream,bash-completion,devhelp,gdb,gettext,glib-2.0/{codegen,dtds,gdb,gettext,valgrind},gobject-introspection-1.0,gtk-4.0/valgrind,gtk-doc,installed-tests,man,pkgconfig,thumbnailers,vala,vala-*,valadoc-*,wayland,wayland-protocols}
 cp -Lv /usr/lib/$(arch)-linux-gnu/{libffi.so.7,libjpeg.so.8,libtiff.so.5,libpng16.so.16,libX11.so.6,libXcursor.so.1,libXdamage.so.1,libXext.so.6,libXfixes.so.3,libXi.so.6,libXinerama.so.1,libXrandr.so.2,libXrender.so.1,libxkbcommon.so.0,libepoxy.so.0,libcurl.so.4,libnghttp2.so.14,libidn2.so.0,librtmp.so.1,libssh.so.4,libpsl.so.5,libssl.so.1.1,libcrypt.so.1,libcrypto.so.1.1,libgssapi_krb5.so.2,libldap_r-2.4.so.2,liblber-2.4.so.2,libbrotlidec.so.1,libunistring.so.2,libgnutls.so.30,libhogweed.so.5,libnettle.so.7,libgmp.so.10,libkrb5.so.3,libk5crypto.so.3,libkrb5support.so.0,libsasl2.so.2,libgssapi.so.3,libbrotlicommon.so.1,libp11-kit.so.0,libtasn1.so.6,libheimntlm.so.0,libkrb5.so.26,libasn1.so.8,libhcrypto.so.4,libroken.so.18,libwind.so.0,libheimbase.so.1,libhx509.so.5,libsqlite3.so.0,libxml2.so.2,libxmlb.so.2,libpcre2-8.so.0,liblz4.so.1,libgcrypt.so.20,libzstd.so.1,libyaml-0.so.2,libxcb.so.1,libwebp.so.6,libjbig.so.0,libicuuc.so.66,libXau.so.6,libXdmcp.so.6,libicudata.so.66,libstdc++.so.6,libbsd.so.0,libbz2.so.1.0,libz.so.1} $OUT_PATH/usr/lib/$(arch)-linux-gnu/
 cp -v  /usr/lib/$(arch)-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-*.so $OUT_PATH/usr/lib/$(arch)-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders/
 cp -v  /usr/lib/$(arch)-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders.cache $OUT_PATH/usr/lib/$(arch)-linux-gnu/gdk-pixbuf-2.0/2.10.0/

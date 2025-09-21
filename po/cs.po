@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-21 06:25+0000\n"
-"PO-Revision-Date: 2025-07-12 00:01+0000\n"
-"Last-Translator: Fjuro <git@alius.cz>\n"
+"PO-Revision-Date: 2025-09-12 12:01+0000\n"
+"Last-Translator: Erin <erin@erindesu.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/cs/>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -67,7 +67,7 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:23
 msgid "Monitor RAM and Swap usage"
-msgstr "Sledujte využití operační paměti a prostoru swap"
+msgstr "Sledujte využití operační paměti a odkládacího prostoru"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:24
 msgid "See a breakdown how the memory is being used by the system"
@@ -230,7 +230,7 @@ msgstr "Řazení sloupců bude mezi restarty aplikace zachováno"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:120
 msgid "Column order is persisted across app restarts"
-msgstr "Pořadí sloupců bude mezi restarty aplikace zachováváno"
+msgstr "Pořadí sloupců bude mezi restarty aplikace zachováno"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:125
 #: resources/ui/preferences/page.blp:120
@@ -246,15 +246,15 @@ msgstr "Na stránce Aplikace zobrazovat mezi jednotlivými sloupci oddělovač"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:140
 msgid "The column name by which the Apps page view is sorted"
-msgstr "Název sloupce, podle kterého je stránka Aplikace řazená"
+msgstr "Název sloupce, podle kterého je stránka „aplikace“ řazená"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:145
 msgid "The sorting direction of the Apps page view"
-msgstr "Směr řazení zobrazení na stránce Aplikace"
+msgstr "Směr řazení zobrazení na stránce „aplikace“"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
 msgid "The order of columns in the Apps page view"
-msgstr "Pořadí sloupců v zobrazení na stránce Aplikace"
+msgstr "Pořadí sloupců v zobrazení na stránce „aplikace“"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:157
 msgid "Which graph is shown on the CPU performance page"
@@ -312,11 +312,11 @@ msgstr "Zobrazit prvek týkající se skladby využití paměti"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:218
 msgid "Show the swap graph"
-msgstr "Zobrazit graf prostoru swap"
+msgstr "Zobrazit graf odkládacího prostoru"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:223
 msgid "Show the gpu encode-decode graph"
-msgstr "Zobrazovat graf enkódování-dekódování na gpu"
+msgstr "Zobrazovat graf kódování a dekódování na grafice"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:228
 msgid "The ordering of entries in the application sidebar"
@@ -359,7 +359,7 @@ msgstr "ID procesu"
 #: src/performance_page/cpu.rs:386 src/performance_page/cpu.rs:395
 #: src/performance_page/network.rs:470 src/performance_page/network.rs:478
 msgid "N/A"
-msgstr "Není k dispozici"
+msgstr "Neuplatnitelné"
 
 #: resources/ui/apps_page/details_dialog.blp:104
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:205
@@ -416,7 +416,7 @@ msgstr "Paměť GPU"
 
 #: resources/ui/apps_page/page.blp:75
 msgid "Collapse all apps and processes"
-msgstr "Sbalit všechny aplikace a procesy"
+msgstr "Sbalit veškeré aplikace a procesy"
 
 #: resources/ui/apps_page/page.blp:87 resources/ui/keyboard_shortcuts.blp:87
 msgid "Collapse All"
@@ -519,7 +519,7 @@ msgstr "Informace o procesu a uživateli"
 
 #: resources/ui/services_page/details_dialog.blp:237
 msgid "Process ID"
-msgstr "Identif. procesu"
+msgstr "ID procesu"
 
 #: resources/ui/services_page/details_dialog.blp:269
 msgid "User"
@@ -641,15 +641,15 @@ msgstr "Cpufreq řízení:"
 
 #: resources/ui/performance_page/cpu_details.blp:325
 msgid "Power preference:"
-msgstr "Preference výkon/spotřeba:"
+msgstr "Profil výkonu:"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
-msgstr "Nepodařilo se vysunout"
+msgstr "Vysunutí se nezdařilo"
 
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
-msgstr "Vynutit ukončení procesu"
+msgstr "Vynutit ukončení"
 
 #: resources/ui/performance_page/gpu_details.blp:80
 msgid "Clock Speed"
@@ -695,15 +695,15 @@ msgstr "Verze Vulkan:"
 
 #: resources/ui/performance_page/gpu_details.blp:548
 msgid "PCI Express speed:"
-msgstr "Rychl. PCI Express:"
+msgstr "PCIe propustnost:"
 
 #: resources/ui/performance_page/gpu_details.blp:566
 msgid "Max PCI Express speed:"
-msgstr "Nejvyšší rychlost PCI Express:"
+msgstr "Nejvyšší PCIe propustnost:"
 
 #: resources/ui/performance_page/gpu_details.blp:582
 msgid "PCI bus address:"
-msgstr "Adr. na PCI sběrnici:"
+msgstr "PCIe adresa:"
 
 #: resources/ui/performance_page/memory.blp:76
 #: resources/ui/performance_page/gpu.blp:162
@@ -712,7 +712,7 @@ msgstr "Využití paměti za "
 
 #: resources/ui/performance_page/memory.blp:121
 msgid "Swap usage over "
-msgstr "Využití swap za "
+msgstr "Využití odkládací paměti za "
 
 #: resources/ui/performance_page/memory.blp:172
 msgid "Memory composition"
@@ -724,7 +724,7 @@ msgstr "Zobrazit skladbu využití paměti"
 
 #: resources/ui/performance_page/memory.blp:200
 msgid "Show Swap Usage"
-msgstr "Zobrazit využití prostoru swap"
+msgstr "Zobrazit využití odkládacího prostoru"
 
 #: resources/ui/performance_page/memory.blp:207
 #: resources/ui/performance_page/gpu.blp:215
@@ -817,7 +817,7 @@ msgstr "Rychlost zápisu"
 
 #: resources/ui/performance_page/disk_details.blp:130
 msgid "Total Read"
-msgstr "Celkem čtení"
+msgstr "Celkem přečteno"
 
 #: resources/ui/performance_page/disk_details.blp:159
 msgid "Total Written"
@@ -829,7 +829,7 @@ msgstr "Aktivní čas"
 
 #: resources/ui/performance_page/disk_details.blp:217
 msgid "Avg. response time"
-msgstr "Prům. doba odezvy"
+msgstr "Průměrná odezva"
 
 #: resources/ui/performance_page/disk_details.blp:242
 msgid "Capacity:"
@@ -865,7 +865,7 @@ msgstr "Využití kódování/dekódování videa za "
 
 #: resources/ui/performance_page/gpu.blp:208
 msgid "Show Encode/Decode Usage"
-msgstr "Zobrazit využití Enkódování/dekódování"
+msgstr "Zobrazit využití kódování a dekódování"
 
 #: resources/ui/performance_page/cpu.blp:106
 msgid "Change G_raph To"
@@ -909,7 +909,7 @@ msgstr "Procento PWM"
 
 #: resources/ui/performance_page/fan_details.blp:125
 msgid "Current Temperature"
-msgstr "Aktuální teplota"
+msgstr "Současná teplota"
 
 #: resources/ui/performance_page/fan.blp:61
 msgid "Fan speed over "
@@ -951,7 +951,7 @@ msgstr "Hodnota"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
 msgid "ID"
-msgstr "Identif."
+msgstr "Identifikátor"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
 msgid "Normalized"
@@ -1048,7 +1048,7 @@ msgstr "Frekvence:"
 
 #: resources/ui/performance_page/network_details.blp:272
 msgid "Hardware address:"
-msgstr "HW adresa:"
+msgstr "Hardwarová adresa:"
 
 #: resources/ui/performance_page/network_details.blp:401
 msgid "IPv4 address:"
@@ -1076,11 +1076,11 @@ msgstr "V mezipaměti"
 
 #: resources/ui/performance_page/memory_details.blp:190
 msgid "Swap used"
-msgstr "Použitý swap"
+msgstr "Použitý odkládací prostor"
 
 #: resources/ui/performance_page/memory_details.blp:221
 msgid "Swap available"
-msgstr "Dostupný swap"
+msgstr "Dostupný odkladací prostor"
 
 #: resources/ui/performance_page/memory_details.blp:246
 msgid "Speed:"
@@ -1088,7 +1088,7 @@ msgstr "Rychlost:"
 
 #: resources/ui/performance_page/memory_details.blp:260
 msgid "Slots used:"
-msgstr "Použité sloty:"
+msgstr "Osazené sloty:"
 
 #: resources/ui/performance_page/memory_details.blp:274
 msgid "Form factor:"
@@ -1100,7 +1100,7 @@ msgstr "Obecné"
 
 #: resources/ui/preferences/page.blp:9
 msgid "Update Interval"
-msgstr "Interval aktualizace"
+msgstr "Interval obnovení"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1124,19 +1124,19 @@ msgstr "Posouvající se grafy"
 
 #: resources/ui/preferences/page.blp:55
 msgid "Animate graphs (may negatively impact performance)"
-msgstr "Animovat grafy (může poznamenat výkon)"
+msgstr "Animovat grafy (může značně poznamenat výkon)"
 
 #: resources/ui/preferences/page.blp:59
 msgid "Scale Network Graphs Dynamically"
-msgstr "Dynamicky měnit měřítko grafu sítě"
+msgstr "Dynamicky škálovat měřítko grafu sítě"
 
 #: resources/ui/preferences/page.blp:60
 msgid ""
 "Set network graph to scale dynamically with actual usage or with channel max "
 "speed"
 msgstr ""
-"Nastavit graf sítě tak, aby měnil měřítko dynamicky na základě stávajícího "
-"využití nebo maximální rychlosti kanálu"
+"Nastavit graf sítě tak, aby bylo měřítko škálováno dynamicky na základě "
+"stávajícího využití nebo maximální rychlosti kanálu"
 
 #: resources/ui/preferences/page.blp:64
 msgid "Show CPU Information"
@@ -1201,7 +1201,7 @@ msgstr "Zobrazovat oddělovač mezi jednotlivými sloupci"
 
 #: resources/ui/preferences/page.blp:130
 msgid "Global Units"
-msgstr "Globální jednotky"
+msgstr "Jednotky"
 
 #: resources/ui/preferences/page.blp:133
 msgid "Memory Usage Unit"
@@ -1227,29 +1227,29 @@ msgstr "Bity"
 
 #: resources/ui/preferences/page.blp:152
 msgid "Memory Usage Base"
-msgstr "Řády jednotek pro využití paměti"
+msgstr "Řád jednotek pro využití paměti"
 
 #: resources/ui/preferences/page.blp:159
 msgid "Use Base 10 for Memory"
-msgstr "Používat pro operační paměť desítkové řády"
+msgstr "Používat desítkový řád pro operační paměť"
 
 #: resources/ui/preferences/page.blp:160 resources/ui/preferences/page.blp:198
 #: resources/ui/preferences/page.blp:236
 msgid "Base 10"
-msgstr "Desítkový řád"
+msgstr "Desítkový (SI)"
 
 #: resources/ui/preferences/page.blp:164
 msgid "Use Base 2 for Memory"
-msgstr "Používat pro paměť dvojkové řády"
+msgstr "Používat dvojkový řád pro operační paměť"
 
 #: resources/ui/preferences/page.blp:165 resources/ui/preferences/page.blp:203
 #: resources/ui/preferences/page.blp:241
 msgid "Base 2"
-msgstr "Dvojkový řád"
+msgstr "Dvojkový (IETF)"
 
 #: resources/ui/preferences/page.blp:171
 msgid "Drive Usage Unit"
-msgstr "Jednotka využití disků"
+msgstr "Jednotka využití úložiště"
 
 #: resources/ui/preferences/page.blp:178
 msgid "Use Bytes as a Unit of Measurement for Disk Drives"
@@ -1261,15 +1261,15 @@ msgstr "Používat bity jako jednotku měření využití jednotek úložiště"
 
 #: resources/ui/preferences/page.blp:190
 msgid "Drive Usage Base"
-msgstr "Řády jednotek pro využití disků"
+msgstr "Řády jednotek pro využití úložných jednotek"
 
 #: resources/ui/preferences/page.blp:197
 msgid "Use Base 10 for Disk Drives"
-msgstr "Pro diskové jednotky používat desítkové řády"
+msgstr "Používat desítkový řád pro úložné jednotky"
 
 #: resources/ui/preferences/page.blp:202
 msgid "Use Base 2 for Disk Drives"
-msgstr "Pro diskové jednotky používat dvojkové řády"
+msgstr "Používat dvojkový řád pro úložné jednotky"
 
 #: resources/ui/preferences/page.blp:209
 msgid "Network Usage Unit"
@@ -1285,15 +1285,15 @@ msgstr "Používat bity jako jednotku měření pro síťová rozhraní"
 
 #: resources/ui/preferences/page.blp:228
 msgid "Network Usage Base"
-msgstr "Řády jednotek pro využívání sítě"
+msgstr "Řád jednotek pro využívání sítě"
 
 #: resources/ui/preferences/page.blp:235
 msgid "Use Base 10 for Network Interfaces"
-msgstr "Používat pro síťová rozhraní desítkové řády"
+msgstr "Používat desítkový řád pro síťová rozhraní"
 
 #: resources/ui/preferences/page.blp:240
 msgid "Use Base 2 for Network Interfaces"
-msgstr "Používat pro síťová rozhraní dvojkové řády"
+msgstr "Používat dvojkový řád pro síťová rozhraní"
 
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
@@ -1391,7 +1391,7 @@ msgstr "Upravit postranní panel"
 
 #: resources/ui/window.blp:118
 msgid "Type a name or PID to search"
-msgstr "Zadejte název či PID k vyhledání"
+msgstr "Zadejte název či ID procesu k vyhledání"
 
 #: resources/ui/window.blp:133
 msgid "Toggle Device Information"
@@ -1507,7 +1507,7 @@ msgid ""
 "\n"
 "Memory used by the operating system and running applications"
 msgstr ""
-"Využitá ({}B)\n"
+"Využitá ({})\n"
 "\n"
 "Paměť využitá operačním systémem a běžícími aplikacemi"
 
@@ -1589,7 +1589,7 @@ msgstr "Selhalo v minulosti"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
-msgstr "OK"
+msgstr "V pořádku"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:198
 msgid "Percent Used"
@@ -1605,7 +1605,7 @@ msgstr "Práh počtu náhradních"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:222
 msgid "Total Data Read"
-msgstr "Celkem čtení dat"
+msgstr "Celkem přečteno dat"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:234
 msgid "Total Data Written"
@@ -1702,7 +1702,7 @@ msgstr "Disketa"
 
 #: src/performance_page/disk.rs:293 src/performance_page/mod.rs:1129
 msgid "Thumb Drive"
-msgstr "USB klíčenka"
+msgstr "USB flash disk"
 
 #: src/performance_page/disk.rs:384
 msgid "Drive {} ({})"
@@ -1832,7 +1832,13 @@ msgstr "_Ukončit"
 
 #: src/application.rs:398
 msgid "translator-credits"
-msgstr "ondra05 <ondra@ondra05.cz>"
+msgstr ""
+"Roman Lubij\n"
+"Joachim256\n"
+"Erin Kalousková <erin.kalouskova@nic.cz>\n"
+"Filip Marek\n"
+"Fjuro\n"
+"ondra05 <ondra@ondra05.cz>"
 
 #~ msgid "{} second{}"
 #~ msgstr "{} sekund{}"
