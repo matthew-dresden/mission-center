@@ -574,6 +574,19 @@
   {
     "type": "archive",
     "archive-type": "tar-gzip",
+    "url": "https://static.crates.io/crates/glob/glob-0.3.3.crate",
+    "sha256": "0cc23270f6e1808e30a928bdc84dea0b9b4136a8bc82338574f23baf47bbd280",
+    "dest": "cargo/vendor/glob-0.3.3"
+  },
+  {
+    "type": "inline",
+    "contents": "{\"package\": \"0cc23270f6e1808e30a928bdc84dea0b9b4136a8bc82338574f23baf47bbd280\", \"files\": {}}",
+    "dest": "cargo/vendor/glob-0.3.3",
+    "dest-filename": ".cargo-checksum.json"
+  },
+  {
+    "type": "archive",
+    "archive-type": "tar-gzip",
     "url": "https://static.crates.io/crates/gobject-sys/gobject-sys-0.20.9.crate",
     "sha256": "c773a3cb38a419ad9c26c81d177d96b4b08980e8bdbbf32dace883e96e96e7e3",
     "dest": "cargo/vendor/gobject-sys-0.20.9"
