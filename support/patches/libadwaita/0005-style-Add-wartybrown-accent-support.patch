@@ -14,7 +14,7 @@ Subject: style: Add wartybrown accent support
  8 files changed, 36 insertions(+), 13 deletions(-)
 
 diff --git a/src/adw-accent-color.c b/src/adw-accent-color.c
-index 89abce0..d41a597 100644
+index 0ce6fbd..79a98ff 100644
 --- a/src/adw-accent-color.c
 +++ b/src/adw-accent-color.c
 @@ -48,7 +48,7 @@ adw_accent_color_to_rgba (AdwAccentColor  self,
@@ -56,7 +56,7 @@ index 89abce0..d41a597 100644
  
    dark = !!dark;
 @@ -226,6 +232,9 @@ adw_accent_color_nearest_from_rgba (GdkRGBA *original_color)
-   if (h > 130)
+   if (h > 115)
      return ADW_ACCENT_COLOR_GREEN;
  
 +  if (h > 55 && c < 0.1)
@@ -79,10 +79,10 @@ index c6251ac..35fbb92 100644
  
  ADW_AVAILABLE_IN_1_6
 diff --git a/src/adw-inspector-page.c b/src/adw-inspector-page.c
-index 3f8a5a3..5c54f55 100644
+index 6642e3a..9bf51ea 100644
 --- a/src/adw-inspector-page.c
 +++ b/src/adw-inspector-page.c
-@@ -160,6 +160,8 @@ get_accent_color_name (AdwEnumListItem *item,
+@@ -162,6 +162,8 @@ get_accent_color_name (AdwEnumListItem *item,
      return g_strdup (_("Purple"));
    case ADW_ACCENT_COLOR_SLATE:
      return g_strdup (_("Slate"));
@@ -92,7 +92,7 @@ index 3f8a5a3..5c54f55 100644
      g_assert_not_reached ();
    }
 diff --git a/src/adw-settings.c b/src/adw-settings.c
-index df971c3..a116960 100644
+index 7d7224a..07f247d 100644
 --- a/src/adw-settings.c
 +++ b/src/adw-settings.c
 @@ -192,9 +192,11 @@ init_debug (AdwSettings *self,
@@ -127,10 +127,10 @@ index df971c3..a116960 100644
        g_return_val_if_reached (NULL);
    }
 diff --git a/src/stylesheet/_colors.scss b/src/stylesheet/_colors.scss
-index 38ad366..0c42245 100644
+index aa16a02..e6cc58b 100644
 --- a/src/stylesheet/_colors.scss
 +++ b/src/stylesheet/_colors.scss
-@@ -13,6 +13,7 @@ $focus_border_opacity: if($contrast == 'high', 80%, 50%);
+@@ -168,6 +168,7 @@
    --accent-pink: #d56199;
    --accent-purple: #9141ac;
    --accent-slate: #6f8396;
@@ -139,19 +139,19 @@ index 38ad366..0c42245 100644
    --accent-bg-color: @accent_bg_color;
    --accent-fg-color: @accent_fg_color;
 diff --git a/src/stylesheet/meson.build b/src/stylesheet/meson.build
-index 8d6c73d..f5933b6 100644
+index cd2efbd..a704378 100644
 --- a/src/stylesheet/meson.build
 +++ b/src/stylesheet/meson.build
-@@ -23,6 +23,7 @@ if sassc.found()
+@@ -24,6 +24,7 @@ if sassc.found()
          'magenta',
          'red',
          'yellow',
 +        'wartybrown',
      ]
  
-     yaru_accent_colors_sassc += configure_file(
+     base_sheets = ['palette', 'colors']
 diff --git a/src/stylesheet/yaru_accent_colors.scss b/src/stylesheet/yaru_accent_colors.scss
-index 74f2e02..715d0ab 100644
+index 06db5d4..366c6cb 100644
 --- a/src/stylesheet/yaru_accent_colors.scss
 +++ b/src/stylesheet/yaru_accent_colors.scss
 @@ -21,6 +21,8 @@
