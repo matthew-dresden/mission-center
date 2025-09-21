@@ -157,6 +157,7 @@ package-build-job-x86:
     - cd portable && tar zcf ../portable-x86_64.tar.gz *
 
   artifacts:
+    when: always
     paths:
       - 'logs.txt'
       - 'portable-x86_64.tar.gz'
@@ -179,6 +180,7 @@ package-build-job-arm:
     - cd portable && tar zcf ../portable-aarch64.tar.gz *
 
   artifacts:
+    when: always
     paths:
       - 'logs.txt'
       - 'portable-aarch64.tar.gz'
