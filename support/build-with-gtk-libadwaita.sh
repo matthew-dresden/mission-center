@@ -46,7 +46,8 @@ pip3 install cmake meson ninja
 mkdir -p $OUT_PATH && cd $OUT_PATH
 
 # Install some Rust dependencies
-cargo install --locked toml2json cargo-c
+cargo install --locked --version "1.3.2" toml2json
+cargo install --locked --version "0.10.15+cargo-0.90.0" cargo-c
 
 # https://www.linuxfromscratch.org/blfs/view/stable/general/fribidi.html
 # ----------------------------------------------------------------------
