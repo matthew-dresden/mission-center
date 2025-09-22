@@ -1,0 +1,96 @@
+/* ui/process_column_view/column_view_frame.blp
+ *
+ * Copyright 2025 Mission Center Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+using Gtk 4.0;
+using Adw 1;
+
+template $ColumnViewFrame: Box {
+  Frame {
+    child: ScrolledWindow {
+      hexpand: true;
+      vexpand: true;
+  
+      ColumnView column_view {
+        styles [
+          "rich-list"
+        ]
+  
+        reorderable: true;
+        show-row-separators: false;
+        show-column-separators: bind template.show-column-separators;
+  
+        ColumnViewColumn name_column {
+          id: "name";
+          title: _("Name");
+          expand: true;
+          resizable: false;
+        }
+  
+        ColumnViewColumn pid_column {
+          id: "pid";
+          title: _("PID");
+          resizable: true;
+        }
+  
+        ColumnViewColumn cpu_column {
+          id: "cpu";
+          title: _("CPU");
+          resizable: true;
+        }
+  
+        ColumnViewColumn memory_column {
+          id: "memory";
+          title: _("Memory");
+          resizable: true;
+        }
+  
+        ColumnViewColumn shared_memory_column {
+          id: "shared_memory";
+          title: _("Shared\nMemory");
+          resizable: true;
+        }
+  
+        ColumnViewColumn drive_column {
+          id: "drive";
+          title: _("Drive");
+          resizable: true;
+        }
+  
+        ColumnViewColumn network_usage_column {
+          id: "network";
+          title: _("Network");
+          resizable: true;
+        }
+  
+        ColumnViewColumn gpu_usage_column {
+          id: "gpu";
+          title: _("GPU");
+          resizable: true;
+        }
+  
+        ColumnViewColumn gpu_memory_column {
+          id: "gpu_memory";
+          title: _("GPU Memory");
+          resizable: true;
+        }
+      }
+    };
+  }
+}

@@ -1,4 +1,4 @@
-/* apps_page/columns/drive.rs
+/* process_tree/columns/gpu.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -20,14 +20,14 @@
 
 use std::cmp::Ordering;
 
-use gtk::glib;
 use gtk::prelude::*;
 
+pub use super::cpu_label_formatter as label_formatter;
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::{label_cell_factory, settings, DataType};
+use crate::label_cell_factory;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    label_cell_factory!("disk-usage", label_formatter)
+    label_cell_factory!("gpu-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
@@ -38,20 +38,11 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
         };
 
         compare_column_entries_by(lhs, rhs, sort_order(&column_view), |lhs, rhs| {
-            let lhs = lhs.disk_usage();
-            let rhs = rhs.disk_usage();
+            let lhs = lhs.gpu_usage();
+            let rhs = rhs.gpu_usage();
 
             lhs.partial_cmp(&rhs).unwrap_or(Ordering::Equal)
         })
         .into()
     })
-}
-
-pub fn label_formatter(label: &LabelCell, value: glib::Value) {
-    let disk_usage: f32 = value.get().unwrap();
-    label.set_label(&crate::to_human_readable_nice(
-        disk_usage,
-        &DataType::DriveBytesPerSecond,
-        &settings!(),
-    ));
 }

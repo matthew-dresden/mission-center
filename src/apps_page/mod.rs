@@ -22,70 +22,35 @@ use std::cell::{Cell, OnceCell, RefCell};
 use std::collections::HashMap;
 use std::fmt::Write;
 
-use adw::glib::{ParamSpec, Properties, Value};
+use adw::glib::g_critical;
 use adw::prelude::*;
 use arrayvec::ArrayString;
-use glib::translate::from_glib_full;
-use glib::{gobject_ffi, Object};
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::magpie_client::App;
-
 use crate::i18n::{i18n, ni18n_f};
-use columns::*;
-use row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
-
-mod actions;
-mod columns;
-mod details_dialog;
-mod models;
-mod row_model;
-mod settings;
+use crate::magpie_client::App;
+use crate::process_tree::column_view_frame::ColumnViewFrame;
+use crate::process_tree::models::{update_apps, update_processes};
+use crate::process_tree::process_action_bar::ProcessActionBar;
+use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
 mod imp {
     use super::*;
 
-    #[derive(Properties, gtk::CompositeTemplate)]
-    #[properties(wrapper_type = super::AppsPage)]
+    #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/apps_page/page.ui")]
     pub struct AppsPage {
         #[template_child]
         pub h1: TemplateChild<gtk::Label>,
         #[template_child]
         pub h2: TemplateChild<gtk::Label>,
+
         #[template_child]
         pub collapse_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub stop_label: TemplateChild<gtk::Label>,
+        pub column_view: TemplateChild<ColumnViewFrame>,
         #[template_child]
-        pub force_stop_label: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub details_label: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub column_view: TemplateChild<gtk::ColumnView>,
-        #[template_child]
-        pub name_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub pid_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub cpu_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub memory_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub shared_memory_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub drive_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub network_usage_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub gpu_usage_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub gpu_memory_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        pub context_menu: TemplateChild<gtk::PopoverMenu>,
-
-        #[property(get, set)]
-        pub show_column_separators: Cell<bool>,
+        pub process_action_bar: TemplateChild<ProcessActionBar>,
 
         pub apps_section: RowModel,
         pub processes_section: RowModel,
@@ -98,17 +63,7 @@ mod imp {
         pub app_icons: RefCell<HashMap<u32, String>>,
         pub selected_item: RefCell<RowModel>,
 
-        pub action_stop: gio::SimpleAction,
-        pub action_force_stop: gio::SimpleAction,
-        pub action_suspend: gio::SimpleAction,
-        pub action_continue: gio::SimpleAction,
-        pub action_hangup: gio::SimpleAction,
-        pub action_interrupt: gio::SimpleAction,
-        pub action_user_one: gio::SimpleAction,
-        pub action_user_two: gio::SimpleAction,
-        pub action_details: gio::SimpleAction,
-
-        pub use_merged_stats: Cell<bool>,
+        pub action_collapse_all: gio::SimpleAction,
     }
 
     impl Default for AppsPage {
@@ -117,32 +72,18 @@ mod imp {
                 h1: TemplateChild::default(),
                 h2: TemplateChild::default(),
                 collapse_label: TemplateChild::default(),
-                stop_label: TemplateChild::default(),
-                force_stop_label: TemplateChild::default(),
-                details_label: TemplateChild::default(),
                 column_view: TemplateChild::default(),
-                name_column: TemplateChild::default(),
-                pid_column: TemplateChild::default(),
-                cpu_column: TemplateChild::default(),
-                memory_column: TemplateChild::default(),
-                shared_memory_column: TemplateChild::default(),
-                drive_column: TemplateChild::default(),
-                network_usage_column: TemplateChild::default(),
-                gpu_usage_column: TemplateChild::default(),
-                gpu_memory_column: TemplateChild::default(),
-                context_menu: TemplateChild::default(),
-
-                show_column_separators: Cell::new(false),
+                process_action_bar: TemplateChild::default(),
 
                 apps_section: RowModelBuilder::new()
                     .name(&i18n("Apps"))
                     .content_type(ContentType::SectionHeader)
-                    .section_type(SectionType::Apps)
+                    .section_type(SectionType::FirstSection)
                     .build(),
                 processes_section: RowModelBuilder::new()
                     .name(&i18n("Processes"))
                     .content_type(ContentType::SectionHeader)
-                    .section_type(SectionType::Processes)
+                    .section_type(SectionType::SecondSection)
                     .build(),
 
                 root_process: Cell::new(1),
@@ -153,17 +94,7 @@ mod imp {
                 app_icons: RefCell::new(HashMap::new()),
                 selected_item: RefCell::new(RowModelBuilder::new().build()),
 
-                action_stop: gio::SimpleAction::new("stop", None),
-                action_force_stop: gio::SimpleAction::new("force-stop", None),
-                action_suspend: gio::SimpleAction::new("suspend", None),
-                action_continue: gio::SimpleAction::new("continue", None),
-                action_hangup: gio::SimpleAction::new("hangup", None),
-                action_interrupt: gio::SimpleAction::new("interrupt", None),
-                action_user_one: gio::SimpleAction::new("user-one", None),
-                action_user_two: gio::SimpleAction::new("user-two", None),
-                action_details: gio::SimpleAction::new("details", None),
-
-                use_merged_stats: Cell::new(false),
+                action_collapse_all: gio::SimpleAction::new("collapse-all", None),
             }
         }
     }
@@ -171,20 +102,18 @@ mod imp {
     impl AppsPage {
         pub fn collapse(&self) {
             self.collapse_label.set_visible(false);
-            self.stop_label.set_visible(false);
-            self.force_stop_label.set_visible(false);
-            self.details_label.set_visible(false);
 
             self.h2.set_visible(false);
+
+            self.process_action_bar.imp().collapse();
         }
 
         pub fn expand(&self) {
             self.collapse_label.set_visible(true);
-            self.stop_label.set_visible(true);
-            self.force_stop_label.set_visible(true);
-            self.details_label.set_visible(true);
 
             self.h2.set_visible(true);
+
+            self.process_action_bar.imp().expand();
         }
     }
 
@@ -206,74 +135,64 @@ mod imp {
     }
 
     impl ObjectImpl for AppsPage {
-        fn properties() -> &'static [ParamSpec] {
-            Self::derived_properties()
-        }
-
-        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
-            self.derived_set_property(id, value, pspec)
-        }
-
-        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
-            self.derived_property(id, pspec)
-        }
-
         fn constructed(&self) {
             self.parent_constructed();
 
-            actions::configure(self);
+            let actions = gio::SimpleActionGroup::new();
+            actions.add_action(&self.action_collapse_all);
 
-            update_column_order(&self.column_view);
+            self.action_collapse_all.connect_activate({
+                let this = self.obj().downgrade();
+                move |_action, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
 
-            self.name_column
-                .set_factory(Some(&name_list_item_factory()));
-            self.name_column
-                .set_sorter(Some(&name_sorter(&self.column_view)));
+                    let Some(selection_model) = imp
+                        .column_view
+                        .imp()
+                        .column_view
+                        .model()
+                        .and_then(|model| model.downcast::<gtk::SingleSelection>().ok())
+                    else {
+                        g_critical!(
+                            "MissionCenter::AppsPage",
+                            "Failed to get model for `collapse-all` action"
+                        );
+                        return;
+                    };
 
-            self.pid_column.set_factory(Some(&pid_list_item_factory()));
-            self.pid_column
-                .set_sorter(Some(&pid_sorter(&self.column_view)));
+                    let mut count = 0;
+                    for i in 0..selection_model.n_items() {
+                        let Some(row) = selection_model
+                            .item(i)
+                            .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
+                        else {
+                            return;
+                        };
 
-            self.cpu_column.set_factory(Some(&cpu_list_item_factory()));
-            self.cpu_column
-                .set_sorter(Some(&cpu_sorter(&self.column_view)));
+                        let Some(row_model) =
+                            row.item().and_then(|item| item.downcast::<RowModel>().ok())
+                        else {
+                            continue;
+                        };
 
-            self.memory_column
-                .set_factory(Some(&memory_list_item_factory()));
-            self.memory_column
-                .set_sorter(Some(&memory_sorter(&self.column_view)));
+                        if row_model.content_type() != ContentType::SectionHeader {
+                            continue;
+                        }
 
-            self.shared_memory_column
-                .set_factory(Some(&shared_memory_list_item_factory()));
-            self.shared_memory_column
-                .set_sorter(Some(&shared_memory_sorter(&self.column_view)));
+                        row.set_expanded(false);
+                        count += 1;
 
-            self.drive_column
-                .set_factory(Some(&drive_list_item_factory()));
-            self.drive_column
-                .set_sorter(Some(&drive_sorter(&self.column_view)));
+                        if count >= 2 {
+                            break;
+                        }
+                    }
+                }
+            });
 
-            self.network_usage_column
-                .set_factory(Some(&network_list_item_factory()));
-            self.network_usage_column
-                .set_sorter(Some(&network_sorter(&self.column_view)));
-
-            self.gpu_usage_column
-                .set_factory(Some(&gpu_list_item_factory()));
-            self.gpu_usage_column
-                .set_sorter(Some(&gpu_sorter(&self.column_view)));
-
-            self.gpu_memory_column
-                .set_factory(Some(&gpu_memory_list_item_factory()));
-            self.gpu_memory_column
-                .set_sorter(Some(&gpu_memory_sorter(&self.column_view)));
-
-            // Make sure to do this after the columns are set up otherwise restoring sorting
-            // won't work
-            settings::configure(self);
-
-            let column_view_title = self.column_view.first_child();
-            adjust_view_header_alignment(column_view_title);
+            self.obj().insert_action_group("apps-page", Some(&actions));
         }
     }
 
@@ -296,85 +215,40 @@ impl AppsPage {
     pub fn set_initial_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
         let imp = self.imp();
 
-        // Set up the models here since we need access to the main application window
-        // which is not yet available in the constructor.
-        let base_model = models::base_model(&imp.apps_section, &imp.processes_section);
-        let tree_list_model = models::tree_list_model(base_model);
-        let filter_list_model = models::filter_list_model(tree_list_model);
-        let (sort_list_model, row_sorter) =
-            models::sort_list_model(filter_list_model, &imp.column_view);
-        let selection_model = models::selection_model(&self, sort_list_model);
-        imp.column_view.set_model(Some(&selection_model));
-
-        let _ = imp.row_sorter.set(row_sorter);
-
-        let mut buffer = ArrayString::<64>::new();
-        let running_apps_len = readings.running_apps.len() as u32;
-        let _ = write!(&mut buffer, "{}", running_apps_len);
-        imp.h1.set_label(&ni18n_f(
-            "{} Running App",
-            "{} Running Apps",
-            running_apps_len,
-            &[buffer.as_str()],
-        ));
-
-        buffer.clear();
-        let running_processes_len = readings.running_processes.len() as u32;
-        let _ = write!(&mut buffer, "{}", running_processes_len);
-        imp.h2.set_label(&ni18n_f(
-            "{} Running Process",
-            "{} Running Processes",
-            running_processes_len,
-            &[buffer.as_str()],
-        ));
-
-        update_column_titles(
-            &imp.cpu_column,
-            &imp.memory_column,
-            &imp.drive_column,
-            &imp.network_usage_column,
-            &imp.gpu_usage_column,
-            &imp.gpu_memory_column,
-            readings,
+        imp.column_view.imp().setup(
+            &imp.apps_section,
+            &imp.processes_section,
+            Some(&imp.process_action_bar),
+            None,
+            None,
         );
 
-        let mut process_model_map = HashMap::new();
-        let root_process = readings.running_processes.keys().min().unwrap_or(&1);
-        if let Some(init) = readings.running_processes.get(root_process) {
-            for child in &init.children {
-                models::update_processes(
-                    &readings.running_processes,
-                    child,
-                    &imp.processes_section.children(),
-                    &imp.app_icons.borrow(),
-                    "application-x-executable-symbolic",
-                    imp.use_merged_stats.get(),
-                    &mut process_model_map,
-                );
-            }
-        }
-        imp.root_process.set(*root_process);
-
-        models::update_apps(
-            &readings.running_apps,
-            &readings.running_processes,
-            &process_model_map,
-            &mut imp.app_icons.borrow_mut(),
-            &imp.apps_section.children(),
-        );
-
-        let _ = std::mem::replace(
-            &mut *imp.running_apps.borrow_mut(),
-            std::mem::take(&mut readings.running_apps),
-        );
-
-        // Select the first item in the list
-        selection_model.set_selected(0);
+        self.update_common(readings);
 
         true
     }
 
     pub fn update_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
+        let imp = self.imp();
+
+        self.update_common(readings);
+
+        if let Some(row_sorter) = imp.column_view.imp().row_sorter.get() {
+            row_sorter.changed(gtk::SorterChange::Different)
+        }
+
+        if readings.network_stats_error.is_some() {
+            imp.column_view
+                .get()
+                .imp()
+                .network_usage_column
+                .set_visible(false);
+        }
+
+        true
+    }
+
+    fn update_common(&self, readings: &mut crate::magpie_client::Readings) {
         let imp = self.imp();
 
         let mut buffer = ArrayString::<64>::new();
@@ -397,33 +271,26 @@ impl AppsPage {
             &[buffer.as_str()],
         ));
 
-        update_column_titles(
-            &imp.cpu_column,
-            &imp.memory_column,
-            &imp.drive_column,
-            &imp.network_usage_column,
-            &imp.gpu_usage_column,
-            &imp.gpu_memory_column,
-            readings,
-        );
+        imp.column_view.imp().update_column_titles(readings);
 
         let mut process_model_map = HashMap::new();
-        let root_process = imp.root_process.get();
-        if let Some(init) = readings.running_processes.get(&root_process) {
+        let root_process = readings.running_processes.keys().min().unwrap_or(&1);
+        if let Some(init) = readings.running_processes.get(root_process) {
             for child in &init.children {
-                models::update_processes(
+                update_processes(
                     &readings.running_processes,
                     child,
                     &imp.processes_section.children(),
                     &imp.app_icons.borrow(),
                     "application-x-executable-symbolic",
-                    imp.use_merged_stats.get(),
+                    imp.column_view.imp().use_merged_stats.get(),
                     &mut process_model_map,
                 );
             }
         }
+        imp.root_process.set(*root_process);
 
-        models::update_apps(
+        update_apps(
             &readings.running_apps,
             &readings.running_processes,
             &process_model_map,
@@ -435,16 +302,6 @@ impl AppsPage {
             &mut *imp.running_apps.borrow_mut(),
             std::mem::take(&mut readings.running_apps),
         );
-
-        if let Some(row_sorter) = imp.row_sorter.get() {
-            row_sorter.changed(gtk::SorterChange::Different)
-        }
-
-        if readings.network_stats_error.is_some() {
-            imp.network_usage_column.set_visible(false);
-        }
-
-        true
     }
 
     #[inline]
@@ -460,31 +317,4 @@ impl AppsPage {
     pub fn running_apps(&self) -> HashMap<String, App> {
         self.imp().running_apps.borrow().clone()
     }
-}
-
-fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
-    let ptr = unsafe { gobject_ffi::g_weak_ref_get(ptr as *mut _) };
-    if ptr.is_null() {
-        return None;
-    }
-    let obj: Object = unsafe { from_glib_full(ptr) };
-    obj.downcast::<gtk::Widget>().ok()
-}
-
-fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {
-    for i in 0..model.n_items() {
-        if let Some(item) = model
-            .item(i)
-            .and_then(|i| i.downcast::<gtk::TreeListRow>().ok())
-            .and_then(|row| row.item())
-            .and_then(|obj| obj.downcast::<RowModel>().ok())
-        {
-            if item.content_type() != ContentType::SectionHeader && item.id() == id {
-                model.select_item(i, false);
-                return true;
-            }
-        }
-    }
-
-    false
 }
