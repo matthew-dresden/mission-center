@@ -24,7 +24,7 @@ use gtk::glib;
 use gtk::prelude::*;
 
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::{label_cell_factory, settings, DataType};
+use crate::{label_cell_factory, DataType};
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
     label_cell_factory!("network-usage", label_formatter)
@@ -50,11 +50,6 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
 pub fn label_formatter(label: &LabelCell, value: glib::Value) {
     let network_usage: f32 = value.get().unwrap();
     label.set_label(
-        crate::to_human_readable_nice(
-            network_usage,
-            &DataType::NetworkBytesPerSecond,
-            &settings!(),
-        )
-        .as_str(),
+        crate::to_human_readable_nice(network_usage, &DataType::NetworkBytesPerSecond).as_str(),
     );
 }

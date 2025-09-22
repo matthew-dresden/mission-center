@@ -529,11 +529,7 @@ pub(crate) mod imp {
                     sum += proc.usage_stats.network_usage.round();
                 }
 
-                let label = crate::to_human_readable_nice(
-                    sum,
-                    &DataType::NetworkBytesPerSecond,
-                    &settings!(),
-                );
+                let label = crate::to_human_readable_nice(sum, &DataType::NetworkBytesPerSecond);
 
                 let _ = write!(&mut buffer, "{}\n{}", i18n("Network"), label);
             }
