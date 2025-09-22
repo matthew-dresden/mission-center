@@ -24,7 +24,7 @@ use gtk::glib;
 use gtk::prelude::*;
 
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::{label_cell_factory, settings, DataType};
+use crate::{label_cell_factory, DataType};
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
     label_cell_factory!("disk-usage", label_formatter)
@@ -52,6 +52,5 @@ pub fn label_formatter(label: &LabelCell, value: glib::Value) {
     label.set_label(&crate::to_human_readable_nice(
         disk_usage,
         &DataType::DriveBytesPerSecond,
-        &settings!(),
     ));
 }

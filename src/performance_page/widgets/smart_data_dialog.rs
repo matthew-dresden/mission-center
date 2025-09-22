@@ -28,7 +28,7 @@ use gtk::{Align, ColumnViewColumn};
 use magpie_types::disks::smart_data::{Ata, Nvme};
 use magpie_types::disks::{smart_data, SmartData};
 
-use crate::{i18n::*, settings};
+use crate::i18n::*;
 
 use super::SmartNvmeDialogRow;
 use super::SmartSataDialogRow;
@@ -189,7 +189,6 @@ mod imp {
         }
 
         fn apply_nvme_smart_data(&self, result: Nvme) {
-            let settings = &settings!();
             self.sata_data.set_visible(false);
             self.nvme_data.set_visible(true);
 
@@ -221,11 +220,7 @@ mod imp {
                 SmartNvmeDialogRow::new(
                     i18n("Total Data Read"),
                     if let Some(total_data_read) = result.total_data_read {
-                        crate::to_human_readable_nice(
-                            total_data_read as f32,
-                            &DataType::DriveBytes,
-                            settings,
-                        )
+                        crate::to_human_readable_nice(total_data_read as f32, &DataType::DriveBytes)
                     } else {
                         i18n("N/A")
                     },
@@ -236,7 +231,6 @@ mod imp {
                         crate::to_human_readable_nice(
                             total_data_written as f32,
                             &DataType::DriveBytes,
-                            settings,
                         )
                     } else {
                         i18n("N/A")
