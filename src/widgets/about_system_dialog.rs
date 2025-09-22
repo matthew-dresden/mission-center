@@ -22,9 +22,9 @@ use glob::glob;
 
 use adw::glib::g_warning;
 use adw::subclass::prelude::*;
+use gtk::gdk_pixbuf::Pixbuf;
 use gtk::glib::{self};
 use gtk::prelude::WidgetExt;
-use gtk::gdk_pixbuf::Pixbuf;
 
 use magpie_types::about::about::OsInfo;
 use magpie_types::about::About;
@@ -105,15 +105,24 @@ mod imp {
                             match entry {
                                 Ok(path) => {
                                     if filename == "svg" {
-                                        if let Ok(pixbuf) = Pixbuf::from_file_at_scale(&path, pic.width_request(), pic.height_request(), true) {
+                                        if let Ok(pixbuf) = Pixbuf::from_file_at_scale(
+                                            &path,
+                                            pic.width_request(),
+                                            pic.height_request(),
+                                            true,
+                                        ) {
                                             pic.set_from_pixbuf(Some(&pixbuf));
                                             pic.set_visible(true);
                                             return true;
                                         }
                                     } else {
                                         if let Ok(pixbuf) = Pixbuf::from_file(&path) {
-                                            pic.set_width_request(pixbuf.width().min(pic.width_request()));
-                                            pic.set_height_request(pixbuf.height().min(pic.height_request()));
+                                            pic.set_width_request(
+                                                pixbuf.width().min(pic.width_request()),
+                                            );
+                                            pic.set_height_request(
+                                                pixbuf.height().min(pic.height_request()),
+                                            );
                                             pic.set_from_pixbuf(Some(&pixbuf));
                                             pic.set_visible(true);
                                             return true;
