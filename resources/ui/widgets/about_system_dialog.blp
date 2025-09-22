@@ -120,6 +120,62 @@ template $AboutSystemDialog: Adw.Dialog {
                 }
               };
             }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind package_manager.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Package Manager");
+                }
+
+                Label package_manager {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind package_manager_version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Package Manager Version");
+                }
+
+                Label package_manager_version {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
           }
 
           Adw.PreferencesGroup {

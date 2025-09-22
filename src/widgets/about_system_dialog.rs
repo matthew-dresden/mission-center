@@ -38,6 +38,10 @@ mod imp {
         os_name: TemplateChild<gtk::Label>,
         #[template_child]
         version: TemplateChild<gtk::Label>,
+        #[template_child]
+        package_manager: TemplateChild<gtk::Label>,
+        #[template_child]
+        package_manager_version: TemplateChild<gtk::Label>,
 
         #[template_child]
         kernel_release: TemplateChild<gtk::Label>,
@@ -62,6 +66,8 @@ mod imp {
             Self {
                 os_name: Default::default(),
                 version: Default::default(),
+                package_manager: Default::default(),
+                package_manager_version: Default::default(),
                 kernel_release: Default::default(),
                 kernel_version: Default::default(),
                 desktop_environment: Default::default(),
@@ -139,6 +145,9 @@ mod imp {
                 &Self::format_kernel_release_string(&os_info),
             );
             let _ = Self::bind_text(&self.kernel_version, &os_info.kernel_version);
+
+            let _ = Self::bind_text(&self.package_manager, &os_info.package_manager);
+            let _ = Self::bind_text(&self.package_manager_version, &os_info.package_manager_version);
 
             let de_info = about.de_info;
 
