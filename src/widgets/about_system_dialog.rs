@@ -96,7 +96,7 @@ mod imp {
         fn bind_logo(pic: &TemplateChild<gtk::Image>, img: &Option<String>) -> bool {
             if let Some(value) = img {
                 let paths = ["pixmaps/", "icons/**/"];
-                let filenames = ["svg", "*"];
+                let filenames = ["png", "*"];
                 for path in paths {
                     for filename in filenames {
                         for entry in glob(&format!("/usr/share/{path}{}.{filename}", value))
@@ -104,10 +104,20 @@ mod imp {
                         {
                             match entry {
                                 Ok(path) => {
-                                    if let Ok(pixbuf) = Pixbuf::from_file_at_scale(&path, pic.width_request(), pic.height_request(), true) {
-                                        pic.set_from_pixbuf(Some(&pixbuf));
-                                        pic.set_visible(true);
-                                        return true;
+                                    if filename == "svg" {
+                                        if let Ok(pixbuf) = Pixbuf::from_file_at_scale(&path, pic.width_request(), pic.height_request(), true) {
+                                            pic.set_from_pixbuf(Some(&pixbuf));
+                                            pic.set_visible(true);
+                                            return true;
+                                        }
+                                    } else {
+                                        if let Ok(pixbuf) = Pixbuf::from_file(&path) {
+                                            pic.set_width_request(pixbuf.width().min(pic.width_request()));
+                                            pic.set_height_request(pixbuf.height().min(pic.height_request()));
+                                            pic.set_from_pixbuf(Some(&pixbuf));
+                                            pic.set_visible(true);
+                                            return true;
+                                        }
                                     }
                                 }
                                 Err(e) => {
