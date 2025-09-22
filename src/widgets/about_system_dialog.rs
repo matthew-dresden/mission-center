@@ -147,7 +147,10 @@ mod imp {
             let _ = Self::bind_text(&self.kernel_version, &os_info.kernel_version);
 
             let _ = Self::bind_text(&self.package_manager, &os_info.package_manager);
-            let _ = Self::bind_text(&self.package_manager_version, &os_info.package_manager_version);
+            let _ = Self::bind_text(
+                &self.package_manager_version,
+                &os_info.package_manager_version,
+            );
 
             let de_info = about.de_info;
 
