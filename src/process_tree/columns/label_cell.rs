@@ -1,4 +1,4 @@
-/* apps_page/columns/label_cell.rs
+/* process_tree/columns/label_cell.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -23,7 +23,7 @@ use std::cell::Cell;
 use adw::subclass::prelude::*;
 use gtk::{glib, prelude::*};
 
-use crate::apps_page::row_model::RowModel;
+use crate::process_tree::row_model::RowModel;
 
 mod imp {
     use super::*;

@@ -1,4 +1,4 @@
-/* apps_page/columns/name.rs
+/* process_tree/columns/name.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -22,8 +22,8 @@ use std::cmp::Ordering;
 
 use adw::prelude::*;
 
-use crate::apps_page::columns::{compare_column_entries_by, sort_order, NameCell};
-use crate::apps_page::row_model::RowModel;
+use crate::process_tree::columns::{compare_column_entries_by, sort_order, NameCell};
+use crate::process_tree::row_model::RowModel;
 use crate::widgets::ListCell;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {

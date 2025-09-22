@@ -1,4 +1,4 @@
-/* apps_page/columns/memory.rs
+/* process_tree/columns/network.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -27,7 +27,7 @@ use super::{compare_column_entries_by, sort_order, LabelCell};
 use crate::{label_cell_factory, settings, DataType};
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    label_cell_factory!("memory-usage", label_formatter)
+    label_cell_factory!("network-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
@@ -38,8 +38,8 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
         };
 
         compare_column_entries_by(lhs, rhs, sort_order(&column_view), |lhs, rhs| {
-            let lhs = lhs.memory_usage();
-            let rhs = rhs.memory_usage();
+            let lhs = lhs.network_usage();
+            let rhs = rhs.network_usage();
 
             lhs.partial_cmp(&rhs).unwrap_or(Ordering::Equal)
         })
@@ -48,9 +48,13 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
 }
 
 pub fn label_formatter(label: &LabelCell, value: glib::Value) {
-    let memory_usage: u64 = value.get().unwrap();
+    let network_usage: f32 = value.get().unwrap();
     label.set_label(
-        crate::to_human_readable_nice(memory_usage as f32, &DataType::MemoryBytes, &settings!())
-            .as_str(),
+        crate::to_human_readable_nice(
+            network_usage,
+            &DataType::NetworkBytesPerSecond,
+            &settings!(),
+        )
+        .as_str(),
     );
 }
