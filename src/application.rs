@@ -51,6 +51,7 @@ macro_rules! settings {
 
 mod imp {
     use super::*;
+    use crate::setup_readable_settings_cache;
 
     pub struct MissionCenterApplication {
         pub settings: Cell<Option<gio::Settings>>,
@@ -105,6 +106,8 @@ mod imp {
                 let sys_info = crate::magpie_client::MagpieClient::new();
 
                 let window = crate::MissionCenterWindow::new(&*application, &settings, &sys_info);
+
+                setup_readable_settings_cache(&settings);
 
                 window.connect_default_height_notify({
                     move |window| {

@@ -1,4 +1,4 @@
-/* apps_page/columns/name_cell.rs
+/* process_tree/columns/name_cell.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -25,7 +25,7 @@ use gtk::glib::g_critical;
 use gtk::glib::FileError;
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
-use crate::apps_page::row_model::{ContentType, RowModel};
+use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::widgets::ListCell;
 
 mod icon_cache {
@@ -204,7 +204,7 @@ mod imp {
                 }
                 Err(e) => {
                     if !e.matches(FileError::Noent) {
-                        g_critical!("MissionCenter::AppsPage", "Failed to load icon: {}", e);
+                        g_critical!("MissionCenter::ProcessTree", "Failed to load icon: {}", e);
                         return;
                     }
                 }
@@ -235,7 +235,7 @@ mod imp {
                         expander.set_indent_for_icon(false);
                     };
                 }
-                ContentType::App => {
+                ContentType::Service => {
                     self.icon.set_visible(true);
                     self.icon.set_margin_end(10);
                     self.icon.set_pixel_size(24);
@@ -274,6 +274,35 @@ mod imp {
                     this.set_margin_start(0);
                     this.set_margin_top(0);
                     this.set_margin_bottom(0);
+
+                    if let Some(expander) = self.expander.borrow().upgrade() {
+                        expander.set_indent_for_icon(true);
+                    };
+                }
+                ContentType::App => {
+                    self.icon.set_visible(true);
+                    self.icon.set_margin_end(10);
+                    self.icon.set_pixel_size(24);
+                    self.name.remove_css_class("heading");
+
+                    let this = self.obj();
+                    this.set_margin_start(0);
+                    this.set_margin_top(0);
+                    this.set_margin_bottom(0);
+
+                    let this = this.downgrade();
+                    glib::timeout_add_local_full(
+                        Duration::from_millis(0),
+                        glib::Priority::HIGH,
+                        move || {
+                            let Some(this) = this.upgrade() else {
+                                return glib::ControlFlow::Break;
+                            };
+                            let _ = this.activate_action("listitem.collapse", None);
+
+                            glib::ControlFlow::Break
+                        },
+                    );
 
                     if let Some(expander) = self.expander.borrow().upgrade() {
                         expander.set_indent_for_icon(true);

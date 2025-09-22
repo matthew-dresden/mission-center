@@ -24,6 +24,8 @@ use gtk::gio::Settings;
 use gtk::{gio, prelude::*};
 use i18n::{i18n, i18n_f};
 use std::cmp::PartialEq;
+use std::collections::HashMap;
+use std::sync::{LazyLock, Mutex};
 use std::{
     env,
     path::{Path, PathBuf},
@@ -39,6 +41,7 @@ mod i18n;
 mod magpie_client;
 mod performance_page;
 mod preferences;
+mod process_tree;
 mod services_page;
 mod widgets;
 mod window;
@@ -197,14 +200,51 @@ pub enum DataType {
     Watts,
 }
 
-fn data_type_setting_name(data_type: &DataType) -> &'static str {
+impl DataType {
+    const CACHABLE_TYPES: [DataType; 5] = [
+        DataType::MemoryBytes,
+        DataType::DriveBytes,
+        DataType::DriveBytesPerSecond,
+        DataType::NetworkBytes,
+        DataType::NetworkBytesPerSecond,
+    ];
+}
+
+// i would LOVE to use variables, but i dunno how to make this const (compile time concat)
+const fn data_type_setting_byte_setting(data_type: &DataType) -> &'static str {
     match data_type {
         // because we biffed it. see https://gitlab.com/mission-center-devs/mission-center/-/issues/385
-        DataType::MemoryBytes => "memory2",
-        DataType::DriveBytes => "drive",
-        DataType::DriveBytesPerSecond => "drive",
-        DataType::NetworkBytes => "network",
-        DataType::NetworkBytesPerSecond => "network",
+        DataType::MemoryBytes => &const { concat!("performance-page-", "memory2", "-use-bytes") },
+        DataType::DriveBytes => &const { concat!("performance-page-", "drive", "-use-bytes") },
+        DataType::DriveBytesPerSecond => {
+            &const { concat!("performance-page-", "drive", "-use-bytes") }
+        }
+        DataType::NetworkBytes => &const { concat!("performance-page-", "network", "-use-bytes") },
+        DataType::NetworkBytesPerSecond => {
+            &const { concat!("performance-page-", "network", "-use-bytes") }
+        }
+        DataType::Hertz => {
+            panic!("Hertz data type not supported yet");
+        }
+        DataType::Watts => {
+            panic!("Watts data type not supported yet");
+        }
+    }
+}
+
+// i would LOVE to use variables, but i dunno how to make this const (compile time concat)
+const fn data_type_setting_base_setting(data_type: &DataType) -> &'static str {
+    match data_type {
+        // because we biffed it. see https://gitlab.com/mission-center-devs/mission-center/-/issues/385
+        DataType::MemoryBytes => &const { concat!("performance-page-", "memory2", "-use-base2") },
+        DataType::DriveBytes => &const { concat!("performance-page-", "drive", "-use-base2") },
+        DataType::DriveBytesPerSecond => {
+            &const { concat!("performance-page-", "drive", "-use-base2") }
+        }
+        DataType::NetworkBytes => &const { concat!("performance-page-", "network", "-use-base2") },
+        DataType::NetworkBytesPerSecond => {
+            &const { concat!("performance-page-", "network", "-use-base2") }
+        }
         DataType::Hertz => {
             panic!("Hertz data type not supported yet");
         }
@@ -272,26 +312,73 @@ pub fn to_human_readable_adv_str(
     )
 }
 
-pub fn to_human_readable_nice(
-    value_bytes: f32,
-    data_type: &DataType,
-    settings: &Settings,
-) -> String {
+static BOOLEAN_DICT_CACHE: LazyLock<Mutex<HashMap<String, bool>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+pub fn setup_readable_settings_cache(settings: &Settings) {
+    for data_type in DataType::CACHABLE_TYPES {
+        let byte_key = data_type_setting_byte_setting(&data_type);
+
+        settings.connect_changed(Some(byte_key), |settings, _| {
+            let Ok(mut hm) = BOOLEAN_DICT_CACHE.lock() else {
+                return;
+            };
+
+            hm.insert(byte_key.to_string(), settings.boolean(byte_key));
+        });
+        let base_key = data_type_setting_base_setting(&data_type);
+
+        settings.connect_changed(Some(base_key), |settings, _| {
+            let Ok(mut hm) = BOOLEAN_DICT_CACHE.lock() else {
+                return;
+            };
+
+            hm.insert(base_key.to_string(), settings.boolean(base_key));
+        });
+    }
+}
+
+pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String {
     let label = match data_type {
         DataType::Hertz => "Hz",
         DataType::Watts => "W",
         _ => {
-            let bytes = settings.boolean(&format!(
-                "performance-page-{}-use-bytes",
-                data_type_setting_name(&data_type)
-            ));
+            let dict_lock = BOOLEAN_DICT_CACHE.lock();
+
+            let byte_key = data_type_setting_byte_setting(data_type);
+            let base_key = data_type_setting_base_setting(data_type);
+
+            let (bytes, bases) = if let Ok(mut dict) = dict_lock {
+                let bytes = if let Some(b) = dict.get(byte_key) {
+                    *b
+                } else {
+                    let b = settings!().boolean(byte_key);
+
+                    dict.insert(byte_key.to_string(), b);
+
+                    b
+                };
+
+                let bases = if let Some(b) = dict.get(base_key) {
+                    *b
+                } else {
+                    let b = settings!().boolean(base_key);
+
+                    dict.insert(base_key.to_string(), b);
+
+                    b
+                };
+
+                (bytes, bases)
+            } else {
+                let settings = settings!();
+                (settings.boolean(byte_key), settings.boolean(base_key))
+            };
+
             return to_human_readable_adv_str(
                 value_bytes,
                 bytes,
-                settings.boolean(&format!(
-                    "performance-page-{}-use-base2",
-                    data_type_setting_name(&data_type)
-                )),
+                bases,
                 *data_type == DataType::NetworkBytesPerSecond
                     || *data_type == DataType::DriveBytesPerSecond,
                 if bytes { "B" } else { "b" },

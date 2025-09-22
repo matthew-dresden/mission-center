@@ -1,4 +1,4 @@
-/* apps_page/models/base.rs
+/* process_tree/models/mod.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -18,14 +18,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use gtk::gio;
+pub use processes::update_apps;
+pub use processes::update_processes;
+pub use processes::update_services;
 
-use crate::apps_page::row_model::RowModel;
-
-pub fn model(apps_section: &RowModel, processes_section: &RowModel) -> gio::ListStore {
-    let model = gio::ListStore::new::<RowModel>();
-    model.append(apps_section);
-    model.append(processes_section);
-
-    model
-}
+mod processes;

@@ -1,4 +1,4 @@
-/* apps_page/columns/gpu_memory.rs
+/* process_tree/columns/pid.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -20,14 +20,18 @@
 
 use std::cmp::Ordering;
 
+use gtk::glib;
 use gtk::prelude::*;
 
-pub use super::memory_label_formatter as label_formatter;
 use super::{compare_column_entries_by, sort_order, LabelCell};
 use crate::label_cell_factory;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    label_cell_factory!("gpu-memory-usage", label_formatter)
+    label_cell_factory!(
+        "pid",
+        ContentType::SectionHeader | ContentType::Service | ContentType::App,
+        label_formatter
+    )
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
@@ -38,11 +42,13 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
         };
 
         compare_column_entries_by(lhs, rhs, sort_order(&column_view), |lhs, rhs| {
-            let lhs = lhs.gpu_memory_usage();
-            let rhs = rhs.gpu_memory_usage();
-
-            lhs.partial_cmp(&rhs).unwrap_or(Ordering::Equal)
+            lhs.pid().cmp(&rhs.pid())
         })
         .into()
     })
+}
+
+pub fn label_formatter(label: &LabelCell, value: glib::Value) {
+    let pid: u32 = value.get().unwrap();
+    label.set_label(&pid.to_string());
 }

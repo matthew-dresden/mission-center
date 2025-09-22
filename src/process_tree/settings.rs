@@ -1,20 +1,19 @@
+use crate::process_tree::column_view_frame::imp::ColumnViewFrame;
+use crate::settings;
 use glib::g_critical;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use crate::apps_page::imp::AppsPage as AppsPageImpl;
-use crate::settings;
-
-pub fn configure(imp: &AppsPageImpl) {
-    let apps_page = imp.obj();
+pub fn configure_column_frame(imp: &ColumnViewFrame) {
+    let neo_services_page = imp.obj();
 
     let settings = settings!();
 
     settings
         .bind(
             "apps-page-show-column-separators",
-            &*apps_page,
+            &*neo_services_page,
             "show-column-separators",
         )
         .build();
@@ -22,7 +21,7 @@ pub fn configure(imp: &AppsPageImpl) {
     imp.use_merged_stats
         .set(settings.boolean("apps-page-merged-process-stats"));
     settings.connect_changed(Some("apps-page-merged-process-stats"), {
-        let this = apps_page.downgrade();
+        let this = neo_services_page.downgrade();
         move |settings, _| {
             if let Some(this) = this.upgrade() {
                 this.imp()
@@ -32,7 +31,7 @@ pub fn configure(imp: &AppsPageImpl) {
         }
     });
 
-    configure_sorting(&imp.column_view, &settings);
+    configure_sorting(&imp.column_view, &settings!());
 }
 
 fn configure_sorting(column_view: &gtk::ColumnView, settings: &gio::Settings) {
@@ -70,7 +69,7 @@ fn configure_sorting(column_view: &gtk::ColumnView, settings: &gio::Settings) {
         255 => return,
         _ => {
             g_critical!(
-                "MissionCenter::AppsPage",
+                "MissionCenter::ProcessTree",
                 "Unknown column sorting order retrieved from settings, sorting in ascending order as a fallback"
             );
             gtk::SortType::Ascending
