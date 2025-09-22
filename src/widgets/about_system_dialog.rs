@@ -130,7 +130,10 @@ mod imp {
                                     }
                                 }
                                 Err(e) => {
-                                    g_warning!("MissionCenter::AboutPage", "Failed to read icon: {e}")
+                                    g_warning!(
+                                        "MissionCenter::AboutPage",
+                                        "Failed to read icon: {e}"
+                                    )
                                 }
                             }
                         }
