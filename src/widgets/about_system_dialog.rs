@@ -24,6 +24,7 @@ use adw::glib::g_warning;
 use adw::subclass::prelude::*;
 use gtk::glib::{self};
 use gtk::prelude::WidgetExt;
+use gtk::gdk_pixbuf::Pixbuf;
 
 use magpie_types::about::about::OsInfo;
 use magpie_types::about::About;
@@ -58,7 +59,7 @@ mod imp {
         virtual_terminal: TemplateChild<gtk::Label>,
 
         #[template_child]
-        logo: TemplateChild<gtk::Picture>,
+        logo: TemplateChild<gtk::Image>,
     }
 
     impl Default for AboutSystemDialog {
@@ -92,7 +93,7 @@ mod imp {
                 false
             }
         }
-        fn bind_logo(pic: &TemplateChild<gtk::Picture>, img: &Option<String>) -> bool {
+        fn bind_logo(pic: &TemplateChild<gtk::Image>, img: &Option<String>) -> bool {
             if let Some(value) = img {
                 let paths = ["pixmaps/", "icons/**/"];
                 let filenames = ["svg", "*"];
@@ -103,9 +104,11 @@ mod imp {
                         {
                             match entry {
                                 Ok(path) => {
-                                    pic.set_filename(Some(path));
-                                    pic.set_visible(true);
-                                    return true;
+                                    if let Ok(pixbuf) = Pixbuf::from_file_at_scale(&path, pic.width_request(), pic.height_request(), true) {
+                                        pic.set_from_pixbuf(Some(&pixbuf));
+                                        pic.set_visible(true);
+                                        return true;
+                                    }
                                 }
                                 Err(e) => {
                                     g_warning!("MissionCenter::AboutPage", "Failed to locate icon")
