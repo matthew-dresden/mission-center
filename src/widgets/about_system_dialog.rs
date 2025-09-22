@@ -96,7 +96,7 @@ mod imp {
         fn bind_logo(pic: &TemplateChild<gtk::Image>, img: &Option<String>) -> bool {
             if let Some(value) = img {
                 let paths = ["pixmaps/", "icons/**/"];
-                let filenames = ["png", "*"];
+                let filenames = ["svg", "*"];
                 for path in paths {
                     for filename in filenames {
                         for entry in glob(&format!("/usr/share/{path}{}.{filename}", value))
