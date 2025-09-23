@@ -580,6 +580,7 @@ mod imp {
                 total_memory_str: Option<&str>,
                 has_memory_info: &mut bool,
             ) {
+                let mut scaling_factor = 1.0;
                 if let Some(total_shared_memory) = gpu.total_shared_memory {
                     let total_gtt = crate::to_human_readable_nice(
                         total_shared_memory as f32,
@@ -600,8 +601,7 @@ mod imp {
                         this.usage_graph_memory
                             .set_scaling(GraphWidget::no_scaling());
                         let current_max = this.usage_graph_memory.value_range_max();
-                        this.usage_graph_memory
-                            .set_value_range_max(current_max.max(total_shared_memory as f32));
+                        scaling_factor = current_max / total_shared_memory as f32;
                     } else {
                         this.total_memory.set_text(&total_gtt);
 
@@ -619,6 +619,9 @@ mod imp {
 
                 if let Some(used_shared_memory) = gpu.used_shared_memory {
                     *has_memory_info = true;
+
+                    this.usage_graph_memory
+                        .add_data_point(1, used_shared_memory as f32 * scaling_factor);
 
                     this.infobar_content.set_used_shared_memory_valid(true);
                     this.infobar_content
