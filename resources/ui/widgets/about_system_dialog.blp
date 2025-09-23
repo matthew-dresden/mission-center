@@ -55,9 +55,16 @@ template $AboutSystemDialog: Adw.Dialog {
           orientation: vertical;
           spacing: 32;
 
-          Image logo {
-            width-request: 320;
-            height-request: 320;
+          Adw.Clamp {
+            orientation: vertical;
+            maximum-size: 192;
+            tightening-threshold: 192;
+
+            child: Picture logo {
+              can-shrink: false;
+              content-fit: scale_down;
+              alternative-text: _("System Logo");
+            };
           }
 
           Adw.PreferencesGroup {
