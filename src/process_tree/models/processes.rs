@@ -173,6 +173,8 @@ pub fn update_services(
                 service_section_type,
                 service,
             );
+        } else {
+            row_model.children().remove_all();
         }
     }
 }
