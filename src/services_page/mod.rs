@@ -30,7 +30,7 @@ use magpie_types::services::Service;
 
 use crate::i18n::{i18n, i18n_f};
 use crate::magpie_client::App;
-use crate::process_tree::column_view_frame::ColumnViewFrame;
+use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
 use crate::process_tree::models;
 use crate::process_tree::process_action_bar::ProcessActionBar;
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
@@ -292,6 +292,7 @@ impl ServicesPage {
         // Set up the models here since we need access to the main application window
         // which is not yet available in the constructor.
         imp.column_view.imp().setup(
+            ColumnViewSettingsNamespaces::ServicesPage,
             &imp.user_section,
             &imp.system_section,
             Some(&imp.process_action_bar),

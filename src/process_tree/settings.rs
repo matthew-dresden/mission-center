@@ -1,4 +1,5 @@
 use crate::process_tree::column_view_frame::imp::ColumnViewFrame;
+use crate::process_tree::column_view_frame::ColumnViewSettingsValues::*;
 use crate::settings;
 use glib::g_critical;
 use gtk::prelude::*;
@@ -6,14 +7,14 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 pub fn configure_column_frame(imp: &ColumnViewFrame) {
-    let neo_services_page = imp.obj();
+    let obj = imp.obj();
 
     let settings = settings!();
 
     settings
         .bind(
             "apps-page-show-column-separators",
-            &*neo_services_page,
+            &*obj,
             "show-column-separators",
         )
         .build();
@@ -21,7 +22,7 @@ pub fn configure_column_frame(imp: &ColumnViewFrame) {
     imp.use_merged_stats
         .set(settings.boolean("apps-page-merged-process-stats"));
     settings.connect_changed(Some("apps-page-merged-process-stats"), {
-        let this = neo_services_page.downgrade();
+        let this = obj.downgrade();
         move |settings, _| {
             if let Some(this) = this.upgrade() {
                 this.imp()
@@ -31,18 +32,23 @@ pub fn configure_column_frame(imp: &ColumnViewFrame) {
         }
     });
 
-    configure_sorting(&imp.column_view, &settings!());
+    configure_sorting(imp, &settings!());
 }
 
-fn configure_sorting(column_view: &gtk::ColumnView, settings: &gio::Settings) {
+fn configure_sorting(column_view_frame: &ColumnViewFrame, settings: &gio::Settings) {
+    let column_view = &column_view_frame.column_view;
+
+    let sorting_column_name_key = &column_view_frame.format_settings_key(&SortingColumnName);
+    let sorting_order_key = &column_view_frame.format_settings_key(&SortingOrder);
+
     if !settings.boolean("apps-page-remember-sorting") {
-        let _ = settings.set_string("apps-page-sorting-column-name", "");
-        let _ = settings.set_enum("apps-page-sorting-order", gtk::ffi::GTK_SORT_ASCENDING);
+        let _ = settings.set_string(sorting_column_name_key, "");
+        let _ = settings.set_enum(sorting_order_key, gtk::ffi::GTK_SORT_ASCENDING);
         return;
     }
 
-    let saved_id = settings.string("apps-page-sorting-column-name");
-    let order = settings.enum_("apps-page-sorting-order");
+    let saved_id = settings.string(sorting_column_name_key);
+    let order = settings.enum_(sorting_order_key);
 
     let columns = column_view.columns();
     let mut matched_column = None;

@@ -82,6 +82,8 @@ pub(crate) mod imp {
         pub action_show_context_menu: Cell<gio::SimpleAction>,
 
         pub action_group: Cell<gio::SimpleActionGroup>,
+
+        pub settings_namespace: Cell<ColumnViewSettingsNamespaces>,
     }
 
     impl Default for ColumnViewFrame {
@@ -111,6 +113,8 @@ pub(crate) mod imp {
                 )),
 
                 action_group: Cell::new(Default::default()),
+
+                settings_namespace: Cell::new(Default::default()),
             }
         }
     }
@@ -145,8 +149,6 @@ pub(crate) mod imp {
 
         fn constructed(&self) {
             self.parent_constructed();
-
-            self.update_column_order();
 
             self.name_column
                 .set_factory(Some(&name_list_item_factory()));
@@ -197,7 +199,7 @@ pub(crate) mod imp {
             self.action_group()
                 .add_action(self.action_show_context_menu());
             self.obj()
-                .insert_action_group("apps-page", Some(self.action_group()));
+                .insert_action_group("column-view", Some(self.action_group()));
         }
     }
 
@@ -220,12 +222,17 @@ pub(crate) mod imp {
 
         pub fn setup(
             &self,
+            settings_namespace: ColumnViewSettingsNamespaces,
             section_item_1: &RowModel,
             section_item_2: &RowModel,
             process_action_bar: Option<&ProcessActionBar>,
             service_action_bar: Option<&ServiceActionBar>,
             service_toggle_group: Option<&ToggleGroup>,
         ) {
+            self.settings_namespace.set(settings_namespace);
+
+            self.update_column_order();
+
             let model = gio::ListStore::new::<RowModel>();
             model.append(section_item_1);
             model.append(section_item_2);
@@ -384,9 +391,14 @@ pub(crate) mod imp {
         ) -> (gtk::SortListModel, gtk::TreeListRowSorter) {
             let column_view_sorter = self.column_view.sorter();
 
+            let sorting_settings_key =
+                self.format_settings_key(&ColumnViewSettingsValues::SortingColumnName);
+            let sorting_order_settings_key =
+                self.format_settings_key(&ColumnViewSettingsValues::SortingOrder);
+
             if let Some(column_view_sorter) = column_view_sorter.as_ref() {
                 column_view_sorter.connect_changed({
-                    |sorter, _| {
+                    move |sorter, _| {
                         let settings = settings!();
 
                         let Some(sorter) = sorter.downcast_ref::<gtk::ColumnViewSorter>() else {
@@ -400,12 +412,12 @@ pub(crate) mod imp {
                         let Some(sorted_column_id) = sorted_column.id() else {
                             return;
                         };
-                        let _ = settings
-                            .set_string("apps-page-sorting-column-name", sorted_column_id.as_str());
+                        let _ =
+                            settings.set_string(&sorting_settings_key, sorted_column_id.as_str());
 
                         let sort_order = sorter.primary_sort_order();
                         let _ = settings.set_enum(
-                            "apps-page-sorting-order",
+                            &sorting_order_settings_key,
                             match sort_order {
                                 gtk::SortType::Ascending => gtk::ffi::GTK_SORT_ASCENDING,
                                 gtk::SortType::Descending => gtk::ffi::GTK_SORT_DESCENDING,
@@ -570,6 +582,8 @@ pub(crate) mod imp {
 
             let settings = settings!();
 
+            let order_key = &self.format_settings_key(&ColumnViewSettingsValues::ColumnOrder);
+
             if settings.boolean("apps-page-remember-column-order") {
                 let columns = column_view.columns();
                 let mut all_columns = Vec::new();
@@ -586,7 +600,7 @@ pub(crate) mod imp {
                     column_view.remove_column(column);
                 }
 
-                let setting_column_order = settings.string("apps-page-column-order");
+                let setting_column_order = settings.string(order_key);
                 for column_id in setting_column_order.split(';') {
                     let Some((index, column)) = all_columns
                         .iter()
@@ -609,12 +623,12 @@ pub(crate) mod imp {
                     column_view.append_column(&column);
                 }
             } else {
-                let _ = settings.set_string("apps-page-column-order", "");
+                let _ = settings.set_string(order_key, "");
             }
 
-            column_view
-                .columns()
-                .connect_items_changed(|model, _, _, _| {
+            column_view.columns().connect_items_changed({
+                let order_key = order_key.clone();
+                move |model, _, _, _| {
                     let settings = settings!();
 
                     let mut order = String::new();
@@ -632,8 +646,14 @@ pub(crate) mod imp {
                     }
                     order.pop();
 
-                    let _ = settings.set_string("apps-page-column-order", order.as_str());
-                });
+                    let _ = settings.set_string(&order_key, order.as_str());
+                }
+            });
+        }
+
+        #[inline]
+        pub fn format_settings_key(&self, key: &ColumnViewSettingsValues) -> String {
+            self.settings_namespace.get().format_value(key)
         }
     }
 }
@@ -642,4 +662,44 @@ glib::wrapper! {
     pub struct ColumnViewFrame(ObjectSubclass<imp::ColumnViewFrame>)
         @extends gtk::Box, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap;
+}
+
+#[derive(Copy, Clone, Default)]
+pub enum ColumnViewSettingsNamespaces {
+    #[default]
+    AppsPage,
+    ServicesPage,
+}
+
+impl ColumnViewSettingsNamespaces {
+    pub fn key_to_string(&self) -> &'static str {
+        match self {
+            ColumnViewSettingsNamespaces::AppsPage => "apps-page",
+            ColumnViewSettingsNamespaces::ServicesPage => "services-page",
+        }
+    }
+
+    #[inline]
+    pub fn format_value(&self, value: &ColumnViewSettingsValues) -> String {
+        format!("{}-{}", self.key_to_string(), value.key_to_string())
+    }
+}
+
+// this only has settings that exist in all namespaces
+#[derive(Copy, Clone, Default)]
+pub enum ColumnViewSettingsValues {
+    #[default]
+    SortingColumnName,
+    SortingOrder,
+    ColumnOrder,
+}
+
+impl ColumnViewSettingsValues {
+    pub fn key_to_string(&self) -> &'static str {
+        match self {
+            ColumnViewSettingsValues::SortingColumnName => "sorting-column-name",
+            ColumnViewSettingsValues::SortingOrder => "sorting-order",
+            ColumnViewSettingsValues::ColumnOrder => "column-order",
+        }
+    }
 }
