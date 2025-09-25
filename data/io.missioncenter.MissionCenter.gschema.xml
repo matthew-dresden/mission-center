@@ -130,11 +130,6 @@
             <summary>Show a separator between each column in the Apps view</summary>
         </key>
 
-        <key name="apps-page-sorting-column" enum="io.missioncenter.AppsPageViewColumn">
-            <default>"None"</default>
-            <summary>DEPRECATED! NO LONGER IN USE!</summary>
-        </key>
-
         <key name="apps-page-sorting-column-name" type="s">
             <default>""</default>
             <summary>The column name by which the Apps page view is sorted</summary>
@@ -150,7 +145,21 @@
             <summary>The order of columns in the Apps page view</summary>
         </key>
 
+        <key name="services-page-sorting-column-name" type="s">
+            <default>""</default>
+            <summary>The column name by which the Services page view is sorted</summary>
+        </key>
 
+        <key name="services-page-sorting-order" enum="org.gtk.SortType">
+            <default>"None"</default>
+            <summary>The sorting direction of the Services page view</summary>
+        </key>
+
+        <key name="services-page-column-order" type="s">
+            <default>""</default>
+            <summary>The order of columns in the Services page view</summary>
+        </key>
+        
         <key name="performance-page-cpu-graph" type="i">
             <range min="1" max="2"/>
             <default>1</default>

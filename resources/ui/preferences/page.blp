@@ -98,7 +98,7 @@ template $PreferencesPage: Adw.PreferencesPage {
   }
 
   Adw.PreferencesGroup {
-    title: _("App Page");
+    title: _("App &amp; Service Pages");
 
     Adw.SwitchRow merged_process_stats {
       title: _("Merge Process Stats");
@@ -107,7 +107,7 @@ template $PreferencesPage: Adw.PreferencesPage {
 
     Adw.SwitchRow remember_sorting {
       title: _("Remember Sorting");
-      subtitle: _("Persist app and process sorting by column, across app restarts");
+      subtitle: _("Persist sorting by column across app restarts");
     }
 
     Adw.SwitchRow remember_column_order {
@@ -117,7 +117,7 @@ template $PreferencesPage: Adw.PreferencesPage {
 
     Adw.SwitchRow core_count_affects_percentages {
       title: _("Scale CPU Usage to Core Count");
-      subtitle: _("Show CPU usage for Apps and Processes scaled to the number of available cores");
+      subtitle: _("Show CPU usage scaled to the number of available cores");
     }
 
     Adw.SwitchRow show_column_separators {
