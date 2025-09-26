@@ -48,7 +48,7 @@ stages:
     - ln -sf /usr/bin/python3 /usr/local/bin/python
     - ln -sf /usr/bin/mold /usr/bin/ld
 
-    - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=1.90.0 -y
     - export PATH="$HOME/.cargo/bin:$PATH"
 
   install_flatpak:

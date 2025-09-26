@@ -132,36 +132,36 @@
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.87.0-x86_64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.90.0-x86_64.tar.zst",
           "dest": "rust-toolchain-glibc",
-          "sha256": "e19933754d224dbacc7dc44af0d053efd632bc59aed6a9252c6b31de4be28305",
+          "sha256": "938257b991c6617634fdd1b25cabcfded8f4d4d10b9b5693f4f05c2b8f0e0cf9",
           "only-arches": [
             "x86_64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.87.0-x86_64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.90.0-x86_64.tar.zst",
           "dest": "rust-toolchain-musl",
-          "sha256": "5d41efb020e40e9f0658a1b613f50ea608aad71ed3d4a84fe539d5bb70758eee",
+          "sha256": "8110f9709554a3d1e8de94951025a1d02e0f88c35d1dbf4f1f6312cc241e0b97",
           "only-arches": [
             "x86_64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/llvm-tooling-x86_64-gnu-20.1.0.tar.zst",
+          "url": "https://missioncenter.io/build-tools/llvm-tooling-x86_64-gnu-21.1.1.tar.zst",
           "dest": "clang-glibc",
-          "sha256": "f11d967ea4a44a7e89f62f738241acefc6440e4a672d89029e8cf722675bbfe2",
+          "sha256": "8d45e8d794ba174179aa7a052214a1374afa437d48ac87747701c24e1c8e07f3",
           "only-arches": [
             "x86_64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/llvm-tooling-x86_64-musl-20.1.0.tar.zst",
+          "url": "https://missioncenter.io/build-tools/llvm-tooling-x86_64-musl-21.1.1.tar.zst",
           "dest": "clang-musl",
-          "sha256": "9bf215f5c7e2909af809af91981df5c97f04cd749adaeaa894adb5c844983dc5",
+          "sha256": "91d9115131b36ed22949c5c6a660a3cb644fc3f5254d88b612977e9d7e461e58",
           "only-arches": [
             "x86_64"
           ]
@@ -184,36 +184,36 @@
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.87.0-aarch64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.90.0-aarch64.tar.zst",
           "dest": "rust-toolchain-glibc",
-          "sha256": "74fb6567135f08301a33a96254a36683202b56f75df43df4826dfbe04b0d2026",
+          "sha256": "0e01b77a28cc529a5fffca4816c909931fa06a0a6c222f65c371781aab539843",
           "only-arches": [
             "aarch64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.87.0-aarch64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.90.0-aarch64.tar.zst",
           "dest": "rust-toolchain-musl",
-          "sha256": "839099b7280aeceb0d0c3136546da573842701afb65e1b96ec1ce5d40d0db303",
+          "sha256": "2c5d5a81b8f721e0932a389219b5e17eccbde35b49a09e5ddf45fe3bcb426a92",
           "only-arches": [
             "aarch64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/llvm-tooling-aarch64-gnu-20.1.0.tar.zst",
+          "url": "https://missioncenter.io/build-tools/llvm-tooling-aarch64-gnu-21.1.1.tar.zst",
           "dest": "clang-glibc",
-          "sha256": "6bfd53e9ce7452bafffa46d17d7d6bc27a8eed7de48ab3a692be9f2b3695ae22",
+          "sha256": "42149500f9410fc2c73cc866ba5090304db36afc63c595b6ba2445f4987f08b8",
           "only-arches": [
             "aarch64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/llvm-tooling-aarch64-musl-20.1.0.tar.zst",
+          "url": "https://missioncenter.io/build-tools/llvm-tooling-aarch64-musl-21.1.1.tar.zst",
           "dest": "clang-musl",
-          "sha256": "6a94fd355e85a865658190a391cf01f206c902639a6c67bc0a9700e4fe5c53ca",
+          "sha256": "a0ff9934728771de14b16c2b967a5978be7cd6eb56f29dbf72cb9e88e11f5222",
           "only-arches": [
             "aarch64"
           ]
