@@ -345,17 +345,22 @@ pub(crate) mod imp {
                             return true;
                         };
 
-                        if row_model.content_type() == ContentType::Service {
-                            return match group.active() {
-                                0 => true,
-                                1 => row_model.service_running(),
-                                2 => row_model.service_failed(),
-                                3 => row_model.service_stopped(),
-                                4 => !row_model.service_enabled() && !row_model.service_enabled(),
-                                _ => true,
-                            };
+                        if row_model.content_type() == ContentType::SectionHeader {
+                            return true;
                         }
-                        true
+
+                        return match group.active() {
+                            0 => true,
+                            1 => row_model.service_running(),
+                            2 => row_model.service_failed(),
+                            3 => row_model.service_stopped(),
+                            4 => {
+                                !row_model.service_enabled()
+                                    && !row_model.service_running()
+                                    && !row_model.service_failed()
+                            }
+                            _ => true,
+                        };
                     })(group.as_ref());
 
                     search && filter
