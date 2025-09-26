@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-21 06:25+0000\n"
-"PO-Revision-Date: 2025-09-25 09:01+0000\n"
-"Last-Translator: Benjamin Alan Jamie <benjamin@weblate.org>\n"
+"PO-Revision-Date: 2025-09-27 06:58+0000\n"
+"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/cs/>\n"
 "Language: cs\n"
@@ -609,7 +609,7 @@ msgstr "Patice:"
 
 #: resources/ui/performance_page/cpu_details.blp:213
 msgid "Virtual processors:"
-msgstr "Logické procesory:"
+msgstr "Virtuální procesory:"
 
 #: resources/ui/performance_page/cpu_details.blp:227
 msgid "Virtualization:"
@@ -988,7 +988,7 @@ msgstr ""
 #: resources/ui/performance_page/network.blp:61
 #: resources/ui/performance_page/disk.blp:140
 msgid "Throughput over "
-msgstr "Prostupnost za "
+msgstr "Propustnost za "
 
 #: resources/ui/performance_page/network.blp:144
 msgid "Network Se_ttings"
@@ -1518,7 +1518,7 @@ msgid ""
 "Memory whose contents must be written to disk before it can be used by "
 "another process"
 msgstr ""
-"Změněná ({}B)\n"
+"Změněná ({})\n"
 "\n"
 "Paměť, jejíž obsah je třeba před použitím jiným procesem zapsat na disk"
 
@@ -1528,7 +1528,7 @@ msgid ""
 "\n"
 "Memory that contains cached data and code that is not actively in use"
 msgstr ""
-"Pohotovostní ({}B)\n"
+"Pohotovostní ({})\n"
 "\n"
 "Paměť, která obsahuje data a kód v mezipaměti, které nejsou aktivně používány"
 
@@ -1539,7 +1539,7 @@ msgid ""
 "Memory that is not currently in use, and that will be repurposed first when "
 "the operating system, drivers, or applications need more memory"
 msgstr ""
-"Volná ({}B)\n"
+"Volná ({})\n"
 "\n"
 "Paměť která v tuto chvíli není využívána a která bude opětovně využita v "
 "okamžiku kdy operační systém, ovladače či aplikace budou potřebovat více "
@@ -1698,7 +1698,7 @@ msgstr "Optická"
 
 #: src/performance_page/disk.rs:292 src/performance_page/mod.rs:1128
 msgid "Floppy"
-msgstr "Disketa"
+msgstr "Disketová"
 
 #: src/performance_page/disk.rs:293 src/performance_page/mod.rs:1129
 msgid "Thumb Drive"
