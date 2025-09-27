@@ -282,7 +282,7 @@ pub(crate) mod imp {
 glib::wrapper! {
     pub struct ServicesPage(ObjectSubclass<imp::ServicesPage>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl ServicesPage {

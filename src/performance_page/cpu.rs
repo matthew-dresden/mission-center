@@ -957,7 +957,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePageCpu(ObjectSubclass<imp::PerformancePageCpu>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PageExt for PerformancePageCpu {

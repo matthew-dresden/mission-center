@@ -516,7 +516,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePageDisk(ObjectSubclass<imp::PerformancePageDisk>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PageExt for PerformancePageDisk {

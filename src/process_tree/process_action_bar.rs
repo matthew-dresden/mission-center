@@ -24,7 +24,6 @@ use adw::glib::{gobject_ffi, Object};
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::app;
 use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
 use crate::process_tree::row_model::{ContentType, RowModel};
 use crate::process_tree::util::calculate_anchor_point;
@@ -48,7 +47,7 @@ macro_rules! setup_action {
                     return;
                 }
 
-                if let Ok(magpie_client) = app!().sys_info() {
+                if let Ok(magpie_client) = $crate::app!().sys_info() {
                     match selected_item.content_type() {
                         ContentType::Process => {
                             magpie_client.$magpie_function(vec![selected_item.pid()]);
@@ -306,7 +305,7 @@ fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
 glib::wrapper! {
     pub struct ProcessActionBar(ObjectSubclass<imp::ProcessActionBar>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {

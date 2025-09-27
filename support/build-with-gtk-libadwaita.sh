@@ -482,7 +482,7 @@ cd $OUT_PATH
 
 # Blueprint Compiler
 # -------------------------------------------------------------------
-BP_CMP_VER=v0.16.0
+BP_CMP_VER=v0.18.0
 # -------------------------------------------------------------------
 curl -LO https://gitlab.gnome.org/jwestman/blueprint-compiler/-/archive/$BP_CMP_VER/blueprint-compiler-$BP_CMP_VER.tar.bz2
 tar xvf blueprint-compiler-*.tar.bz2 && rm blueprint-compiler-*.tar.bz2

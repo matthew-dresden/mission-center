@@ -208,7 +208,7 @@ mod imp {
 glib::wrapper! {
     pub struct AppsPage(ObjectSubclass<imp::AppsPage>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl AppsPage {

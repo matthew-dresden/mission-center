@@ -2486,7 +2486,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePage(ObjectSubclass<imp::PerformancePage>)
         @extends adw::BreakpointBin, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PerformancePage {
