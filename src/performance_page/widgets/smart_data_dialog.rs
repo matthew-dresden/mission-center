@@ -39,7 +39,7 @@ mod imp {
 
     #[derive(Default, gtk::CompositeTemplate)]
     #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/performance_page/disk_smart_data_dialog.ui"
+        resource = "/io/missioncenter/MissionCenter/ui/performance_page/disk_widgets/disk_smart_data_dialog.ui"
     )]
     pub struct SmartDataDialog {
         #[template_child]

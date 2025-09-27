@@ -1,4 +1,4 @@
-/* ui/performance_page/disk_smart_failure_dialog.blp
+/* ui/performance_page/disk_widgets/disk_smart_data_entry.blp
  *
  * Copyright 2025 Mission-Center-Devs
  *
@@ -19,17 +19,35 @@
  */
 
  using Gtk 4.0;
-using Adw 1;
 
-template $SmartFailureDialog: Adw.AlertDialog {
-  heading: _("Failed To Get SMART Data");
+ListBoxRow root {
+  Box {
+    Label id {
+      width-request: 50;
+    }
 
-  Adw.ToolbarView {
-    Box {
-      Label {
-        hexpand: false;
-        label: _("There was a problem fetching SMART data. Try running from the command line to get more information.");
-      }
+    Label attribute {
+      halign: start;
+    }
+
+    Label value {
+
+    }
+
+    Label normalized {
+
+    }
+
+    Label threshold {
+
+    }
+
+    Label worst {
+
+    }
+
+    Label pretty {
+
     }
   }
 }

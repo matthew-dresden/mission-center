@@ -39,7 +39,7 @@ mod imp {
 
     #[derive(gtk::CompositeTemplate)]
     #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/performance_page/disk_eject_failure_dialog.ui"
+        resource = "/io/missioncenter/MissionCenter/ui/performance_page/disk_widgets/disk_eject_failure_dialog.ui"
     )]
     pub struct EjectFailureDialog {
         #[template_child]

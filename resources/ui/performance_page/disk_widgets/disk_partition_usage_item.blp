@@ -1,4 +1,4 @@
-/* ui/performance_page/disk_smart_data_entry.blp
+/* ui/performance_page/disk_widgets/disk_smart_failure_dialog.blp
  *
  * Copyright 2025 Mission-Center-Devs
  *
@@ -19,35 +19,35 @@
  */
 
  using Gtk 4.0;
+using Adw 1;
 
-ListBoxRow root {
+template $PartitionUsageItem: ListBoxRow {
+  activatable: false;
+
   Box {
-    Label id {
-      width-request: 50;
+    margin-start: 20;
+    margin-end: 20;
+    margin-top: 20;
+    margin-bottom: 20;
+
+    orientation: vertical;
+
+    Box {
+      spacing: 12;
+
+      Label devname_label {
+      }
+
+      Label mountdir {
+      }
+
+      Label usage_pct {
+        halign: end;
+      }
     }
 
-    Label attribute {
-      halign: start;
-    }
-
-    Label value {
-
-    }
-
-    Label normalized {
-
-    }
-
-    Label threshold {
-
-    }
-
-    Label worst {
-
-    }
-
-    Label pretty {
-
+    ProgressBar usage_bar {
+      hexpand: true;
     }
   }
 }

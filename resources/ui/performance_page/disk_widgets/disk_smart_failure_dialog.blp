@@ -1,4 +1,4 @@
-/* ui/performance_page/disk_eject_failure_row.blp
+/* ui/performance_page/disk_widgets/disk_smart_failure_dialog.blp
  *
  * Copyright 2025 Mission-Center-Devs
  *
@@ -18,39 +18,17 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-using Gtk 4.0;
+ using Gtk 4.0;
 using Adw 1;
 
-template $EjectFailureRow : Adw.Bin {
-  ListBoxRow {
+template $SmartFailureDialog: Adw.AlertDialog {
+  heading: _("Failed To Get SMART Data");
+
+  Adw.ToolbarView {
     Box {
-      Image icon {
-      }
-
-      Label pid {
-        width-request: 50;
-        xalign: 0.0;
-      }
-
-      Label name {
-        width-request: 100;
-        halign: start;
-      }
-
-      Label open_files {
-        hexpand: true;
-        halign: start;
-      }
-
-      Button kill {
-        styles [
-          "destructive-action"
-        ]
-        child: Box {
-          Label {
-            label: _("Kill");
-          }
-        };
+      Label {
+        hexpand: false;
+        label: _("There was a problem fetching SMART data. Try running from the command line to get more information.");
       }
     }
   }

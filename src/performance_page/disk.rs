@@ -30,13 +30,16 @@ use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::{app, to_short_human_readable_time};
 
-use super::widgets::{EjectFailureDialog, GraphWidget, SmartDataDialog, SmartFailureDialog};
+use super::widgets::{
+    EjectFailureDialog, GraphWidget, PartitionUsageItem, SmartDataDialog, SmartFailureDialog,
+};
 use super::PageExt;
 
 mod imp {
     use super::*;
     use crate::performance_page::disk_details::DiskDetails;
     use crate::DataType;
+    use std::collections::HashMap;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageDisk)]
@@ -350,6 +353,8 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
+            println!("{:?}", disk);
+
             if index.is_some() {
                 this.disk_id.set_text(&i18n_f(
                     "Drive {} ({})",
@@ -423,6 +428,38 @@ mod imp {
                     disk.tx_bytes_total as f32,
                     &DataType::DriveBytes,
                 ));
+
+            let stack = this.infobar_content.partitions_stack();
+
+            let mut existing_map: HashMap<String, PartitionUsageItem> =
+                this.infobar_content.imp().partitions_map.take();
+
+            let mut new_map = HashMap::new();
+
+            'outer: for (existing_devname, existing_row) in existing_map {
+                for partition in &disk.partitions {
+                    if existing_devname == partition.devname {
+                        existing_row.update(partition);
+
+                        new_map.insert(existing_devname, existing_row);
+                        continue 'outer;
+                    }
+                }
+
+                stack.remove(&existing_row);
+            }
+
+            for partition in &disk.partitions {
+                if !new_map.contains_key(&partition.devname) {
+                    let new_item = PartitionUsageItem::from_part_info(partition);
+
+                    stack.insert(&new_item, new_map.len() as i32);
+
+                    new_map.insert(partition.devname.clone(), new_item);
+                }
+            }
+
+            this.infobar_content.imp().partitions_map.set(new_map);
 
             true
         }
