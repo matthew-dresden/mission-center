@@ -442,5 +442,5 @@ fn main() {
     gtk::Application::set_default(app.upcast_ref::<gtk::Application>());
 
     let exit_code = app.run();
-    std::process::exit(exit_code.value());
+    std::process::exit(exit_code.get() as _);
 }

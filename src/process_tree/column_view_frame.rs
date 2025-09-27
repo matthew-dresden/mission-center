@@ -666,7 +666,7 @@ pub(crate) mod imp {
 glib::wrapper! {
     pub struct ColumnViewFrame(ObjectSubclass<imp::ColumnViewFrame>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 #[derive(Copy, Clone, Default)]

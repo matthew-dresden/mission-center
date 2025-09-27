@@ -1007,7 +1007,8 @@ mod imp {
 glib::wrapper! {
     pub struct MissionCenterWindow(ObjectSubclass<imp::MissionCenterWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible,
+                    gtk::Buildable, gtk::ShortcutManager, gtk::Root, gtk::Native;
 }
 
 impl MissionCenterWindow {

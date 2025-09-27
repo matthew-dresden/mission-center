@@ -57,7 +57,9 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct SmartNvmeDialogRow(ObjectSubclass<imp::SmartNvmeDialogRow>);
+    pub struct SmartNvmeDialogRow(ObjectSubclass<imp::SmartNvmeDialogRow>)
+        @extends gtk::Widget,
+        @implements gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl SmartNvmeDialogRow {
