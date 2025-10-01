@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-21 06:25+0000\n"
-"PO-Revision-Date: 2025-08-13 07:02+0000\n"
-"Last-Translator: Yuta Sahara <shryt0206@gmail.com>\n"
+"PO-Revision-Date: 2025-09-30 09:01+0000\n"
+"Last-Translator: rainy_sunset <rainy_sunset@users.noreply.hosted.weblate.org>"
+"\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/ja/>\n"
 "Language: ja\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -398,7 +399,6 @@ msgstr "ドライブ"
 #: resources/ui/apps_page/details_dialog.blp:268
 #: resources/ui/apps_page/page.blp:210 src/apps_page/columns/mod.rs:284
 #: src/apps_page/columns/mod.rs:294
-#, fuzzy
 msgid "Network"
 msgstr "ネットワーク"
 
@@ -412,21 +412,20 @@ msgstr "GPU"
 #: resources/ui/apps_page/details_dialog.blp:318
 #: resources/ui/apps_page/page.blp:222 src/apps_page/columns/mod.rs:304
 #: src/apps_page/columns/mod.rs:323
-#, fuzzy
 msgid "GPU Memory"
-msgstr "GPU {}"
+msgstr "GPU メモリ"
 
 #: resources/ui/apps_page/page.blp:75
 msgid "Collapse all apps and processes"
-msgstr ""
+msgstr "すべてのアプリとプロセスを折りたたむ"
 
 #: resources/ui/apps_page/page.blp:87 resources/ui/keyboard_shortcuts.blp:87
 msgid "Collapse All"
-msgstr ""
+msgstr "すべてを折りたたむ"
 
 #: resources/ui/apps_page/page.blp:99
 msgid "Stop the selected app"
-msgstr ""
+msgstr "選択したアプリを停止"
 
 #: resources/ui/apps_page/page.blp:111 resources/ui/apps_page/page.blp:239
 #: resources/ui/services_page/page.blp:109
@@ -436,16 +435,15 @@ msgstr "停止"
 
 #: resources/ui/apps_page/page.blp:118
 msgid "Force stop the selected app"
-msgstr ""
+msgstr "選択したアプリを強制停止"
 
 #: resources/ui/apps_page/page.blp:130 resources/ui/apps_page/page.blp:244
-#, fuzzy
 msgid "Force Stop"
-msgstr "プロセスを強制終了"
+msgstr "強制停止"
 
 #: resources/ui/apps_page/page.blp:138
 msgid "Show details of the selected app"
-msgstr ""
+msgstr "選択したアプリの詳細を表示"
 
 #: resources/ui/apps_page/page.blp:150 resources/ui/apps_page/page.blp:251
 #: resources/ui/services_page/page.blp:148
@@ -487,19 +485,16 @@ msgid "The current state of the service"
 msgstr "サービスの現在の状態"
 
 #: resources/ui/services_page/details_dialog.blp:75
-#, fuzzy
 msgid "Start service"
-msgstr "サービス"
+msgstr "サービスを開始"
 
 #: resources/ui/services_page/details_dialog.blp:90
-#, fuzzy
 msgid "Stop service"
-msgstr "サービス"
+msgstr "サービスを停止"
 
 #: resources/ui/services_page/details_dialog.blp:106
-#, fuzzy
 msgid "Restart service"
-msgstr "再起動"
+msgstr "サービスを再起動"
 
 #: resources/ui/services_page/details_dialog.blp:164
 #: resources/ui/services_page/page.blp:226
@@ -516,7 +511,6 @@ msgstr ""
 
 #: resources/ui/services_page/details_dialog.blp:220
 #: src/apps_page/row_model.rs:213
-#, fuzzy
 msgid "Process"
 msgstr "プロセス"
 
@@ -525,9 +519,8 @@ msgid "Process and user information"
 msgstr "プロセスとユーザーの情報"
 
 #: resources/ui/services_page/details_dialog.blp:237
-#, fuzzy
 msgid "Process ID"
-msgstr "プロセス"
+msgstr "プロセス ID"
 
 #: resources/ui/services_page/details_dialog.blp:269
 msgid "User"
@@ -543,7 +536,7 @@ msgstr "ログ"
 
 #: resources/ui/services_page/page.blp:78
 msgid "Start the selected service"
-msgstr ""
+msgstr "選択したサービスを開始"
 
 #: resources/ui/services_page/page.blp:90
 #: resources/ui/services_page/page.blp:264
@@ -552,11 +545,11 @@ msgstr "開始"
 
 #: resources/ui/services_page/page.blp:97
 msgid "Stop the selected service"
-msgstr ""
+msgstr "選択したサービスを停止"
 
 #: resources/ui/services_page/page.blp:117
 msgid "Restart the selected service"
-msgstr ""
+msgstr "選択したサービスを再起動"
 
 #: resources/ui/services_page/page.blp:129
 #: resources/ui/services_page/page.blp:274
@@ -565,22 +558,22 @@ msgstr "再起動"
 
 #: resources/ui/services_page/page.blp:136
 msgid "Show details of the selected service"
-msgstr ""
+msgstr "選択したサービスの詳細を表示"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
 msgid "Follow system style"
-msgstr ""
+msgstr "システムのスタイルに従う"
 
 #: resources/ui/widgets/theme_selector.blp:35
 #: resources/ui/widgets/theme_selector.blp:38
 msgid "Light style"
-msgstr ""
+msgstr "明るいスタイル"
 
 #: resources/ui/widgets/theme_selector.blp:53
 #: resources/ui/widgets/theme_selector.blp:56
 msgid "Dark style"
-msgstr ""
+msgstr "暗いスタイル"
 
 #: resources/ui/performance_page/cpu_details.blp:46
 #: resources/ui/performance_page/gpu_details.blp:51
@@ -653,11 +646,11 @@ msgstr "電源設定:"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
-msgstr ""
+msgstr "取り出しに失敗しました"
 
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
-msgstr ""
+msgstr "キル"
 
 #: resources/ui/performance_page/gpu_details.blp:80
 msgid "Clock Speed"
@@ -681,19 +674,16 @@ msgid "Shared Memory Usage"
 msgstr "メモリ使用率"
 
 #: resources/ui/performance_page/gpu_details.blp:332
-#, fuzzy
 msgid "Memory Speed"
 msgstr "メモリ速度"
 
 #: resources/ui/performance_page/gpu_details.blp:407
-#, fuzzy
 msgid "Video encode"
-msgstr "ビデオ エンコード/デコード"
+msgstr "ビデオ エンコード"
 
 #: resources/ui/performance_page/gpu_details.blp:453
-#, fuzzy
 msgid "Video decode"
-msgstr "ビデオ エンコード/デコード"
+msgstr "ビデオ デコード"
 
 #: resources/ui/performance_page/gpu_details.blp:483
 msgid "Temperature"
@@ -712,9 +702,8 @@ msgid "PCI Express speed:"
 msgstr "PCI Express の速度:"
 
 #: resources/ui/performance_page/gpu_details.blp:566
-#, fuzzy
 msgid "Max PCI Express speed:"
-msgstr "PCI Express の速度:"
+msgstr "PCI Express の最大速度:"
 
 #: resources/ui/performance_page/gpu_details.blp:582
 msgid "PCI bus address:"
@@ -734,9 +723,8 @@ msgid "Memory composition"
 msgstr "メモリ構成"
 
 #: resources/ui/performance_page/memory.blp:196
-#, fuzzy
 msgid "Show Memory Composition"
-msgstr "メモリ構成"
+msgstr "メモリ構成を表示"
 
 #: resources/ui/performance_page/memory.blp:200
 msgid "Show Swap Usage"
@@ -785,7 +773,7 @@ msgstr "メモリ"
 #: resources/ui/performance_page/network.blp:123
 #: resources/ui/performance_page/disk.blp:200
 msgid "_Drive"
-msgstr ""
+msgstr "ドライブ(_D)"
 
 #: resources/ui/performance_page/memory.blp:230
 #: resources/ui/performance_page/gpu.blp:238
@@ -812,7 +800,7 @@ msgstr "GPU"
 #: resources/ui/performance_page/network.blp:138
 #: resources/ui/performance_page/disk.blp:215
 msgid "_Fan"
-msgstr ""
+msgstr "ファン(_F)"
 
 #: resources/ui/performance_page/memory.blp:248
 #: resources/ui/performance_page/gpu.blp:256
@@ -903,7 +891,7 @@ msgstr "カーネル時間を表示"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:31
 msgid "In Use:"
-msgstr ""
+msgstr "使用中:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:36
 msgid "Modified:"
@@ -915,21 +903,19 @@ msgstr ""
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:46
 msgid "Free:"
-msgstr ""
+msgstr "空き:"
 
 #: resources/ui/performance_page/fan_details.blp:59
-#, fuzzy
 msgid "Fan Speed"
-msgstr "速度"
+msgstr "ファンの速度"
 
 #: resources/ui/performance_page/fan_details.blp:98
 msgid "PWM Percentage"
-msgstr ""
+msgstr "PWM パーセンテージ"
 
 #: resources/ui/performance_page/fan_details.blp:125
-#, fuzzy
 msgid "Current Temperature"
-msgstr "温度"
+msgstr "現在の温度"
 
 #: resources/ui/performance_page/fan.blp:61
 msgid "Fan speed over "
@@ -941,39 +927,37 @@ msgstr "温度 "
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
-msgstr ""
+msgstr "Smart データ"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:48
 msgid "Last Updated"
-msgstr ""
+msgstr "最終更新"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:72
-#, fuzzy
 msgid "Powered On"
-msgstr "消費電力"
+msgstr "電源投入"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:96
 msgid "Drive Health"
-msgstr ""
+msgstr "ドライブの健康状態"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
-msgstr ""
+msgstr "SMARTのテスト状態"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
 msgid "Attribute"
-msgstr ""
+msgstr "属性"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
 msgid "Value"
-msgstr ""
+msgstr "値"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
-#, fuzzy
 msgid "ID"
-msgstr "PID"
+msgstr "ID"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
 #, fuzzy
@@ -981,18 +965,16 @@ msgid "Normalized"
 msgstr "普通"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:193
-#, fuzzy
 msgid "Threshold"
-msgstr "スレッド数"
+msgstr "しきい値"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:199
 msgid "Worst"
-msgstr ""
+msgstr "最低"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:211
-#, fuzzy
 msgid "Updates"
-msgstr "更新速度"
+msgstr "更新"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:217
 msgid "Assessment"
@@ -1000,13 +982,15 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
 msgid "Failed To Get SMART Data"
-msgstr ""
+msgstr "SMART データの取得に失敗しました"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:31
 msgid ""
 "There was a problem fetching SMART data. Try running from the command line "
 "to get more information."
-msgstr ""
+msgstr "SMART "
+"データの取得で問題が発生しました。さらなる情報を取得するにはコマンドラインか"
+"ら実行してみてください。"
 
 #: resources/ui/performance_page/network.blp:61
 #: resources/ui/performance_page/disk.blp:140
@@ -1019,11 +1003,11 @@ msgstr "ネットワーク設定"
 
 #: resources/ui/performance_page/disk.blp:66
 msgid "Show SMART Data"
-msgstr ""
+msgstr "SMART データを表示"
 
 #: resources/ui/performance_page/disk.blp:77
 msgid "Eject Disk"
-msgstr ""
+msgstr "ディスクを取り出す"
 
 #: resources/ui/performance_page/disk.blp:99
 msgid "Active time over "
@@ -1118,7 +1102,6 @@ msgid "Form factor:"
 msgstr "フォームファクター:"
 
 #: resources/ui/preferences/page.blp:6
-#, fuzzy
 msgid "General"
 msgstr "一般"
 
@@ -1131,9 +1114,8 @@ msgid "Chart Data Points"
 msgstr ""
 
 #: resources/ui/preferences/page.blp:46 resources/ui/keyboard_shortcuts.blp:43
-#, fuzzy
 msgid "Performance Page"
-msgstr "パフォーマンス"
+msgstr "パフォーマンス ページ"
 
 #: resources/ui/preferences/page.blp:49
 msgid "Smooth Graphs"
@@ -1153,22 +1135,22 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:59
 msgid "Scale Network Graphs Dynamically"
-msgstr ""
+msgstr "ネットワークのグラフのサイズを動的に調整する"
 
 #: resources/ui/preferences/page.blp:60
 msgid ""
 "Set network graph to scale dynamically with actual usage or with channel max "
 "speed"
-msgstr ""
+msgstr "実際の使用量やチャネルの最大速度によって、ネットワーク "
+"グラフが動的にサイズ調整されるように設定する"
 
 #: resources/ui/preferences/page.blp:64
 msgid "Show CPU Information"
 msgstr "CPU情報を表示"
 
 #: resources/ui/preferences/page.blp:70
-#, fuzzy
 msgid "Show Memory Information"
-msgstr "メモリ構成"
+msgstr "メモリ情報を表示"
 
 #: resources/ui/preferences/page.blp:76
 msgid "Show Disk Information"
@@ -1187,7 +1169,6 @@ msgid "Show Fan Information"
 msgstr "ファン情報を表示"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App Page"
 msgstr "アプリページ"
 
@@ -1200,18 +1181,16 @@ msgid "Remember Sorting"
 msgstr "並び替え状態の記憶"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist app and process sorting by column, across app restarts"
-msgstr "アプリやプロセスの並べ替え状態をアプリの再起動後も記憶する"
+msgstr "列によるアプリやプロセスの並べ替え状態をアプリの再起動後も記憶する"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
-msgstr ""
+msgstr "列の並び順を記憶"
 
 #: resources/ui/preferences/page.blp:115
-#, fuzzy
 msgid "Persist the order of the columns, across app restarts"
-msgstr "アプリやプロセスの並べ替え状態をアプリの再起動後も記憶する"
+msgstr "列の並べ替え状態をアプリの再起動後も記憶する"
 
 #: resources/ui/preferences/page.blp:119
 msgid "Scale CPU Usage to Core Count"
@@ -1219,20 +1198,19 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
-msgstr ""
+msgstr "列の区切り線を表示"
 
 #: resources/ui/preferences/page.blp:125
 msgid "Show a separator between each column"
-msgstr ""
+msgstr "それぞれの列の間に区切り線を表示"
 
 #: resources/ui/preferences/page.blp:130
 msgid "Global Units"
 msgstr ""
 
 #: resources/ui/preferences/page.blp:133
-#, fuzzy
 msgid "Memory Usage Unit"
-msgstr "メモリ使用率"
+msgstr "メモリ使用率の単位"
 
 #: resources/ui/preferences/page.blp:140
 msgid "Use Bytes as a Unit of Measurement for Memory"
@@ -1241,7 +1219,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:141 resources/ui/preferences/page.blp:179
 #: resources/ui/preferences/page.blp:217
 msgid "Bytes"
-msgstr ""
+msgstr "バイト"
 
 #: resources/ui/preferences/page.blp:145
 msgid "Use Bits as a Unit of Measurement for Memory"
@@ -1250,7 +1228,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
 #: resources/ui/preferences/page.blp:222
 msgid "Bits"
-msgstr ""
+msgstr "ビット"
 
 #: resources/ui/preferences/page.blp:152
 #, fuzzy
@@ -1860,16 +1838,15 @@ msgstr[0] "{}秒"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:155
-#, fuzzy
 msgid "{}, {} and {}"
-msgstr "{}: {} {}bps"
+msgstr "{}, {}と{}"
 
 #. Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days
 #. Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours
 #. Translators: Used for durations less than one day but greater than one hour. First %s is number of hours, second %s is minutes
 #: src/main.rs:158 src/main.rs:161 src/main.rs:164
 msgid "{} and {}"
-msgstr ""
+msgstr "{}と{}"
 
 #: src/main.rs:170
 msgid "Less than a minute"
