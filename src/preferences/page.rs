@@ -29,6 +29,14 @@ const MIN_INTERVAL_TICKS: u64 = 10;
 const MAX_POINTS: i32 = 600;
 const MIN_POINTS: i32 = 10;
 
+enum PointsUpdateSource {
+    Other,
+    SettingsLoad,
+    Slider,
+    MinutesChanged,
+    SecondsChanged,
+}
+
 macro_rules! connect_switch_to_setting {
     ($this: expr, $switch_row: expr, $setting: literal) => {
         $switch_row.connect_active_notify({
@@ -73,6 +81,7 @@ macro_rules! connect_toggle_pair_to_setting {
 
 mod imp {
     use super::*;
+    use gtk::SpinButton;
 
     #[derive(gtk::CompositeTemplate, Default)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/preferences/page.ui")]
@@ -81,6 +90,10 @@ mod imp {
         pub update_interval: TemplateChild<SpinRow>,
         #[template_child]
         pub data_points: TemplateChild<Scale>,
+        #[template_child]
+        pub range_minutes: TemplateChild<SpinButton>,
+        #[template_child]
+        pub range_seconds: TemplateChild<SpinButton>,
 
         #[template_child]
         pub smooth_graphs: TemplateChild<SwitchRow>,
@@ -151,31 +164,13 @@ mod imp {
     }
 
     impl PreferencesPage {
-        pub fn configure_update_speed(&self) {
+        pub fn configure_update_speed(&self, source: PointsUpdateSource) {
             use crate::application::INTERVAL_STEP;
             use glib::g_critical;
 
             let settings = settings!();
 
-            let new_interval = (self.update_interval.value() / INTERVAL_STEP).round() as u64;
             let new_points = self.data_points.value() as i32;
-
-            if new_interval <= MAX_INTERVAL_TICKS && new_interval >= MIN_INTERVAL_TICKS {
-                if settings
-                    .set_uint64("app-update-interval-u64", new_interval)
-                    .is_err()
-                {
-                    g_critical!(
-                        "MissionCenter::Preferences",
-                        "Failed to set update interval setting",
-                    );
-                }
-            } else {
-                g_critical!(
-                    "MissionCenter::Preferences",
-                    "Update interval out of bounds",
-                );
-            }
 
             if new_points <= MAX_POINTS && new_points >= MIN_POINTS {
                 if settings
@@ -191,6 +186,32 @@ mod imp {
                 g_critical!(
                     "MissionCenter::Preferences",
                     "Points interval out of bounds",
+                );
+            }
+
+            match source {
+                PointsUpdateSource::Other => {}
+                PointsUpdateSource::SettingsLoad => {}
+                PointsUpdateSource::Slider => {}
+                PointsUpdateSource::MinutesChanged => {}
+                PointsUpdateSource::SecondsChanged => {}
+            }
+            let new_interval = (self.update_interval.value() / INTERVAL_STEP).round() as u64;
+
+            if new_interval <= MAX_INTERVAL_TICKS && new_interval >= MIN_INTERVAL_TICKS {
+                if settings
+                    .set_uint64("app-update-interval-u64", new_interval)
+                    .is_err()
+                {
+                    g_critical!(
+                        "MissionCenter::Preferences",
+                        "Failed to set update interval setting",
+                    );
+                }
+            } else {
+                g_critical!(
+                    "MissionCenter::Preferences",
+                    "Update interval out of bounds",
                 );
             }
         }
@@ -224,7 +245,7 @@ mod imp {
                     let this = self.obj().downgrade();
                     move |_| {
                         if let Some(this) = this.upgrade() {
-                            this.imp().configure_update_speed();
+                            this.imp().configure_update_speed(PointsUpdateSource::Other);
                         }
                     }
                 });
@@ -236,7 +257,34 @@ mod imp {
                     let this = self.obj().downgrade();
                     move |_| {
                         if let Some(this) = this.upgrade() {
-                            this.imp().configure_update_speed();
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::Slider);
+                        }
+                    }
+                });
+
+            self.range_minutes
+                .downcast_ref::<SpinButton>()
+                .unwrap()
+                .connect_changed({
+                    let this = self.obj().downgrade();
+                    move |_| {
+                        if let Some(this) = this.upgrade() {
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::MinutesChanged);
+                        }
+                    }
+                });
+
+            self.range_seconds
+                .downcast_ref::<SpinButton>()
+                .unwrap()
+                .connect_changed({
+                    let this = self.obj().downgrade();
+                    move |_| {
+                        if let Some(this) = this.upgrade() {
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::SecondsChanged);
                         }
                     }
                 });
