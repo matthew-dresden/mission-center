@@ -30,7 +30,7 @@ use gtk::{gio, glib, subclass::prelude::*};
 use crate::i18n::{i18n, ni18n_f};
 use crate::magpie_client::App;
 use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
-use crate::process_tree::models::{update_apps, update_processes};
+use crate::process_tree::models::{update_apps, update_children};
 use crate::process_tree::process_action_bar::ProcessActionBar;
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
@@ -277,17 +277,17 @@ impl AppsPage {
         let mut process_model_map = HashMap::new();
         let root_process = readings.running_processes.keys().min().unwrap_or(&1);
         if let Some(init) = readings.running_processes.get(root_process) {
-            for child in &init.children {
-                update_processes(
-                    &readings.running_processes,
-                    child,
-                    &imp.processes_section.children(),
-                    &imp.app_icons.borrow(),
-                    "application-x-executable-symbolic",
-                    imp.column_view.imp().use_merged_stats.get(),
-                    &mut process_model_map,
-                );
-            }
+            update_children(
+                &readings.running_processes,
+                init.children.clone().drain(..).collect(),
+                &imp.processes_section.children(),
+                &imp.app_icons.borrow(),
+                "application-x-executable-symbolic",
+                imp.column_view.imp().use_merged_stats.get(),
+                SectionType::SecondSection,
+                None,
+                &mut process_model_map,
+            );
         }
         imp.root_process.set(*root_process);
 
