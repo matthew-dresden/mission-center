@@ -413,13 +413,6 @@ pub fn show_error_dialog_and_exit(message: &str) -> ! {
 }
 
 fn main() {
-    let home = user_home().to_string_lossy().to_string();
-    let mut xdg_data_dirs = env::var_os("XDG_DATA_DIRS")
-        .map(|str| str.to_string_lossy().to_string())
-        .unwrap_or("/usr/share:/usr/local/share".into());
-    xdg_data_dirs.push_str(&format!(":{home}/.local/share"));
-    env::set_var("XDG_DATA_DIRS", xdg_data_dirs.replace('~', &home));
-
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Unable to bind the text domain");
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
         .expect("Unable to set the text domain encoding");
