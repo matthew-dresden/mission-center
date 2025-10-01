@@ -221,7 +221,7 @@ impl AppsPage {
             &imp.processes_section,
             Some(&imp.process_action_bar),
             None,
-            None,
+            None::<[_; 0]>,
         );
 
         self.update_common(readings);

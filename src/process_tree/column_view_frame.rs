@@ -28,9 +28,8 @@ use textdistance::{Algorithm, Levenshtein};
 
 use adw::glib::{g_critical, ParamSpec, Properties, Value};
 use adw::prelude::*;
-use adw::ToggleGroup;
-use gtk::glib::{VariantTy, WeakRef};
-use gtk::{gio, glib, subclass::prelude::*};
+use gtk::glib::{g_warning, VariantTy, WeakRef};
+use gtk::{gio, glib, subclass::prelude::*, ToggleButton};
 
 use crate::i18n::i18n;
 use crate::process_tree::columns::*;
@@ -220,14 +219,14 @@ pub(crate) mod imp {
             unsafe { &*self.action_group.as_ptr() }
         }
 
-        pub fn setup(
+        pub fn setup<const TOGGLE_COUNT: usize>(
             &self,
             settings_namespace: ColumnViewSettingsNamespaces,
             section_item_1: &RowModel,
             section_item_2: &RowModel,
             process_action_bar: Option<&ProcessActionBar>,
             service_action_bar: Option<&ServiceActionBar>,
-            service_toggle_group: Option<&ToggleGroup>,
+            service_toggle_group: Option<[WeakRef<ToggleButton>; TOGGLE_COUNT]>,
         ) {
             self.settings_namespace.set(settings_namespace);
 
@@ -274,10 +273,10 @@ pub(crate) mod imp {
             })
         }
 
-        fn configure_filter(
+        fn configure_filter<const TOGGLE_COUNT: usize>(
             &self,
             tree_list_model: impl IsA<gio::ListModel>,
-            group: Option<&ToggleGroup>,
+            group: Option<[WeakRef<ToggleButton>; TOGGLE_COUNT]>,
         ) -> gtk::FilterListModel {
             let Some(window) = app!().window() else {
                 g_critical!(
@@ -287,9 +286,9 @@ pub(crate) mod imp {
                 return gtk::FilterListModel::new(Some(tree_list_model), None::<gtk::CustomFilter>);
             };
 
+            let group_clone = group.clone();
             let filter = gtk::CustomFilter::new({
                 let window = window.downgrade();
-                let group = group.clone().map(|it| it.downgrade());
                 move |obj| {
                     let Some(row_model) = obj
                         .downcast_ref::<gtk::TreeListRow>()
@@ -299,7 +298,7 @@ pub(crate) mod imp {
                         return false;
                     };
 
-                    let search = (|| {
+                    let search = || {
                         let Some(window) = window.upgrade() else {
                             return true;
                         };
@@ -338,32 +337,66 @@ pub(crate) mod imp {
                         }
 
                         false
-                    })();
+                    };
 
-                    let filter = (|group: Option<&WeakRef<ToggleGroup>>| {
-                        let Some(group) = group.map(|it| it.upgrade()).flatten() else {
+                    let group = group_clone.clone();
+                    let row_model_clone = row_model.clone();
+                    let filter = move || {
+                        let Some(group) = group else {
                             return true;
                         };
 
-                        if row_model.content_type() == ContentType::SectionHeader {
+                        if row_model_clone.content_type() == ContentType::SectionHeader {
                             return true;
                         }
 
-                        return match group.active() {
-                            0 => true,
-                            1 => row_model.service_running(),
-                            2 => row_model.service_failed(),
-                            3 => row_model.service_stopped(),
-                            4 => {
-                                !row_model.service_enabled()
-                                    && !row_model.service_running()
-                                    && !row_model.service_failed()
-                            }
-                            _ => true,
-                        };
-                    })(group.as_ref());
+                        if group.iter().all(|toggle| {
+                            toggle
+                                .upgrade()
+                                .map(|toggle| !toggle.is_active())
+                                .unwrap_or(true)
+                        }) {
+                            return true;
+                        }
 
-                    search && filter
+                        let mut visible = [false; TOGGLE_COUNT];
+                        for (i, toggle) in group.iter().enumerate() {
+                            if let Some(toggle) = toggle.upgrade() {
+                                let name = toggle.widget_name();
+                                match name.as_str() {
+                                    "toggle_running" => {
+                                        visible[i] =
+                                            toggle.is_active() && row_model_clone.service_running()
+                                    }
+                                    "toggle_failed" => {
+                                        visible[i] =
+                                            toggle.is_active() && row_model_clone.service_failed()
+                                    }
+                                    "toggle_stopped" => {
+                                        visible[i] =
+                                            toggle.is_active() && row_model_clone.service_stopped()
+                                    }
+                                    "toggle_disabled" => {
+                                        visible[i] = toggle.is_active()
+                                            && !row_model_clone.service_enabled()
+                                            && !row_model_clone.service_running()
+                                            && !row_model_clone.service_failed();
+                                    }
+                                    _ => {
+                                        g_warning!(
+                                            "MissionCenter::Services",
+                                            "Unknown toggle button: {}",
+                                            name
+                                        );
+                                    }
+                                };
+                            }
+                        }
+
+                        visible.iter().any(|b| *b)
+                    };
+
+                    search() && filter()
                 }
             });
 
@@ -376,16 +409,20 @@ pub(crate) mod imp {
                 }
             });
 
-            group.map(|it| {
-                it.connect_active_notify({
-                    let filter = filter.downgrade();
-                    move |_| {
-                        if let Some(filter) = filter.upgrade() {
-                            filter.changed(gtk::FilterChange::Different);
-                        }
+            if let Some(group) = group {
+                for toggle in &group {
+                    if let Some(toggle) = toggle.upgrade() {
+                        toggle.connect_toggled({
+                            let filter = filter.downgrade();
+                            move |_| {
+                                if let Some(filter) = filter.upgrade() {
+                                    filter.changed(gtk::FilterChange::Different);
+                                }
+                            }
+                        });
                     }
-                })
-            });
+                }
+            }
 
             gtk::FilterListModel::new(Some(tree_list_model), Some(filter))
         }
