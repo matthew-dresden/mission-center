@@ -423,6 +423,17 @@ impl ServicesPage {
         );
 
         self.update_service_counts(&readings.services);
+        models::update_services(
+            &readings.running_processes,
+            &readings.services,
+            &imp.user_section.children(),
+            &HashMap::new(),
+            "application-x-executable-symbolic",
+            imp.column_view.imp().use_merged_stats.get(),
+            SectionType::FirstSection,
+        );
+
+        self.update_service_counts(&readings.services);
 
         let selected_item = &imp.column_view.imp().selected_item.borrow();
 

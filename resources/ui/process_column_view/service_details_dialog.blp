@@ -315,6 +315,38 @@ template $ServiceDetailsDialog: Adw.Dialog {
                 }
               };
             }
+
+            Adw.PreferencesRow {
+              activatable: false;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+
+                  label: _("File Location");
+                }
+
+                Label file_location {
+                  styles [
+                    "dim-label"
+                  ]
+
+                  ellipsize: middle;
+
+                  hexpand: true;
+                  halign: end;
+
+                  label: _("");
+                }
+              };
+            }
           }
 
           Expander logs_expander {

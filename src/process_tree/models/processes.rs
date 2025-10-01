@@ -31,25 +31,12 @@ use magpie_types::services::Service;
 
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
-fn service_to_section_type(_service: &Service) -> SectionType {
-    SectionType::SecondSection
-    // use std::env;
-    /*    if let Some(user) = service.user.as_ref() {
-            // todo have magpie set user or not
-            if env::var_os("USER")
-                .map(|u| u.to_str().map(|u| u != user))
-                .flatten()
-                .unwrap_or(true)
-                || user.is_empty()
-            {
-                SectionType::SecondSection
-            } else {
-                SectionType::FirstSection
-            }
-        } else {
-            SectionType::SecondSection
-        }
-    */
+fn service_to_section_type(service: &Service) -> SectionType {
+    if service.is_user_service {
+        SectionType::FirstSection
+    } else {
+        SectionType::SecondSection
+    }
 }
 
 fn get_service_icon(service: &Service) -> String {
@@ -66,6 +53,49 @@ fn get_service_icon(service: &Service) -> String {
     }
 }
 
+fn update_service(
+    process_map: &HashMap<u32, Process>,
+    row_model: &RowModel,
+    service: &Service,
+    app_icons: &HashMap<u32, String>,
+    icon: &str,
+    use_merged_stats: bool,
+) {
+    set_service(&row_model, service);
+    row_model.set_icon(get_service_icon(&service));
+
+    if let Some(pid) = service.pid {
+        if let Some(process) = process_map.get(&pid) {
+            let usage_stats = process.merged_usage_stats(&process_map);
+
+            set_stats(&row_model, &usage_stats);
+        } // else clear usage stats?
+
+        let app_children = row_model.children();
+
+        app_children.retain(|child| {
+            child
+                .downcast_ref::<RowModel>()
+                .map(|rm| rm.pid() == pid)
+                .unwrap_or(false)
+        });
+
+        update_children(
+            process_map,
+            HashSet::from([pid]),
+            &app_children,
+            app_icons,
+            icon,
+            use_merged_stats,
+            row_model.section_type(),
+            Some(service),
+            &mut HashMap::new(),
+        );
+    } else {
+        row_model.children().remove_all();
+    }
+}
+
 pub fn update_services(
     process_map: &HashMap<u32, Process>,
     services: &HashMap<String, Service>,
@@ -75,203 +105,77 @@ pub fn update_services(
     use_merged_stats: bool,
     section_type: SectionType,
 ) {
-    let mut to_remove = Vec::with_capacity(list.n_items() as _);
-    for i in (0..list.n_items()).rev() {
-        let Some(service) = list.item(i).and_then(|obj| obj.downcast::<RowModel>().ok()) else {
-            to_remove.push(i);
-            continue;
-        };
+    let mut has_died = HashSet::new();
+    let mut does_exist = HashSet::new();
 
-        if services.contains_key(service.id().as_str()) {
-            continue;
+    list.iter::<RowModel>().flatten().for_each(|row_model| {
+        let g_string = row_model.id();
+        let sid = g_string.to_string();
+        if let Some(service) = services.get(&sid) {
+            update_service(
+                process_map,
+                &row_model,
+                service,
+                app_icons,
+                icon,
+                use_merged_stats,
+            );
+
+            does_exist.insert(sid);
+        } else {
+            has_died.insert(sid);
         }
+    });
 
-        to_remove.push(i);
-    }
-    for i in &to_remove {
-        list.remove(*i);
-    }
+    list.retain(|object| {
+        !has_died.contains(&object.downcast_ref::<RowModel>().unwrap().id().to_string())
+    });
 
-    for (service_id, service) in services {
+    for (_, service) in services
+        .iter()
+        .filter(|(_, serv)| !does_exist.contains(&serv.id))
+    {
         let service_section_type = service_to_section_type(&service);
 
         if service_section_type != section_type {
             continue;
         }
 
-        let row_model = if let Some(index) = list.find_with_equal_func(|obj| {
-            let Some(row_model) = obj.downcast_ref::<RowModel>() else {
-                return false;
-            };
+        let row_model = RowModelBuilder::new()
+            .content_type(ContentType::Service)
+            .section_type(service_section_type)
+            .id(&service.id)
+            .name(&service.id)
+            .file_path(&service.file_path())
+            .user(&service.user.clone().unwrap_or("".to_string()))
+            .group(&service.group.clone().unwrap_or("".to_string()))
+            .build();
+        list.append(&row_model);
 
-            if row_model.content_type() != ContentType::Service {
-                return false;
-            }
-
-            row_model.id().as_str() == service_id
-        }) {
-            unsafe {
-                list.item(index)
-                    .and_then(|obj| obj.downcast().ok())
-                    .unwrap_unchecked()
-            }
-        } else {
-            let row_model = RowModelBuilder::new()
-                .content_type(ContentType::Service)
-                .section_type(service_section_type)
-                .id(&service.id)
-                .build();
-            list.append(&row_model);
-            row_model
-        };
-
-        row_model.set_id(service_id.as_str());
-        row_model.set_icon(get_service_icon(&service));
-        row_model.set_name(service.id.as_str());
-
-        if let Some(process) = process_map.get(service.pid.as_ref().unwrap_or(&0)) {
-            let usage_stats = process.merged_usage_stats(&process_map);
-
-            let command_line = process.cmd.join(" ");
-
-            row_model.set_command_line(command_line);
-
-            set_stats(&row_model, &usage_stats);
-        }
-
-        set_service(&row_model, service);
-
-        if let Some(pid) = service.pid {
-            to_remove.clear();
-            let app_children = row_model.children();
-            for i in (0..app_children.n_items()).rev() {
-                let Some(child) = app_children
-                    .item(i)
-                    .and_then(|obj| obj.downcast::<RowModel>().ok())
-                else {
-                    to_remove.push(i);
-                    continue;
-                };
-
-                if pid == child.pid() {
-                    continue;
-                }
-
-                to_remove.push(i);
-            }
-            for i in &to_remove {
-                app_children.remove(*i);
-            }
-
-            update_service_children(
-                process_map,
-                &pid,
-                &app_children,
-                app_icons,
-                icon,
-                use_merged_stats,
-                service_section_type,
-                service,
-            );
-        } else {
-            row_model.children().remove_all();
-        }
+        update_service(
+            process_map,
+            &row_model,
+            service,
+            app_icons,
+            icon,
+            use_merged_stats,
+        )
     }
 }
 
-pub fn update_service_children(
+fn update_process(
     process_map: &HashMap<u32, Process>,
-    pid: &u32,
-    list: &gio::ListStore,
+    process: &Process,
+    row_model: RowModel,
     app_icons: &HashMap<u32, String>,
     icon: &str,
     use_merged_stats: bool,
     section_type: SectionType,
-    parent_service: &Service,
+    parent_service: Option<&Service>,
+    model_map: &mut HashMap<u32, RowModel>,
 ) {
-    let Some(process) = process_map.get(&pid) else {
-        return;
-    };
-
-    let pretty_name = if process.exe.is_empty() {
-        if let Some(cmd) = process.cmd.first() {
-            let mut cmd = cmd
-                .split_ascii_whitespace()
-                .next()
-                .and_then(|s| s.split('/').last())
-                .unwrap_or(&process.name);
-            if let Some(s) = cmd.strip_suffix(':') {
-                cmd = s;
-            }
-            cmd.trim()
-        } else {
-            process.name.trim()
-        }
-    } else {
-        let exe_name = process.exe.split('/').last().unwrap_or(&process.name);
-        if exe_name.starts_with("wine") {
-            if process.cmd.is_empty() {
-                process.name.trim()
-            } else {
-                process.cmd[0]
-                    .split("\\")
-                    .last()
-                    .unwrap_or(&process.name)
-                    .split("/")
-                    .last()
-                    .unwrap_or(&process.name)
-                    .trim()
-            }
-        } else {
-            exe_name.trim()
-        }
-    };
-
-    let row_model = if let Some(index) = list.find_with_equal_func(|obj| {
-        let Some(row_model) = obj.downcast_ref::<RowModel>() else {
-            return false;
-        };
-        row_model.pid() == process.pid
-    }) {
-        unsafe {
-            list.item(index)
-                .and_then(|obj| obj.downcast().ok())
-                .unwrap_unchecked()
-        }
-    } else {
-        let row_model = RowModelBuilder::new()
-            .content_type(ContentType::Process)
-            .section_type(section_type)
-            .id(&process.pid.to_string())
-            .build();
-        list.append(&row_model);
-        row_model
-    };
-
-    let prev_children = row_model.children();
-    let mut to_remove = Vec::with_capacity(prev_children.n_items() as _);
-    for i in (0..prev_children.n_items()).rev() {
-        let Some(child) = prev_children
-            .item(i)
-            .and_then(|obj| obj.downcast::<RowModel>().ok())
-        else {
-            to_remove.push(i);
-            continue;
-        };
-
-        if process.children.contains(&child.pid()) {
-            continue;
-        }
-
-        to_remove.push(i);
-    }
-    for i in to_remove {
-        prev_children.remove(i);
-    }
-
-    let merged_usage_stats = process.merged_usage_stats(&process_map);
     let usage_stats = if use_merged_stats {
-        &merged_usage_stats
+        &process.merged_usage_stats(&process_map)
     } else {
         &process.usage_stats
     };
@@ -282,25 +186,135 @@ pub fn update_service_children(
         icon
     };
 
-    let command_line = process.cmd.join(" ");
+    row_model.set_icon(icon);
 
-    row_model.set_name(pretty_name);
-    // row_model.set_icon(icon);
-    row_model.set_command_line(command_line);
-    row_model.set_pid(process.pid);
     set_stats(&row_model, usage_stats);
-    set_service(&row_model, parent_service);
+    if let Some(parent_service) = parent_service {
+        set_service(&row_model, parent_service);
+    }
 
-    for child in &process.children {
-        update_service_children(
+    update_children(
+        process_map,
+        process.children.clone().drain(..).collect(),
+        &row_model.children(),
+        app_icons,
+        icon,
+        use_merged_stats,
+        section_type,
+        parent_service,
+        model_map,
+    );
+
+    model_map.insert(process.pid, row_model);
+}
+
+pub fn update_children(
+    process_map: &HashMap<u32, Process>,
+    pids: HashSet<u32>,
+    list: &gio::ListStore,
+    app_icons: &HashMap<u32, String>,
+    icon: &str,
+    use_merged_stats: bool,
+    section_type: SectionType,
+    parent_service: Option<&Service>,
+    model_map: &mut HashMap<u32, RowModel>,
+) {
+    let mut does_exist = HashSet::new();
+    let mut has_died = HashSet::new();
+
+    list.iter::<RowModel>().flatten().for_each(|row_model| {
+        let pid = row_model.pid();
+        if pids.contains(&pid) {
+            if let Some(process) = process_map.get(&pid) {
+                update_process(
+                    process_map,
+                    &process,
+                    row_model,
+                    app_icons,
+                    icon,
+                    use_merged_stats,
+                    section_type,
+                    parent_service,
+                    model_map,
+                );
+
+                does_exist.insert(pid);
+            } else {
+                has_died.insert(pid);
+            }
+        } else {
+            has_died.insert(pid);
+        }
+    });
+
+    list.retain(|object| {
+        object
+            .downcast_ref::<RowModel>()
+            .map(|rm| !has_died.contains(&rm.pid()))
+            .unwrap_or(false)
+    });
+
+    for process in pids
+        .iter()
+        .filter(|pid| !does_exist.contains(pid))
+        .filter_map(|pid| process_map.get(&pid))
+    {
+        let command_line = process.cmd.join(" ");
+
+        let pretty_name = if process.exe.is_empty() {
+            if let Some(cmd) = process.cmd.first() {
+                let mut cmd = cmd
+                    .split_ascii_whitespace()
+                    .next()
+                    .and_then(|s| s.split('/').last())
+                    .unwrap_or(&process.name);
+                if let Some(s) = cmd.strip_suffix(':') {
+                    cmd = s;
+                }
+                cmd.trim()
+            } else {
+                process.name.trim()
+            }
+        } else {
+            let exe_name = process.exe.split('/').last().unwrap_or(&process.name);
+            if exe_name.starts_with("wine") {
+                if process.cmd.is_empty() {
+                    process.name.trim()
+                } else {
+                    process.cmd[0]
+                        .split("\\")
+                        .last()
+                        .unwrap_or(&process.name)
+                        .split("/")
+                        .last()
+                        .unwrap_or(&process.name)
+                        .trim()
+                }
+            } else {
+                exe_name.trim()
+            }
+        };
+
+        let row_model = RowModelBuilder::new()
+            .content_type(ContentType::Process)
+            .section_type(section_type)
+            .id(&process.pid.to_string())
+            .pid(process.pid)
+            .name(pretty_name)
+            .command_line(&command_line)
+            .build();
+        list.append(&row_model);
+
+        update_process(
             process_map,
-            child,
-            &row_model.children(),
+            &process,
+            row_model,
             app_icons,
             icon,
             use_merged_stats,
-            SectionType::SecondSection,
+            section_type,
             parent_service,
+            model_map,
         );
     }
 }
@@ -322,7 +336,7 @@ fn set_service(row_model: &RowModel, service: &Service) {
     row_model.set_service_stopped(!service.running && !service.failed && service.enabled);
 }
 
-fn primary_processes<'a>(app: &App, process_map: &'a HashMap<u32, Process>) -> Vec<&'a Process> {
+fn primary_processes(app: &App, process_map: &HashMap<u32, Process>) -> HashSet<u32> {
     let mut secondary_processes = HashSet::new();
     for app_pid in app.pids.iter() {
         if let Some(process) = process_map.get(app_pid) {
@@ -334,12 +348,10 @@ fn primary_processes<'a>(app: &App, process_map: &'a HashMap<u32, Process>) -> V
         }
     }
 
-    let mut primary_processes = Vec::new();
+    let mut primary_processes = HashSet::new();
     for app_pid in app.pids.iter() {
-        if let Some(process) = process_map.get(app_pid) {
-            if !secondary_processes.contains(&process.pid) {
-                primary_processes.push(process);
-            }
+        if !secondary_processes.contains(&app_pid) {
+            primary_processes.insert(*app_pid);
         }
     }
 
@@ -347,7 +359,7 @@ fn primary_processes<'a>(app: &App, process_map: &'a HashMap<u32, Process>) -> V
         for (index, pid) in app.pids.iter().enumerate() {
             if let Some(process) = process_map.get(pid) {
                 if process.children.len() > 0 || index == app.pids.len() - 1 {
-                    primary_processes.push(process);
+                    primary_processes.insert(*pid);
                     break;
                 }
             }
@@ -355,6 +367,78 @@ fn primary_processes<'a>(app: &App, process_map: &'a HashMap<u32, Process>) -> V
     }
 
     primary_processes
+}
+
+fn update_app(
+    app: &App,
+    process_map: &HashMap<u32, Process>,
+    process_model_map: &HashMap<u32, RowModel>,
+    app_icons: &mut HashMap<u32, String>,
+    row_model: RowModel,
+) {
+    let primary_processes = primary_processes(app, process_map);
+
+    let list = row_model.children();
+
+    // nothing to do/clear; it doesnt exist yet
+    if primary_processes.is_empty() {
+        list.remove_all();
+
+        g_critical!(
+            "MissionCenter::AppsPage",
+            "Failed to find primary PID for app {}",
+            app.name
+        );
+        return;
+    }
+
+    let icon = app
+        .icon
+        .as_ref()
+        .map(|i| match &i.icon {
+            Some(Icon::Path(p)) => p,
+            Some(Icon::Id(i)) => i,
+            _ => "application-x-executable",
+        })
+        .unwrap_or("application-x-executable");
+
+    row_model.set_icon(icon);
+
+    let mut has_died = HashSet::new();
+    let mut does_exist = HashSet::new();
+
+    list.iter::<RowModel>().flatten().for_each(|row_model| {
+        if primary_processes.contains(&row_model.pid()) {
+            does_exist.insert(row_model.pid());
+        } else {
+            has_died.insert(row_model.pid());
+        }
+    });
+
+    list.retain(|row_model| {
+        row_model
+            .downcast_ref::<RowModel>()
+            .map(|rm| !has_died.contains(&rm.pid()))
+            .unwrap_or(false)
+    });
+
+    let mut usage_stats = ProcessUsageStats::default();
+
+    for process in primary_processes
+        .iter()
+        .filter_map(|pid| process_map.get(pid))
+    {
+        usage_stats.merge(&process.merged_usage_stats(&process_map));
+        app_icons.insert(process.pid, icon.to_string());
+
+        if !does_exist.contains(&process.pid) {
+            if let Some(process_model) = process_model_map.get(&process.pid) {
+                list.append(process_model);
+            }
+        }
+    }
+
+    set_stats(&row_model, &usage_stats);
 }
 
 pub fn update_apps(
@@ -366,238 +450,40 @@ pub fn update_apps(
 ) {
     app_icons.clear();
 
-    let mut to_remove = Vec::with_capacity(list.n_items() as _);
-    for i in (0..list.n_items()).rev() {
-        let Some(app) = list.item(i).and_then(|obj| obj.downcast::<RowModel>().ok()) else {
-            to_remove.push(i);
-            continue;
-        };
+    let mut has_died = HashSet::new();
+    let mut does_exist = HashSet::new();
 
-        if app_map.contains_key(app.id().as_str()) {
-            continue;
-        }
+    list.iter::<RowModel>().flatten().for_each(|row_model| {
+        let app_id = row_model.id();
+        let app_id = app_id.to_string();
+        if let Some(app) = app_map.get(&app_id) {
+            update_app(app, process_map, process_model_map, app_icons, row_model);
 
-        to_remove.push(i);
-    }
-    for i in &to_remove {
-        list.remove(*i);
-    }
-
-    for app in app_map.values() {
-        let primary_processes = primary_processes(app, process_map);
-        if primary_processes.is_empty() {
-            g_critical!(
-                "MissionCenter::AppsPage",
-                "Failed to find primary PID for app {}",
-                app.name
-            );
-            continue;
-        }
-
-        let row_model = if let Some(index) = list.find_with_equal_func(|obj| {
-            let Some(row_model) = obj.downcast_ref::<RowModel>() else {
-                return false;
-            };
-            row_model.id() == app.id
-        }) {
-            unsafe {
-                list.item(index)
-                    .and_then(|obj| obj.downcast().ok())
-                    .unwrap_unchecked()
-            }
+            does_exist.insert(app_id);
         } else {
-            let row_model = RowModelBuilder::new()
-                .content_type(ContentType::App)
-                .section_type(SectionType::FirstSection)
-                .id(&app.id)
-                .build();
-            list.append(&row_model);
-            row_model
-        };
-
-        let icon = app
-            .icon
-            .as_ref()
-            .map(|i| match &i.icon {
-                Some(Icon::Path(p)) => p,
-                Some(Icon::Id(i)) => i,
-                _ => "application-x-executable",
-            })
-            .unwrap_or("application-x-executable");
-
-        to_remove.clear();
-        let app_children = row_model.children();
-        for i in (0..app_children.n_items()).rev() {
-            let Some(child) = app_children
-                .item(i)
-                .and_then(|obj| obj.downcast::<RowModel>().ok())
-            else {
-                to_remove.push(i);
-                continue;
-            };
-
-            if primary_processes.iter().any(|p| p.pid == child.pid()) {
-                continue;
-            }
-
-            to_remove.push(i);
+            has_died.insert(app_id);
         }
-        for i in &to_remove {
-            app_children.remove(*i);
-        }
+    });
 
-        let mut usage_stats = ProcessUsageStats::default();
-        for process in &primary_processes {
-            usage_stats.merge(&process.merged_usage_stats(&process_map));
-            app_icons.insert(process.pid, icon.to_string());
+    list.retain(|object| {
+        object
+            .downcast_ref::<RowModel>()
+            .map(|rm| !has_died.contains(rm.id().as_str()))
+            .unwrap_or(false)
+    });
 
-            if app_children
-                .find_with_equal_func(|p| {
-                    if let Some(obj) = p.downcast_ref::<RowModel>() {
-                        obj.pid() == process.pid
-                    } else {
-                        false
-                    }
-                })
-                .is_some()
-            {
-                continue;
-            }
-
-            if let Some(row_model) = process_model_map.get(&process.pid) {
-                app_children.append(row_model);
-            }
-        }
-
-        row_model.set_name(app.name.as_str());
-        row_model.set_icon(icon);
-
-        set_stats(&row_model, &usage_stats);
-    }
-}
-
-pub fn update_processes(
-    process_map: &HashMap<u32, Process>,
-    pid: &u32,
-    list: &gio::ListStore,
-    app_icons: &HashMap<u32, String>,
-    icon: &str,
-    use_merged_stats: bool,
-    models: &mut HashMap<u32, RowModel>,
-) {
-    let Some(process) = process_map.get(&pid) else {
-        return;
-    };
-
-    let pretty_name = if process.exe.is_empty() {
-        if let Some(cmd) = process.cmd.first() {
-            let mut cmd = cmd
-                .split_ascii_whitespace()
-                .next()
-                .and_then(|s| s.split('/').last())
-                .unwrap_or(&process.name);
-            if let Some(s) = cmd.strip_suffix(':') {
-                cmd = s;
-            }
-            cmd.trim()
-        } else {
-            process.name.trim()
-        }
-    } else {
-        let exe_name = process.exe.split('/').last().unwrap_or(&process.name);
-        if exe_name.starts_with("wine") {
-            if process.cmd.is_empty() {
-                process.name.trim()
-            } else {
-                process.cmd[0]
-                    .split("\\")
-                    .last()
-                    .unwrap_or(&process.name)
-                    .split("/")
-                    .last()
-                    .unwrap_or(&process.name)
-                    .trim()
-            }
-        } else {
-            exe_name.trim()
-        }
-    };
-
-    let row_model = if let Some(index) = list.find_with_equal_func(|obj| {
-        let Some(row_model) = obj.downcast_ref::<RowModel>() else {
-            return false;
-        };
-        row_model.pid() == process.pid
-    }) {
-        unsafe {
-            list.item(index)
-                .and_then(|obj| obj.downcast().ok())
-                .unwrap_unchecked()
-        }
-    } else {
+    for (_, app) in app_map
+        .iter()
+        .filter(|(id, _)| !does_exist.contains(id.as_str()))
+    {
         let row_model = RowModelBuilder::new()
-            .content_type(ContentType::Process)
-            .section_type(SectionType::SecondSection)
-            .id(&process.pid.to_string())
+            .content_type(ContentType::App)
+            .section_type(SectionType::FirstSection)
+            .id(&app.id)
+            .name(&app.name)
             .build();
         list.append(&row_model);
-        row_model
-    };
 
-    let prev_children = row_model.children();
-    let mut to_remove = Vec::with_capacity(prev_children.n_items() as _);
-    for i in (0..prev_children.n_items()).rev() {
-        let Some(child) = prev_children
-            .item(i)
-            .and_then(|obj| obj.downcast::<RowModel>().ok())
-        else {
-            to_remove.push(i);
-            continue;
-        };
-
-        if process.children.contains(&child.pid()) {
-            continue;
-        }
-
-        to_remove.push(i);
+        update_app(app, process_map, process_model_map, app_icons, row_model);
     }
-    for i in to_remove {
-        prev_children.remove(i);
-    }
-
-    let merged_usage_stats = process.merged_usage_stats(&process_map);
-    let usage_stats = if use_merged_stats {
-        &merged_usage_stats
-    } else {
-        &process.usage_stats
-    };
-
-    let icon = if let Some(icon) = app_icons.get(&process.pid) {
-        icon.as_str()
-    } else {
-        icon
-    };
-
-    let command_line = process.cmd.join(" ");
-
-    row_model.set_name(pretty_name);
-    row_model.set_icon(icon);
-    row_model.set_command_line(command_line);
-    row_model.set_pid(process.pid);
-
-    set_stats(&row_model, usage_stats);
-
-    for child in &process.children {
-        update_processes(
-            process_map,
-            child,
-            &row_model.children(),
-            app_icons,
-            icon,
-            use_merged_stats,
-            models,
-        );
-    }
-
-    models.insert(process.pid, row_model);
 }
