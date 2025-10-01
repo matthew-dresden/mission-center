@@ -35,6 +35,7 @@ use window::MissionCenterWindow;
 
 use crate::i18n::ni18n_f;
 
+mod about_system_dialog;
 mod application;
 mod apps_page;
 mod i18n;
