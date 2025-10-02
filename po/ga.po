@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-05-28 03:11+0000\n"
+"PO-Revision-Date: 2025-10-02 13:02+0000\n"
 "Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
 "Language-Team: Irish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/ga/>\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :"
-"(n>6 && n<11) ? 3 : 4;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :("
+"n>6 && n<11) ? 3 : 4;\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -261,19 +261,17 @@ msgid "The order of columns in the Apps page view"
 msgstr "Ord na gcolún san amharc leathanaigh Aipeanna"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
-msgstr "An id colún trína ndéantar amharc leathanaigh na hAipeanna a shórtáil"
+msgstr ""
+"Ainm an cholúin a ndéantar an radharc leathanaigh Seirbhísí a shórtáil leis"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "Treo sórtála radhairc leathanaigh na nAipeanna"
+msgstr "Treo sórtála radhairc leathanaigh na Seirbhísí"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "Ord na gcolún san amharc leathanaigh Aipeanna"
+msgstr "Ord na gcolún san amharc leathanaigh Seirbhísí"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -919,15 +917,15 @@ msgstr "Diosca córas:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Sraithuimhir:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Ráta Rothlaithe"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1002,9 +1000,8 @@ msgid "Update Interval"
 msgstr "Eatraimh Nuashonrai"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} soicindí"
+msgstr "I soicindí"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1067,9 +1064,8 @@ msgid "Show Fan Information"
 msgstr "Taispeáin Faisnéis Gaothráin"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "Leathanach Seirbhísí"
+msgstr "Leathanaigh Aipe & Seirbhíse"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1080,11 +1076,8 @@ msgid "Remember Sorting"
 msgstr "Cuimhnigh Sórtá"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
-msgstr ""
-"Sórtáil aipeanna agus próiseas de réir colúin a choinneáil ar siúl, trasna "
-"atosaithe aipeanna"
+msgstr "Leanúint ar aghaidh ag sórtáil de réir colúin trasna atosaithe aipeanna"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
@@ -1099,11 +1092,8 @@ msgid "Scale CPU Usage to Core Count"
 msgstr "Scála Úsáid LAP go dtí Chomhaire"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
-"Taispeáin úsáid LAP le haghaidh Aipeanna agus Próisis scálaithe de réir líon "
-"na gcroí atá ar fáil"
+msgstr "Taispeáin úsáid LAP scálaithe de réir líon na gcroíthe atá ar fáil"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1210,35 +1200,32 @@ msgid "Use Base 2 for Network Interfaces"
 msgstr "Úsáid Bonn 2 le haghaidh Comhéadain Líonra"
 
 #: resources/ui/services_page/page.blp:84
-#, fuzzy
 msgid "Collapse all expanded services"
-msgstr "Thit gach aip agus próiseas"
+msgstr "Laghdaigh na seirbhísí leathnaithe go léir"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "{} Próiseas Rith"
+msgstr "Scag próisis reatha"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Próiseálaithe fíorúla:"
+msgstr "Scag próisis theipthe"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Scag próisis stoptha"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Scag próisis dhíchumasaithe"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "Bain na scagairí go léir"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "Bain Scagairí"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
@@ -1264,24 +1251,21 @@ msgid "Global"
 msgstr "Domhanda"
 
 #: resources/ui/keyboard_shortcuts.blp:21
-#, fuzzy
 msgid "Open Menu"
-msgstr "Príomh-roghchlár"
+msgstr "Oscail an Roghchlár"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Dún an Fhuinneog"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Roghanna"
+msgstr "Oscail Roghanna"
 
 #: resources/ui/keyboard_shortcuts.blp:41
-#, fuzzy
 msgid "Show Keyboard Shortcuts"
-msgstr "Aicearraí Méarchlár"
+msgstr "Taispeáin Aicearraí Méarchláir"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1405,43 +1389,43 @@ msgstr "Sonraí"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "Seol Comhartha"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "Cuir ar fionraí (STOP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "Lean ar aghaidh (LEAN AR AGHAIDH)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "Croch suas (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "Idirbhriseadh (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "Foirceannadh (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "Maraigh (MARAIGH)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "Úsáideoir 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "Úsáideoir 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "Aitheantas Aipe"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1528,59 +1512,53 @@ msgstr "Grúpa"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Suíomh Comhaid"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "Logaí"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Diosca córas:"
+msgstr "Eolas Córais"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Cóipeáil Faisnéis Gléas"
+msgstr "Faisnéis faoin gCóras Oibriúcháin"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Leagan Vulkan:"
+msgstr "Leagan"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "Bainisteoir Pacáiste"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Leagan Bainisteoir Pacáiste"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Taispeáin Faisnéis Gaothráin"
+msgstr "Faisnéis Eithne"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Scaoileadh Eithne"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Cóipeáil Faisnéis Gléas"
+msgstr "Faisnéis faoi Thimpeallacht Deisce"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Córas Fuinneoige"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Meaisín fíorúil:"
+msgstr "Teirminéal Fíorúil"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1640,7 +1618,7 @@ msgstr "_Aicearraí Méarchláir"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "_Maidir leis an gCóras"
 
 #: resources/ui/window.blp:256
 msgid "_About Mission Center"
@@ -1965,14 +1943,14 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Tosaigh Seirbhís"
-msgstr[1] "Tosaigh Seirbhís"
-msgstr[2] "Tosaigh Seirbhís"
-msgstr[3] "Tosaigh Seirbhís"
-msgstr[4] "Tosaigh Seirbhís"
+msgstr[0] "{} Seirbhís Iomlán"
+msgstr[1] "{} Seirbhísí Iomlána"
+msgstr[2] "{} Seirbhísí Iomlána"
+msgstr[3] "{} Seirbhísí Iomlána"
+msgstr[4] "{} Seirbhísí Iomlána"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1990,50 +1968,46 @@ msgid "Stopped"
 msgstr "Stopa"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "Díchumasaigh Gach"
+msgstr "Míchumasaithe"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "Níl aon seirbhísí ag teacht leis na scagairí reatha"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "Níor cuireadh aon scagairí i bhfeidhm"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} Seirbhísí Reatha"
-msgstr[1] "{} Seirbhísí Reatha"
-msgstr[2] "{} Seirbhísí Reatha"
-msgstr[3] "{} Seirbhísí Reatha"
-msgstr[4] "{} Seirbhísí Reatha"
+msgstr[0] "{} {} Seirbhís"
+msgstr[1] "{} {} Seirbhísí"
+msgstr[2] "{} {} Seirbhísí"
+msgstr[3] "{} {} Seirbhísí"
+msgstr[4] "{} {} Seirbhísí"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Seirbhísí"
+msgstr "Seirbhísí Úsáideoirí"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Stop Seirbhís"
+msgstr "Seirbhísí Córais"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
-msgstr ""
+msgstr "Níor cuireadh i bhfeidhm é"
 
 #: src/process_tree/row_model.rs:263
 msgid "Section Header"
 msgstr "Ceannteideal Rannóg"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Seirbhísí"
+msgstr "Seirbhís"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"
