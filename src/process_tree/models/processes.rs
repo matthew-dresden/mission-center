@@ -64,6 +64,10 @@ fn update_service(
     set_service(&row_model, service);
     row_model.set_icon(get_service_icon(&service));
 
+    row_model.set_pid(service.pid.clone().unwrap_or_default());
+    row_model.set_user(service.user.clone().unwrap_or_default());
+    row_model.set_group(service.group.clone().unwrap_or_default());
+
     if let Some(pid) = service.pid {
         if let Some(process) = process_map.get(&pid) {
             let usage_stats = process.merged_usage_stats(&process_map);
