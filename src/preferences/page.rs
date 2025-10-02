@@ -189,6 +189,9 @@ mod imp {
             let min_secs = min_secs.max((MIN_POINTS as f64) * interval - set_minutes * 60.);
             let max_secs = max_secs.min(max_seconds - set_minutes * 60.);
 
+            let min_secs = (min_secs * 100.).round() / 100.;
+            let max_secs = (max_secs * 100.).round() / 100.;
+
             assert!(max_secs <= 60.);
             assert!(min_secs >= 0.);
             assert!(min_secs <= max_secs);
