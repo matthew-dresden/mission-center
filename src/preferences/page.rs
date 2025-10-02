@@ -184,13 +184,16 @@ mod imp {
             self.range_minutes.set_range(0., (max_seconds / 60.).ceil());
 
             let min_secs = (set_minutes * 60. / interval).ceil() * interval % 60.;
-            let max_secs = 60. - ((set_minutes + 1.) * 60. / interval).floor() * interval % 60.;
+            let max_secs = ((set_minutes + 1.) * 60. / interval - 1.).floor() * interval % 60. + interval;
 
             let min_secs = min_secs.max((MIN_POINTS as f64) * interval - set_minutes * 60.);
             let max_secs = max_secs.min(max_seconds - set_minutes * 60.);
 
             assert!(max_secs <= 60.);
             assert!(min_secs >= 0.);
+            assert!(min_secs <= max_secs);
+
+            println!("[{}.{}.{}]", min_secs, interval, max_secs);
 
             self.range_seconds.adjustment().set_step_increment(interval);
             self.range_seconds.set_range(min_secs, max_secs);
@@ -231,7 +234,8 @@ mod imp {
                     self.configure_minutes_seconds(interval);
                 }
                 PointsUpdateSource::UpdateInterval => {
-                    let new_interval = (self.update_interval.value() / INTERVAL_STEP).round() as u64;
+                    let raw_interval = self.update_interval.value();
+                    let new_interval = (raw_interval / INTERVAL_STEP).round() as u64;
 
                     if settings
                         .set_uint64("app-update-interval-u64", new_interval)
@@ -245,10 +249,10 @@ mod imp {
 
                     let points = (self.data_points.value() as i32).clamp(MIN_POINTS, MAX_POINTS);
 
-                    let seconds = (points as u64 * new_interval) as f64 * INTERVAL_STEP;
-                    let max_seconds = (MAX_POINTS as u64 * new_interval) as f64 * INTERVAL_STEP;
+                    let seconds = points as f64 * raw_interval;
+                    let max_seconds = MAX_POINTS as f64 * raw_interval;
 
-                    self.range_seconds.adjustment().set_step_increment(new_interval as f64 * INTERVAL_STEP);
+                    self.range_seconds.adjustment().set_step_increment(raw_interval);
 
                     self.range_minutes.set_value((seconds / 60.).floor());
                     self.range_seconds.set_value(seconds % 60.);
