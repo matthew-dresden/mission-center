@@ -20,16 +20,15 @@
 
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
+use std::fmt::Write;
 
 use adw::prelude::*;
-use gtk::glib::g_critical;
-use gtk::Orientation::{Horizontal, Vertical};
+use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
 
 use magpie_types::services::Service;
 
-use crate::i18n::{i18n, i18n_f};
-use crate::magpie_client::App;
+use crate::i18n::{i18n, ni18n_f};
 use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
 use crate::process_tree::models;
 use crate::process_tree::process_action_bar::ProcessActionBar;
@@ -39,30 +38,30 @@ use crate::process_tree::service_action_bar::ServiceActionBar;
 pub(crate) mod imp {
     use super::*;
 
-    #[derive(gtk::CompositeTemplate)]
+    #[derive(Properties, gtk::CompositeTemplate)]
+    #[properties(wrapper_type = super::ServicesPage)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/services_page/page.ui")]
     pub struct ServicesPage {
+        #[property(get, set)]
+        collapsed: RefCell<bool>,
+
         #[template_child]
-        pub top_legend: TemplateChild<gtk::Box>,
+        pub h1: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub h2: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        pub toggle_running: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub toggle_failed: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub toggle_stopped: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub toggle_disabled: TemplateChild<gtk::ToggleButton>,
 
         #[template_child]
         pub column_view: TemplateChild<ColumnViewFrame>,
 
-        #[template_child]
-        pub service_legend: TemplateChild<adw::ToggleGroup>,
-        #[template_child]
-        pub total_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub running_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub failed_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub stopped_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub disabled_service_box: TemplateChild<adw::Toggle>,
-
-        #[template_child]
-        pub collapse_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub process_action_bar: TemplateChild<ProcessActionBar>,
         #[template_child]
@@ -71,13 +70,7 @@ pub(crate) mod imp {
         pub user_section: RowModel,
         pub system_section: RowModel,
 
-        pub running_apps: RefCell<HashMap<String, App>>,
-
-        pub app_icons: RefCell<HashMap<u32, String>>,
-
         pub use_merged_stats: Cell<bool>,
-
-        pub action_collapse_all: gio::SimpleAction,
 
         pub total_services: Cell<u32>,
         pub running_services: Cell<u32>,
@@ -87,54 +80,95 @@ pub(crate) mod imp {
     }
 
     impl ServicesPage {
-        pub(crate) fn update_filter_labels(&self) {
-            let total_string = self.total_services.get().to_string();
-            let running_string = self.running_services.get().to_string();
-            let stopped_string = self.stopped_services.get().to_string();
-            let failed_string = self.failed_services.get().to_string();
-            let disabled_string = self.disabled_services.get().to_string();
+        pub(crate) fn update_headers(&self) {
+            let mut fmt_buffer = arrayvec::ArrayString::<12>::new();
 
-            let (total_string, running_string, stopped_string, failed_string, disabled_string) =
-                // collapsed check
-                if self.top_legend.orientation() == Horizontal {
-                    (
-                        i18n_f("{} Total", &[&total_string]),
-                        i18n_f("{} Running", &[&running_string]),
-                        i18n_f("{} Stopped", &[&stopped_string]),
-                        i18n_f("{} Failed", &[&failed_string]),
-                        i18n_f("{} Disabled", &[&disabled_string]),
-                    )
+            let total = self.total_services.get();
+            let running = self.running_services.get();
+            let stopped = self.stopped_services.get();
+            let failed = self.failed_services.get();
+            let disabled = self.disabled_services.get();
+
+            fmt_buffer.clear();
+            let _ = write!(fmt_buffer, "{}", total);
+            self.h1.set_label(&ni18n_f(
+                "{} Total Service",
+                "{} Total Services",
+                total,
+                &[fmt_buffer.as_str()],
+            ));
+
+            let mut types = String::with_capacity(50);
+            let mut any_active = false;
+            let mut filtered = 0;
+            if self.toggle_running.is_active() {
+                any_active = true;
+                filtered += running;
+                types.push_str(&i18n("Running"));
+            }
+
+            if self.toggle_failed.is_active() {
+                any_active = true;
+                filtered += failed;
+                if !types.is_empty() {
+                    types.push_str(", ");
+                }
+                types.push_str(&i18n("Failed"));
+            }
+
+            if self.toggle_stopped.is_active() {
+                any_active = true;
+                filtered += stopped;
+                if !types.is_empty() {
+                    types.push_str(", ");
+                }
+                types.push_str(&i18n("Stopped"));
+            }
+
+            if self.toggle_disabled.is_active() {
+                any_active = true;
+                filtered += disabled;
+                if !types.is_empty() {
+                    types.push_str(", ");
+                }
+                types.push_str(&i18n("Disabled"));
+            }
+
+            if filtered == 0 {
+                if any_active {
+                    self.h2
+                        .set_label(&i18n("No services match the current filters"));
                 } else {
-                    (
-                        total_string,
-                        running_string,
-                        stopped_string,
-                        failed_string,
-                        disabled_string,
-                    )
-                };
-
-            self.total_service_box.set_label(Some(&total_string));
-            self.running_service_box.set_label(Some(&running_string));
-            self.stopped_service_box.set_label(Some(&stopped_string));
-            self.failed_service_box.set_label(Some(&failed_string));
-            self.disabled_service_box.set_label(Some(&disabled_string));
+                    self.h2.set_label(&i18n("No filters applied"));
+                }
+            } else {
+                fmt_buffer.clear();
+                let _ = write!(fmt_buffer, "{}", filtered);
+                // TRANSLATORS: {0} is a number, {1} is a comma-separated list of service states, i.e. "Running", "Failed", "Stopped", "Disabled"
+                self.h2.set_label(&ni18n_f(
+                    "{} {} Service",
+                    "{} {} Services",
+                    filtered,
+                    &[fmt_buffer.as_str(), &types],
+                ));
+            }
         }
     }
 
     impl Default for ServicesPage {
         fn default() -> Self {
             Self {
-                top_legend: TemplateChild::default(),
-                column_view: Default::default(),
-                service_legend: TemplateChild::default(),
-                total_service_box: TemplateChild::default(),
-                running_service_box: TemplateChild::default(),
-                failed_service_box: TemplateChild::default(),
-                stopped_service_box: TemplateChild::default(),
-                disabled_service_box: TemplateChild::default(),
+                collapsed: RefCell::new(false),
 
-                collapse_label: TemplateChild::default(),
+                h1: Default::default(),
+                h2: Default::default(),
+
+                toggle_running: Default::default(),
+                toggle_failed: Default::default(),
+                toggle_stopped: Default::default(),
+                toggle_disabled: Default::default(),
+
+                column_view: Default::default(),
 
                 process_action_bar: Default::default(),
                 service_action_bar: Default::default(),
@@ -150,13 +184,7 @@ pub(crate) mod imp {
                     .section_type(SectionType::SecondSection)
                     .build(),
 
-                running_apps: RefCell::new(HashMap::new()),
-
-                app_icons: RefCell::new(HashMap::new()),
-
                 use_merged_stats: Cell::new(false),
-
-                action_collapse_all: gio::SimpleAction::new("collapse-all", None),
 
                 total_services: Cell::new(0),
                 running_services: Cell::new(0),
@@ -169,25 +197,21 @@ pub(crate) mod imp {
 
     impl ServicesPage {
         pub fn collapse(&self) {
-            self.collapse_label.set_visible(false);
-
-            self.top_legend.set_orientation(Vertical);
-
             self.process_action_bar.imp().collapse();
             self.service_action_bar.imp().collapse();
 
-            self.update_filter_labels();
+            self.obj().set_collapsed(true);
+
+            self.update_headers();
         }
 
         pub fn expand(&self) {
-            self.collapse_label.set_visible(true);
-
-            self.top_legend.set_orientation(Horizontal);
-
             self.process_action_bar.imp().expand();
             self.service_action_bar.imp().expand();
 
-            self.update_filter_labels();
+            self.obj().set_collapsed(false);
+
+            self.update_headers();
         }
     }
 
@@ -209,13 +233,61 @@ pub(crate) mod imp {
     }
 
     impl ObjectImpl for ServicesPage {
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec)
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
+        }
+
         fn constructed(&self) {
             self.parent_constructed();
 
-            let actions = gio::SimpleActionGroup::new();
-            actions.add_action(&self.action_collapse_all);
+            let update_headers = |this: &WeakRef<super::ServicesPage>| {
+                let Some(this) = this.upgrade() else {
+                    return;
+                };
+                this.imp().update_headers();
+            };
 
-            self.action_collapse_all.connect_activate({
+            self.toggle_running.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
+                }
+            });
+
+            self.toggle_failed.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
+                }
+            });
+
+            self.toggle_stopped.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
+                }
+            });
+
+            self.toggle_disabled.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
+                }
+            });
+
+            let actions = gio::SimpleActionGroup::new();
+
+            let action_collapse_all = gio::SimpleAction::new("collapse-all", None);
+            actions.add_action(&action_collapse_all);
+            action_collapse_all.connect_activate({
                 let this = self.obj().downgrade();
                 move |_action, _| {
                     let Some(this) = this.upgrade() else {
@@ -266,7 +338,25 @@ pub(crate) mod imp {
                 }
             });
 
-            self.obj().insert_action_group("apps-page", Some(&actions));
+            let action_remove_filters = gio::SimpleAction::new("remove-filters", None);
+            actions.add_action(&action_remove_filters);
+            action_remove_filters.connect_activate({
+                let this = self.obj().downgrade();
+                move |_action, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+
+                    imp.toggle_running.set_active(false);
+                    imp.toggle_failed.set_active(false);
+                    imp.toggle_stopped.set_active(false);
+                    imp.toggle_disabled.set_active(false);
+                }
+            });
+
+            self.obj()
+                .insert_action_group("services-page", Some(&actions));
         }
     }
 
@@ -289,6 +379,13 @@ impl ServicesPage {
     pub fn set_initial_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
         let imp = self.imp();
 
+        let toggle_group = [
+            imp.toggle_running.downgrade(),
+            imp.toggle_failed.downgrade(),
+            imp.toggle_stopped.downgrade(),
+            imp.toggle_disabled.downgrade(),
+        ];
+
         // Set up the models here since we need access to the main application window
         // which is not yet available in the constructor.
         imp.column_view.imp().setup(
@@ -297,7 +394,7 @@ impl ServicesPage {
             &imp.system_section,
             Some(&imp.process_action_bar),
             Some(&imp.service_action_bar),
-            Some(&imp.service_legend),
+            Some(toggle_group),
         );
 
         imp.user_section.children().append(
@@ -306,21 +403,6 @@ impl ServicesPage {
                 .name(&i18n("Not Implemented"))
                 .build(),
         );
-
-        // Select the first item in the list
-        // selection_model.set_selected(0);
-
-        /*        let selected = self.imp().column_view.imp().column_view.selected();
-        if selected != INVALID_LIST_POSITION {
-            let selected_item = self.imp().column_view.imp().column_view
-                .selected_item()
-                .and_then(|i| i.downcast_ref::<RowModel>().cloned());
-
-            if let Some(selected_item) = selected_item.as_ref() {
-                imp.process_action_bar.imp().handle_changed_selection(selected_item);
-                imp.service_action_bar.imp().handle_changed_selection(selected_item);
-            }
-        }*/
 
         self.update_common(readings);
 
@@ -334,28 +416,24 @@ impl ServicesPage {
             &readings.running_processes,
             &readings.services,
             &imp.system_section.children(),
-            &imp.app_icons.borrow(),
+            &HashMap::new(),
             "application-x-executable-symbolic",
             imp.column_view.imp().use_merged_stats.get(),
             SectionType::SecondSection,
         );
 
-        /*        models::update_services(
-                    &readings.running_processes,
-                    &readings.services,
-                    &imp.user_section.children(),
-                    &imp.app_icons.borrow(),
-                    "application-x-executable-symbolic",
-                    imp.column_view.imp().use_merged_stats.get(),
-                    SectionType::FirstSection,
-                );
-        */
-        self.update_section_labels(&readings.services);
-
-        let _ = std::mem::replace(
-            &mut *imp.running_apps.borrow_mut(),
-            std::mem::take(&mut readings.running_apps),
+        self.update_service_counts(&readings.services);
+        models::update_services(
+            &readings.running_processes,
+            &readings.services,
+            &imp.user_section.children(),
+            &HashMap::new(),
+            "application-x-executable-symbolic",
+            imp.column_view.imp().use_merged_stats.get(),
+            SectionType::FirstSection,
         );
+
+        self.update_service_counts(&readings.services);
 
         let selected_item = &imp.column_view.imp().selected_item.borrow();
 
@@ -367,7 +445,7 @@ impl ServicesPage {
             .handle_changed_selection(selected_item);
     }
 
-    fn update_section_labels(&self, services: &HashMap<String, Service>) {
+    fn update_service_counts(&self, services: &HashMap<String, Service>) {
         let services = services.values().collect::<Vec<_>>();
 
         let total_services = services.len();
@@ -395,7 +473,7 @@ impl ServicesPage {
         imp.failed_services.set(failed_services);
         imp.disabled_services.set(disabled_services);
 
-        imp.update_filter_labels();
+        imp.update_headers();
     }
 
     pub fn update_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
@@ -426,9 +504,5 @@ impl ServicesPage {
     #[inline]
     pub fn expand(&self) {
         self.imp().expand();
-    }
-
-    pub fn running_apps(&self) -> HashMap<String, App> {
-        self.imp().running_apps.borrow().clone()
     }
 }

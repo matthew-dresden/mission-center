@@ -60,6 +60,8 @@ mod imp {
         label_user: TemplateChild<gtk::Label>,
         #[template_child]
         label_group: TemplateChild<gtk::Label>,
+        #[template_child]
+        file_location: TemplateChild<gtk::Label>,
 
         #[template_child]
         logs_overlay: TemplateChild<gtk::Overlay>,
@@ -96,6 +98,7 @@ mod imp {
                 label_user: TemplateChild::default(),
                 label_group: TemplateChild::default(),
 
+                file_location: TemplateChild::default(),
                 logs_overlay: TemplateChild::default(),
                 logs_expander: TemplateChild::default(),
                 logs_buffer: TemplateChild::default(),
@@ -265,6 +268,15 @@ mod imp {
                 self.label_group.set_text(&list_item.group());
             } else {
                 self.label_group.set_text(&i18n("N/A"));
+            }
+
+            let location = list_item.file_path();
+            if !location.is_empty() {
+                group_empty = false;
+                self.file_location.set_text(&list_item.file_path());
+                self.file_location.set_visible(true);
+            } else {
+                self.file_location.set_visible(false);
             }
 
             if group_empty {

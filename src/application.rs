@@ -20,12 +20,14 @@
 
 use std::cell::{BorrowError, Cell, Ref, RefCell};
 
+use adw::glib::g_warning;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{
     gio,
     glib::{self, g_critical, property::PropertySet},
 };
 
+use crate::about_system_dialog::AboutSystemDialog;
 use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
 
 pub const INTERVAL_STEP: f64 = 0.05;
@@ -322,6 +324,9 @@ impl MissionCenterApplication {
         let about_action = gio::ActionEntry::builder("about")
             .activate(move |app: &Self, _, _| app.show_about())
             .build();
+        let about_system_action = gio::ActionEntry::builder("system-about")
+            .activate(move |app: &Self, _, _| app.show_system_about())
+            .build();
         let keyboard_shortcuts_action = gio::ActionEntry::builder("keyboard-shortcuts")
             .activate(move |app: &Self, _, _| app.show_keyboard_shortcuts())
             .build();
@@ -330,6 +335,7 @@ impl MissionCenterApplication {
             quit_action,
             preferences_action,
             about_action,
+            about_system_action,
             keyboard_shortcuts_action,
         ]);
 
@@ -362,6 +368,28 @@ impl MissionCenterApplication {
             .expect("Failed to get shortcuts window");
 
         dialog.present(Some(&app_window));
+    }
+
+    fn show_system_about(&self) {
+        let app = app!();
+        let Ok(magpie) = app.sys_info() else {
+            g_warning!("MissionCenter::Disk", "Failed to get magpie client");
+            return;
+        };
+
+        let about = magpie.about_system();
+
+        let dialog = AboutSystemDialog::new(about);
+
+        let Some(window) = self.window() else {
+            g_critical!(
+                "MissionCenter::Application",
+                "No active window, when trying to show about dialog"
+            );
+            return;
+        };
+
+        dialog.present(Some(&window));
     }
 
     fn show_about(&self) {

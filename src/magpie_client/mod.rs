@@ -36,6 +36,7 @@ pub use client::{
     App, Client, Connection, Cpu, Disk, DiskKind, ErrorEjectFailed, Fan, Gpu, Memory, MemoryDevice,
     Process, Service, SmartData,
 };
+use magpie_types::about::About;
 use magpie_types::processes::processes_response::process_map::NetworkStatsError;
 
 macro_rules! cmd_flatpak_host {
@@ -100,12 +101,14 @@ enum Message {
     DisableService(String),
     EjectDisk(String),
     SmartData(String),
+    AboutSystem,
 }
 
 enum Response {
     String(String),
     EjectResult(Result<(), ErrorEjectFailed>),
     SmartData(Option<SmartData>),
+    AboutResult(About),
 }
 
 #[derive(Debug)]
@@ -544,6 +547,38 @@ impl MagpieClient {
             }
         }
     }
+
+    pub fn about_system(&self) -> About {
+        match self.sender.send(Message::AboutSystem) {
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::SysInfo",
+                    "Error sending AboutResult to gatherer: {e}",
+                );
+
+                return About::default();
+            }
+            _ => {}
+        }
+
+        match self.receiver.recv() {
+            Ok(Response::AboutResult(ar)) => ar,
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::SysInfo",
+                    "Error receiving AboutResult response: {e}",
+                );
+                About::default()
+            }
+            _ => {
+                g_critical!(
+                    "MissionCenter::SysInfo",
+                    "Error receiving AboutResult response. Wrong type"
+                );
+                About::default()
+            }
+        }
+    }
 }
 
 impl MagpieClient {
@@ -626,6 +661,15 @@ impl MagpieClient {
                         g_critical!(
                             "MissionCenter::SysInfo",
                             "Error sending SataSmartInfo response: {}",
+                            e
+                        );
+                    }
+                }
+                Message::AboutSystem => {
+                    if let Err(e) = tx.send(Response::AboutResult(magpie.about())) {
+                        g_critical!(
+                            "MissionCenter::SysInfo",
+                            "Error sending AboutResult response: {}",
                             e
                         );
                     }

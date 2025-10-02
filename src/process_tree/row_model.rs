@@ -78,6 +78,8 @@ mod imp {
         pub group: Cell<glib::GString>,
         #[property(get = Self::description, set = Self::set_description)]
         pub description: Cell<glib::GString>,
+        #[property(get = Self::file_path, set = Self::set_file_path)]
+        pub file_path: Cell<glib::GString>,
 
         #[property(get = Self::command_line, set = Self::set_command_line)]
         pub command_line: Cell<glib::GString>,
@@ -114,6 +116,7 @@ mod imp {
                 user: Cell::new(Default::default()),
                 group: Cell::new(Default::default()),
                 description: Cell::new(Default::default()),
+                file_path: Cell::new(Default::default()),
 
                 command_line: Cell::new(Default::default()),
 
@@ -125,127 +128,96 @@ mod imp {
     impl RowModel {
         pub fn id(&self) -> glib::GString {
             let id = self.id.take();
-            let result = id.clone();
-            self.id.set(id);
+            self.id.set(id.clone());
 
-            result
+            id
         }
 
         pub fn set_id(&self, id: &str) {
-            let current_id = self.id.take();
-            if current_id == id {
-                self.id.set(current_id);
-                return;
-            }
-
             self.id.set(glib::GString::from(id));
         }
 
         pub fn icon(&self) -> glib::GString {
             let icon = self.icon.take();
-            let result = icon.clone();
-            self.icon.set(icon);
+            self.icon.set(icon.clone());
 
-            result
+            icon
         }
 
         pub fn set_icon(&self, icon: &str) {
-            let current_icon = self.icon.take();
-            if current_icon == icon {
-                self.icon.set(current_icon);
-                return;
-            }
-
             self.icon.set(glib::GString::from(icon));
         }
 
         pub fn name(&self) -> glib::GString {
             let name = self.name.take();
-            let result = name.clone();
-            self.name.set(name);
+            self.name.set(name.clone());
 
-            result
+            name
         }
 
         pub fn set_name(&self, name: &str) {
-            let current_name = self.name.take();
-            if current_name == name {
-                self.name.set(current_name);
-                return;
-            }
-
             self.name.set(glib::GString::from(name));
         }
 
         pub fn user(&self) -> glib::GString {
             let user = self.user.take();
-            let result = user.clone();
-            self.user.set(user);
+            self.user.set(user.clone());
 
-            result
+            user
         }
 
         pub fn set_user(&self, user: &str) {
-            let current_user = self.user.take();
-            if current_user == user {
-                self.user.set(current_user);
-                return;
-            }
-
             self.user.set(glib::GString::from(user));
         }
 
         pub fn group(&self) -> glib::GString {
             let group = self.group.take();
-            let result = group.clone();
-            self.group.set(group);
+            self.group.set(group.clone());
 
-            result
+            group
         }
 
         pub fn set_group(&self, group: &str) {
-            let current_group = self.group.take();
-            if current_group == group {
-                self.group.set(current_group);
-                return;
-            }
-
             self.group.set(glib::GString::from(group));
         }
 
         pub fn description(&self) -> glib::GString {
             let description = self.description.take();
-            let result = description.clone();
-            self.description.set(description);
+            self.description.set(description.clone());
+
+            description
+        }
+
+        pub fn set_description(&self, description: &str) {
+            self.description.set(glib::GString::from(description));
+        }
+
+        pub fn file_path(&self) -> glib::GString {
+            let file_path = self.file_path.take();
+            let result = file_path.clone();
+            self.file_path.set(file_path);
 
             result
         }
 
-        pub fn set_description(&self, description: &str) {
-            let current_description = self.description.take();
-            if current_description == description {
-                self.description.set(current_description);
+        pub fn set_file_path(&self, file_path: &str) {
+            let current_file_path = self.file_path.take();
+            if current_file_path == file_path {
+                self.file_path.set(current_file_path);
                 return;
             }
 
-            self.description.set(glib::GString::from(description));
+            self.file_path.set(glib::GString::from(file_path));
         }
 
         pub fn command_line(&self) -> glib::GString {
             let command_line = self.command_line.take();
-            let result = command_line.clone();
-            self.command_line.set(command_line);
+            self.command_line.set(command_line.clone());
 
-            result
+            command_line
         }
 
         pub fn set_command_line(&self, command_line: &str) {
-            let current_command_line = self.command_line.take();
-            if current_command_line == command_line {
-                self.command_line.set(current_command_line);
-                return;
-            }
-
             self.command_line.set(glib::GString::from(command_line));
         }
     }
@@ -310,6 +282,7 @@ pub struct RowModelBuilder {
 
     icon: glib::GString,
     name: glib::GString,
+    command_line: glib::GString,
 
     content_type: ContentType,
     section_type: SectionType,
@@ -330,6 +303,7 @@ pub struct RowModelBuilder {
 
     user: glib::GString,
     group: glib::GString,
+    file_path: glib::GString,
     description: glib::GString,
 }
 
@@ -343,6 +317,7 @@ impl RowModelBuilder {
 
             icon: "application-x-executable-symbolic".into(),
             name: glib::GString::default(),
+            command_line: Default::default(),
 
             content_type: ContentType::SectionHeader,
             section_type: SectionType::FirstSection,
@@ -362,6 +337,7 @@ impl RowModelBuilder {
 
             user: Default::default(),
             group: Default::default(),
+            file_path: Default::default(),
             description: Default::default(),
         }
     }
@@ -383,6 +359,11 @@ impl RowModelBuilder {
 
     pub fn name(mut self, name: &str) -> Self {
         self.name = name.into();
+        self
+    }
+
+    pub fn command_line(mut self, command_line: &str) -> Self {
+        self.command_line = command_line.into();
         self
     }
 
@@ -461,6 +442,11 @@ impl RowModelBuilder {
         self
     }
 
+    pub fn file_path(mut self, file_path: &str) -> Self {
+        self.file_path = file_path.into();
+        self
+    }
+
     pub fn description(mut self, description: &str) -> Self {
         self.description = description.into();
         self
@@ -494,6 +480,7 @@ impl RowModelBuilder {
 
             this.user.set(self.user);
             this.group.set(self.group);
+            this.file_path.set(self.file_path);
             this.description.set(self.description);
         }
 

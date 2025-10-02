@@ -1,4 +1,4 @@
-/* ui/process_column_view/details_dialog.blp
+/* ui/about_system_dialog.blp
  *
  * Copyright 2024 Romeo Calota
  *
@@ -21,16 +21,20 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $ServiceDetailsDialog: Adw.Dialog {
+template $AboutSystemDialog: Adw.Dialog {
+  width-request: 360;
+
   Adw.ToolbarView {
     [top]
     Adw.HeaderBar {
-      title-widget: Label {
-        styles [
-          "heading"
-        ]
+      title-widget: Box {
+        Label title {
+          styles [
+            "heading"
+          ]
 
-        label: _("Service Details");
+          label: _("System Info");
+        }
       };
     }
 
@@ -45,102 +49,43 @@ template $ServiceDetailsDialog: Adw.Dialog {
         Box {
           margin-start: 20;
           margin-end: 20;
-          margin-top: 20;
           margin-bottom: 20;
 
           orientation: vertical;
           spacing: 32;
 
-          Adw.PreferencesGroup group_state {
+          Image logo {
+            margin-top: 10;
+            pixel-size: 128;
+          }
+
+          Adw.PreferencesGroup {
             hexpand: true;
 
-            title: _("State");
-            description: _("The current state of the service");
-
-            header-suffix: Box {
-              margin-start: 24;
-              spacing: 5;
-
-              valign: end;
-
-              Box box_buttons {
-                styles [
-                  "linked"
-                ]
-
-                homogeneous: true;
-
-                Button start {
-                  action-name: "services-page.selected-svc-start";
-                  tooltip-text: _("Start service");
-
-                  child: Box {
-                    spacing: 5;
-
-                    halign: center;
-
-                    Image {
-                      icon-name: "media-playback-start-symbolic";
-                    }
-                  };
-                }
-
-                Button stop {
-                  action-name: "services-page.selected-svc-stop";
-                  tooltip-text: _("Stop service");
-
-                  child: Box {
-                    spacing: 5;
-
-                    halign: center;
-
-                    Image {
-                      icon-name: "media-playback-stop-symbolic";
-                    }
-                  };
-                }
-              }
-
-              Button restart {
-                action-name: "services-page.selected-svc-restart";
-                tooltip-text: _("Restart service");
-
-                child: Box {
-                  spacing: 5;
-
-                  halign: center;
-
-                  Image {
-                    icon-name: "media-playlist-repeat-symbolic";
-                  }
-                };
-              }
-            };
+            title: _("Operating System Information");
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind os_name.visible;
 
               child: Box {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
-
                 spacing: 12;
 
                 Label {
                   hexpand: true;
                   halign: start;
-
                   label: _("Name");
                 }
 
-                Label label_name {
+                Label os_name {
                   styles [
-                    "dim-label"
+                    "dim-label",
                   ]
 
                   ellipsize: middle;
-
                   hexpand: true;
                   halign: end;
                 }
@@ -149,28 +94,26 @@ template $ServiceDetailsDialog: Adw.Dialog {
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind version.visible;
 
               child: Box {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
-
                 spacing: 12;
 
                 Label {
                   hexpand: true;
                   halign: start;
-
-                  label: _("Description");
+                  label: _("Version");
                 }
 
-                Label label_description {
+                Label version {
                   styles [
-                    "dim-label"
+                    "dim-label",
                   ]
 
                   ellipsize: middle;
-
                   hexpand: true;
                   halign: end;
                 }
@@ -179,167 +122,116 @@ template $ServiceDetailsDialog: Adw.Dialog {
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind package_manager.visible;
 
               child: Box {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
-
                 spacing: 12;
 
                 Label {
                   hexpand: true;
                   halign: start;
-
-                  label: _("Status");
+                  label: _("Package Manager");
                 }
 
-                Label label_running {
+                Label package_manager {
                   styles [
-                    "dim-label"
+                    "dim-label",
                   ]
 
                   ellipsize: middle;
-
                   hexpand: true;
                   halign: end;
-
-                  label: "";
                 }
               };
             }
 
-            Adw.SwitchRow switch_enabled {
-              title: _("Enabled");
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind package_manager_version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Package Manager Version");
+                }
+
+                Label package_manager_version {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
             }
           }
 
-          Adw.PreferencesGroup group_process {
+          Adw.PreferencesGroup {
             hexpand: true;
 
-            title: _("Process");
-            description: _("Process and user information");
+            title: _("Kernel Information");
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind kernel_release.visible;
 
               child: Box {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
-
                 spacing: 12;
 
                 Label {
                   hexpand: true;
                   halign: start;
-
-                  label: _("Process ID");
+                  label: _("Kernel Release");
                 }
 
-                Label label_pid {
+                Label kernel_release {
                   styles [
-                    "dim-label"
+                    "dim-label",
                   ]
 
                   ellipsize: middle;
-
                   hexpand: true;
                   halign: end;
-
-                  label: _("N/A");
                 }
               };
             }
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind kernel_version.visible;
 
               child: Box {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
-
                 spacing: 12;
 
                 Label {
                   hexpand: true;
                   halign: start;
-
-                  label: _("User");
+                  label: _("Version");
                 }
 
-                Label label_user {
+                Label kernel_version {
                   styles [
-                    "dim-label"
+                    "dim-label",
                   ]
 
                   ellipsize: middle;
-
-                  hexpand: true;
-                  halign: end;
-
-                  label: _("N/A");
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-
-                  label: _("Group");
-                }
-
-                Label label_group {
-                  styles [
-                    "dim-label"
-                  ]
-
-                  ellipsize: middle;
-
-                  hexpand: true;
-                  halign: end;
-
-                  label: _("N/A");
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-
-                  label: _("File Location");
-                }
-
-                Label file_location {
-                  styles [
-                    "dim-label"
-                  ]
-
-                  ellipsize: middle;
-
                   hexpand: true;
                   halign: end;
                 }
@@ -347,37 +239,120 @@ template $ServiceDetailsDialog: Adw.Dialog {
             }
           }
 
-          Expander logs_expander {
-            label-widget: Label {
-              styles [
-                "heading"
-              ]
+          Adw.PreferencesGroup {
+            hexpand: true;
 
-              label: _("Logs");
-            };
+            title: _("Desktop Environment Information");
 
-            Overlay logs_overlay {
-              child: TextView {
-                styles [
-                  "card",
-                ]
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind desktop_environment.visible;
 
-                hexpand: true;
-                vexpand: true;
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
 
-                margin-top: 12;
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Name");
+                }
 
-                top-margin: 12;
-                bottom-margin: 12;
-                left-margin: 12;
-                right-margin: 12;
+                Label desktop_environment {
+                  styles [
+                    "dim-label",
+                  ]
 
-                monospace: true;
-                editable: false;
-                wrap-mode: word;
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
 
-                buffer: TextBuffer logs_buffer {
-                };
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind desktop_environment_version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Version");
+                }
+
+                Label desktop_environment_version {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind windowing_system.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Windowing System");
+                }
+
+                Label windowing_system {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind virtual_terminal.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Virtual Terminal");
+                }
+
+                Label virtual_terminal {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
               };
             }
           }

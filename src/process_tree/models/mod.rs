@@ -19,7 +19,7 @@
  */
 
 pub use processes::update_apps;
-pub use processes::update_processes;
+pub use processes::update_children;
 pub use processes::update_services;
 
 mod processes;
