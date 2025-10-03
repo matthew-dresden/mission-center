@@ -30,10 +30,12 @@ template $PerformancePage : Adw.BreakpointBin {
   Adw.OverlaySplitView page_content {
     sidebar-position: end;
     min-sidebar-width: 240;
-    max-sidebar-width: 250;
+    max-sidebar-width: 270;
 
     sidebar: ScrolledWindow {
-      width-request: 260;
+      width-request: 270;
+      margin-start: 5;
+      margin-end: 5;
 
       Adw.Bin info_bar {
         margin-start: 5;
