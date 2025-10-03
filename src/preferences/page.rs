@@ -81,11 +81,11 @@ macro_rules! connect_toggle_pair_to_setting {
 }
 
 mod imp {
-    use std::sync::{LazyLock, Mutex, TryLockResult};
     use super::*;
-    use gtk::SpinButton;
     use crate::application::INTERVAL_STEP;
     use crate::preferences::page::PointsUpdateSource::SettingsLoad;
+    use gtk::SpinButton;
+    use std::sync::{LazyLock, Mutex, TryLockResult};
 
     #[derive(gtk::CompositeTemplate, Default)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/preferences/page.ui")]
@@ -181,10 +181,12 @@ mod imp {
 
             let set_minutes = self.range_minutes.value();
 
-            self.range_minutes.set_range(0., (max_seconds / 60.).ceil());
+            self.range_minutes
+                .set_range(0., (max_seconds / 60.).floor());
 
-            let min_secs = (set_minutes * 60. / interval).ceil() * interval % 60.;
-            let max_secs = ((set_minutes + 1.) * 60. / interval - 1.).floor() * interval % 60. + interval;
+            let min_secs = (set_minutes * 60. / interval).ceil() * interval % 60. - interval;
+            let max_secs =
+                ((set_minutes + 1.) * 60. / interval - 1.).floor() * interval % 60. + 2. * interval;
 
             let min_secs = min_secs.max((MIN_POINTS as f64) * interval - set_minutes * 60.);
             let max_secs = max_secs.min(max_seconds - set_minutes * 60.);
@@ -192,11 +194,11 @@ mod imp {
             let min_secs = (min_secs * 100.).round() / 100.;
             let max_secs = (max_secs * 100.).round() / 100.;
 
-            assert!(max_secs <= 60.);
-            assert!(min_secs >= 0.);
-            assert!(min_secs <= max_secs);
-
             println!("[{}.{}.{}]", min_secs, interval, max_secs);
+
+            // assert!(max_secs <= 60.);
+            // assert!(min_secs >= 0.);
+            assert!(min_secs <= max_secs);
 
             self.range_seconds.adjustment().set_step_increment(interval);
             self.range_seconds.set_range(min_secs, max_secs);
@@ -210,7 +212,7 @@ mod imp {
 
         pub fn configure_update_speed(&self, source: PointsUpdateSource) {
             let mut guard = match self.interval_updating.try_lock() {
-                Ok(g) => {g}
+                Ok(g) => g,
                 Err(_) => {
                     return;
                 }
@@ -221,13 +223,20 @@ mod imp {
 
             let settings = settings!();
 
-            println!("Configurating {:?}\t{}\t{}\t{}", source, self.range_minutes.value(), self.range_seconds.value(), self.data_points.value());
+            println!(
+                "Configurating {:?}\t{}\t{}\t{}",
+                source,
+                self.range_minutes.value(),
+                self.range_seconds.value(),
+                self.data_points.value()
+            );
 
             match source {
                 PointsUpdateSource::SettingsLoad => {
                     let new_points = settings.int("performance-page-data-points");
 
-                    let interval = settings.uint64("app-update-interval-u64") as f64 * INTERVAL_STEP;
+                    let interval =
+                        settings.uint64("app-update-interval-u64") as f64 * INTERVAL_STEP;
 
                     let seconds = (new_points as f64) * interval;
 
@@ -255,7 +264,9 @@ mod imp {
                     let seconds = points as f64 * raw_interval;
                     let max_seconds = MAX_POINTS as f64 * raw_interval;
 
-                    self.range_seconds.adjustment().set_step_increment(raw_interval);
+                    self.range_seconds
+                        .adjustment()
+                        .set_step_increment(raw_interval);
 
                     self.range_minutes.set_value((seconds / 60.).floor());
                     self.range_seconds.set_value(seconds % 60.);
@@ -263,7 +274,8 @@ mod imp {
                     self.configure_minutes_seconds_default();
                 }
                 PointsUpdateSource::DataPoints => {
-                    let new_points = (self.data_points.value() as i32).clamp(MIN_POINTS, MAX_POINTS);
+                    let new_points =
+                        (self.data_points.value() as i32).clamp(MIN_POINTS, MAX_POINTS);
 
                     if settings
                         .set_int("performance-page-data-points", new_points)
@@ -285,9 +297,22 @@ mod imp {
                     self.configure_minutes_seconds_default();
                 }
                 PointsUpdateSource::MinutesChanged | PointsUpdateSource::SecondsChanged => {
-                    let interval = self.update_interval.value() ;
+                    let interval = self.update_interval.value();
 
-                    let seconds = self.range_minutes.value() * 60. + self.range_seconds.value();
+                    let mut minutes_value = self.range_minutes.value();
+                    let seconds_value = self.range_seconds.value();
+
+                    let seconds = minutes_value * 60. + seconds_value;
+
+                    if seconds_value < 0. {
+                        self.range_minutes.set_value((seconds / 60.).floor());
+                        self.range_seconds.set_range(0., 60.);
+                        self.range_seconds.set_value(seconds % 60.);
+                    } else if seconds_value >= 60. {
+                        self.range_minutes.set_value((seconds / 60.).floor());
+                        self.range_seconds.set_range(0., 60.);
+                        self.range_seconds.set_value(seconds % 60.);
+                    }
 
                     let new_data_points =
                         ((seconds / interval).round() as i32).clamp(MIN_POINTS, MAX_POINTS);
@@ -340,7 +365,8 @@ mod imp {
                     let this = self.obj().downgrade();
                     move |_| {
                         if let Some(this) = this.upgrade() {
-                            this.imp().configure_update_speed(PointsUpdateSource::DataPoints);
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::DataPoints);
                         }
                     }
                 });
