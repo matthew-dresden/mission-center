@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-10-03 17:02+0000\n"
+"PO-Revision-Date: 2025-10-05 20:02+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/cs/>\n"
@@ -1157,15 +1157,15 @@ msgstr "Používat bity jako jednotku měření využití jednotek úložiště"
 
 #: resources/ui/preferences/page.blp:190
 msgid "Drive Usage Base"
-msgstr "Řády jednotek pro využití úložných jednotek"
+msgstr "Řády jednotek pro využití jednotek úložiště"
 
 #: resources/ui/preferences/page.blp:197
 msgid "Use Base 10 for Disk Drives"
-msgstr "Používat desítkový řád pro úložné jednotky"
+msgstr "Používat desítkový řád pro jednotky úložiště"
 
 #: resources/ui/preferences/page.blp:202
 msgid "Use Base 2 for Disk Drives"
-msgstr "Používat dvojkový řád pro úložné jednotky"
+msgstr "Používat dvojkový řád pro jednotky úložiště"
 
 #: resources/ui/preferences/page.blp:209
 msgid "Network Usage Unit"
@@ -1479,7 +1479,7 @@ msgstr "Status"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:213
 msgid "Enabled"
-msgstr "Povoleno"
+msgstr "Trvale aktivováno"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:220
 #: src/process_tree/row_model.rs:266
@@ -1792,9 +1792,9 @@ msgid ""
 msgstr ""
 "Volná ({})\n"
 "\n"
-"Paměť která v tuto chvíli není využívána a která bude opětovně využita v "
-"okamžiku kdy operační systém, ovladače či aplikace budou potřebovat více "
-"paměti"
+"Paměť která v tuto chvíli není využívána a která bude opětovně jako první "
+"využita v okamžiku kdy operační systém, ovladače či aplikace budou "
+"potřebovat více paměti"
 
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
 #, rust-format
@@ -1804,7 +1804,7 @@ msgstr "{} sektorů"
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
 msgid "Unsupported"
-msgstr "Nepodporovaná"
+msgstr "Nepodporováno"
 
 #: src/performance_page/cpu.rs:351 src/performance_page/disk.rs:232
 msgid "Yes"
@@ -1916,7 +1916,7 @@ msgstr "{} z {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
-msgstr "Získání dalších informací o paměti se nezdařilo"
+msgstr "Získávání dalších informací o paměti se nezdařilo"
 
 #: src/performance_page/mod.rs:1136
 #, rust-format
@@ -1953,7 +1953,7 @@ msgstr "Zastaveno"
 
 #: src/services_page/mod.rs:134
 msgid "Disabled"
-msgstr "Zakázáno"
+msgstr "Trvale deaktivováno"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
