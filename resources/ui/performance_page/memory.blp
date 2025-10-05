@@ -94,14 +94,13 @@ template $PerformancePageMemory: Box {
           }
         }
 
-        $GraphWidget usage_graph {
+        $GraphWidgetNeo usage_graph {
           vexpand: true;
           hexpand: true;
 
           width-request: 100;
 
           base-color: bind template.base-color;
-          data-set-count: 3;
           scroll: true;
         }
       }
@@ -139,14 +138,13 @@ template $PerformancePageMemory: Box {
           }
         }
 
-        $GraphWidget swap_usage_graph {
+        $GraphWidgetNeo swap_usage_graph {
           vexpand: true;
           hexpand: true;
 
           width-request: 100;
 
           base-color: bind template.memory-color;
-          data-set-count: 1;
           scroll: true;
         }
       }

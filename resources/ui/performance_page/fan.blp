@@ -87,7 +87,7 @@ template $PerformancePageFan: Box {
     Box speed_box {
       orientation: vertical;
 
-      $GraphWidget speed_graph {
+      $GraphWidgetNeo speed_graph {
         vexpand: true;
         hexpand: true;
 
@@ -95,11 +95,7 @@ template $PerformancePageFan: Box {
         height-request: 50;
 
         base-color: bind template.base-color;
-        data-set-count: 2;
         scroll: true;
-
-        scaling: 3;
-        only-scale-up: true;
       }
     }
 
@@ -130,7 +126,7 @@ template $PerformancePageFan: Box {
         }
       }
 
-      $GraphWidget temp_graph {
+      $GraphWidgetNeo temp_graph {
         vexpand: true;
         hexpand: true;
 
@@ -138,11 +134,7 @@ template $PerformancePageFan: Box {
         height-request: 50;
 
         base-color: bind template.base-color;
-        data-set-count: 1;
         scroll: true;
-
-        scaling: 3;
-        only-scale-up: true;
       }
     }
   }

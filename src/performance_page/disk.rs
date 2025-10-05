@@ -36,7 +36,8 @@ use super::PageExt;
 mod imp {
     use super::*;
     use crate::performance_page::disk_details::DiskDetails;
-    use crate::DataType;
+    use crate::{settings, DataType};
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageDisk)]
@@ -54,13 +55,13 @@ mod imp {
         #[template_child]
         pub model: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph: TemplateChild<GraphWidget>,
+        pub usage_graph: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub max_y: TemplateChild<gtk::Label>,
         #[template_child]
         pub graph_max_duration: TemplateChild<gtk::Label>,
         #[template_child]
-        pub disk_transfer_rate_graph: TemplateChild<GraphWidget>,
+        pub disk_transfer_rate_graph: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub context_menu: TemplateChild<gtk::Popover>,
 
@@ -368,11 +369,11 @@ mod imp {
             }
 
             this.max_y.set_text(&crate::to_human_readable_nice(
-                this.disk_transfer_rate_graph.value_range_max(),
+                this.disk_transfer_rate_graph.get_dataset_max_scale(0),
                 &DataType::DriveBytesPerSecond,
             ));
 
-            this.usage_graph.add_data_point(0, disk.busy_percent);
+            this.usage_graph.add_data_point(vec![vec![disk.busy_percent]]);
 
             let cap = disk.formatted_bytes;
             this.infobar_content
@@ -401,7 +402,7 @@ mod imp {
                 .set_text(&format!("{:.2} ms", disk.response_time_ms));
 
             this.disk_transfer_rate_graph
-                .add_data_point(0, disk.rx_speed_bytes_ps as f32);
+                .add_data_point(vec![vec![disk.rx_speed_bytes_ps as f32], vec![disk.tx_speed_bytes_ps as f32]]);
             this.infobar_content
                 .read_speed()
                 .set_text(&crate::to_human_readable_nice(
@@ -416,8 +417,6 @@ mod imp {
                     &DataType::DriveBytes,
                 ));
 
-            this.disk_transfer_rate_graph
-                .add_data_point(1, disk.tx_speed_bytes_ps as f32);
             this.infobar_content
                 .write_speed()
                 .set_text(&crate::to_human_readable_nice(
@@ -507,6 +506,27 @@ mod imp {
 
         fn constructed(&self) {
             self.parent_constructed();
+
+            let mut tx_dataset = DatasetGroup::new();
+            let mut rx_dataset = DatasetGroup::new();
+
+            tx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
+            tx_dataset.dataset_settings.fill = false;
+            tx_dataset.dataset_settings.dashed = true;
+            rx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
+
+            self.disk_transfer_rate_graph.add_dataset(tx_dataset);
+            self.disk_transfer_rate_graph.add_dataset(rx_dataset);
+
+            self.disk_transfer_rate_graph.connect_datasets(0, 1);
+
+            let usage_dataset = DatasetGroup::new();
+
+            self.usage_graph.add_dataset(usage_dataset);
+
+            self.disk_transfer_rate_graph.connect_to_settings(&settings!());
+            self.usage_graph.connect_to_settings(&settings!());
+
 
             let obj = self.obj();
             let this = obj.upcast_ref::<super::PerformancePageDisk>().clone();

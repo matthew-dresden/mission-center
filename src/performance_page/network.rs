@@ -28,10 +28,12 @@ use magpie_types::network::{Connection, ConnectionKind};
 
 use super::{widgets::GraphWidget, PageExt};
 use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
+use crate::performance_page::widgets::ScalingSettings;
 
 mod imp {
     use super::*;
-    use crate::DataType;
+    use crate::{settings, DataType};
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageNetwork)]
@@ -45,7 +47,7 @@ mod imp {
         #[template_child]
         pub max_y: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph: TemplateChild<GraphWidget>,
+        pub usage_graph: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub graph_max_duration: TemplateChild<gtk::Label>,
         #[template_child]
@@ -333,10 +335,12 @@ mod imp {
             this.max_speed.set(connection.max_speed_bytes_ps);
 
             if let Some(max_speed) = connection.max_speed_bytes_ps {
-                this.usage_graph.set_value_range_max(max_speed as f32);
+                this.usage_graph
+                    .set_all_datasets_scaling(ScalingSettings::Fixed);
+                this.usage_graph.set_all_datasets_max_scale(max_speed as f32);
             } else {
                 this.usage_graph
-                    .set_scaling(GraphWidget::auto_pow2_scaling());
+                    .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
             }
 
             true
@@ -349,9 +353,7 @@ mod imp {
             let this = this.imp();
 
             this.usage_graph
-                .add_data_point(0, connection.tx_rate_bytes_ps);
-            this.usage_graph
-                .add_data_point(1, connection.rx_rate_bytes_ps);
+                .add_data_point(vec![vec![connection.tx_rate_bytes_ps], vec![connection.rx_rate_bytes_ps]]);
 
             let send_speed = connection.tx_rate_bytes_ps;
             let rec_speed = connection.rx_rate_bytes_ps;
@@ -417,7 +419,7 @@ mod imp {
             }
 
             let max_y = crate::to_human_readable_nice(
-                this.usage_graph.value_range_max(),
+                this.usage_graph.get_dataset_max_scale(0),
                 &DataType::NetworkBytesPerSecond,
             );
             this.max_y.set_text(&max_y);
@@ -582,6 +584,21 @@ mod imp {
 
         fn constructed(&self) {
             self.parent_constructed();
+
+            let mut tx_dataset = DatasetGroup::new();
+            let mut rx_dataset = DatasetGroup::new();
+
+            // scaling will be set by settings
+            tx_dataset.dataset_settings.fill = false;
+            tx_dataset.dataset_settings.dashed = true;
+
+            self.usage_graph.add_dataset(tx_dataset);
+            self.usage_graph.add_dataset(rx_dataset);
+
+            self.usage_graph.connect_datasets(0, 1);
+            self.usage_graph.connect_datasets(1, 0);
+
+            self.usage_graph.connect_to_settings(&settings!());
 
             let obj = self.obj();
             let this = obj.upcast_ref::<super::PerformancePageNetwork>().clone();
@@ -748,13 +765,13 @@ impl PerformancePageNetwork {
             if dynamic_scaling {
                 this.imp()
                     .usage_graph
-                    .set_scaling(GraphWidget::auto_pow2_scaling());
+                    .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
             } else {
                 this.imp()
                     .usage_graph
-                    .set_scaling(GraphWidget::no_scaling());
+                    .set_all_datasets_scaling(ScalingSettings::Fixed);
 
-                this.imp().usage_graph.set_value_range_max(max_speed as f32);
+                this.imp().usage_graph.set_all_datasets_max_scale(max_speed as f32);
             }
         }
 
@@ -769,13 +786,13 @@ impl PerformancePageNetwork {
                         if dynamic_scaling {
                             this.imp()
                                 .usage_graph
-                                .set_scaling(GraphWidget::auto_pow2_scaling());
+                                .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
                         } else {
                             this.imp()
                                 .usage_graph
-                                .set_scaling(GraphWidget::no_scaling());
+                                .set_all_datasets_scaling(ScalingSettings::Fixed);
 
-                            this.imp().usage_graph.set_value_range_max(max_speed as f32);
+                            this.imp().usage_graph.set_all_datasets_max_scale(max_speed as f32);
                         }
                     }
                 }
@@ -786,36 +803,7 @@ impl PerformancePageNetwork {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
-                    let new_units = settings.boolean("performance-page-network-use-bytes");
-                    let old_units = this.imp().use_bytes.get();
-                    if old_units != new_units {
-                        let conversion_factor = if new_units { 1. / 8. } else { 8. };
-                        this.imp().usage_graph.set_data(
-                            0,
-                            this.imp()
-                                .usage_graph
-                                .data(0)
-                                .unwrap_or(vec![])
-                                .into_iter()
-                                .map(|it| it * conversion_factor)
-                                .collect(),
-                        );
-                        this.imp().usage_graph.set_data(
-                            1,
-                            this.imp()
-                                .usage_graph
-                                .data(1)
-                                .unwrap_or(vec![])
-                                .into_iter()
-                                .map(|it| it * conversion_factor)
-                                .collect(),
-                        );
-
-                        if let Some(max_speed) = this.imp().max_speed.get() {
-                            this.imp().usage_graph.set_value_range_max(max_speed as f32);
-                        }
-                    }
-                    this.imp().use_bytes.set(new_units);
+                    this.imp().use_bytes.set(settings.boolean("performance-page-network-use-bytes"));
                 }
             }
         });

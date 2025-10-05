@@ -35,6 +35,7 @@ use crate::{
 };
 
 mod imp {
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
     use super::*;
 
     #[derive(Properties)]
@@ -47,13 +48,13 @@ mod imp {
         #[template_child]
         pub device_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub graph_utilization: TemplateChild<GraphWidget>,
+        pub graph_utilization: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub container_bottom: TemplateChild<gtk::Box>,
         #[template_child]
         pub encode_decode_graph: TemplateChild<gtk::Box>,
         #[template_child]
-        pub usage_graph_encode_decode: TemplateChild<GraphWidget>,
+        pub usage_graph_encode_decode: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub memory_graph: TemplateChild<gtk::Box>,
         #[template_child]
@@ -61,7 +62,7 @@ mod imp {
         #[template_child]
         pub memory_graph_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph_memory: TemplateChild<GraphWidget>,
+        pub usage_graph_memory: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub context_menu: TemplateChild<gtk::Popover>,
         #[template_child]
@@ -205,38 +206,6 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
-            this.graph_utilization.connect_local("resize", true, {
-                let this = this.obj().downgrade();
-                move |_| {
-                    let this = match this.upgrade() {
-                        Some(this) => this,
-                        None => return None,
-                    };
-                    let this = this.imp();
-
-                    let width = this.graph_utilization.width() as f32;
-                    let height = this.graph_utilization.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.graph_utilization
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    this.usage_graph_encode_decode
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    this.usage_graph_memory
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    None
-                }
-            });
-
             if let Some(index) = index {
                 this.gpu_id.set_text(&format!("GPU {}", index));
             } else {
@@ -279,13 +248,11 @@ mod imp {
 
             this.infobar_content
                 .set_encode_decode_shared(gpu.encode_decode_shared);
+            // ???
             if gpu.encode_decode_shared {
                 this.infobar_content
                     .encode_label()
                     .set_label(&i18n("Video encode/decode"));
-            } else {
-                this.usage_graph_encode_decode.set_dashed(0, true);
-                this.usage_graph_encode_decode.set_filled(0, false);
             }
 
             let mut ogl_version = ArrayString::<64>::new();
@@ -441,7 +408,7 @@ mod imp {
                 0.
             });
 
-            self.graph_utilization.add_data_point(0, overall_usage);
+            self.graph_utilization.add_data_point(vec![vec![overall_usage]]);
             self.infobar_content
                 .utilization()
                 .set_text(&format!("{}%", overall_usage));
@@ -530,8 +497,8 @@ mod imp {
                         crate::to_human_readable_nice(total_memory, &DataType::MemoryBytes);
 
                     this.usage_graph_memory
-                        .set_scaling(GraphWidget::no_scaling());
-                    this.usage_graph_memory.set_value_range_max(total_memory);
+                        .set_dataset_scaling(0, ScalingSettings::Fixed);
+                    this.usage_graph_memory.set_dataset_max_scale(0, total_memory);
                     this.infobar_content.set_total_memory_valid(true);
 
                     this.infobar_content
@@ -552,7 +519,7 @@ mod imp {
                         .set_text(&i18n("Memory Usage"));
 
                     this.usage_graph_memory
-                        .add_data_point(0, used_memory as f32);
+                        .add_data_point(vec![vec![used_memory as f32]]);
 
                     let used_memory = crate::to_human_readable_nice(
                         gpu.used_memory.unwrap_or(0) as f32,
@@ -599,16 +566,16 @@ mod imp {
                             .set_text(&i18n("Dedicated and shared memory usage over "));
 
                         this.usage_graph_memory
-                            .set_scaling(GraphWidget::no_scaling());
-                        let current_max = this.usage_graph_memory.value_range_max();
+                            .set_dataset_scaling(0, ScalingSettings::Fixed);
+                        let current_max = this.usage_graph_memory.get_dataset_max_scale(0);
                         scaling_factor = current_max / total_shared_memory as f32;
                     } else {
                         this.total_memory.set_text(&total_gtt);
 
                         this.usage_graph_memory
-                            .set_scaling(GraphWidget::no_scaling());
+                            .set_dataset_scaling(0, ScalingSettings::Fixed);
                         this.usage_graph_memory
-                            .set_value_range_max(total_shared_memory as f32);
+                            .set_dataset_max_scale(0, total_shared_memory as f32);
                     }
                     this.infobar_content
                         .shared_mem_usage_max()
@@ -621,7 +588,7 @@ mod imp {
                     *has_memory_info = true;
 
                     this.usage_graph_memory
-                        .add_data_point(1, used_shared_memory as f32 * scaling_factor);
+                        .add_data_point(vec![vec![used_shared_memory as f32]]);
 
                     this.infobar_content.set_used_shared_memory_valid(true);
                     this.infobar_content
@@ -662,7 +629,7 @@ mod imp {
                 && !self.infobar_content.total_shared_memory_valid()
             {
                 self.usage_graph_memory
-                    .set_scaling(GraphWidget::normalized_scaling());
+                    .set_dataset_scaling(0, ScalingSettings::ScaleUp);
             }
 
             self.memory_graph.set_visible(has_memory_info);
@@ -712,7 +679,7 @@ mod imp {
                 encode_decode_info_available = true;
 
                 self.usage_graph_encode_decode
-                    .add_data_point(0, encoder_percent);
+                    .add_single_data_point(0, vec![encoder_percent]);
 
                 self.infobar_content
                     .encode_percent()
@@ -724,7 +691,7 @@ mod imp {
                     encode_decode_info_available = true;
 
                     self.usage_graph_encode_decode
-                        .add_data_point(1, decoder_percent);
+                        .add_single_data_point(1, vec![decoder_percent]);
 
                     self.infobar_content
                         .decode_percent()
@@ -808,6 +775,22 @@ mod imp {
 
         fn constructed(&self) {
             self.parent_constructed();
+
+            let mut encode = DatasetGroup::new();
+            encode.dataset_settings.fill = false;
+            encode.dataset_settings.dashed = true;
+            let mut decode = DatasetGroup::new();
+
+            self.usage_graph_encode_decode.add_dataset(encode);
+            self.usage_graph_encode_decode.add_dataset(decode);
+
+            let util = DatasetGroup::new();
+            self.graph_utilization.add_dataset(util);
+            self.graph_utilization.connect_to_settings(&settings!());
+
+            let mem = DatasetGroup::new();
+            self.usage_graph_memory.add_dataset(mem);
+            self.usage_graph_memory.connect_to_settings(&settings!());
 
             let this = self.obj();
 

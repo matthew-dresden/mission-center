@@ -88,7 +88,7 @@ template $PerformancePageGpu: Box {
         }
       }
 
-      $GraphWidget graph_utilization {
+      $GraphWidgetNeo graph_utilization {
         vexpand: true;
         hexpand: true;
 
@@ -96,7 +96,6 @@ template $PerformancePageGpu: Box {
         height-request: 50;
 
         base-color: bind template.base-color;
-        data-set-count: 1;
         scroll: true;
       }
     }
@@ -137,7 +136,7 @@ template $PerformancePageGpu: Box {
           }
         }
 
-        $GraphWidget usage_graph_encode_decode {
+        $GraphWidgetNeo usage_graph_encode_decode {
           vexpand: true;
           hexpand: true;
 
@@ -145,7 +144,6 @@ template $PerformancePageGpu: Box {
           height-request: 30;
 
           base-color: bind template.base-color;
-          data-set-count: 2;
           scroll: true;
         }
       }
@@ -182,7 +180,7 @@ template $PerformancePageGpu: Box {
           }
         }
 
-        $GraphWidget usage_graph_memory {
+        $GraphWidgetNeo usage_graph_memory {
           vexpand: true;
           hexpand: true;
 
@@ -190,7 +188,6 @@ template $PerformancePageGpu: Box {
           height-request: 40;
 
           base-color: bind template.base-color;
-          data-set-count: 2;
           scroll: true;
         }
       }

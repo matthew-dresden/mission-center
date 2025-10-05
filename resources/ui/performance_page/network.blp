@@ -81,7 +81,7 @@ template $PerformancePageNetwork: Box {
     };
   }
 
-  $GraphWidget usage_graph {
+  $GraphWidgetNeo usage_graph {
     vexpand: true;
     hexpand: true;
 
@@ -89,9 +89,7 @@ template $PerformancePageNetwork: Box {
     height-request: 50;
 
     base-color: bind template.base-color;
-    data-set-count: 2;
     scroll: true;
-    scaling: 2;
   }
 
   PopoverMenu context_menu {

@@ -25,12 +25,12 @@ use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gdk, glib, prelude::*};
 
-use super::widgets::{GraphWidget, SidebarDropHint};
+use super::widgets::{GraphWidget, GraphWidgetNeo, SidebarDropHint};
 use crate::settings;
 
 mod imp {
     use std::marker::PhantomData;
-
+    use crate::performance_page::widgets::GraphWidgetNeo;
     use super::*;
 
     #[derive(Properties)]
@@ -44,7 +44,7 @@ mod imp {
         #[template_child]
         pub drag_handle_icon: TemplateChild<gtk::Image>,
         #[template_child]
-        pub graph_widget: TemplateChild<GraphWidget>,
+        pub graph_widget: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         label_heading: TemplateChild<gtk::Label>,
         #[template_child]
@@ -245,7 +245,7 @@ impl SummaryGraph {
         }
     }
 
-    pub fn graph_widget(&self) -> GraphWidget {
+    pub fn graph_widget(&self) -> GraphWidgetNeo {
         self.imp().graph_widget.clone()
     }
 

@@ -33,6 +33,7 @@ use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readab
 mod imp {
     use super::*;
     use crate::DataType;
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageMemory)]
@@ -48,7 +49,7 @@ mod imp {
         #[template_child]
         pub max_graph_ram: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph: TemplateChild<GraphWidget>,
+        pub usage_graph: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub graph_max_duration: TemplateChild<gtk::Label>,
         #[template_child]
@@ -62,7 +63,7 @@ mod imp {
         #[template_child]
         pub box_system_memory: TemplateChild<gtk::Box>,
         #[template_child]
-        pub swap_usage_graph: TemplateChild<GraphWidget>,
+        pub swap_usage_graph: TemplateChild<GraphWidgetNeo>,
         #[template_child]
         pub total_swap: TemplateChild<gtk::Label>,
 
@@ -305,9 +306,9 @@ mod imp {
                 settings.boolean("performance-page-memory-composition-visible");
 
             this.usage_graph
-                .set_value_range_max(readings.mem_info.mem_total as f32);
+                .set_all_datasets_max_scale(readings.mem_info.mem_total as f32);
             this.swap_usage_graph
-                .set_value_range_max(readings.mem_info.swap_total as f32);
+                .set_all_datasets_max_scale(readings.mem_info.swap_total as f32);
             let t = this.obj().clone();
 
             if !show_memory_composition {
@@ -417,9 +418,7 @@ mod imp {
             };
             let used = mem_info.mem_total.saturating_sub(mem_avail);
             let standby = mem_info.mem_total.saturating_sub(used + mem_info.mem_free);
-            this.usage_graph.add_data_point(0, mem_info.committed as _);
-            this.usage_graph.add_data_point(1, mem_info.dirty as _);
-            this.usage_graph.add_data_point(2, used as _);
+            this.usage_graph.add_data_point(vec![vec![mem_info.committed as _], vec![mem_info.dirty as _], vec![used as _]]);
 
             let total_mem = crate::to_human_readable_nice(
                 readings.mem_info.mem_total as _,
@@ -428,13 +427,13 @@ mod imp {
             this.total_ram.set_text(&total_mem);
 
             let max_ram = crate::to_human_readable_nice(
-                this.usage_graph.value_range_max(),
+                this.usage_graph.get_dataset_max_scale(0),
                 &DataType::MemoryBytes,
             );
             this.max_graph_ram.set_text(&max_ram);
 
             let swap_used = mem_info.swap_total.saturating_sub(mem_info.swap_free);
-            this.swap_usage_graph.add_data_point(0, swap_used as _);
+            this.swap_usage_graph.add_data_point(vec![vec![swap_used as _]]);
 
             this.mem_composition.update_memory_information(mem_info);
 
@@ -652,9 +651,29 @@ mod imp {
 
             let this = self.obj().clone();
 
-            self.usage_graph.set_filled(0, false);
-            self.usage_graph.set_dashed(0, true);
-            self.usage_graph.set_filled(1, false);
+            let mut dataset_a = DatasetGroup::new();
+            dataset_a.dataset_settings.fill = false;
+            dataset_a.dataset_settings.dashed = true;
+
+            let mut dataset_b = DatasetGroup::new();
+            dataset_b.dataset_settings.fill = false;
+
+            let dataset_c = DatasetGroup::new();
+
+            self.usage_graph.add_dataset(dataset_a);
+            self.usage_graph.add_dataset(dataset_b);
+            self.usage_graph.add_dataset(dataset_c);
+
+            self.usage_graph.connect_datasets(0, 1);
+            self.usage_graph.connect_datasets(1, 2);
+            self.usage_graph.connect_datasets(2, 0);
+
+            self.usage_graph.connect_to_settings(&settings!());
+
+            let swap_dataset = DatasetGroup::new();
+
+            self.swap_usage_graph.add_dataset(swap_dataset);
+            self.swap_usage_graph.connect_to_settings(&settings!());
 
             Self::configure_actions(&this);
             Self::configure_context_menu(&this);

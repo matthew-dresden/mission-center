@@ -34,6 +34,7 @@ use crate::performance_page::{PageExt, MK_TO_0_C};
 use crate::to_short_human_readable_time;
 
 mod imp {
+    use crate::performance_page::widgets::GraphWidgetNeo;
     use super::*;
 
     #[derive(Properties)]
@@ -46,9 +47,9 @@ mod imp {
         #[template_child]
         pub title_temp_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub speed_graph: TemplateChild<GraphWidget>,
+        pub speed_graph: TemplateChild<GraphWidgetNeo>,
         #[template_child]
-        pub temp_graph: TemplateChild<GraphWidget>,
+        pub temp_graph: TemplateChild<GraphWidgetNeo>,
 
         #[template_child]
         pub speed_max_y: TemplateChild<gtk::Label>,
@@ -296,27 +297,22 @@ mod imp {
                     temp.set_text(&i18n_f("{} °C", &[&format!("{:.1}", fan_temp_c)]));
                 }
 
-                this.temp_graph.add_data_point(0, fan_temp_c);
+                this.temp_graph.add_data_point(vec![vec![fan_temp_c]]);
                 this.temp_max_y.set_text(&format!(
                     "{} °C",
                     this.temp_graph
-                        .max_all_time(0)
-                        .unwrap_or(fan_temp_c.round())
+                        .get_dataset_max_scale(0)
                 ));
             }
 
-            this.speed_graph.add_data_point(0, fan.rpm as f32);
-            if let Some(pwm_percent) = fan.pwm_percent {
-                this.speed_graph.add_data_point(1, pwm_percent * 100.);
-            }
+            this.speed_graph.add_data_point(vec![vec![fan.rpm as f32], vec![fan.pwm_percent.unwrap_or(0.)]]);
 
             if fan.max_rpm.is_none() {
                 this.speed_max_y.set_text(&i18n_f(
                     "{} RPM",
                     &[&this
                         .speed_graph
-                        .max_all_time(0)
-                        .unwrap_or(fan.rpm as f32)
+                        .get_dataset_max_scale(0)
                         .to_string()],
                 ));
             }
