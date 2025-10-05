@@ -32,8 +32,8 @@ use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readab
 
 mod imp {
     use super::*;
-    use crate::DataType;
     use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo};
+    use crate::DataType;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageMemory)]
@@ -418,7 +418,11 @@ mod imp {
             };
             let used = mem_info.mem_total.saturating_sub(mem_avail);
             let standby = mem_info.mem_total.saturating_sub(used + mem_info.mem_free);
-            this.usage_graph.add_data_point(vec![vec![mem_info.committed as _], vec![mem_info.dirty as _], vec![used as _]]);
+            this.usage_graph.add_data_point(vec![
+                vec![mem_info.committed as _],
+                vec![mem_info.dirty as _],
+                vec![used as _],
+            ]);
 
             let total_mem = crate::to_human_readable_nice(
                 readings.mem_info.mem_total as _,
@@ -433,7 +437,8 @@ mod imp {
             this.max_graph_ram.set_text(&max_ram);
 
             let swap_used = mem_info.swap_total.saturating_sub(mem_info.swap_free);
-            this.swap_usage_graph.add_data_point(vec![vec![swap_used as _]]);
+            this.swap_usage_graph
+                .add_data_point(vec![vec![swap_used as _]]);
 
             this.mem_composition.update_memory_information(mem_info);
 

@@ -34,8 +34,8 @@ use crate::performance_page::{PageExt, MK_TO_0_C};
 use crate::to_short_human_readable_time;
 
 mod imp {
-    use crate::performance_page::widgets::GraphWidgetNeo;
     use super::*;
+    use crate::performance_page::widgets::GraphWidgetNeo;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageFan)]
@@ -298,22 +298,19 @@ mod imp {
                 }
 
                 this.temp_graph.add_data_point(vec![vec![fan_temp_c]]);
-                this.temp_max_y.set_text(&format!(
-                    "{} °C",
-                    this.temp_graph
-                        .get_dataset_max_scale(0)
-                ));
+                this.temp_max_y
+                    .set_text(&format!("{} °C", this.temp_graph.get_dataset_max_scale(0)));
             }
 
-            this.speed_graph.add_data_point(vec![vec![fan.rpm as f32], vec![fan.pwm_percent.unwrap_or(0.)]]);
+            this.speed_graph.add_data_point(vec![
+                vec![fan.rpm as f32],
+                vec![fan.pwm_percent.unwrap_or(0.)],
+            ]);
 
             if fan.max_rpm.is_none() {
                 this.speed_max_y.set_text(&i18n_f(
                     "{} RPM",
-                    &[&this
-                        .speed_graph
-                        .get_dataset_max_scale(0)
-                        .to_string()],
+                    &[&this.speed_graph.get_dataset_max_scale(0).to_string()],
                 ));
             }
 

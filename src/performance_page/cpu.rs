@@ -28,10 +28,10 @@ use super::{widgets::GraphWidget, PageExt};
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 
 mod imp {
-    use gtk::glib::g_critical;
     use super::*;
-    use crate::DataType;
     use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
+    use crate::DataType;
+    use gtk::glib::g_critical;
 
     const GRAPH_SELECTION_OVERALL: i32 = 1;
     const GRAPH_SELECTION_ALL: i32 = 2;
@@ -132,7 +132,6 @@ mod imp {
             this.imp().graph_widgets.set(graph_widgets);
         }
     }
-
 
     impl Default for PerformancePageCpu {
         fn default() -> Self {
@@ -245,7 +244,14 @@ mod imp {
             overall_action.connect_activate({
                 let this = this.downgrade();
                 move |action, _| {
-                    update_selection_callback!(action, this, GRAPH_SELECTION_OVERALL, apa, ata, sta);
+                    update_selection_callback!(
+                        action,
+                        this,
+                        GRAPH_SELECTION_OVERALL,
+                        apa,
+                        ata,
+                        sta
+                    );
                 }
             });
             actions.add_action(&overall_action);
@@ -258,7 +264,14 @@ mod imp {
             all_threads_action.connect_activate({
                 let this = this.downgrade();
                 move |action, _| {
-                    update_selection_callback!(action, this, GRAPH_SELECTION_ALL_THREADS, apa, ova, sta);
+                    update_selection_callback!(
+                        action,
+                        this,
+                        GRAPH_SELECTION_ALL_THREADS,
+                        apa,
+                        ova,
+                        sta
+                    );
                 }
             });
             actions.add_action(&all_threads_action);
@@ -271,7 +284,14 @@ mod imp {
             stacked_threads_action.connect_activate({
                 let this = this.downgrade();
                 move |action, _| {
-                    update_selection_callback!(action, this, GRAPH_SELECTION_ALL_THREADS_STACKED, apa, ova, ata);
+                    update_selection_callback!(
+                        action,
+                        this,
+                        GRAPH_SELECTION_ALL_THREADS_STACKED,
+                        apa,
+                        ova,
+                        ata
+                    );
                 }
             });
             actions.add_action(&stacked_threads_action);
@@ -463,13 +483,19 @@ mod imp {
             }
 
             // Update global CPU graph
-            graph_widgets[0].add_data_point(vec![vec![dynamic_cpu_info.total_usage_percent], vec![dynamic_cpu_info.kernel_usage_percent]]);
+            graph_widgets[0].add_data_point(vec![
+                vec![dynamic_cpu_info.total_usage_percent],
+                vec![dynamic_cpu_info.kernel_usage_percent],
+            ]);
             graph_widgets[1].add_data_point(vec![dynamic_cpu_info.core_usage_percent.clone()]);
 
             // Update per-core graphs
             for i in 0..dynamic_cpu_info.core_usage_percent.len() {
                 let graph_widget = &mut graph_widgets[i + 2];
-                graph_widget.add_data_point(vec![vec![dynamic_cpu_info.core_usage_percent[i]], vec![dynamic_cpu_info.core_kernel_usage_percent[i]]]);
+                graph_widget.add_data_point(vec![
+                    vec![dynamic_cpu_info.core_usage_percent[i]],
+                    vec![dynamic_cpu_info.core_kernel_usage_percent[i]],
+                ]);
             }
 
             this.graph_widgets.set(graph_widgets);
@@ -784,7 +810,10 @@ mod imp {
 
             let thread_wise = GraphWidgetNeo::new(Some(&settings));
             thread_wise.set_base_color(&base_color);
-            thread_wise.set_visible(graph_selection == GRAPH_SELECTION_ALL_THREADS || graph_selection == GRAPH_SELECTION_ALL_THREADS_STACKED);
+            thread_wise.set_visible(
+                graph_selection == GRAPH_SELECTION_ALL_THREADS
+                    || graph_selection == GRAPH_SELECTION_ALL_THREADS_STACKED,
+            );
 
             let mut usage_group = DatasetGroup::new();
             if graph_selection == GRAPH_SELECTION_ALL_THREADS_STACKED {
@@ -823,13 +852,8 @@ mod imp {
                 graf.add_dataset(usage_group);
                 graf.add_dataset(kernel_group);
 
-                self.usage_graphs.attach(
-                    &graf,
-                    col_idx as i32,
-                    row_idx as i32,
-                    1,
-                    1,
-                );
+                self.usage_graphs
+                    .attach(&graf, col_idx as i32, row_idx as i32, 1, 1);
 
                 graph_widgets.push(graf);
             }

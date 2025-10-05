@@ -18,14 +18,24 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use glib::{ParamSpec, Properties, Value};
+use gtk::{
+    gdk,
+    gdk::prelude::*,
+    gio,
+    glib::{
+        self,
+        subclass::{prelude::*, Signal},
+    },
+    graphene,
+    gsk::{self, FillRule, PathBuilder, Stroke},
+    prelude::*,
+    subclass::prelude::*,
+    Snapshot,
+};
 use std::cell::Cell;
 use std::cmp::Ordering;
 use std::time::{SystemTime, UNIX_EPOCH};
-use glib::{ParamSpec, Properties, Value};
-use gtk::{gdk, gdk::prelude::*, gio, glib::{
-    self,
-    subclass::{prelude::*, Signal},
-}, graphene, gsk::{self, FillRule, PathBuilder, Stroke}, prelude::*, subclass::prelude::*, Snapshot};
 
 // pub use imp::DataSetDescriptor;
 
@@ -117,28 +127,36 @@ mod imp {
         fn set_horizontal_line_count(&self, count: u32) {
             if self.horizontal_line_count.get() != count {
                 self.horizontal_line_count.set(count);
-                self.obj().upcast_ref::<super::GraphWidgetNeo>().queue_draw();
+                self.obj()
+                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .queue_draw();
             }
         }
 
         fn set_vertical_line_count(&self, count: u32) {
             if self.vertical_line_count.get() != count {
                 self.vertical_line_count.set(count);
-                self.obj().upcast_ref::<super::GraphWidgetNeo>().queue_draw();
+                self.obj()
+                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .queue_draw();
             }
         }
 
         pub fn set_smooth_graphs(&self, smooth: bool) {
             if self.smooth_graphs.get() != smooth {
                 self.smooth_graphs.set(smooth);
-                self.obj().upcast_ref::<super::GraphWidgetNeo>().queue_draw();
+                self.obj()
+                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .queue_draw();
             }
         }
 
         pub fn set_do_animation(&self, smooth: bool) {
             if self.do_animation.get() != smooth {
                 self.do_animation.set(smooth);
-                self.obj().upcast_ref::<super::GraphWidgetNeo>().queue_draw();
+                self.obj()
+                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .queue_draw();
             }
         }
 
@@ -245,21 +263,23 @@ mod imp {
                 self.try_increment_scroll();
             }
 
-            let need_redraw = !self.do_animation.get() || self.animation_ticks.get() <= 1 || cached_shot.is_none();
+            let need_redraw = !self.do_animation.get()
+                || self.animation_ticks.get() <= 1
+                || cached_shot.is_none();
 
             if need_redraw {
                 let beanshot = Snapshot::new();
                 let snapshot = &beanshot;
 
                 if self.obj().grid_visible() {
-                self.draw_grid(
-                    snapshot,
-                    width,
-                    height,
-                    scale_factor,
-                    self.obj().data_points() as _,
-                    &base_color,
-                );
+                    self.draw_grid(
+                        snapshot,
+                        width,
+                        height,
+                        scale_factor,
+                        self.obj().data_points() as _,
+                        &base_color,
+                    );
                 }
 
                 let mut data_sets = self.data_sets.take();
@@ -274,21 +294,33 @@ mod imp {
 
             let Some(baze) = cached_shot else {
                 println!("Oh no! No cached render when it was expected");
-                return ;
+                return;
             };
 
             snapshot.push_rounded_clip(&bounds);
 
             if self.do_animation.get() {
                 let spacing = width / (self.data_points.get() - 2) as f32;
-                snapshot.translate(&graphene::Point::new(spacing * ((self.expected_animation_ticks.get() - self.animation_ticks.get()) as f32 / self.expected_animation_ticks.get() as f32), 0.));
+                snapshot.translate(&graphene::Point::new(
+                    spacing
+                        * ((self.expected_animation_ticks.get() - self.animation_ticks.get())
+                            as f32
+                            / self.expected_animation_ticks.get() as f32),
+                    0.,
+                ));
             }
 
             snapshot.append_node(baze.clone());
 
             if self.do_animation.get() {
                 let spacing = width / (self.data_points.get() - 2) as f32;
-                snapshot.translate(&graphene::Point::new(-spacing * ((self.expected_animation_ticks.get() - self.animation_ticks.get()) as f32 / self.expected_animation_ticks.get() as f32), 0.));
+                snapshot.translate(&graphene::Point::new(
+                    -spacing
+                        * ((self.expected_animation_ticks.get() - self.animation_ticks.get())
+                            as f32
+                            / self.expected_animation_ticks.get() as f32),
+                    0.,
+                ));
             }
 
             self.cached_snapshot.set(Some(baze));
@@ -377,7 +409,9 @@ macro_rules! connect_setting {
             }
         });
 
-        $self.imp().$set_fn($settings.$settings_method($setting_key));
+        $self
+            .imp()
+            .$set_fn($settings.$settings_method($setting_key));
     };
 }
 
@@ -402,7 +436,9 @@ impl GraphWidgetNeo {
                 let dcr = obj.downgrade();
 
                 move |_| {
-                    let Some(obj) = dcr.upgrade() else { return None };
+                    let Some(obj) = dcr.upgrade() else {
+                        return None;
+                    };
 
                     let width = obj.width() as f32;
                     let height = obj.height() as f32;
@@ -487,14 +523,20 @@ impl GraphWidgetNeo {
             for i in 0..data.len() {
                 let dataset = &data[i];
 
-                let Some(other) = dataset.dataset_settings.following.map(|it| data[it].clone()) else {
+                let Some(other) = dataset
+                    .dataset_settings
+                    .following
+                    .map(|it| data[it].clone())
+                else {
                     continue;
                 };
 
                 breaking &= !data[i].apply_following_rules(Some(&other));
             }
 
-            if breaking { break; }
+            if breaking {
+                break;
+            }
         }
     }
 
@@ -577,10 +619,34 @@ impl GraphWidgetNeo {
         // create a lock to prevent re-connectiong?
         self.imp().settings_inited.set(true);
 
-        connect_setting!(self, settings, "performance-page-data-points", int, set_data_points_i32);
-        connect_setting!(self, settings, "performance-smooth-graphs", boolean, set_smooth_graphs);
-        connect_setting!(self, settings, "performance-sliding-graphs", boolean, set_do_animation);
-        connect_setting!(self, settings, "app-update-interval-u64", uint64, set_expected_animation_ticks_u64);
+        connect_setting!(
+            self,
+            settings,
+            "performance-page-data-points",
+            int,
+            set_data_points_i32
+        );
+        connect_setting!(
+            self,
+            settings,
+            "performance-smooth-graphs",
+            boolean,
+            set_smooth_graphs
+        );
+        connect_setting!(
+            self,
+            settings,
+            "performance-sliding-graphs",
+            boolean,
+            set_do_animation
+        );
+        connect_setting!(
+            self,
+            settings,
+            "app-update-interval-u64",
+            uint64,
+            set_expected_animation_ticks_u64
+        );
     }
 
     pub fn connect_datasets(&self, idxa: usize, idxb: usize) {
@@ -594,4 +660,3 @@ impl GraphWidgetNeo {
         this.data_sets.set(sets);
     }
 }
-

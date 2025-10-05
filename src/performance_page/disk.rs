@@ -36,8 +36,8 @@ use super::PageExt;
 mod imp {
     use super::*;
     use crate::performance_page::disk_details::DiskDetails;
-    use crate::{settings, DataType};
     use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
+    use crate::{settings, DataType};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageDisk)]
@@ -373,7 +373,8 @@ mod imp {
                 &DataType::DriveBytesPerSecond,
             ));
 
-            this.usage_graph.add_data_point(vec![vec![disk.busy_percent]]);
+            this.usage_graph
+                .add_data_point(vec![vec![disk.busy_percent]]);
 
             let cap = disk.formatted_bytes;
             this.infobar_content
@@ -401,8 +402,10 @@ mod imp {
                 .avg_response_time()
                 .set_text(&format!("{:.2} ms", disk.response_time_ms));
 
-            this.disk_transfer_rate_graph
-                .add_data_point(vec![vec![disk.rx_speed_bytes_ps as f32], vec![disk.tx_speed_bytes_ps as f32]]);
+            this.disk_transfer_rate_graph.add_data_point(vec![
+                vec![disk.rx_speed_bytes_ps as f32],
+                vec![disk.tx_speed_bytes_ps as f32],
+            ]);
             this.infobar_content
                 .read_speed()
                 .set_text(&crate::to_human_readable_nice(
@@ -524,9 +527,9 @@ mod imp {
 
             self.usage_graph.add_dataset(usage_dataset);
 
-            self.disk_transfer_rate_graph.connect_to_settings(&settings!());
+            self.disk_transfer_rate_graph
+                .connect_to_settings(&settings!());
             self.usage_graph.connect_to_settings(&settings!());
-
 
             let obj = self.obj();
             let this = obj.upcast_ref::<super::PerformancePageDisk>().clone();

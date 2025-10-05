@@ -35,8 +35,8 @@ use crate::{
 };
 
 mod imp {
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
     use super::*;
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageGpu)]
@@ -408,7 +408,8 @@ mod imp {
                 0.
             });
 
-            self.graph_utilization.add_data_point(vec![vec![overall_usage]]);
+            self.graph_utilization
+                .add_data_point(vec![vec![overall_usage]]);
             self.infobar_content
                 .utilization()
                 .set_text(&format!("{}%", overall_usage));
@@ -498,7 +499,8 @@ mod imp {
 
                     this.usage_graph_memory
                         .set_dataset_scaling(0, ScalingSettings::Fixed);
-                    this.usage_graph_memory.set_dataset_max_scale(0, total_memory);
+                    this.usage_graph_memory
+                        .set_dataset_max_scale(0, total_memory);
                     this.infobar_content.set_total_memory_valid(true);
 
                     this.infobar_content

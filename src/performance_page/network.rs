@@ -27,13 +27,13 @@ use gtk::{gio, glib, prelude::*};
 use magpie_types::network::{Connection, ConnectionKind};
 
 use super::{widgets::GraphWidget, PageExt};
-use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
 use crate::performance_page::widgets::ScalingSettings;
+use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
 
 mod imp {
     use super::*;
-    use crate::{settings, DataType};
     use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
+    use crate::{settings, DataType};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageNetwork)]
@@ -337,7 +337,8 @@ mod imp {
             if let Some(max_speed) = connection.max_speed_bytes_ps {
                 this.usage_graph
                     .set_all_datasets_scaling(ScalingSettings::Fixed);
-                this.usage_graph.set_all_datasets_max_scale(max_speed as f32);
+                this.usage_graph
+                    .set_all_datasets_max_scale(max_speed as f32);
             } else {
                 this.usage_graph
                     .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
@@ -352,8 +353,10 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
-            this.usage_graph
-                .add_data_point(vec![vec![connection.tx_rate_bytes_ps], vec![connection.rx_rate_bytes_ps]]);
+            this.usage_graph.add_data_point(vec![
+                vec![connection.tx_rate_bytes_ps],
+                vec![connection.rx_rate_bytes_ps],
+            ]);
 
             let send_speed = connection.tx_rate_bytes_ps;
             let rec_speed = connection.rx_rate_bytes_ps;
@@ -771,7 +774,9 @@ impl PerformancePageNetwork {
                     .usage_graph
                     .set_all_datasets_scaling(ScalingSettings::Fixed);
 
-                this.imp().usage_graph.set_all_datasets_max_scale(max_speed as f32);
+                this.imp()
+                    .usage_graph
+                    .set_all_datasets_max_scale(max_speed as f32);
             }
         }
 
@@ -792,7 +797,9 @@ impl PerformancePageNetwork {
                                 .usage_graph
                                 .set_all_datasets_scaling(ScalingSettings::Fixed);
 
-                            this.imp().usage_graph.set_all_datasets_max_scale(max_speed as f32);
+                            this.imp()
+                                .usage_graph
+                                .set_all_datasets_max_scale(max_speed as f32);
                         }
                     }
                 }
@@ -803,7 +810,9 @@ impl PerformancePageNetwork {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
-                    this.imp().use_bytes.set(settings.boolean("performance-page-network-use-bytes"));
+                    this.imp()
+                        .use_bytes
+                        .set(settings.boolean("performance-page-network-use-bytes"));
                 }
             }
         });

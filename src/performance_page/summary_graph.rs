@@ -29,9 +29,9 @@ use super::widgets::{GraphWidget, GraphWidgetNeo, SidebarDropHint};
 use crate::settings;
 
 mod imp {
-    use std::marker::PhantomData;
-    use crate::performance_page::widgets::GraphWidgetNeo;
     use super::*;
+    use crate::performance_page::widgets::GraphWidgetNeo;
+    use std::marker::PhantomData;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::SummaryGraph)]

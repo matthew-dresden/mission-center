@@ -20,10 +20,10 @@
 
 pub use eject_failure_dialog::EjectFailureDialog;
 pub use graph_widget::GraphWidget;
+pub use mem_composition_widget::MemoryCompositionWidget;
 pub use neo_graph_widget::GraphWidgetNeo;
 pub use neo_graph_widget_utils::DatasetGroup;
 pub use neo_graph_widget_utils::ScalingSettings;
-pub use mem_composition_widget::MemoryCompositionWidget;
 pub use sidebar_drop_hint::SidebarDropHint;
 pub use smart_data_dialog::SmartDataDialog;
 pub use smart_failure_dialog::SmartFailureDialog;
@@ -36,10 +36,10 @@ mod eject_failure_dialog;
 mod eject_failure_row;
 mod graph_widget;
 mod mem_composition_widget;
+mod neo_graph_widget;
+mod neo_graph_widget_utils;
 mod sidebar_drop_hint;
 mod smart_data_dialog;
 mod smart_failure_dialog;
 mod smart_nvme_dialog_row;
 mod smart_sata_dialog_row;
-mod neo_graph_widget;
-mod neo_graph_widget_utils;

@@ -72,9 +72,9 @@ const MK_TO_0_C: i32 = -273150;
 
 mod imp {
     use super::*;
+    use crate::performance_page::widgets::{DatasetGroup, ScalingSettings};
     use crate::DataType;
     use std::marker::PhantomData;
-    use crate::performance_page::widgets::{DatasetGroup, ScalingSettings};
 
     // GNOME color palette: Blue 4
     const CPU_BASE_COLOR: [u8; 3] = [0x1c, 0x71, 0xd8];
@@ -1122,7 +1122,6 @@ mod imp {
             {
                 let graph_widget = summary.graph_widget();
 
-
                 let mut dataset_a = DatasetGroup::new();
                 dataset_a.dataset_settings.fill = false;
                 dataset_a.dataset_settings.dashed = true;
@@ -1148,7 +1147,6 @@ mod imp {
                 MEMORY_BASE_COLOR[2] as f32 / 255.,
                 1.,
             ));
-
 
             summary
                 .graph_widget()
@@ -1287,7 +1285,7 @@ mod imp {
             let settings = settings!();
 
             let mut busy_pct = DatasetGroup::new();
-            
+
             summary.graph_widget().add_dataset(busy_pct);
             summary.graph_widget().connect_to_settings(&settings);
 
@@ -1389,7 +1387,9 @@ mod imp {
                     summary
                         .graph_widget()
                         .set_dataset_scaling(0, ScalingSettings::Fixed);
-                    summary.graph_widget().set_dataset_max_scale(0, max_speed as f32);
+                    summary
+                        .graph_widget()
+                        .set_dataset_max_scale(0, max_speed as f32);
                 }
                 settings.connect_changed(Some("performance-page-network-dynamic-scaling"), {
                     let graph = summary.graph_widget().downgrade();
@@ -2148,7 +2148,10 @@ mod imp {
                         graph_widget.set_smooth_graphs(smooth);
                         graph_widget.set_do_animation(sliding);
                         graph_widget.set_expected_animation_ticks(delay);
-                        graph_widget.add_data_point(vec![vec![readings.mem_info.committed as _], vec![used_raw as _]]);
+                        graph_widget.add_data_point(vec![
+                            vec![readings.mem_info.committed as _],
+                            vec![used_raw as _],
+                        ]);
                         let used =
                             crate::to_human_readable_nice(used_raw as _, &DataType::MemoryBytes);
 
@@ -2264,7 +2267,10 @@ mod imp {
 
                                 let graph_widget = summary.graph_widget();
 
-                                graph_widget.add_data_point(vec![vec![network_connection.tx_rate_bytes_ps], vec![network_connection.rx_rate_bytes_ps]]);
+                                graph_widget.add_data_point(vec![
+                                    vec![network_connection.tx_rate_bytes_ps],
+                                    vec![network_connection.rx_rate_bytes_ps],
+                                ]);
 
                                 let send_speed = network_connection.tx_rate_bytes_ps;
                                 let rec_speed = network_connection.rx_rate_bytes_ps;
