@@ -214,9 +214,8 @@ mod imp {
 
             let anim_offset = if self.obj().scroll() {
                 ((animdist)
-                    * (-(self.scroll_offset.get() as f32) + 1f32
-                        - self.animation_ticks.get()))
-                    .rem_euclid(col_width)
+                    * (-(self.scroll_offset.get() as f32) + 1f32 - self.animation_ticks.get()))
+                .rem_euclid(col_width)
             } else {
                 0.
             };
@@ -244,12 +243,10 @@ mod imp {
             // probably also add a force redraw
             let mut cached_shot = self.cached_snapshot.take();
 
-            if self.need_redraw.get() {
-            }
+            if self.need_redraw.get() {}
 
-            let need_redraw = !self.do_animation.get()
-                || self.need_redraw.get()
-                || cached_shot.is_none();
+            let need_redraw =
+                !self.do_animation.get() || self.need_redraw.get() || cached_shot.is_none();
 
             if need_redraw {
                 self.need_redraw.set(false);
@@ -288,8 +285,7 @@ mod imp {
             if self.do_animation.get() {
                 let spacing = width / (self.data_points.get() - 2) as f32;
                 snapshot.translate(&graphene::Point::new(
-                    spacing
-                        * (1. - self.animation_ticks.get()),
+                    spacing * (1. - self.animation_ticks.get()),
                     0.,
                 ));
             }
@@ -299,8 +295,7 @@ mod imp {
             if self.do_animation.get() {
                 let spacing = width / (self.data_points.get() - 2) as f32;
                 snapshot.translate(&graphene::Point::new(
-                    -spacing
-                        * (1. - self.animation_ticks.get()),
+                    -spacing * (1. - self.animation_ticks.get()),
                     0.,
                 ));
             }

@@ -28,10 +28,10 @@ use glib::{g_critical, idle_add_local_once, ParamSpec, Propagation, Properties, 
 use gtk::glib::ControlFlow;
 use gtk::{gdk, gio, glib};
 
+use crate::application::INTERVAL_STEP;
 use crate::widgets::ListCell;
 use crate::widgets::ThemeSelector;
 use crate::{app, magpie_client::Readings, settings};
-use crate::application::INTERVAL_STEP;
 
 fn special_shortcuts(
 ) -> &'static HashMap<gdk::ModifierType, HashMap<gdk::Key, fn(&MissionCenterWindow) -> bool>> {
@@ -1048,7 +1048,9 @@ impl MissionCenterWindow {
                         "Failed to get window from MissionCenterApplication",
                     );
                 }
-                Some(window) => { window.imp().cached_refresh_ticks.set(update_speed); }
+                Some(window) => {
+                    window.imp().cached_refresh_ticks.set(update_speed);
+                }
             }
         });
 
@@ -1071,7 +1073,14 @@ impl MissionCenterWindow {
 
             move || {
                 if let Some(this) = this.upgrade() {
-                    this.update_animations(((Self::get_current_timestamp().saturating_sub(this.imp().last_refresh.get()) as f64 / 1_000_000.) / (this.imp().cached_refresh_ticks.get() as f64 * INTERVAL_STEP)) as _);
+                    this.update_animations(
+                        ((Self::get_current_timestamp()
+                            .saturating_sub(this.imp().last_refresh.get())
+                            as f64
+                            / 1_000_000.)
+                            / (this.imp().cached_refresh_ticks.get() as f64 * INTERVAL_STEP))
+                            as _,
+                    );
                 }
 
                 ControlFlow::Continue
