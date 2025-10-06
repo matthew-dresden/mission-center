@@ -487,6 +487,7 @@ impl PerformancePageFan {
         let mut rpm_dataset = DatasetGroup::new();
         rpm_dataset.dataset_settings.dashed = true;
         rpm_dataset.dataset_settings.fill = false;
+        rpm_dataset.dataset_settings.high_watermark = 1.;
 
         this.imp().speed_graph.add_dataset(speed_dataset);
         this.imp().speed_graph.add_dataset(rpm_dataset);

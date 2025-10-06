@@ -25,7 +25,7 @@ use std::time::Duration;
 
 use adw::{prelude::*, subclass::prelude::*};
 use glib::{g_critical, idle_add_local_once, ParamSpec, Propagation, Properties, Value};
-use gtk::glib::ControlFlow;
+use gtk::glib::{g_info, ControlFlow};
 use gtk::{gdk, gio, glib};
 
 use crate::application::INTERVAL_STEP;
@@ -1179,7 +1179,11 @@ impl MissionCenterWindow {
 
         let this = self.imp();
 
-        println!("Animey {}", new_ticks);
+        g_info!(
+            "MissionCenter",
+            "Updating with {} animation ticks",
+            new_ticks
+        );
 
         result &= this.performance_page.update_animations(new_ticks);
 

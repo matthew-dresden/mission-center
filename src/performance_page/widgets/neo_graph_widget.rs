@@ -75,7 +75,6 @@ mod imp {
         pub(crate) need_redraw: Cell<bool>,
         cached_snapshot: Cell<Option<gsk::RenderNode>>,
 
-        pub primary_dataset: Cell<Option<&'static DatasetGroup>>,
         pub data_sets: Cell<Vec<DatasetGroup>>,
     }
 
@@ -96,7 +95,6 @@ mod imp {
                 prev_size: Cell::new((0, 0)),
                 need_redraw: Cell::new(true),
                 cached_snapshot: Cell::new(None),
-                primary_dataset: Cell::new(None),
                 data_sets: Cell::new(vec![]),
             }
         }
@@ -243,13 +241,12 @@ mod imp {
                 radius,
             );
 
-            // probably also add a force redraw
             let mut cached_shot = self.cached_snapshot.take();
 
             let need_redraw =
                 !self.do_animation.get() || self.need_redraw.get() || cached_shot.is_none();
 
-            if need_redraw {
+            let baze = if need_redraw {
                 self.need_redraw.set(false);
 
                 let beanshot = Snapshot::new();
@@ -273,39 +270,37 @@ mod imp {
                 }
                 self.data_sets.set(data_sets);
 
-                cached_shot = beanshot.to_node();
-            }
+                beanshot.to_node()
+            } else {
+                cached_shot
+            };
 
-            let Some(baze) = cached_shot else {
-                println!("Oh no! No cached render when it was expected");
+            let Some(baze) = baze else {
+                println!("Baze was empty");
                 return;
             };
 
             snapshot.push_rounded_clip(&bounds);
 
             if self.do_animation.get() {
+                snapshot.save();
                 let spacing = width / (self.data_points.get() - 2) as f32;
                 snapshot.translate(&graphene::Point::new(
                     spacing * (1. - self.animation_ticks.get()),
                     0.,
                 ));
+                snapshot.append_node(baze.clone());
+
+                snapshot.restore();
+
+                self.cached_snapshot.set(Some(baze));
+            } else {
+                snapshot.append_node(baze);
             }
-
-            snapshot.append_node(baze.clone());
-
-            if self.do_animation.get() {
-                let spacing = width / (self.data_points.get() - 2) as f32;
-                snapshot.translate(&graphene::Point::new(
-                    -spacing * (1. - self.animation_ticks.get()),
-                    0.,
-                ));
-            }
-
-            self.cached_snapshot.set(Some(baze));
-
-            snapshot.pop();
 
             self.draw_outline(snapshot, &bounds, &base_color);
+
+            snapshot.pop();
         }
     }
 
@@ -361,6 +356,8 @@ mod imp {
                     return;
                 }
             };
+
+            let renderer = native.renderer().unwrap();
 
             let (prev_width, prev_height) = self.prev_size.get();
             let (width, height) = (this.width(), this.height());
