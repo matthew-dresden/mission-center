@@ -1127,12 +1127,15 @@ mod imp {
                 dataset_a.dataset_settings.dashed = true;
                 dataset_a.dataset_settings.high_watermark = mem_info.mem_total as f32;
                 dataset_a.dataset_settings.scaling_settings = ScalingSettings::Fixed;
-                let dataset_b = DatasetGroup::new();
+                let mut dataset_b = DatasetGroup::new();
+                dataset_b.dataset_settings.high_watermark = mem_info.mem_total as f32;
+                dataset_b.dataset_settings.scaling_settings = ScalingSettings::Fixed;
 
                 graph_widget.add_dataset(dataset_a);
                 graph_widget.add_dataset(dataset_b);
 
-                graph_widget.connect_datasets(0, 1);
+                // graph_widget.connect_datasets(0, 1);
+                // graph_widget.connect_datasets(1, 0);
 
                 graph_widget.connect_to_settings(&settings);
             }

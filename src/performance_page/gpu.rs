@@ -776,6 +776,8 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
+            let settings = settings!();
+
             let mut encode = DatasetGroup::new();
             encode.dataset_settings.fill = false;
             encode.dataset_settings.dashed = true;
@@ -784,9 +786,12 @@ mod imp {
             self.usage_graph_encode_decode.add_dataset(encode);
             self.usage_graph_encode_decode.add_dataset(decode);
 
+            self.usage_graph_encode_decode
+                .connect_to_settings(&settings);
+
             let util = DatasetGroup::new();
             self.graph_utilization.add_dataset(util);
-            self.graph_utilization.connect_to_settings(&settings!());
+            self.graph_utilization.connect_to_settings(&settings);
 
             let mem = DatasetGroup::new();
             self.usage_graph_memory.add_dataset(mem);
@@ -794,7 +799,7 @@ mod imp {
             idk.dataset_settings.dashed = true;
             idk.dataset_settings.fill = false;
             self.usage_graph_memory.add_dataset(idk);
-            self.usage_graph_memory.connect_to_settings(&settings!());
+            self.usage_graph_memory.connect_to_settings(&settings);
 
             let this = self.obj();
 
