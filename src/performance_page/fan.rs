@@ -30,6 +30,7 @@ use magpie_types::fan::Fan;
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::{PageExt, MK_TO_0_C};
+use crate::performance_page::widgets::{DatasetGroup, ScalingSettings};
 use crate::to_short_human_readable_time;
 
 mod imp {
@@ -196,9 +197,6 @@ mod imp {
             if let Some(temp_name) = &fan.temp_name {
                 this.title_temp_name.set_text(temp_name);
             }
-
-            this.speed_graph.set_filled(1, false);
-            this.speed_graph.set_dashed(1, true);
 
             if fan.pwm_percent.is_none() {
                 if let Some(box_pwm) = this.bow_pwm.get() {
@@ -446,8 +444,6 @@ impl PerformancePageFan {
             settings: &gio::Settings,
         ) {
             let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
             let delay = settings.uint64("app-update-interval-u64");
             let graph_max_duration =
                 (((delay as f64) * INTERVAL_STEP) * (data_points as f64)).round() as u32;
@@ -457,16 +453,7 @@ impl PerformancePageFan {
             let time_string = &to_short_human_readable_time(graph_max_duration);
 
             this.speed_graph_max_duration.set_text(time_string);
-            this.speed_graph.set_data_points(data_points);
-            this.speed_graph.set_smooth_graphs(smooth);
-            this.speed_graph.set_do_animation(sliding);
-            this.speed_graph.set_expected_animation_ticks(delay as u32);
-
             this.temp_graph_max_duration.set_text(time_string);
-            this.temp_graph.set_data_points(data_points);
-            this.temp_graph.set_smooth_graphs(smooth);
-            this.temp_graph.set_do_animation(sliding);
-            this.temp_graph.set_expected_animation_ticks(delay as u32);
         }
         update_refresh_rate_sensitive_labels(&this, settings);
 
@@ -488,23 +475,24 @@ impl PerformancePageFan {
             }
         });
 
-        settings.connect_changed(Some("performance-smooth-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
+        let mut temp_dataset = DatasetGroup::new();
+        temp_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUpDown;
+        temp_dataset.dataset_settings.high_watermark = 45.;
+        temp_dataset.dataset_settings.low_watermark = 35.;
 
-        settings.connect_changed(Some("performance-sliding-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
+        this.imp().temp_graph.add_dataset(temp_dataset);
+
+        let mut speed_dataset = DatasetGroup::new();
+        speed_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUp;
+        let mut rpm_dataset = DatasetGroup::new();
+        rpm_dataset.dataset_settings.dashed = true;
+        rpm_dataset.dataset_settings.fill = false;
+
+        this.imp().speed_graph.add_dataset(speed_dataset);
+        this.imp().speed_graph.add_dataset(rpm_dataset);
+
+        this.imp().temp_graph.connect_to_settings(settings);
+        this.imp().speed_graph.connect_to_settings(settings);
 
         this
     }

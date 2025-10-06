@@ -1583,9 +1583,10 @@ mod imp {
 
             summary.graph_widget().connect_to_settings(&settings);
 
-            summary
-                .graph_widget()
-                .set_dataset_scaling(0, ScalingSettings::ScaleUp);
+            let mut speed_dataset = DatasetGroup::new();
+            speed_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUp;
+
+            summary.graph_widget().add_dataset(speed_dataset);
 
             let page = FanPage::new(&page_name, &settings);
             page.set_base_color(gdk::RGBA::new(
