@@ -278,11 +278,11 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageFan) -> bool {
+        pub fn update_animations(this: &super::PerformancePageFan, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.speed_graph.update_animation();
-            this.temp_graph.update_animation();
+            this.speed_graph.update_animation(new_ticks);
+            this.temp_graph.update_animation(new_ticks);
 
             true
         }
@@ -505,7 +505,7 @@ impl PerformancePageFan {
         imp::PerformancePageFan::update_readings(self, fan_info, index)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageFan::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageFan::update_animations(self, new_ticks)
     }
 }

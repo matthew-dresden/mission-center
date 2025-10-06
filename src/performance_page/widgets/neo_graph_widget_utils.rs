@@ -1,6 +1,5 @@
 use crate::performance_page::widgets::GraphWidgetNeo;
 use adw::gdk;
-use gtk::gdk::RGBA;
 use gtk::gsk::{FillRule, PathBuilder, Stroke};
 use gtk::prelude::{SnapshotExt, WidgetExt};
 use gtk::Snapshot;
@@ -74,7 +73,7 @@ struct DatasetPoints {
 
 impl DatasetGroup {
     pub fn set_datasets(&mut self, sets: usize) {
-        for i in self.datas.len()..sets {
+        for _ in self.datas.len()..sets {
             self.datas.push(Dataset::default());
         }
     }

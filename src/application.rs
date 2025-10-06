@@ -278,20 +278,6 @@ impl MissionCenterApplication {
         window.update_readings(readings)
     }
 
-    pub fn refresh_animations(&self) -> bool {
-        use gtk::glib::*;
-
-        let Some(window) = self.window() else {
-            g_critical!(
-                "MissionCenter::Application",
-                "No active window, when trying to refresh data"
-            );
-            return false;
-        };
-
-        window.update_animations()
-    }
-
     pub fn settings(&self) -> gio::Settings {
         unsafe { (&*self.imp().settings.as_ptr()).as_ref().unwrap_unchecked() }.clone()
     }

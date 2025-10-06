@@ -499,11 +499,11 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageMemory) -> bool {
+        pub fn update_animations(this: &super::PerformancePageMemory, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.usage_graph.update_animation();
-            this.swap_usage_graph.update_animation();
+            this.usage_graph.update_animation(new_ticks);
+            this.swap_usage_graph.update_animation(new_ticks);
 
             true
         }
@@ -890,7 +890,7 @@ impl PerformancePageMemory {
         imp::PerformancePageMemory::update_readings(self, readings)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageMemory::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageMemory::update_animations(self, new_ticks)
     }
 }

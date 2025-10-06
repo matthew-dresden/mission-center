@@ -632,13 +632,13 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageCpu) -> bool {
+        pub fn update_animations(this: &super::PerformancePageCpu, new_ticks: f32) -> bool {
             let this = this.imp();
 
             let widgets = this.graph_widgets.take();
 
             for widget in &widgets {
-                widget.update_animation();
+                widget.update_animation(new_ticks);
             }
 
             this.graph_widgets.set(widgets);
@@ -1123,7 +1123,7 @@ impl PerformancePageCpu {
         imp::PerformancePageCpu::update_readings(self, readings)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageCpu::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageCpu::update_animations(self, new_ticks)
     }
 }

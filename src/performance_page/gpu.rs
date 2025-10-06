@@ -344,12 +344,12 @@ mod imp {
             true
         }
 
-        pub(crate) fn update_animations(this: &super::PerformancePageGpu) -> bool {
+        pub(crate) fn update_animations(this: &super::PerformancePageGpu, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.graph_utilization.update_animation();
-            this.usage_graph_memory.update_animation();
-            this.usage_graph_encode_decode.update_animation();
+            this.graph_utilization.update_animation(new_ticks);
+            this.usage_graph_memory.update_animation(new_ticks);
+            this.usage_graph_encode_decode.update_animation(new_ticks);
 
             true
         }
@@ -521,7 +521,7 @@ mod imp {
                         .set_text(&i18n("Memory Usage"));
 
                     this.usage_graph_memory
-                        .add_data_point(vec![vec![used_memory as f32]]);
+                        .add_single_data_point(0, vec![used_memory as f32]);
 
                     let used_memory = crate::to_human_readable_nice(
                         gpu.used_memory.unwrap_or(0) as f32,
@@ -556,8 +556,6 @@ mod imp {
                         &DataType::MemoryBytes,
                     );
 
-                    this.usage_graph_memory.set_dashed(1, true);
-                    this.usage_graph_memory.set_filled(1, false);
                     this.infobar_content.set_total_shared_memory_valid(true);
 
                     if let Some(total_memory_str) = total_memory_str {
@@ -590,7 +588,7 @@ mod imp {
                     *has_memory_info = true;
 
                     this.usage_graph_memory
-                        .add_data_point(vec![vec![used_shared_memory as f32]]);
+                        .add_single_data_point(0, vec![used_shared_memory as f32]);
 
                     this.infobar_content.set_used_shared_memory_valid(true);
                     this.infobar_content
@@ -792,6 +790,10 @@ mod imp {
 
             let mem = DatasetGroup::new();
             self.usage_graph_memory.add_dataset(mem);
+            let mut idk = DatasetGroup::new();
+            idk.dataset_settings.dashed = true;
+            idk.dataset_settings.fill = false;
+            self.usage_graph_memory.add_dataset(idk);
             self.usage_graph_memory.connect_to_settings(&settings!());
 
             let this = self.obj();
@@ -882,7 +884,7 @@ impl PerformancePageGpu {
         imp::PerformancePageGpu::update_readings(self, gpu, index)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageGpu::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageGpu::update_animations(self, new_ticks)
     }
 }

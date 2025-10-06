@@ -412,11 +412,11 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageDisk) -> bool {
+        pub fn update_animations(this: &super::PerformancePageDisk, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.usage_graph.update_animation();
-            this.disk_transfer_rate_graph.update_animation();
+            this.usage_graph.update_animation(new_ticks);
+            this.disk_transfer_rate_graph.update_animation(new_ticks);
 
             true
         }
@@ -584,7 +584,7 @@ impl PerformancePageDisk {
         imp::PerformancePageDisk::update_readings(self, index, disk)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageDisk::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageDisk::update_animations(self, new_ticks)
     }
 }

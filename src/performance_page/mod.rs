@@ -2499,7 +2499,7 @@ mod imp {
             result
         }
 
-        pub fn update_animations(this: &super::PerformancePage) -> bool {
+        pub fn update_animations(this: &super::PerformancePage, new_ticks: f32) -> bool {
             let mut pages = this.imp().pages.take();
 
             let mut result = true;
@@ -2509,45 +2509,45 @@ mod imp {
                     Pages::Cpu((summary, page)) => {
                         let graph_widget = summary.graph_widget();
 
-                        result &= graph_widget.update_animation();
-                        result &= page.update_animations();
+                        result &= graph_widget.update_animation(new_ticks);
+                        result &= page.update_animations(new_ticks);
                     }
                     Pages::Memory((summary, page)) => {
                         let graph_widget = summary.graph_widget();
 
-                        result &= graph_widget.update_animation();
-                        result &= page.update_animations();
+                        result &= graph_widget.update_animation(new_ticks);
+                        result &= page.update_animations(new_ticks);
                     }
                     Pages::Disk(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                     Pages::Network(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                     Pages::Gpu(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                     Pages::Fan(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                     Pages::Battery(pages) => {
@@ -2726,8 +2726,8 @@ impl PerformancePage {
         imp::PerformancePage::update_readings(self, readings)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePage::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePage::update_animations(self, new_ticks)
     }
 
     pub fn sidebar_enable_all(&self) {

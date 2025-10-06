@@ -456,10 +456,10 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageNetwork) -> bool {
+        pub fn update_animations(this: &super::PerformancePageNetwork, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.usage_graph.update_animation();
+            this.usage_graph.update_animation(new_ticks);
 
             true
         }
@@ -820,8 +820,8 @@ impl PerformancePageNetwork {
         imp::PerformancePageNetwork::update_readings(self, connection)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageNetwork::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageNetwork::update_animations(self, new_ticks)
     }
 
     pub fn infobar_collapsed(&self) {

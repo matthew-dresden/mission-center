@@ -28,14 +28,12 @@ use gtk::{
         subclass::{prelude::*, Signal},
     },
     graphene,
-    gsk::{self, FillRule, PathBuilder, Stroke},
+    gsk::{self, PathBuilder, Stroke},
     prelude::*,
     subclass::prelude::*,
     Snapshot,
 };
 use std::cell::Cell;
-use std::cmp::Ordering;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 // pub use imp::DataSetDescriptor;
 
@@ -57,9 +55,7 @@ mod imp {
         #[property(get, set = Self::set_vertical_line_count)]
         vertical_line_count: Cell<u32>,
         #[property(get, set)]
-        animation_ticks: Cell<u32>,
-        #[property(get, set = Self::set_expected_animation_ticks)]
-        expected_animation_ticks: Cell<u32>,
+        animation_ticks: Cell<f32>,
         #[property(get, set = Self::set_do_animation)]
         do_animation: Cell<bool>,
         #[property(get, set = Self::set_smooth_graphs)]
@@ -73,7 +69,7 @@ mod imp {
         scroll_offset: Cell<u32>,
         prev_size: Cell<(i32, i32)>,
 
-        base_snapshot: Cell<Option<Snapshot>>,
+        pub(crate) need_redraw: Cell<bool>,
         cached_snapshot: Cell<Option<gsk::RenderNode>>,
 
         pub primary_dataset: Cell<Option<&'static DatasetGroup>>,
@@ -87,8 +83,7 @@ mod imp {
                 base_color: Cell::new(gdk::RGBA::new(0., 0., 0., 1.)),
                 horizontal_line_count: Cell::new(6),
                 vertical_line_count: Cell::new(9),
-                animation_ticks: Cell::new(0),
-                expected_animation_ticks: Cell::new(0),
+                animation_ticks: Cell::new(0.),
                 do_animation: Cell::new(false),
                 smooth_graphs: Cell::new(false),
                 scroll: Cell::new(true),
@@ -96,7 +91,7 @@ mod imp {
                 settings_inited: Cell::new(false),
                 scroll_offset: Cell::new(0),
                 prev_size: Cell::new((0, 0)),
-                base_snapshot: Cell::new(None),
+                need_redraw: Cell::new(true),
                 cached_snapshot: Cell::new(None),
                 primary_dataset: Cell::new(None),
                 data_sets: Cell::new(vec![]),
@@ -118,10 +113,6 @@ mod imp {
 
         pub fn set_data_points_i32(&self, count: i32) {
             self.set_data_points(count as u32)
-        }
-
-        pub fn set_expected_animation_ticks_u64(&self, count: u64) {
-            self.set_expected_animation_ticks(count as u32)
         }
 
         fn set_horizontal_line_count(&self, count: u32) {
@@ -160,13 +151,8 @@ mod imp {
             }
         }
 
-        pub fn set_expected_animation_ticks(&self, ticks: u32) {
-            if ticks > 0 {
-                // let ticks = (((ticks as f64) * INTERVAL_STEP) * (self.data_points.get() as f64)).round() as u32;
-                if self.expected_animation_ticks.get() != ticks {
-                    self.expected_animation_ticks.set(ticks);
-                }
-            }
+        pub fn set_animation_ticks(&self, ticks: f32) {
+            self.animation_ticks.set(ticks);
         }
 
         pub fn try_increment_scroll(&self) {
@@ -229,8 +215,7 @@ mod imp {
             let anim_offset = if self.obj().scroll() {
                 ((animdist)
                     * (-(self.scroll_offset.get() as f32) + 1f32
-                        - self.animation_ticks.get().saturating_sub(1) as f32
-                            / self.expected_animation_ticks.get() as f32))
+                        - self.animation_ticks.get()))
                     .rem_euclid(col_width)
             } else {
                 0.
@@ -259,15 +244,16 @@ mod imp {
             // probably also add a force redraw
             let mut cached_shot = self.cached_snapshot.take();
 
-            if self.animation_ticks.get() <= 1 {
-                self.try_increment_scroll();
+            if self.need_redraw.get() {
             }
 
             let need_redraw = !self.do_animation.get()
-                || self.animation_ticks.get() <= 1
+                || self.need_redraw.get()
                 || cached_shot.is_none();
 
             if need_redraw {
+                self.need_redraw.set(false);
+
                 let beanshot = Snapshot::new();
                 let snapshot = &beanshot;
 
@@ -303,9 +289,7 @@ mod imp {
                 let spacing = width / (self.data_points.get() - 2) as f32;
                 snapshot.translate(&graphene::Point::new(
                     spacing
-                        * ((self.expected_animation_ticks.get() - self.animation_ticks.get())
-                            as f32
-                            / self.expected_animation_ticks.get() as f32),
+                        * (1. - self.animation_ticks.get()),
                     0.,
                 ));
             }
@@ -316,9 +300,7 @@ mod imp {
                 let spacing = width / (self.data_points.get() - 2) as f32;
                 snapshot.translate(&graphene::Point::new(
                     -spacing
-                        * ((self.expected_animation_ticks.get() - self.animation_ticks.get())
-                            as f32
-                            / self.expected_animation_ticks.get() as f32),
+                        * (1. - self.animation_ticks.get()),
                     0.,
                 ));
             }
@@ -487,8 +469,6 @@ impl GraphWidgetNeo {
         let this = self.imp();
         let mut data = this.data_sets.take();
 
-        self.set_animation_ticks(0);
-
         if !this.settings_inited.get() {
             let _ = 1 + 1;
         }
@@ -507,8 +487,6 @@ impl GraphWidgetNeo {
     pub fn add_single_data_point(&self, idx: usize, datas: Vec<f32>) {
         let mut data = self.imp().data_sets.take();
 
-        self.set_animation_ticks(0);
-
         data[idx].add_data(&datas);
 
         Self::apply_followings(&mut data);
@@ -516,7 +494,7 @@ impl GraphWidgetNeo {
         self.imp().data_sets.set(data);
     }
 
-    fn apply_followings(mut data: &mut Vec<DatasetGroup>) {
+    fn apply_followings(data: &mut Vec<DatasetGroup>) {
         loop {
             let mut breaking = true;
 
@@ -540,19 +518,16 @@ impl GraphWidgetNeo {
         }
     }
 
-    pub fn update_animation(&self) -> bool {
+    pub fn update_animation(&self, new_ticks: f32) -> bool {
         if self.is_visible() {
-            if self.do_animation() {
-                self.set_animation_ticks(
-                    (self.animation_ticks() + 1).min(self.expected_animation_ticks()),
-                );
-            } else if self.animation_ticks() == 0 {
-                self.set_animation_ticks(self.expected_animation_ticks());
-            } else {
-                return true;
+            if new_ticks == 0. {
+                self.set_animation_ticks(new_ticks);
+                self.force_redraw();
+                self.imp().try_increment_scroll();
+            } else if self.do_animation() {
+                self.set_animation_ticks(new_ticks);
+                self.queue_draw();
             }
-
-            self.queue_draw();
         }
 
         true
@@ -570,7 +545,7 @@ impl GraphWidgetNeo {
     pub fn set_dataset_scaling(&self, index: usize, scaler: ScalingSettings) {
         let mut sets = self.imp().data_sets.take();
 
-        let it = sets[index].dataset_settings.scaling_settings = scaler;
+        sets[index].dataset_settings.scaling_settings = scaler;
 
         self.imp().data_sets.set(sets);
     }
@@ -606,7 +581,7 @@ impl GraphWidgetNeo {
     }
 
     pub fn get_dataset_max_scale(&self, index: usize) -> f32 {
-        let mut sets = self.imp().data_sets.take();
+        let sets = self.imp().data_sets.take();
 
         let it = sets[index].dataset_settings.high_watermark;
 
@@ -640,15 +615,11 @@ impl GraphWidgetNeo {
             boolean,
             set_do_animation
         );
-        connect_setting!(
-            self,
-            settings,
-            "app-update-interval-u64",
-            uint64,
-            set_expected_animation_ticks_u64
-        );
     }
 
+    /**
+     *  "connecting" when used with the Follow scaling settings makes two datasets use the largest high watermark, and the smallest low watermark
+     */
     pub fn connect_datasets(&self, idxa: usize, idxb: usize) {
         let this = self.imp();
 
@@ -658,5 +629,11 @@ impl GraphWidgetNeo {
         sets[idxb].dataset_settings.followed = Some(idxa);
 
         this.data_sets.set(sets);
+    }
+
+    #[inline]
+    pub fn force_redraw(&self) {
+        self.imp().need_redraw.set(true);
+        self.queue_draw();
     }
 }
