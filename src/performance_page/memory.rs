@@ -24,10 +24,7 @@ use adw::{self, subclass::prelude::*};
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
-use super::{
-    widgets::{MemoryCompositionWidget},
-    PageExt,
-};
+use super::{widgets::MemoryCompositionWidget, PageExt};
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 
 mod imp {

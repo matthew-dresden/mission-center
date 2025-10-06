@@ -26,7 +26,7 @@ use gtk::{gio, glib, prelude::*};
 
 use magpie_types::network::{Connection, ConnectionKind};
 
-use super::{PageExt};
+use super::PageExt;
 use crate::performance_page::widgets::ScalingSettings;
 use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
 
