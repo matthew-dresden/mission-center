@@ -30,7 +30,7 @@ use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::{app, to_short_human_readable_time};
 
-use super::widgets::{EjectFailureDialog, GraphWidget, SmartDataDialog, SmartFailureDialog};
+use super::widgets::{EjectFailureDialog, SmartDataDialog, SmartFailureDialog};
 use super::PageExt;
 
 mod imp {
@@ -168,31 +168,6 @@ mod imp {
             index: Option<i32>,
             disk: &Disk,
         ) -> bool {
-            let t = this.clone();
-            this.imp()
-                .usage_graph
-                .connect_local("resize", true, move |_| {
-                    let this = t.imp();
-
-                    let width = this.usage_graph.width() as f32;
-                    let height = this.usage_graph.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.usage_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    this.disk_transfer_rate_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    None
-                });
-
             let this = this.imp();
 
             let _ = this.raw_disk_id.set(disk.id.clone());

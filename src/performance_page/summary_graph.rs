@@ -25,7 +25,7 @@ use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gdk, glib, prelude::*};
 
-use super::widgets::{GraphWidget, GraphWidgetNeo, SidebarDropHint};
+use super::widgets::{GraphWidgetNeo, SidebarDropHint};
 use crate::settings;
 
 mod imp {

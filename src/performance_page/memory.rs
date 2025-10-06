@@ -25,7 +25,7 @@ use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
 use super::{
-    widgets::{GraphWidget, MemoryCompositionWidget},
+    widgets::{MemoryCompositionWidget},
     PageExt,
 };
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
@@ -323,28 +323,6 @@ mod imp {
                 legend_used
                     .set_resource(Some("/io/missioncenter/MissionCenter/line-solid-mem.svg"));
             }
-
-            this.usage_graph.connect_local("resize", true, move |_| {
-                let this = t.imp();
-
-                let width = this.usage_graph.width() as f32;
-                let height = this.usage_graph.height() as f32;
-
-                let mut a = width;
-                let mut b = height;
-                if width > height {
-                    a = height;
-                    b = width;
-                }
-
-                this.usage_graph
-                    .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                this.swap_usage_graph
-                    .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                None
-            });
 
             let total_mem = crate::to_human_readable_nice(
                 readings.mem_info.mem_total as _,

@@ -27,7 +27,6 @@ use gtk::{gio, glib, prelude::*};
 
 use magpie_types::fan::Fan;
 
-use super::widgets::GraphWidget;
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::{PageExt, MK_TO_0_C};
@@ -183,42 +182,6 @@ mod imp {
             let t = this.clone();
 
             let this = this.imp();
-
-            this.speed_graph.connect_local("resize", true, move |_| {
-                let this = t.imp();
-
-                {
-                    let width = this.speed_graph.width() as f32;
-                    let height = this.speed_graph.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.speed_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-                }
-
-                {
-                    let width = this.temp_graph.width() as f32;
-                    let height = this.temp_graph.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.temp_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-                }
-
-                None
-            });
 
             if let Some(legend_send) = this.legend_speed.get() {
                 legend_send

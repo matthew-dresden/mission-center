@@ -1148,20 +1148,6 @@ mod imp {
                 1.,
             ));
 
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
-
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
-
             let page = MemoryPage::new(&settings);
             page.set_base_color(gdk::RGBA::new(
                 MEMORY_BASE_COLOR[0] as f32 / 255.,
@@ -2101,13 +2087,6 @@ mod imp {
 
             let mut result = true;
 
-            let settings = settings!();
-
-            let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
-            let delay = settings.uint64("app-update-interval-u64") as u32;
-
             for page in &mut pages {
                 match page {
                     Pages::Cpu((summary, page)) => {
@@ -2144,10 +2123,6 @@ mod imp {
 
                         let used_raw = total_raw.saturating_sub(mem_avail);
                         let graph_widget = summary.graph_widget();
-                        graph_widget.set_data_points(data_points);
-                        graph_widget.set_smooth_graphs(smooth);
-                        graph_widget.set_do_animation(sliding);
-                        graph_widget.set_expected_animation_ticks(delay);
                         graph_widget.add_data_point(vec![
                             vec![readings.mem_info.committed as _],
                             vec![used_raw as _],
@@ -2338,10 +2313,6 @@ mod imp {
                                     });
 
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.set_data_points(data_points);
-                                graph_widget.set_smooth_graphs(smooth);
-                                graph_widget.set_do_animation(sliding);
-                                graph_widget.set_expected_animation_ticks(delay);
 
                                 if let Some(index) = index {
                                     summary.set_heading(i18n_f("GPU {}", &[&format!("{}", index)]));
@@ -2411,10 +2382,6 @@ mod imp {
                                     });
 
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.set_data_points(data_points);
-                                graph_widget.set_smooth_graphs(smooth);
-                                graph_widget.set_do_animation(sliding);
-                                graph_widget.set_expected_animation_ticks(delay);
                                 graph_widget.add_data_point(vec![vec![fan.rpm as f32]]);
                                 if let Some(fan_name) = &fan.fan_label {
                                     summary.set_info1(fan_name.as_str());

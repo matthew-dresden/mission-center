@@ -19,7 +19,6 @@
  */
 
 pub use eject_failure_dialog::EjectFailureDialog;
-pub use graph_widget::GraphWidget;
 pub use mem_composition_widget::MemoryCompositionWidget;
 pub use neo_graph_widget::GraphWidgetNeo;
 pub use neo_graph_widget_utils::DatasetGroup;
@@ -34,7 +33,6 @@ const GRAPH_RADIUS: f32 = 7.;
 
 mod eject_failure_dialog;
 mod eject_failure_row;
-mod graph_widget;
 mod mem_composition_widget;
 mod neo_graph_widget;
 mod neo_graph_widget_utils;

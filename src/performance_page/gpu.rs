@@ -29,7 +29,7 @@ use gtk::{gio, glib, prelude::*};
 use magpie_types::gpus::Gpu;
 use magpie_types::gpus::OpenGlVariant;
 
-use super::{widgets::GraphWidget, GpuDetails, PageExt};
+use super::{GpuDetails, PageExt};
 use crate::{
     application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time, DataType,
 };

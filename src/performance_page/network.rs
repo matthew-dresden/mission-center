@@ -26,7 +26,7 @@ use gtk::{gio, glib, prelude::*};
 
 use magpie_types::network::{Connection, ConnectionKind};
 
-use super::{widgets::GraphWidget, PageExt};
+use super::{PageExt};
 use crate::performance_page::widgets::ScalingSettings;
 use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
 
@@ -263,25 +263,6 @@ mod imp {
             } else {
                 this.device_name.set_text(&i18n("Unknown"));
             }
-
-            let t = this.obj().clone();
-            this.usage_graph.connect_local("resize", true, move |_| {
-                let this = t.imp();
-                let width = this.usage_graph.width() as f32;
-                let height = this.usage_graph.height() as f32;
-
-                let mut a = width;
-                let mut b = height;
-                if width > height {
-                    a = height;
-                    b = width;
-                }
-
-                this.usage_graph
-                    .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                None
-            });
 
             if let Some(interface_name_label) = this.interface_name_label.get() {
                 interface_name_label.set_text(&interface_name);
