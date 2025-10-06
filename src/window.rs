@@ -1079,7 +1079,7 @@ impl MissionCenterWindow {
                             as f64
                             / 1_000_000.)
                             / (this.imp().cached_refresh_ticks.get() as f64 * INTERVAL_STEP))
-                            as _,
+                            .clamp(0., 1.) as _,
                     );
                 }
 

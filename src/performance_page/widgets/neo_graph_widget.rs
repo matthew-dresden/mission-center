@@ -39,6 +39,9 @@ use std::cell::Cell;
 
 use super::{DatasetGroup, ScalingSettings, GRAPH_RADIUS};
 
+// no faster than 200 Hz. if everything is going according to plan, we expect two animation frames in quick succession at the start of a new cycle and want to prevent rendering twice
+const ANIMATION_LOCKOUT: f32 = 0.005;
+
 mod imp {
     use super::*;
     use crate::performance_page::widgets::neo_graph_widget_utils::DatasetGroup;
@@ -243,8 +246,6 @@ mod imp {
             // probably also add a force redraw
             let mut cached_shot = self.cached_snapshot.take();
 
-            if self.need_redraw.get() {}
-
             let need_redraw =
                 !self.do_animation.get() || self.need_redraw.get() || cached_shot.is_none();
 
@@ -382,6 +383,7 @@ macro_rules! connect_setting {
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
                     this.imp().$set_fn(settings.$settings_method($setting_key));
+                    this.force_redraw();
                 }
             }
         });
@@ -520,8 +522,10 @@ impl GraphWidgetNeo {
                 self.force_redraw();
                 self.imp().try_increment_scroll();
             } else if self.do_animation() {
-                self.set_animation_ticks(new_ticks);
-                self.queue_draw();
+                if new_ticks > self.animation_ticks() + ANIMATION_LOCKOUT {
+                    self.set_animation_ticks(new_ticks);
+                    self.queue_draw();
+                }
             }
         }
 
