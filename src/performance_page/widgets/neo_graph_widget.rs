@@ -191,42 +191,36 @@ mod imp {
             // Draw horizontal lines
             let horizontal_line_count = self.obj().horizontal_line_count() + 1;
 
-            let col_width = width - scale_factor;
-            let col_height = height / horizontal_line_count as f32;
+            let frame_width = width - scale_factor;
+            let frame_height = height / horizontal_line_count as f32;
 
+            let point_spacing = width * self.obj().point_spacing_factor();
+
+            let path_builder = PathBuilder::new();
             for i in 1..horizontal_line_count {
-                let path_builder = PathBuilder::new();
-                path_builder.move_to(scale_factor / 2., col_height * i as f32);
-                path_builder.line_to(col_width, col_height * i as f32);
-                snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
+                path_builder.move_to(scale_factor / 2. - 2. * point_spacing, frame_height * i as f32);
+                path_builder.line_to(frame_width, frame_height * i as f32);
             }
 
             // Draw vertical lines
             let vertical_line_count = self.obj().vertical_line_count() + 1;
 
-            let animdist = if self.do_animation.get() {
-                width / (data_point_count - 2) as f32
-            } else {
-                width / (data_point_count - 1) as f32
-            };
-
-            let col_width = width / vertical_line_count as f32;
+            let col_width = (width + point_spacing) / vertical_line_count as f32;
             let col_height = height - scale_factor;
 
-            let anim_offset = if self.obj().scroll() {
-                ((animdist)
-                    * (-(self.scroll_offset.get() as f32) + 1f32 - self.animation_ticks.get()))
+            let scroll_offset = if self.obj().scroll() {
+                ((point_spacing)
+                    * -(self.scroll_offset.get() as f32))
                 .rem_euclid(col_width)
             } else {
                 0.
             };
 
-            for i in 0..vertical_line_count {
-                let path_builder = PathBuilder::new();
-                path_builder.move_to(col_width * i as f32 + anim_offset, scale_factor / 2.);
-                path_builder.line_to(col_width * i as f32 + anim_offset, col_height);
-                snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
+            for i in 0..vertical_line_count + 1 {
+                path_builder.move_to(col_width * (i as f32 ) + scroll_offset - point_spacing, scale_factor / 2.);
+                path_builder.line_to(col_width * (i as f32 ) + scroll_offset - point_spacing, col_height);
             }
+            snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
         }
 
         fn render(&self, snapshot: &Snapshot, width: f32, height: f32, scale_factor: f64) {
@@ -430,6 +424,18 @@ impl GraphWidgetNeo {
                     None
                 }
             });
+
+            obj.connect_visible_notify({
+                let dcr = obj.downgrade();
+
+                move |_| {
+                    let Some(obj) = dcr.upgrade() else {
+                        return;
+                    };
+
+                    obj.queue_draw();
+                }
+            });
         }
 
         obj
@@ -631,5 +637,9 @@ impl GraphWidgetNeo {
     pub fn force_redraw(&self) {
         self.imp().need_redraw.set(true);
         self.queue_draw();
+    }
+
+    pub fn point_spacing_factor(&self) -> f32 {
+        1. / (self.data_points() - (if self.do_animation() { 2 } else { 1 })) as f32
     }
 }

@@ -342,8 +342,7 @@ impl Dataset {
         let val_min = settings.low_watermark;
         let val_max = settings.high_watermark.max(val_min + 1.);
 
-        let spacing =
-            width / (self.data.len() - (if parent.do_animation() { 2 } else { 1 })) as f32;
+        let spacing = width * parent.point_spacing_factor();
 
         let points: Vec<_> = (0..)
             .map(|x| x as f32)
