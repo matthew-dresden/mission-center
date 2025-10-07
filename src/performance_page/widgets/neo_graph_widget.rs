@@ -242,7 +242,7 @@ mod imp {
                 radius,
             );
 
-            let mut cached_shot = self.cached_snapshot.take();
+            let cached_shot = self.cached_snapshot.take();
 
             let need_redraw =
                 !self.do_animation.get() || self.need_redraw.get() || cached_shot.is_none();
@@ -440,7 +440,7 @@ impl GraphWidgetNeo {
                         return;
                     };
 
-                    obj.queue_draw();
+                    obj.force_redraw();
                 }
             });
         }
