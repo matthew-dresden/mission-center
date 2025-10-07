@@ -315,16 +315,6 @@ mod imp {
 
             this.max_speed.set(connection.max_speed_bytes_ps);
 
-            if let Some(max_speed) = connection.max_speed_bytes_ps {
-                this.usage_graph
-                    .set_all_datasets_scaling(ScalingSettings::Fixed);
-                this.usage_graph
-                    .set_all_datasets_max_scale(max_speed as f32);
-            } else {
-                this.usage_graph
-                    .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
-            }
-
             true
         }
 
