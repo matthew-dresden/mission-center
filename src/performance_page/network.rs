@@ -742,6 +742,10 @@ impl PerformancePageNetwork {
                     .usage_graph
                     .set_all_datasets_max_scale(max_speed as f32);
             }
+        } else {
+            this.imp()
+                .usage_graph
+                .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
         }
 
         settings.connect_changed(Some("performance-page-network-dynamic-scaling"), {
