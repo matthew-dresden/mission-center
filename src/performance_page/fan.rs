@@ -218,6 +218,10 @@ mod imp {
 
             if let Some(max_rpm) = fan.max_rpm {
                 this.speed_max_y.set_text(&format!("{}", max_rpm));
+
+                this.speed_graph
+                    .set_dataset_scaling(0, ScalingSettings::Fixed);
+                this.speed_graph.set_dataset_max_scale(0, max_rpm as f32);
             }
             true
         }
