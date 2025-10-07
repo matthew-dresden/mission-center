@@ -198,7 +198,10 @@ mod imp {
 
             let path_builder = PathBuilder::new();
             for i in 1..horizontal_line_count {
-                path_builder.move_to(scale_factor / 2. - 2. * point_spacing, frame_height * i as f32);
+                path_builder.move_to(
+                    scale_factor / 2. - 2. * point_spacing,
+                    frame_height * i as f32,
+                );
                 path_builder.line_to(frame_width, frame_height * i as f32);
             }
 
@@ -209,16 +212,20 @@ mod imp {
             let col_height = height - scale_factor;
 
             let scroll_offset = if self.obj().scroll() {
-                ((point_spacing)
-                    * -(self.scroll_offset.get() as f32))
-                .rem_euclid(col_width)
+                ((point_spacing) * -(self.scroll_offset.get() as f32)).rem_euclid(col_width)
             } else {
                 0.
             };
 
             for i in 0..vertical_line_count + 1 {
-                path_builder.move_to(col_width * (i as f32 ) + scroll_offset - point_spacing, scale_factor / 2.);
-                path_builder.line_to(col_width * (i as f32 ) + scroll_offset - point_spacing, col_height);
+                path_builder.move_to(
+                    col_width * (i as f32) + scroll_offset - point_spacing,
+                    scale_factor / 2.,
+                );
+                path_builder.line_to(
+                    col_width * (i as f32) + scroll_offset - point_spacing,
+                    col_height,
+                );
             }
             snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
         }
