@@ -362,8 +362,6 @@ mod imp {
                     }
                 }
             }
-
-            let _ = guard.get();
         }
     }
 
