@@ -781,7 +781,7 @@ mod imp {
             let mut encode = DatasetGroup::new();
             encode.dataset_settings.fill = false;
             encode.dataset_settings.dashed = true;
-            let mut decode = DatasetGroup::new();
+            let decode = DatasetGroup::new();
 
             self.usage_graph_encode_decode.add_dataset(encode);
             self.usage_graph_encode_decode.add_dataset(decode);

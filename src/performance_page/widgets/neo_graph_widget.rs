@@ -180,7 +180,6 @@ mod imp {
             width: f32,
             height: f32,
             scale_factor: f64,
-            data_point_count: usize,
             color: &gdk::RGBA,
         ) {
             let scale_factor = scale_factor as f32;
@@ -254,20 +253,13 @@ mod imp {
                 let snapshot = &beanshot;
 
                 if self.obj().grid_visible() {
-                    self.draw_grid(
-                        snapshot,
-                        width,
-                        height,
-                        scale_factor,
-                        self.obj().data_points() as _,
-                        &base_color,
-                    );
+                    self.draw_grid(snapshot, width, height, scale_factor, &base_color);
                 }
 
                 let mut data_sets = self.data_sets.take();
                 let object = self.obj();
                 for values in &mut data_sets {
-                    values.plot(snapshot, width, height, scale_factor, &*object);
+                    values.plot(snapshot, width, height, &*object);
                 }
                 self.data_sets.set(data_sets);
 
@@ -358,8 +350,6 @@ mod imp {
                 }
             };
 
-            let renderer = native.renderer().unwrap();
-
             let (prev_width, prev_height) = self.prev_size.get();
             let (width, height) = (this.width(), this.height());
 
@@ -403,8 +393,6 @@ impl GraphWidgetNeo {
         let obj: Self = glib::Object::new();
 
         {
-            let this = obj.imp();
-
             if let Some(settings) = settings {
                 obj.connect_to_settings(settings);
             }

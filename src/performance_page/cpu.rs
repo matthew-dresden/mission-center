@@ -22,16 +22,16 @@ use std::cell::{Cell, OnceCell};
 
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
+use gtk::glib::g_critical;
 use gtk::{gio, glib, prelude::*};
 
 use super::PageExt;
+use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
+use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
-    use crate::DataType;
-    use gtk::glib::g_critical;
 
     const GRAPH_SELECTION_OVERALL: i32 = 1;
     const GRAPH_SELECTION_ALL: i32 = 2;
@@ -192,9 +192,8 @@ mod imp {
     }
 
     impl PerformancePageCpu {
+        #[allow(unused)]
         fn configure_actions(this: &super::PerformancePageCpu) {
-            use gtk::glib::*;
-
             let settings = settings!();
             let graph_selection = settings.int("performance-page-cpu-graph");
             let show_kernel_times = settings.boolean("performance-page-kernel-times");

@@ -150,8 +150,8 @@ mod imp {
     impl PreferencesPage {
         pub fn configure_update_speed(&self) {
             use crate::application::INTERVAL_STEP;
-            use glib::g_critical;
             use crate::{MAX_POINTS, MIN_POINTS};
+            use glib::g_critical;
 
             let settings = settings!();
 

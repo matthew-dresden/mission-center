@@ -1,11 +1,10 @@
 use crate::performance_page::widgets::GraphWidgetNeo;
+use crate::{MAX_POINTS, MIN_POINTS};
 use adw::gdk;
 use gtk::gsk::{FillRule, PathBuilder, Stroke};
-use gtk::prelude::{SnapshotExt, WidgetExt};
+use gtk::prelude::SnapshotExt;
 use gtk::Snapshot;
 use std::cmp::PartialEq;
-use std::slice::Iter;
-use crate::{MAX_POINTS, MIN_POINTS};
 
 #[derive(Default, Clone, PartialEq)]
 pub enum ScalingSettings {
@@ -69,7 +68,7 @@ pub struct Dataset {
 }
 
 #[derive(Clone, Debug)]
-struct DatasetPoints {
+pub struct DatasetPoints {
     x: f32,
     y: f32,
 }
@@ -217,14 +216,7 @@ impl DatasetGroup {
             .for_each(|set| set.update_data_points(new_points));
     }
 
-    pub fn plot(
-        &self,
-        snapshot: &Snapshot,
-        width: f32,
-        height: f32,
-        scale_factor: f64,
-        parent: &GraphWidgetNeo,
-    ) {
+    pub fn plot(&self, snapshot: &Snapshot, width: f32, height: f32, parent: &GraphWidgetNeo) {
         if !self.dataset_settings.visible {
             return;
         }
@@ -327,15 +319,34 @@ impl Dataset {
     }
 
     pub fn get_data(&self) -> Vec<f32> {
-        self.data.iter().take(self.used_data).map(|v| v.clone()).collect()
+        self.data
+            .iter()
+            .take(self.used_data)
+            .map(|v| v.clone())
+            .collect()
     }
 
     pub fn get_data_removed(&self) -> Vec<f32> {
-        self.data.iter().take(self.used_data).filter(|v| v.is_normal()).map(|v| v.clone()).collect()
+        self.data
+            .iter()
+            .take(self.used_data)
+            .filter(|v| v.is_normal())
+            .map(|v| v.clone())
+            .collect()
     }
 
     pub fn get_data_sanitized(&self, low_watermark: f32) -> Vec<f32> {
-        self.data.iter().take(self.used_data).map(|v| if !v.is_normal() { low_watermark } else { v.clone() }).collect()
+        self.data
+            .iter()
+            .take(self.used_data)
+            .map(|v| {
+                if !v.is_normal() {
+                    low_watermark
+                } else {
+                    v.clone()
+                }
+            })
+            .collect()
     }
 
     pub fn plot(

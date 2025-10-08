@@ -1273,7 +1273,7 @@ mod imp {
 
             let settings = settings!();
 
-            let mut busy_pct = DatasetGroup::new();
+            let busy_pct = DatasetGroup::new();
 
             summary.graph_widget().add_dataset(busy_pct);
             summary.graph_widget().connect_to_settings(&settings);

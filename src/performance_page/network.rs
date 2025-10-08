@@ -28,12 +28,12 @@ use magpie_types::network::{Connection, ConnectionKind};
 
 use super::PageExt;
 use crate::performance_page::widgets::ScalingSettings;
+use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo};
 use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
+use crate::{settings, DataType};
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
-    use crate::{settings, DataType};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageNetwork)]
@@ -560,7 +560,7 @@ mod imp {
             self.parent_constructed();
 
             let mut tx_dataset = DatasetGroup::new();
-            let mut rx_dataset = DatasetGroup::new();
+            let rx_dataset = DatasetGroup::new();
 
             // scaling will be set by settings
             tx_dataset.dataset_settings.fill = false;
