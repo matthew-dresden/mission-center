@@ -26,9 +26,6 @@ use crate::settings;
 const MAX_INTERVAL_TICKS: u64 = 200;
 const MIN_INTERVAL_TICKS: u64 = 10;
 
-const MAX_POINTS: i32 = 600;
-const MIN_POINTS: i32 = 10;
-
 macro_rules! connect_switch_to_setting {
     ($this: expr, $switch_row: expr, $setting: literal) => {
         $switch_row.connect_active_notify({
@@ -154,6 +151,7 @@ mod imp {
         pub fn configure_update_speed(&self) {
             use crate::application::INTERVAL_STEP;
             use glib::g_critical;
+            use crate::{MAX_POINTS, MIN_POINTS};
 
             let settings = settings!();
 

@@ -4,6 +4,8 @@ use gtk::gsk::{FillRule, PathBuilder, Stroke};
 use gtk::prelude::{SnapshotExt, WidgetExt};
 use gtk::Snapshot;
 use std::cmp::PartialEq;
+use std::slice::Iter;
+use crate::{MAX_POINTS, MIN_POINTS};
 
 #[derive(Default, Clone, PartialEq)]
 pub enum ScalingSettings {
@@ -60,9 +62,10 @@ impl DatasetGroup {
     }
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Dataset {
-    pub data: Vec<f32>,
+    data: Vec<f32>,
+    pub used_data: usize,
 }
 
 #[derive(Clone, Debug)]
@@ -157,7 +160,7 @@ impl DatasetGroup {
     fn get_minimum(&mut self) -> f32 {
         self.datas
             .iter()
-            .filter_map(|set| set.data.iter().map(|f| *f).reduce(f32::min))
+            .filter_map(|set| set.get_data_removed().iter().map(|f| *f).reduce(f32::min))
             .reduce(f32::min)
             .unwrap_or(self.dataset_settings.low_watermark)
     }
@@ -165,16 +168,13 @@ impl DatasetGroup {
     fn get_maximum(&mut self) -> f32 {
         self.datas
             .iter()
-            .filter_map(|set| set.data.iter().map(|f| *f).reduce(f32::max))
+            .filter_map(|set| set.get_data_removed().iter().map(|f| *f).reduce(f32::max))
             .reduce(f32::max)
             .unwrap_or(self.dataset_settings.high_watermark)
     }
 
     // do cheap updates whenever a new point is added
     fn update_single_scaling(&mut self, idx: usize, point: f32) {
-        if self.datas[idx].data.is_empty() {
-            self.datas[idx].data.push(0.);
-        }
         self.datas[idx].data.rotate_right(1);
         self.datas[idx].data[0] = point;
 
@@ -214,7 +214,7 @@ impl DatasetGroup {
     pub fn update_data_points(&mut self, new_points: usize) {
         self.datas
             .iter_mut()
-            .for_each(|set| set.update_data_points(new_points, &self.dataset_settings));
+            .for_each(|set| set.update_data_points(new_points));
     }
 
     pub fn plot(
@@ -322,14 +322,20 @@ impl DatasetGroup {
 }
 
 impl Dataset {
-    pub fn update_data_points(&mut self, new_points: usize, settings: &DatasetSettings) {
-        if self.data.len() != new_points {
-            self.data = self
-                .data
-                .drain(0..new_points.min(self.data.len()))
-                .collect();
-            self.data.resize(new_points, settings.low_watermark);
-        }
+    pub fn update_data_points(&mut self, new_points: usize) {
+        self.used_data = new_points;
+    }
+
+    pub fn get_data(&self) -> Vec<f32> {
+        self.data.iter().take(self.used_data).map(|v| v.clone()).collect()
+    }
+
+    pub fn get_data_removed(&self) -> Vec<f32> {
+        self.data.iter().take(self.used_data).filter(|v| v.is_normal()).map(|v| v.clone()).collect()
+    }
+
+    pub fn get_data_sanitized(&self, low_watermark: f32) -> Vec<f32> {
+        self.data.iter().take(self.used_data).map(|v| if !v.is_normal() { low_watermark } else { v.clone() }).collect()
     }
 
     pub fn plot(
@@ -347,7 +353,7 @@ impl Dataset {
         let points: Vec<_> = (0..)
             .map(|x| x as f32)
             .zip(
-                self.data
+                self.get_data_sanitized(val_min)
                     .iter()
                     .map(|y| (*y - val_min) / (val_max - val_min)),
             )
@@ -356,5 +362,14 @@ impl Dataset {
             .collect();
 
         points
+    }
+}
+
+impl Default for Dataset {
+    fn default() -> Self {
+        Self {
+            data: vec![f32::NAN; MAX_POINTS as usize],
+            used_data: MIN_POINTS as usize,
+        }
     }
 }
