@@ -43,6 +43,7 @@ use super::{DatasetGroup, ScalingSettings, GRAPH_RADIUS};
 const ANIMATION_LOCKOUT: f32 = 0.005;
 
 mod imp {
+    use gtk::glib::g_warning;
     use super::*;
     use crate::performance_page::widgets::graph_widget_utils::DatasetGroup;
 
@@ -102,14 +103,16 @@ mod imp {
 
     impl GraphWidget {
         pub fn set_data_points(&self, count: u32) {
-            if self.data_points.take() != count {
+            if self.data_points.get() != count {
                 let mut data_sets = self.data_sets.take();
                 for values in data_sets.iter_mut() {
                     values.update_data_points(count as usize);
                 }
                 self.data_sets.set(data_sets);
+                self.data_points.set(count);
+
+                self.obj().force_redraw();
             }
-            self.data_points.set(count);
         }
 
         pub fn set_data_points_i32(&self, count: i32) {
@@ -119,28 +122,28 @@ mod imp {
         fn set_horizontal_line_count(&self, count: u32) {
             if self.horizontal_line_count.get() != count {
                 self.horizontal_line_count.set(count);
-                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
+                self.obj().force_redraw();
             }
         }
 
         fn set_vertical_line_count(&self, count: u32) {
             if self.vertical_line_count.get() != count {
                 self.vertical_line_count.set(count);
-                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
+                self.obj().force_redraw();
             }
         }
 
         pub fn set_smooth_graphs(&self, smooth: bool) {
             if self.smooth_graphs.get() != smooth {
                 self.smooth_graphs.set(smooth);
-                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
+                self.obj().force_redraw();
             }
         }
 
         pub fn set_do_animation(&self, smooth: bool) {
             if self.do_animation.get() != smooth {
                 self.do_animation.set(smooth);
-                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
+                self.obj().force_redraw();
             }
         }
 
@@ -261,7 +264,7 @@ mod imp {
             };
 
             let Some(baze) = baze else {
-                println!("Baze was empty");
+                g_warning!("MissionCenter", "Drawing was empty");
                 return;
             };
 
@@ -537,6 +540,8 @@ impl GraphWidget {
         sets[index].dataset_settings.scaling_settings = scaler;
 
         self.imp().data_sets.set(sets);
+
+        self.force_redraw();
     }
 
     pub fn set_all_datasets_scaling(&self, scaler: ScalingSettings) {
@@ -547,6 +552,8 @@ impl GraphWidget {
         }
 
         self.imp().data_sets.set(sets);
+
+        self.force_redraw();
     }
 
     pub fn set_all_datasets_max_scale(&self, max: f32) {
@@ -557,6 +564,8 @@ impl GraphWidget {
         }
 
         self.imp().data_sets.set(sets);
+
+        self.force_redraw();
     }
 
     pub fn set_dataset_max_scale(&self, index: usize, max: f32) {
@@ -567,6 +576,8 @@ impl GraphWidget {
         sets[index].dataset_settings.high_watermark = max;
 
         self.imp().data_sets.set(sets);
+
+        self.force_redraw();
     }
 
     pub fn get_dataset_max_scale(&self, index: usize) -> f32 {
@@ -575,6 +586,8 @@ impl GraphWidget {
         let it = sets[index].dataset_settings.high_watermark;
 
         self.imp().data_sets.set(sets);
+
+        self.force_redraw();
 
         it
     }
