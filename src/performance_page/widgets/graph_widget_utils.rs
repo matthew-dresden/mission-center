@@ -18,13 +18,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use crate::performance_page::widgets::GraphWidget;
-use crate::{MAX_POINTS, MIN_POINTS};
+use std::cmp::PartialEq;
+
 use adw::gdk;
 use gtk::gsk::{FillRule, PathBuilder, Stroke};
 use gtk::prelude::SnapshotExt;
 use gtk::Snapshot;
-use std::cmp::PartialEq;
+
+use crate::performance_page::widgets::GraphWidget;
+use crate::preferences::{MAX_POINTS, MIN_POINTS};
 
 #[derive(Default, Clone, PartialEq)]
 pub enum ScalingSettings {

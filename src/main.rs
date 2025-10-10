@@ -493,6 +493,3 @@ fn main() {
     let exit_code = app.run();
     std::process::exit(exit_code.get() as _);
 }
-
-const MAX_POINTS: i32 = 600;
-const MIN_POINTS: i32 = 10;

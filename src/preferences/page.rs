@@ -21,6 +21,7 @@
 use adw::{prelude::*, subclass::prelude::*, SpinRow, SwitchRow};
 use gtk::{gio, glib, Scale};
 
+use crate::preferences::{MAX_POINTS, MIN_POINTS};
 use crate::settings;
 
 const MAX_INTERVAL_TICKS: u64 = 200;
@@ -67,7 +68,6 @@ macro_rules! connect_toggle_pair_to_setting {
         });
     };
 }
-
 mod imp {
     use super::*;
 
@@ -150,7 +150,6 @@ mod imp {
     impl PreferencesPage {
         pub fn configure_update_speed(&self) {
             use crate::application::INTERVAL_STEP;
-            use crate::{MAX_POINTS, MIN_POINTS};
             use glib::g_critical;
 
             let settings = settings!();
