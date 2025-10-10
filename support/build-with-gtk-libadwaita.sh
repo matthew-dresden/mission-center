@@ -392,7 +392,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/gtk4.html
 # -------------------------------------------------------------
-GTK_VER=4.20.1
+GTK_VER=4.20.2
 GTK_VER_MM=$(echo $GTK_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/gtk/$GTK_VER_MM/gtk-$GTK_VER.tar.xz
@@ -458,7 +458,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/libadwaita.html
 # -------------------------------------------------------------------
-LIBADW_VER=1.8.0
+LIBADW_VER=1.8.1
 LIBADW_VER_MM=$(echo $LIBADW_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/libadwaita/$LIBADW_VER_MM/libadwaita-$LIBADW_VER.tar.xz
