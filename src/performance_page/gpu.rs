@@ -630,9 +630,6 @@ mod imp {
             {
                 self.usage_graph_memory
                     .set_all_datasets_scaling(ScalingSettings::StickyUp);
-
-                self.usage_graph_memory.connect_datasets(0, 1);
-                self.usage_graph_memory.connect_datasets(1, 0);
             }
 
             self.memory_graph.set_visible(has_memory_info);
@@ -803,6 +800,9 @@ mod imp {
             idk.dataset_settings.fill = false;
             self.usage_graph_memory.add_dataset(idk);
             self.usage_graph_memory.connect_to_settings(&settings);
+
+            self.usage_graph_memory.connect_datasets(0, 1);
+            self.usage_graph_memory.connect_datasets(1, 0);
 
             let this = self.obj();
 
