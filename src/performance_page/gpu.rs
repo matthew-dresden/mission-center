@@ -566,16 +566,16 @@ mod imp {
                             .set_text(&i18n("Dedicated and shared memory usage over "));
 
                         this.usage_graph_memory
-                            .set_dataset_scaling(0, ScalingSettings::Fixed);
+                            .set_all_datasets_scaling(ScalingSettings::Fixed);
                         let current_max = this.usage_graph_memory.get_dataset_max_scale(0);
                         scaling_factor = current_max / total_shared_memory as f32;
                     } else {
                         this.total_memory.set_text(&total_gtt);
 
                         this.usage_graph_memory
-                            .set_dataset_scaling(0, ScalingSettings::Fixed);
+                            .set_all_datasets_scaling(ScalingSettings::Fixed);
                         this.usage_graph_memory
-                            .set_dataset_max_scale(0, total_shared_memory as f32);
+                            .set_all_datasets_max_scale(total_shared_memory as f32);
                     }
                     this.infobar_content
                         .shared_mem_usage_max()
@@ -588,7 +588,7 @@ mod imp {
                     *has_memory_info = true;
 
                     this.usage_graph_memory
-                        .add_single_data_point(0, vec![used_shared_memory as f32]);
+                        .add_single_data_point(1, vec![used_shared_memory as f32]);
 
                     this.infobar_content.set_used_shared_memory_valid(true);
                     this.infobar_content
