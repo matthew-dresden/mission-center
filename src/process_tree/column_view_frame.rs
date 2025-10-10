@@ -22,14 +22,13 @@ use std::cell::RefCell;
 use std::cell::{Cell, OnceCell};
 use std::fmt::Write;
 
-use arrayvec::ArrayString;
-
-use textdistance::{Algorithm, Levenshtein};
-
-use adw::glib::{g_critical, ParamSpec, Properties, Value};
 use adw::prelude::*;
+use arrayvec::ArrayString;
+use gtk::glib::translate::from_glib_full;
+use gtk::glib::{g_critical, gobject_ffi, Object, ParamSpec, Properties, Value};
 use gtk::glib::{g_warning, VariantTy, WeakRef};
-use gtk::{gio, glib, subclass::prelude::*, ToggleButton};
+use gtk::{gdk, gio, glib, subclass::prelude::*};
+use textdistance::{Algorithm, Levenshtein};
 
 use crate::i18n::i18n;
 use crate::process_tree::columns::*;
@@ -69,20 +68,29 @@ pub(crate) mod imp {
         pub gpu_usage_column: TemplateChild<gtk::ColumnViewColumn>,
         #[template_child]
         pub gpu_memory_column: TemplateChild<gtk::ColumnViewColumn>,
+        #[template_child]
+        pub context_menu: TemplateChild<gtk::PopoverMenu>,
+        #[template_child]
+        pub app_menu_model: TemplateChild<gio::MenuModel>,
+        #[template_child]
+        pub service_menu_model: TemplateChild<gio::MenuModel>,
 
+        #[property(get, set)]
+        pub show_column_separators: Cell<bool>,
+        #[property(get)]
         pub selected_item: RefCell<RowModel>,
+        #[property(get)]
+        pub selected_item_running: Cell<bool>,
+        #[property(get)]
+        pub selected_item_enabled: Cell<bool>,
+
         pub row_sorter: OnceCell<gtk::TreeListRowSorter>,
 
         pub use_merged_stats: Cell<bool>,
 
-        #[property(get, set)]
-        pub show_column_separators: Cell<bool>,
-
-        pub action_show_context_menu: Cell<gio::SimpleAction>,
-
-        pub action_group: Cell<gio::SimpleActionGroup>,
-
         pub settings_namespace: Cell<ColumnViewSettingsNamespaces>,
+
+        service_state_connections: RefCell<[Option<glib::SignalHandlerId>; 2]>,
     }
 
     impl Default for ColumnViewFrame {
@@ -98,22 +106,22 @@ pub(crate) mod imp {
                 network_usage_column: Default::default(),
                 gpu_usage_column: Default::default(),
                 gpu_memory_column: Default::default(),
+                context_menu: Default::default(),
+                app_menu_model: Default::default(),
+                service_menu_model: Default::default(),
 
+                show_column_separators: Cell::new(false),
                 selected_item: RefCell::new(RowModelBuilder::new().build()),
+                selected_item_running: Cell::new(false),
+                selected_item_enabled: Cell::new(false),
+
                 row_sorter: OnceCell::new(),
 
                 use_merged_stats: Cell::new(false),
 
-                show_column_separators: Cell::new(false),
-
-                action_show_context_menu: Cell::new(gio::SimpleAction::new(
-                    "show-context-menu",
-                    Some(VariantTy::TUPLE),
-                )),
-
-                action_group: Cell::new(Default::default()),
-
                 settings_namespace: Cell::new(Default::default()),
+
+                service_state_connections: RefCell::new([const { None }; 2]),
             }
         }
     }
@@ -195,10 +203,62 @@ pub(crate) mod imp {
             let column_view_title = self.column_view.first_child();
             adjust_view_header_alignment(column_view_title);
 
-            self.action_group()
-                .add_action(self.action_show_context_menu());
+            let action_group = gio::SimpleActionGroup::new();
+
+            let action_show_context_menu =
+                gio::SimpleAction::new("show-context-menu", Some(VariantTy::TUPLE));
+            action_show_context_menu.connect_activate({
+                let this = self.obj().downgrade();
+                move |_action, entry| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+
+                    let Some(model) = imp.column_view.model() else {
+                        g_critical!(
+                            "MissionCenter::ProcessActionBar",
+                            "Failed to get model for `show-context-menu` action"
+                        );
+                        return;
+                    };
+
+                    let Some((id, anchor_widget, x, y)) =
+                        entry.and_then(|s| s.get::<(String, u64, f64, f64)>())
+                    else {
+                        g_critical!(
+                            "MissionCenter::ColumnViewFrame",
+                            "Failed to get service name and button from show-context-menu action"
+                        );
+                        return;
+                    };
+
+                    if select_item(&model, &id) {
+                        let anchor_widget = upgrade_weak_ptr(anchor_widget as _);
+                        let context_menu = &imp.context_menu;
+
+                        match imp.selected_item.borrow().content_type() {
+                            ContentType::Process | ContentType::App => {
+                                context_menu.set_menu_model(Some(&imp.app_menu_model.get()))
+                            }
+                            ContentType::Service => {
+                                context_menu.set_menu_model(Some(&imp.service_menu_model.get()))
+                            }
+                            _ => {
+                                return;
+                            }
+                        }
+
+                        let anchor = calculate_anchor_point(&this, &anchor_widget, x, y);
+                        context_menu.set_pointing_to(Some(&anchor));
+                        context_menu.popup();
+                    }
+                }
+            });
+
+            action_group.add_action(&action_show_context_menu);
             self.obj()
-                .insert_action_group("column-view", Some(self.action_group()));
+                .insert_action_group("column-view", Some(&action_group));
         }
     }
 
@@ -211,14 +271,6 @@ pub(crate) mod imp {
     impl BoxImpl for ColumnViewFrame {}
 
     impl ColumnViewFrame {
-        pub fn action_show_context_menu(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_show_context_menu.as_ptr() }
-        }
-
-        pub fn action_group(&self) -> &gio::SimpleActionGroup {
-            unsafe { &*self.action_group.as_ptr() }
-        }
-
         pub fn setup<const TOGGLE_COUNT: usize>(
             &self,
             settings_namespace: ColumnViewSettingsNamespaces,
@@ -226,7 +278,7 @@ pub(crate) mod imp {
             section_item_2: &RowModel,
             process_action_bar: Option<&ProcessActionBar>,
             service_action_bar: Option<&ServiceActionBar>,
-            service_toggle_group: Option<[WeakRef<ToggleButton>; TOGGLE_COUNT]>,
+            service_toggle_group: Option<[WeakRef<gtk::ToggleButton>; TOGGLE_COUNT]>,
         ) {
             self.settings_namespace.set(settings_namespace);
 
@@ -239,8 +291,7 @@ pub(crate) mod imp {
             let tree_model = Self::create_tree_model(model);
             let filter_list_model = self.configure_filter(tree_model, service_toggle_group);
             let (sort_list_model, row_sorter) = self.setup_filter_model(filter_list_model);
-            let selection_model =
-                self.setup_selection_model(sort_list_model, process_action_bar, service_action_bar);
+            let selection_model = self.setup_selection_model(sort_list_model);
             self.column_view.set_model(Some(&selection_model));
 
             let _ = self.row_sorter.set(row_sorter);
@@ -248,17 +299,11 @@ pub(crate) mod imp {
             selection_model.set_selected(0);
 
             if let Some(process_action_bar) = process_action_bar {
-                process_action_bar.imp().configure(self);
-                process_action_bar
-                    .imp()
-                    .handle_changed_selection(&self.selected_item.borrow());
+                process_action_bar.set_column_view(&self.obj());
             }
 
             if let Some(service_action_bar) = service_action_bar {
-                service_action_bar.imp().configure(self);
-                service_action_bar
-                    .imp()
-                    .handle_changed_selection(&self.selected_item.borrow());
+                service_action_bar.set_column_view(&self.obj());
             }
 
             configure_column_frame(self);
@@ -276,7 +321,7 @@ pub(crate) mod imp {
         fn configure_filter<const TOGGLE_COUNT: usize>(
             &self,
             tree_list_model: impl IsA<gio::ListModel>,
-            group: Option<[WeakRef<ToggleButton>; TOGGLE_COUNT]>,
+            group: Option<[WeakRef<gtk::ToggleButton>; TOGGLE_COUNT]>,
         ) -> gtk::FilterListModel {
             let Some(window) = app!().window() else {
                 g_critical!(
@@ -384,7 +429,7 @@ pub(crate) mod imp {
                                     }
                                     _ => {
                                         g_warning!(
-                                            "MissionCenter::Services",
+                                            "MissionCenter::ColumnViewFrame",
                                             "Unknown toggle button: {}",
                                             name
                                         );
@@ -480,17 +525,11 @@ pub(crate) mod imp {
         fn setup_selection_model(
             &self,
             sort_list_model: impl IsA<gio::ListModel>,
-            process_action_bar: Option<&ProcessActionBar>,
-            service_action_bar: Option<&ServiceActionBar>,
         ) -> gtk::SingleSelection {
             let selection_model = gtk::SingleSelection::new(Some(sort_list_model));
             selection_model.set_autoselect(true);
 
             let this = self.obj().downgrade();
-
-            // Create weak references upfront to avoid temporary value issues
-            let process_action_bar_weak = process_action_bar.map(|it| it.downgrade());
-            let service_action_bar_weak = service_action_bar.map(|it| it.downgrade());
 
             selection_model.connect_selected_item_notify({
                 move |model| {
@@ -509,23 +548,56 @@ pub(crate) mod imp {
                         return;
                     };
 
-                    if let Some(process_action_bar) =
-                        process_action_bar_weak.as_ref().and_then(|it| it.upgrade())
                     {
-                        process_action_bar
-                            .imp()
-                            .handle_changed_selection(&row_model);
-                    }
+                        let mut service_state_connections =
+                            imp.service_state_connections.borrow_mut();
 
-                    if let Some(service_action_bar) =
-                        service_action_bar_weak.as_ref().and_then(|it| it.upgrade())
-                    {
-                        service_action_bar
-                            .imp()
-                            .handle_changed_selection(&row_model);
+                        for conn in &mut *service_state_connections {
+                            if let Some(conn) = conn.take() {
+                                imp.selected_item.borrow().disconnect(conn);
+                            }
+                        }
+
+                        if row_model.content_type() == ContentType::Service {
+                            service_state_connections[0] =
+                                Some(row_model.connect_service_running_notify({
+                                    let this = this.downgrade();
+                                    move |row_model| {
+                                        let Some(this) = this.upgrade() else {
+                                            return;
+                                        };
+
+                                        let imp = this.imp();
+                                        imp.selected_item_running.set(row_model.service_running());
+                                        this.notify_selected_item_running();
+                                    }
+                                }));
+                            service_state_connections[1] =
+                                Some(row_model.connect_service_enabled_notify({
+                                    let this = this.downgrade();
+                                    move |row_model| {
+                                        let Some(this) = this.upgrade() else {
+                                            return;
+                                        };
+
+                                        let imp = this.imp();
+                                        imp.selected_item_enabled.set(row_model.service_enabled());
+                                        this.notify_selected_item_enabled();
+                                    }
+                                }));
+
+                            imp.selected_item_running.set(row_model.service_running());
+                            imp.selected_item_enabled.set(row_model.service_enabled());
+                        } else {
+                            imp.selected_item_running.set(false);
+                            imp.selected_item_enabled.set(false);
+                        }
                     }
 
                     imp.selected_item.replace(row_model);
+                    this.notify_selected_item();
+                    this.notify_selected_item_running();
+                    this.notify_selected_item_enabled();
                 }
             });
 
@@ -744,4 +816,74 @@ impl ColumnViewSettingsValues {
             ColumnViewSettingsValues::ColumnOrder => "column-order",
         }
     }
+}
+
+fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
+    let obj = unsafe { gobject_ffi::g_weak_ref_get(ptr as *mut _) };
+    if obj.is_null() {
+        return None;
+    }
+    let obj: Object = unsafe { from_glib_full(obj) };
+    obj.downcast::<gtk::Widget>().ok()
+}
+
+fn calculate_anchor_point(
+    menu_parent: &impl IsA<gtk::Widget>,
+    anchor_widget: &Option<gtk::Widget>,
+    x: f64,
+    y: f64,
+) -> gdk::Rectangle {
+    let Some(anchor_widget) = anchor_widget else {
+        g_warning!(
+            "MissionCenter::ColumnViewFrame",
+            "Failed to get anchor widget, popup will display in an arbitrary location"
+        );
+        return gdk::Rectangle::new(0, 0, 0, 0);
+    };
+
+    if x > 0. && y > 0. {
+        match anchor_widget.compute_point(menu_parent, &gtk::graphene::Point::new(x as _, y as _)) {
+            Some(p) => gdk::Rectangle::new(p.x().round() as i32, p.y().round() as i32, 1, 1),
+            None => {
+                g_critical!(
+                    "MissionCenter::ColumnViewFrame",
+                    "Failed to compute_point, context menu will not be anchored to mouse position"
+                );
+                gdk::Rectangle::new(x.round() as i32, y.round() as i32, 1, 1)
+            }
+        }
+    } else {
+        if let Some(bounds) = anchor_widget.compute_bounds(menu_parent) {
+            gdk::Rectangle::new(
+                bounds.x() as i32,
+                bounds.y() as i32,
+                bounds.width() as i32,
+                bounds.height() as i32,
+            )
+        } else {
+            g_warning!(
+                "MissionCenter::ColumnViewFrame",
+                "Failed to get bounds for menu button, popup will display in an arbitrary location"
+            );
+            gdk::Rectangle::new(0, 0, 0, 0)
+        }
+    }
+}
+
+fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {
+    for i in 0..model.n_items() {
+        if let Some(item) = model
+            .item(i)
+            .and_then(|i| i.downcast::<gtk::TreeListRow>().ok())
+            .and_then(|row| row.item())
+            .and_then(|obj| obj.downcast::<RowModel>().ok())
+        {
+            if item.content_type() != ContentType::SectionHeader && item.id() == id {
+                model.select_item(i, false);
+                return true;
+            }
+        }
+    }
+
+    false
 }

@@ -18,50 +18,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::glib::g_critical;
-use adw::glib::translate::from_glib_full;
-use adw::glib::{gobject_ffi, Object};
+use crate::process_tree::column_view_frame::ColumnViewFrame;
+use crate::process_tree::row_model::ContentType;
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
-
-use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
-use crate::process_tree::row_model::{ContentType, RowModel};
-use crate::process_tree::util::calculate_anchor_point;
-
-macro_rules! setup_action {
-    ($this: expr, $action_obj: expr, $magpie_function: ident) => {
-        $action_obj.set_enabled(false);
-        $action_obj.connect_activate({
-            let this = $this.downgrade();
-            move |_action, _| {
-                let Some(this) = this.upgrade() else {
-                    return;
-                };
-                let this = this.imp();
-
-                let selected_item = this.selected_item.borrow();
-                // cost savings
-                if selected_item.content_type() != ContentType::Process
-                    && selected_item.content_type() != ContentType::App
-                {
-                    return;
-                }
-
-                if let Ok(magpie_client) = $crate::app!().sys_info() {
-                    match selected_item.content_type() {
-                        ContentType::Process => {
-                            magpie_client.$magpie_function(vec![selected_item.pid()]);
-                        }
-                        ContentType::App => {
-                            magpie_client.$magpie_function(app_pids(&*selected_item));
-                        }
-                        _ => {}
-                    }
-                } // log this?
-            }
-        });
-    };
-}
 
 mod imp {
     use super::*;
@@ -77,21 +37,6 @@ mod imp {
         pub force_stop_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub details_label: TemplateChild<gtk::Label>,
-
-        #[template_child]
-        pub context_menu: TemplateChild<gtk::PopoverMenu>,
-
-        pub action_stop: gio::SimpleAction,
-        pub action_force_stop: gio::SimpleAction,
-        pub action_suspend: gio::SimpleAction,
-        pub action_continue: gio::SimpleAction,
-        pub action_hangup: gio::SimpleAction,
-        pub action_interrupt: gio::SimpleAction,
-        pub action_user_one: gio::SimpleAction,
-        pub action_user_two: gio::SimpleAction,
-        pub action_details: gio::SimpleAction,
-
-        pub action_group: gio::SimpleActionGroup,
     }
 
     impl Default for ProcessActionBar {
@@ -100,20 +45,6 @@ mod imp {
                 stop_label: Default::default(),
                 force_stop_label: Default::default(),
                 details_label: Default::default(),
-
-                context_menu: Default::default(),
-
-                action_stop: gio::SimpleAction::new("stop", None),
-                action_force_stop: gio::SimpleAction::new("force-stop", None),
-                action_suspend: gio::SimpleAction::new("suspend", None),
-                action_continue: gio::SimpleAction::new("continue", None),
-                action_hangup: gio::SimpleAction::new("hangup", None),
-                action_interrupt: gio::SimpleAction::new("interrupt", None),
-                action_user_one: gio::SimpleAction::new("user-one", None),
-                action_user_two: gio::SimpleAction::new("user-two", None),
-                action_details: gio::SimpleAction::new("details", None),
-
-                action_group: Default::default(),
             }
         }
     }
@@ -136,20 +67,6 @@ mod imp {
     impl ObjectImpl for ProcessActionBar {
         fn constructed(&self) {
             self.parent_constructed();
-
-            let actions = &self.action_group;
-            self.obj().insert_action_group("apps-page", Some(actions));
-
-            actions.add_action(&self.action_stop);
-            actions.add_action(&self.action_force_stop);
-            actions.add_action(&self.action_suspend);
-            actions.add_action(&self.action_continue);
-            actions.add_action(&self.action_hangup);
-            actions.add_action(&self.action_interrupt);
-            actions.add_action(&self.action_user_one);
-            actions.add_action(&self.action_user_two);
-            actions.add_action(&self.action_details);
-            // actions.add_action(self.action_show_context_menu());
         }
     }
 
@@ -173,133 +90,7 @@ mod imp {
             self.force_stop_label.set_visible(true);
             self.details_label.set_visible(true);
         }
-
-        pub fn configure(
-            &self,
-            imp: &crate::process_tree::column_view_frame::imp::ColumnViewFrame,
-        ) {
-            let this = imp.obj();
-
-            imp.action_show_context_menu().connect_activate({
-                let this = this.downgrade();
-                let slef = self.obj().downgrade();
-                move |_action, entry| {
-                    let Some(slef) = slef.upgrade() else {
-                        return;
-                    };
-
-                    let Some(this) = this.upgrade() else {
-                        return;
-                    };
-                    let imp = this.imp();
-
-                    let Some(model) = imp.column_view.model() else {
-                        g_critical!(
-                            "MissionCenter::ProcessActionBar",
-                            "Failed to get model for `show-context-menu` action"
-                        );
-                        return;
-                    };
-
-                    let Some((id, anchor_widget, x, y)) =
-                        entry.and_then(|s| s.get::<(String, u64, f64, f64)>())
-                    else {
-                        g_critical!(
-                            "MissionCenter::ProcessActionBar",
-                            "Failed to get service name and button from show-context-menu action"
-                        );
-                        return;
-                    };
-
-                    let anchor_widget = upgrade_weak_ptr(anchor_widget as _);
-                    let (anchor, _) = calculate_anchor_point(&slef, &anchor_widget, x, y);
-
-                    if select_item(&model, &id) {
-                        match imp.selected_item.borrow().content_type() {
-                            // should never trigger
-                            ContentType::Process | ContentType::App => {
-                                slef.imp().context_menu.set_pointing_to(Some(&anchor));
-                                slef.imp().context_menu.popup();
-                            }
-                            _ => {}
-                        }
-                    }
-                }
-            });
-
-            setup_action!(this, &self.action_stop, terminate_processes);
-            setup_action!(this, &self.action_force_stop, kill_processes);
-            setup_action!(this, &self.action_suspend, suspend_processes);
-            setup_action!(this, &self.action_continue, continue_processes);
-            setup_action!(this, &self.action_hangup, hangup_processes);
-            setup_action!(this, &self.action_interrupt, interrupt_processes);
-            setup_action!(this, &self.action_user_one, user_signal_one_processes);
-            setup_action!(this, &self.action_user_two, user_signal_two_processes);
-
-            (&self.action_details).set_enabled(false);
-            (&self.action_details).connect_activate({
-                let this = this.downgrade();
-                let slef = self.obj().downgrade();
-                move |_action, _| {
-                    let Some(this) = this.upgrade() else {
-                        return;
-                    };
-                    let Some(slef) = slef.upgrade() else {
-                        return;
-                    };
-                    let imp = this.imp();
-
-                    let selected_item = imp.selected_item.borrow();
-
-                    if selected_item.content_type() == ContentType::Process
-                        || selected_item.content_type() == ContentType::App
-                    {
-                        let dialog = ProcessDetailsDialog::new(imp.selected_item.borrow().clone());
-                        let self1 = &slef.imp();
-                        dialog.insert_action_group("apps-page", Some(&self1.action_group));
-                        dialog.present(Some(&this));
-                    };
-                }
-            });
-        }
-
-        pub fn handle_changed_selection(&self, row_model: &RowModel) {
-            match row_model.content_type() {
-                ContentType::Process | ContentType::App => {
-                    self.toggle_actions_enabled(true);
-                    self.obj().set_visible(true);
-                }
-                ContentType::SectionHeader => {
-                    self.toggle_actions_enabled(false);
-                }
-                ContentType::Service => {
-                    self.toggle_actions_enabled(false);
-                    self.obj().set_visible(false);
-                }
-            }
-        }
-
-        fn toggle_actions_enabled(&self, enabled: bool) {
-            (&self.action_stop).set_enabled(enabled);
-            (&self.action_force_stop).set_enabled(enabled);
-            (&self.action_suspend).set_enabled(enabled);
-            (&self.action_continue).set_enabled(enabled);
-            (&self.action_hangup).set_enabled(enabled);
-            (&self.action_interrupt).set_enabled(enabled);
-            (&self.action_user_one).set_enabled(enabled);
-            (&self.action_user_two).set_enabled(enabled);
-            (&self.action_details).set_enabled(enabled);
-        }
     }
-}
-
-fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
-    let ptr = unsafe { gobject_ffi::g_weak_ref_get(ptr as *mut _) };
-    if ptr.is_null() {
-        return None;
-    }
-    let obj: Object = unsafe { from_glib_full(ptr) };
-    obj.downcast::<gtk::Widget>().ok()
 }
 
 glib::wrapper! {
@@ -308,56 +99,29 @@ glib::wrapper! {
         @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
-fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {
-    for i in 0..model.n_items() {
-        if let Some(item) = model
-            .item(i)
-            .and_then(|i| i.downcast::<gtk::TreeListRow>().ok())
-            .and_then(|row| row.item())
-            .and_then(|obj| obj.downcast::<RowModel>().ok())
-        {
-            if item.content_type() != ContentType::SectionHeader && item.id() == id {
-                model.select_item(i, false);
-                return true;
+impl ProcessActionBar {
+    pub fn set_column_view(&self, column_view: &ColumnViewFrame) {
+        let handle_selection_change = |this: &Self, column_view: ColumnViewFrame| {
+            let selected_item = column_view.selected_item();
+            match selected_item.content_type() {
+                ContentType::Process | ContentType::App => {
+                    this.set_visible(true);
+                }
+                ContentType::SectionHeader => {}
+                _ => {
+                    this.set_visible(false);
+                }
             }
-        }
-    }
-
-    false
-}
-
-fn app_pids(row_model: &RowModel) -> Vec<u32> {
-    let children = row_model.children();
-    let mut result = Vec::with_capacity(children.n_items() as usize);
-
-    for i in 0..children.n_items() {
-        let Some(child) = children
-            .item(i)
-            .and_then(|i| i.downcast::<RowModel>().ok())
-            .and_then(|rm| find_stoppable_child(&rm))
-        else {
-            continue;
         };
-        result.push(child.pid());
+        handle_selection_change(self, column_view.clone());
+
+        column_view.connect_selected_item_notify({
+            let this = self.downgrade();
+            move |column_view| {
+                if let Some(this) = this.upgrade() {
+                    handle_selection_change(&this, column_view.clone());
+                }
+            }
+        });
     }
-
-    result
-}
-
-fn find_stoppable_child(row_model: &RowModel) -> Option<RowModel> {
-    if row_model.name() != "bwrap" {
-        return Some(row_model.clone());
-    }
-
-    let children = row_model.children();
-    for i in 0..children.n_items() {
-        let Some(child) = children.item(i).and_then(|i| i.downcast::<RowModel>().ok()) else {
-            continue;
-        };
-        if let Some(rm) = find_stoppable_child(&child) {
-            return Some(rm);
-        }
-    }
-
-    None
 }
