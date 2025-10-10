@@ -20,9 +20,9 @@
 
 pub use eject_failure_dialog::EjectFailureDialog;
 pub use mem_composition_widget::MemoryCompositionWidget;
-pub use neo_graph_widget::GraphWidgetNeo;
-pub use neo_graph_widget_utils::DatasetGroup;
-pub use neo_graph_widget_utils::ScalingSettings;
+pub use graph_widget::GraphWidget;
+pub use graph_widget_utils::DatasetGroup;
+pub use graph_widget_utils::ScalingSettings;
 pub use sidebar_drop_hint::SidebarDropHint;
 pub use smart_data_dialog::SmartDataDialog;
 pub use smart_failure_dialog::SmartFailureDialog;
@@ -34,8 +34,8 @@ const GRAPH_RADIUS: f32 = 7.;
 mod eject_failure_dialog;
 mod eject_failure_row;
 mod mem_composition_widget;
-mod neo_graph_widget;
-mod neo_graph_widget_utils;
+mod graph_widget;
+mod graph_widget_utils;
 mod sidebar_drop_hint;
 mod smart_data_dialog;
 mod smart_failure_dialog;

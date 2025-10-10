@@ -28,7 +28,7 @@ use magpie_types::network::{Connection, ConnectionKind};
 
 use super::PageExt;
 use crate::performance_page::widgets::ScalingSettings;
-use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo};
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget};
 use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
 use crate::{settings, DataType};
 
@@ -47,7 +47,7 @@ mod imp {
         #[template_child]
         pub max_y: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph: TemplateChild<GraphWidgetNeo>,
+        pub usage_graph: TemplateChild<GraphWidget>,
         #[template_child]
         pub graph_max_duration: TemplateChild<gtk::Label>,
         #[template_child]

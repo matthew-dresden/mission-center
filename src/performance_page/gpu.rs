@@ -36,7 +36,7 @@ use crate::{
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageGpu)]
@@ -48,13 +48,13 @@ mod imp {
         #[template_child]
         pub device_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub graph_utilization: TemplateChild<GraphWidgetNeo>,
+        pub graph_utilization: TemplateChild<GraphWidget>,
         #[template_child]
         pub container_bottom: TemplateChild<gtk::Box>,
         #[template_child]
         pub encode_decode_graph: TemplateChild<gtk::Box>,
         #[template_child]
-        pub usage_graph_encode_decode: TemplateChild<GraphWidgetNeo>,
+        pub usage_graph_encode_decode: TemplateChild<GraphWidget>,
         #[template_child]
         pub memory_graph: TemplateChild<gtk::Box>,
         #[template_child]
@@ -62,7 +62,7 @@ mod imp {
         #[template_child]
         pub memory_graph_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph_memory: TemplateChild<GraphWidgetNeo>,
+        pub usage_graph_memory: TemplateChild<GraphWidget>,
         #[template_child]
         pub context_menu: TemplateChild<gtk::Popover>,
         #[template_child]

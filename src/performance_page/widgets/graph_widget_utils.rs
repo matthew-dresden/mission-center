@@ -1,4 +1,24 @@
-use crate::performance_page::widgets::GraphWidgetNeo;
+/* performance_page/widgets/graph_widget_utils.rs
+ *
+ * Copyright 2025 Mission Center Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+use crate::performance_page::widgets::GraphWidget;
 use crate::{MAX_POINTS, MIN_POINTS};
 use adw::gdk;
 use gtk::gsk::{FillRule, PathBuilder, Stroke};
@@ -216,7 +236,7 @@ impl DatasetGroup {
             .for_each(|set| set.update_data_points(new_points));
     }
 
-    pub fn plot(&self, snapshot: &Snapshot, width: f32, height: f32, parent: &GraphWidgetNeo) {
+    pub fn plot(&self, snapshot: &Snapshot, width: f32, height: f32, parent: &GraphWidget) {
         if !self.dataset_settings.visible {
             return;
         }
@@ -354,7 +374,7 @@ impl Dataset {
         width: f32,
         height: f32,
         settings: &DatasetSettings,
-        parent: &GraphWidgetNeo,
+        parent: &GraphWidget,
     ) -> Vec<DatasetPoints> {
         let val_min = settings.low_watermark;
         let val_max = settings.high_watermark.max(val_min + 1.);

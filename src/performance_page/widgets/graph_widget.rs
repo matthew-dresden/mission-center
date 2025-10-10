@@ -1,6 +1,6 @@
 /* performance_page/widgets/graph_widget.rs
  *
- * Copyright 2025 Missioncenter Devs
+ * Copyright 2025 Mission Center Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,11 +44,11 @@ const ANIMATION_LOCKOUT: f32 = 0.005;
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::neo_graph_widget_utils::DatasetGroup;
+    use crate::performance_page::widgets::graph_widget_utils::DatasetGroup;
 
     #[derive(Properties)]
-    #[properties(wrapper_type = super::GraphWidgetNeo)]
-    pub struct GraphWidgetNeo {
+    #[properties(wrapper_type = super::GraphWidget)]
+    pub struct GraphWidget {
         #[property(get, set = Self::set_data_points)]
         data_points: Cell<u32>,
         #[property(get, set)]
@@ -78,7 +78,7 @@ mod imp {
         pub data_sets: Cell<Vec<DatasetGroup>>,
     }
 
-    impl Default for GraphWidgetNeo {
+    impl Default for GraphWidget {
         fn default() -> Self {
             Self {
                 data_points: Cell::new(0),
@@ -100,7 +100,7 @@ mod imp {
         }
     }
 
-    impl GraphWidgetNeo {
+    impl GraphWidget {
         pub fn set_data_points(&self, count: u32) {
             if self.data_points.take() != count {
                 let mut data_sets = self.data_sets.take();
@@ -120,7 +120,7 @@ mod imp {
             if self.horizontal_line_count.get() != count {
                 self.horizontal_line_count.set(count);
                 self.obj()
-                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .upcast_ref::<super::GraphWidget>()
                     .queue_draw();
             }
         }
@@ -129,7 +129,7 @@ mod imp {
             if self.vertical_line_count.get() != count {
                 self.vertical_line_count.set(count);
                 self.obj()
-                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .upcast_ref::<super::GraphWidget>()
                     .queue_draw();
             }
         }
@@ -138,7 +138,7 @@ mod imp {
             if self.smooth_graphs.get() != smooth {
                 self.smooth_graphs.set(smooth);
                 self.obj()
-                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .upcast_ref::<super::GraphWidget>()
                     .queue_draw();
             }
         }
@@ -147,7 +147,7 @@ mod imp {
             if self.do_animation.get() != smooth {
                 self.do_animation.set(smooth);
                 self.obj()
-                    .upcast_ref::<super::GraphWidgetNeo>()
+                    .upcast_ref::<super::GraphWidget>()
                     .queue_draw();
             }
         }
@@ -166,7 +166,7 @@ mod imp {
         }
     }
 
-    impl GraphWidgetNeo {
+    impl GraphWidget {
         #[inline]
         fn draw_outline(&self, snapshot: &Snapshot, bounds: &gsk::RoundedRect, color: &gdk::RGBA) {
             let stroke_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 1.);
@@ -298,13 +298,13 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for GraphWidgetNeo {
-        const NAME: &'static str = "GraphWidgetNeo";
-        type Type = super::GraphWidgetNeo;
+    impl ObjectSubclass for GraphWidget {
+        const NAME: &'static str = "GraphWidget";
+        type Type = super::GraphWidget;
         type ParentType = gtk::Widget;
     }
 
-    impl ObjectImpl for GraphWidgetNeo {
+    impl ObjectImpl for GraphWidget {
         fn properties() -> &'static [ParamSpec] {
             Self::derived_properties()
         }
@@ -324,7 +324,7 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for GraphWidgetNeo {
+    impl WidgetImpl for GraphWidget {
         fn realize(&self) {
             self.parent_realize();
         }
@@ -383,12 +383,12 @@ macro_rules! connect_setting {
 }
 
 glib::wrapper! {
-    pub struct GraphWidgetNeo(ObjectSubclass<imp::GraphWidgetNeo>)
+    pub struct GraphWidget(ObjectSubclass<imp::GraphWidget>)
         @extends gtk::Widget,
         @implements gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
-impl GraphWidgetNeo {
+impl GraphWidget {
     pub fn new(settings: Option<&gio::Settings>) -> Self {
         let obj: Self = glib::Object::new();
 

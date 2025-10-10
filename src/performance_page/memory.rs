@@ -29,7 +29,7 @@ use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readab
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo};
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidget};
     use crate::DataType;
 
     #[derive(Properties)]
@@ -46,7 +46,7 @@ mod imp {
         #[template_child]
         pub max_graph_ram: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph: TemplateChild<GraphWidgetNeo>,
+        pub usage_graph: TemplateChild<GraphWidget>,
         #[template_child]
         pub graph_max_duration: TemplateChild<gtk::Label>,
         #[template_child]
@@ -60,7 +60,7 @@ mod imp {
         #[template_child]
         pub box_system_memory: TemplateChild<gtk::Box>,
         #[template_child]
-        pub swap_usage_graph: TemplateChild<GraphWidgetNeo>,
+        pub swap_usage_graph: TemplateChild<GraphWidget>,
         #[template_child]
         pub total_swap: TemplateChild<gtk::Label>,
 

@@ -39,7 +39,7 @@ use magpie_types::network::{Connection, ConnectionKind};
 
 use crate::{i18n::*, magpie_client::DiskKind, settings};
 
-use widgets::{GraphWidgetNeo, SidebarDropHint};
+use widgets::{GraphWidget, SidebarDropHint};
 
 mod battery;
 mod cpu;
@@ -2578,7 +2578,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             SummaryGraph::ensure_type();
-            GraphWidgetNeo::ensure_type();
+            GraphWidget::ensure_type();
             CpuPage::ensure_type();
             NetworkPage::ensure_type();
             SidebarDropHint::ensure_type();

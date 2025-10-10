@@ -26,7 +26,7 @@ use gtk::glib::g_critical;
 use gtk::{gio, glib, prelude::*};
 
 use super::PageExt;
-use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 
@@ -56,7 +56,7 @@ mod imp {
         #[property(get, set)]
         summary_mode: Cell<bool>,
 
-        pub graph_widgets: Cell<Vec<GraphWidgetNeo>>,
+        pub graph_widgets: Cell<Vec<GraphWidget>>,
 
         #[property(get = Self::infobar_content, type = Option < gtk::Widget >)]
         pub infobar_content: OnceCell<gtk::Box>,
@@ -94,7 +94,7 @@ mod imp {
                 None => return,
             };
 
-            let graph_widgets: Vec<GraphWidgetNeo> = this.imp().graph_widgets.take();
+            let graph_widgets: Vec<GraphWidget> = this.imp().graph_widgets.take();
 
             graph_widgets[0].set_visible($new_idx == GRAPH_SELECTION_OVERALL);
 
@@ -788,7 +788,7 @@ mod imp {
             // Add one for overall CPU utilization
             let mut graph_widgets = vec![];
 
-            let overall = GraphWidgetNeo::new(Some(&settings));
+            let overall = GraphWidget::new(Some(&settings));
             overall.set_base_color(&base_color);
             overall.set_visible(graph_selection == GRAPH_SELECTION_OVERALL);
 
@@ -807,7 +807,7 @@ mod imp {
 
             graph_widgets.push(overall);
 
-            let thread_wise = GraphWidgetNeo::new(Some(&settings));
+            let thread_wise = GraphWidget::new(Some(&settings));
             thread_wise.set_base_color(&base_color);
             thread_wise.set_visible(
                 graph_selection == GRAPH_SELECTION_ALL_THREADS
@@ -836,7 +836,7 @@ mod imp {
                 let row_idx = i / col_count;
                 let col_idx = i % col_count;
 
-                let graf = GraphWidgetNeo::new(Some(&settings));
+                let graf = GraphWidget::new(Some(&settings));
                 graf.set_base_color(&base_color);
                 graf.set_visible(graph_selection == GRAPH_SELECTION_ALL);
 

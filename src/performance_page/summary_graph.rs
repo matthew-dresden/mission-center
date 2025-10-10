@@ -1,7 +1,6 @@
 /* performance_page/summary_graph.rs
  *
- * Copyright 2024 Romeo Calota
- * Copyright 2024 jojo2357
+ * Copyright 2024-2025 Mission Center Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,12 +24,12 @@ use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gdk, glib, prelude::*};
 
-use super::widgets::{GraphWidgetNeo, SidebarDropHint};
+use super::widgets::{GraphWidget, SidebarDropHint};
 use crate::settings;
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::GraphWidgetNeo;
+    use crate::performance_page::widgets::GraphWidget;
     use std::marker::PhantomData;
 
     #[derive(Properties)]
@@ -44,7 +43,7 @@ mod imp {
         #[template_child]
         pub drag_handle_icon: TemplateChild<gtk::Image>,
         #[template_child]
-        pub graph_widget: TemplateChild<GraphWidgetNeo>,
+        pub graph_widget: TemplateChild<GraphWidget>,
         #[template_child]
         label_heading: TemplateChild<gtk::Label>,
         #[template_child]
@@ -245,7 +244,7 @@ impl SummaryGraph {
         }
     }
 
-    pub fn graph_widget(&self) -> GraphWidgetNeo {
+    pub fn graph_widget(&self) -> GraphWidget {
         self.imp().graph_widget.clone()
     }
 

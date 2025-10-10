@@ -36,7 +36,7 @@ use super::PageExt;
 mod imp {
     use super::*;
     use crate::performance_page::disk_details::DiskDetails;
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidgetNeo, ScalingSettings};
+    use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
     use crate::{settings, DataType};
 
     #[derive(Properties)]
@@ -55,13 +55,13 @@ mod imp {
         #[template_child]
         pub model: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_graph: TemplateChild<GraphWidgetNeo>,
+        pub usage_graph: TemplateChild<GraphWidget>,
         #[template_child]
         pub max_y: TemplateChild<gtk::Label>,
         #[template_child]
         pub graph_max_duration: TemplateChild<gtk::Label>,
         #[template_child]
-        pub disk_transfer_rate_graph: TemplateChild<GraphWidgetNeo>,
+        pub disk_transfer_rate_graph: TemplateChild<GraphWidget>,
         #[template_child]
         pub context_menu: TemplateChild<gtk::Popover>,
 

@@ -35,7 +35,7 @@ use crate::to_short_human_readable_time;
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::GraphWidgetNeo;
+    use crate::performance_page::widgets::GraphWidget;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageFan)]
@@ -47,9 +47,9 @@ mod imp {
         #[template_child]
         pub title_temp_name: TemplateChild<gtk::Label>,
         #[template_child]
-        pub speed_graph: TemplateChild<GraphWidgetNeo>,
+        pub speed_graph: TemplateChild<GraphWidget>,
         #[template_child]
-        pub temp_graph: TemplateChild<GraphWidgetNeo>,
+        pub temp_graph: TemplateChild<GraphWidget>,
 
         #[template_child]
         pub speed_max_y: TemplateChild<gtk::Label>,
