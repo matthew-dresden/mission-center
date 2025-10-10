@@ -200,9 +200,6 @@ pub(crate) mod imp {
             self.gpu_memory_column
                 .set_sorter(Some(&gpu_memory_sorter(&self.column_view)));
 
-            let column_view_title = self.column_view.first_child();
-            adjust_view_header_alignment(column_view_title);
-
             let action_group = gio::SimpleActionGroup::new();
 
             let action_show_context_menu =
@@ -265,6 +262,9 @@ pub(crate) mod imp {
     impl WidgetImpl for ColumnViewFrame {
         fn realize(&self) {
             self.parent_realize();
+
+            let column_view_title = self.column_view.first_child();
+            adjust_view_header_alignment(column_view_title);
         }
     }
 
