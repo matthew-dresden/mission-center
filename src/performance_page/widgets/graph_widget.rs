@@ -119,36 +119,28 @@ mod imp {
         fn set_horizontal_line_count(&self, count: u32) {
             if self.horizontal_line_count.get() != count {
                 self.horizontal_line_count.set(count);
-                self.obj()
-                    .upcast_ref::<super::GraphWidget>()
-                    .queue_draw();
+                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
             }
         }
 
         fn set_vertical_line_count(&self, count: u32) {
             if self.vertical_line_count.get() != count {
                 self.vertical_line_count.set(count);
-                self.obj()
-                    .upcast_ref::<super::GraphWidget>()
-                    .queue_draw();
+                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
             }
         }
 
         pub fn set_smooth_graphs(&self, smooth: bool) {
             if self.smooth_graphs.get() != smooth {
                 self.smooth_graphs.set(smooth);
-                self.obj()
-                    .upcast_ref::<super::GraphWidget>()
-                    .queue_draw();
+                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
             }
         }
 
         pub fn set_do_animation(&self, smooth: bool) {
             if self.do_animation.get() != smooth {
                 self.do_animation.set(smooth);
-                self.obj()
-                    .upcast_ref::<super::GraphWidget>()
-                    .queue_draw();
+                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
             }
         }
 
