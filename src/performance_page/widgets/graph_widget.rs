@@ -43,9 +43,9 @@ use super::{DatasetGroup, ScalingSettings, GRAPH_RADIUS};
 const ANIMATION_LOCKOUT: f32 = 0.005;
 
 mod imp {
-    use gtk::glib::g_warning;
     use super::*;
     use crate::performance_page::widgets::graph_widget_utils::DatasetGroup;
+    use gtk::glib::g_warning;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::GraphWidget)]
