@@ -629,7 +629,10 @@ mod imp {
                 && !self.infobar_content.total_shared_memory_valid()
             {
                 self.usage_graph_memory
-                    .set_dataset_scaling(0, ScalingSettings::ScaleUp);
+                    .set_all_datasets_scaling(ScalingSettings::StickyUp);
+
+                self.usage_graph_memory.connect_datasets(0, 1);
+                self.usage_graph_memory.connect_datasets(1, 0);
             }
 
             self.memory_graph.set_visible(has_memory_info);
