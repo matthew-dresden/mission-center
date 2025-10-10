@@ -549,7 +549,6 @@ mod imp {
                 total_memory_str: Option<&str>,
                 has_memory_info: &mut bool,
             ) {
-                let mut scaling_factor = 1.0;
                 if let Some(total_shared_memory) = gpu.total_shared_memory {
                     let total_gtt = crate::to_human_readable_nice(
                         total_shared_memory as f32,
@@ -557,6 +556,11 @@ mod imp {
                     );
 
                     this.infobar_content.set_total_shared_memory_valid(true);
+                    this.usage_graph_memory
+                        .set_all_datasets_scaling(ScalingSettings::Fixed);
+                    println!("{}", total_shared_memory);
+                    this.usage_graph_memory
+                        .set_dataset_max_scale(1, 33668718592. * 4.);
 
                     if let Some(total_memory_str) = total_memory_str {
                         this.total_memory
@@ -564,19 +568,14 @@ mod imp {
 
                         this.memory_graph_label
                             .set_text(&i18n("Dedicated and shared memory usage over "));
-
-                        this.usage_graph_memory
-                            .set_all_datasets_scaling(ScalingSettings::Fixed);
-                        let current_max = this.usage_graph_memory.get_dataset_max_scale(0);
-                        scaling_factor = current_max / total_shared_memory as f32;
                     } else {
-                        this.total_memory.set_text(&total_gtt);
+                        this.total_memory
+                            .set_text(&format!("{total_gtt}"));
 
-                        this.usage_graph_memory
-                            .set_all_datasets_scaling(ScalingSettings::Fixed);
-                        this.usage_graph_memory
-                            .set_all_datasets_max_scale(total_shared_memory as f32);
+                        this.memory_graph_label
+                            .set_text(&i18n("Shared memory usage over "));
                     }
+
                     this.infobar_content
                         .shared_mem_usage_max()
                         .set_text(&total_gtt);
