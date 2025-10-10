@@ -558,9 +558,8 @@ mod imp {
                     this.infobar_content.set_total_shared_memory_valid(true);
                     this.usage_graph_memory
                         .set_all_datasets_scaling(ScalingSettings::Fixed);
-                    println!("{}", total_shared_memory);
                     this.usage_graph_memory
-                        .set_dataset_max_scale(1, 33668718592. * 4.);
+                        .set_dataset_max_scale(1, total_shared_memory as f32);
 
                     if let Some(total_memory_str) = total_memory_str {
                         this.total_memory
@@ -569,8 +568,7 @@ mod imp {
                         this.memory_graph_label
                             .set_text(&i18n("Dedicated and shared memory usage over "));
                     } else {
-                        this.total_memory
-                            .set_text(&format!("{total_gtt}"));
+                        this.total_memory.set_text(&format!("{total_gtt}"));
 
                         this.memory_graph_label
                             .set_text(&i18n("Shared memory usage over "));
@@ -799,9 +797,6 @@ mod imp {
             idk.dataset_settings.fill = false;
             self.usage_graph_memory.add_dataset(idk);
             self.usage_graph_memory.connect_to_settings(&settings);
-
-            self.usage_graph_memory.connect_datasets(0, 1);
-            self.usage_graph_memory.connect_datasets(1, 0);
 
             let this = self.obj();
 
