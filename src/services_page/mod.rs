@@ -35,6 +35,8 @@ use crate::process_tree::process_action_bar::ProcessActionBar;
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 use crate::process_tree::service_action_bar::ServiceActionBar;
 
+pub mod actions;
+
 pub(crate) mod imp {
     use super::*;
 
@@ -357,6 +359,27 @@ pub(crate) mod imp {
 
             self.obj()
                 .insert_action_group("services-page", Some(&actions));
+
+            let service_actions = gio::SimpleActionGroup::new();
+            service_actions.add_action(&actions::action_start(&self.column_view));
+            service_actions.add_action(&actions::action_stop(&self.column_view));
+            service_actions.add_action(&actions::action_restart(&self.column_view));
+            service_actions.add_action(&actions::action_details(&self.column_view));
+            self.obj()
+                .insert_action_group("service", Some(&service_actions));
+
+            let process_actions = gio::SimpleActionGroup::new();
+            process_actions.add_action(&actions::apps::action_stop(&self.column_view));
+            process_actions.add_action(&actions::apps::action_force_stop(&self.column_view));
+            process_actions.add_action(&actions::apps::action_suspend(&self.column_view));
+            process_actions.add_action(&actions::apps::action_continue(&self.column_view));
+            process_actions.add_action(&actions::apps::action_hangup(&self.column_view));
+            process_actions.add_action(&actions::apps::action_interrupt(&self.column_view));
+            process_actions.add_action(&actions::apps::action_user_one(&self.column_view));
+            process_actions.add_action(&actions::apps::action_user_two(&self.column_view));
+            process_actions.add_action(&actions::apps::action_details(&self.column_view));
+            self.obj()
+                .insert_action_group("process", Some(&process_actions));
         }
     }
 
@@ -434,15 +457,6 @@ impl ServicesPage {
         );
 
         self.update_service_counts(&readings.services);
-
-        let selected_item = &imp.column_view.imp().selected_item.borrow();
-
-        imp.process_action_bar
-            .imp()
-            .handle_changed_selection(selected_item);
-        imp.service_action_bar
-            .imp()
-            .handle_changed_selection(selected_item);
     }
 
     fn update_service_counts(&self, services: &HashMap<String, Service>) {

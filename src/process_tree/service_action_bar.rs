@@ -18,37 +18,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::glib::g_critical;
-use adw::prelude::*;
-use gtk::glib::WeakRef;
-use gtk::{gio, glib, subclass::prelude::*};
-
-use crate::app;
-use crate::magpie_client::MagpieClient;
 use crate::process_tree::column_view_frame::ColumnViewFrame;
 use crate::process_tree::row_model::{ContentType, RowModel};
-use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
+use adw::prelude::*;
+use gtk::{gio, glib, subclass::prelude::*};
 
 mod imp {
     use super::*;
-
-    fn find_selected_item(this: WeakRef<ColumnViewFrame>) -> Option<(ColumnViewFrame, RowModel)> {
-        let this_obj = match this.upgrade() {
-            Some(this) => this,
-            None => {
-                g_critical!(
-                    "MissionCenter::ServiceActionBar",
-                    "Failed to get ColumnView instance for action"
-                );
-                return None;
-            }
-        };
-        let this = this_obj.imp();
-
-        let selected_item = this.selected_item.borrow().clone();
-
-        Some((this_obj, selected_item))
-    }
 
     #[derive(gtk::CompositeTemplate)]
     #[template(
@@ -63,16 +39,6 @@ mod imp {
         pub service_restart_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub service_details_label: TemplateChild<gtk::Label>,
-
-        #[template_child]
-        pub service_context_menu: TemplateChild<gtk::PopoverMenu>,
-
-        pub service_start: gio::SimpleAction,
-        pub service_stop: gio::SimpleAction,
-        pub service_restart: gio::SimpleAction,
-        pub service_details: gio::SimpleAction,
-
-        pub service_ation_group: gio::SimpleActionGroup,
     }
 
     impl Default for ServiceActionBar {
@@ -82,14 +48,6 @@ mod imp {
                 service_stop_label: Default::default(),
                 service_restart_label: Default::default(),
                 service_details_label: Default::default(),
-                service_context_menu: Default::default(),
-
-                service_start: gio::SimpleAction::new("selected-svc-start", None),
-                service_stop: gio::SimpleAction::new("selected-svc-stop", None),
-                service_restart: gio::SimpleAction::new("selected-svc-restart", None),
-                service_details: gio::SimpleAction::new("details", None),
-
-                service_ation_group: Default::default(),
             }
         }
     }
@@ -112,15 +70,6 @@ mod imp {
     impl ObjectImpl for ServiceActionBar {
         fn constructed(&self) {
             self.parent_constructed();
-
-            let actions = &self.service_ation_group;
-            self.obj()
-                .insert_action_group("services-page", Some(actions));
-
-            actions.add_action(&self.service_start);
-            actions.add_action(&self.service_stop);
-            actions.add_action(&self.service_restart);
-            actions.add_action(&self.service_details);
         }
     }
 
@@ -147,126 +96,14 @@ mod imp {
             self.service_details_label.set_visible(true);
         }
 
-        pub fn configure(
-            &self,
-            imp: &crate::process_tree::column_view_frame::imp::ColumnViewFrame,
-        ) {
-            let this = imp.obj();
-
-            (&self.service_details).set_enabled(false);
-            (&self.service_details).connect_activate({
-                let this = this.downgrade();
-                let slef = self.obj().downgrade();
-                move |_action, _| {
-                    let Some(this) = this.upgrade() else {
-                        return;
-                    };
-                    let Some(slef) = slef.upgrade() else {
-                        return;
-                    };
-                    let imp = this.imp();
-
-                    let selected_item = imp.selected_item.borrow();
-
-                    if selected_item.content_type() == ContentType::Service {
-                        let dialog = ServiceDetailsDialog::new(imp.selected_item.borrow().clone());
-                        let self1 = &slef.imp();
-                        dialog
-                            .insert_action_group("services-page", Some(&self1.service_ation_group));
-                        dialog.present(Some(&this));
-                    };
-                }
-            });
-
-            fn make_magpie_request(
-                this: WeakRef<ColumnViewFrame>,
-                request: fn(&MagpieClient, &str),
-            ) {
-                let app = app!();
-
-                let (_, selected_item) = match find_selected_item(this) {
-                    Some((this, item)) => (this, item),
-                    None => {
-                        g_critical!(
-                            "MissionCenter::ServiceActionBar",
-                            "Failed to get selected item for action"
-                        );
-                        return;
-                    }
-                };
-
-                match app.sys_info() {
-                    Ok(sys_info) => {
-                        request(&sys_info, &selected_item.name());
-                    }
-                    Err(e) => {
-                        g_critical!(
-                            "MissionCenter::ServiceActionBar",
-                            "Failed to get sys_info from MissionCenterApplication: {}",
-                            e
-                        );
-                    }
-                };
-            }
-
-            (&self.service_start).connect_activate({
-                let this = imp.obj().downgrade();
-                move |_action, _| {
-                    make_magpie_request(this.clone(), |sys_info, service_name| {
-                        sys_info.start_service(service_name.to_owned());
-                    });
-                }
-            });
-
-            (&self.service_stop).connect_activate({
-                let this = imp.obj().downgrade();
-                move |_action, _| {
-                    make_magpie_request(this.clone(), |sys_info, service_name| {
-                        sys_info.stop_service(service_name.to_owned());
-                    });
-                }
-            });
-
-            (&self.service_restart).connect_activate({
-                let this = imp.obj().downgrade();
-                move |_action, _| {
-                    make_magpie_request(this.clone(), |sys_info, service_name| {
-                        sys_info.restart_service(service_name.to_owned());
-                    });
-                }
-            });
-        }
-
         pub fn handle_changed_selection(&self, row_model: &RowModel) {
             match row_model.content_type() {
                 ContentType::Service => {
                     self.obj().set_visible(true);
-                    if row_model.service_running() {
-                        (&self.service_stop).set_enabled(true);
-                        (&self.service_start).set_enabled(false);
-                        (&self.service_restart).set_enabled(true);
-                    } else {
-                        (&self.service_stop).set_enabled(false);
-                        (&self.service_start).set_enabled(true);
-                        (&self.service_restart).set_enabled(false);
-                    }
-
-                    (&self.service_details).set_enabled(true);
                 }
-                ContentType::SectionHeader => {
-                    (&self.service_details).set_enabled(false);
-
-                    (&self.service_stop).set_enabled(false);
-                    (&self.service_start).set_enabled(false);
-                    (&self.service_restart).set_enabled(false);
-                }
+                ContentType::SectionHeader => {}
                 _ => {
                     self.obj().set_visible(false);
-                    (&self.service_details).set_enabled(false);
-
-                    (&self.service_stop).set_enabled(false);
-                    (&self.service_start).set_enabled(false);
-                    (&self.service_restart).set_enabled(false);
                 }
             }
         }
@@ -277,4 +114,31 @@ glib::wrapper! {
     pub struct ServiceActionBar(ObjectSubclass<imp::ServiceActionBar>)
         @extends gtk::Box, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
+}
+
+impl ServiceActionBar {
+    pub fn set_column_view(&self, column_view: &ColumnViewFrame) {
+        let handle_selection_change = |this: &Self, column_view: ColumnViewFrame| {
+            let selected_item = column_view.selected_item();
+            match selected_item.content_type() {
+                ContentType::Service => {
+                    this.set_visible(true);
+                }
+                ContentType::SectionHeader => {}
+                _ => {
+                    this.set_visible(false);
+                }
+            }
+        };
+        handle_selection_change(self, column_view.clone());
+
+        column_view.connect_selected_item_notify({
+            let this = self.downgrade();
+            move |column_view| {
+                if let Some(this) = this.upgrade() {
+                    handle_selection_change(&this, column_view.clone());
+                }
+            }
+        });
+    }
 }

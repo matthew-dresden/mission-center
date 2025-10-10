@@ -34,6 +34,8 @@ use crate::process_tree::models::{update_apps, update_children};
 use crate::process_tree::process_action_bar::ProcessActionBar;
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
+pub mod actions;
+
 mod imp {
     use super::*;
 
@@ -62,8 +64,6 @@ mod imp {
 
         pub app_icons: RefCell<HashMap<u32, String>>,
         pub selected_item: RefCell<RowModel>,
-
-        pub action_collapse_all: gio::SimpleAction,
     }
 
     impl Default for AppsPage {
@@ -93,8 +93,6 @@ mod imp {
 
                 app_icons: RefCell::new(HashMap::new()),
                 selected_item: RefCell::new(RowModelBuilder::new().build()),
-
-                action_collapse_all: gio::SimpleAction::new("collapse-all", None),
             }
         }
     }
@@ -138,10 +136,10 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            let actions = gio::SimpleActionGroup::new();
-            actions.add_action(&self.action_collapse_all);
+            let page_actions = gio::SimpleActionGroup::new();
 
-            self.action_collapse_all.connect_activate({
+            let action_collapse_all = gio::SimpleAction::new("collapse-all", None);
+            action_collapse_all.connect_activate({
                 let this = self.obj().downgrade();
                 move |_action, _| {
                     let Some(this) = this.upgrade() else {
@@ -192,7 +190,22 @@ mod imp {
                 }
             });
 
-            self.obj().insert_action_group("apps-page", Some(&actions));
+            page_actions.add_action(&action_collapse_all);
+            self.obj()
+                .insert_action_group("apps-page", Some(&page_actions));
+
+            let process_actions = gio::SimpleActionGroup::new();
+            process_actions.add_action(&actions::action_stop(&self.column_view));
+            process_actions.add_action(&actions::action_force_stop(&self.column_view));
+            process_actions.add_action(&actions::action_suspend(&self.column_view));
+            process_actions.add_action(&actions::action_continue(&self.column_view));
+            process_actions.add_action(&actions::action_hangup(&self.column_view));
+            process_actions.add_action(&actions::action_interrupt(&self.column_view));
+            process_actions.add_action(&actions::action_user_one(&self.column_view));
+            process_actions.add_action(&actions::action_user_two(&self.column_view));
+            process_actions.add_action(&actions::action_details(&self.column_view));
+            self.obj()
+                .insert_action_group("process", Some(&process_actions));
         }
     }
 

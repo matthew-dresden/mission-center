@@ -9,6 +9,7 @@ skip-codegen = ["magpie-types/skip-codegen"]
 [dependencies]
 arrayvec = "0.7"
 nng-c = "1.11"
+paste = "1.0"
 rand = "0.9.2"
 regex = "1.11"
 rust-ini = "0.21"

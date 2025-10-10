@@ -1107,6 +1107,19 @@
   {
     "type": "archive",
     "archive-type": "tar-gzip",
+    "url": "https://static.crates.io/crates/paste/paste-1.0.15.crate",
+    "sha256": "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a",
+    "dest": "cargo/vendor/paste-1.0.15"
+  },
+  {
+    "type": "inline",
+    "contents": "{\"package\": \"57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a\", \"files\": {}}",
+    "dest": "cargo/vendor/paste-1.0.15",
+    "dest-filename": ".cargo-checksum.json"
+  },
+  {
+    "type": "archive",
+    "archive-type": "tar-gzip",
     "url": "https://static.crates.io/crates/petgraph/petgraph-0.7.1.crate",
     "sha256": "3672b37090dbd86368a4145bc067582552b29c27377cad4e0a306c97f9bd7772",
     "dest": "cargo/vendor/petgraph-0.7.1"
