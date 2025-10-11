@@ -46,7 +46,6 @@ mod imp {
     use super::*;
     use crate::performance_page::widgets::graph_widget_utils::DatasetGroup;
     use gtk::glib::g_warning;
-    use gtk::gsk::Transform;
     use gtk::TextDirection;
 
     #[derive(Properties)]

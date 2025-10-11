@@ -180,8 +180,6 @@ mod imp {
 
     impl PerformancePageFan {
         pub fn set_static_information(this: &super::PerformancePageFan, fan: &Fan) -> bool {
-            let t = this.clone();
-
             let this = this.imp();
 
             if let Some(legend_send) = this.legend_speed.get() {

@@ -306,7 +306,6 @@ mod imp {
                 .set_all_datasets_max_scale(readings.mem_info.mem_total as f32);
             this.swap_usage_graph
                 .set_all_datasets_max_scale(readings.mem_info.swap_total as f32);
-            let t = this.obj().clone();
 
             if !show_memory_composition {
                 this.box_mem_composition.set_visible(false);
