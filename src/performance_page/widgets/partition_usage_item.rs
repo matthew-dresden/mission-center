@@ -18,13 +18,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::glib::g_warning;
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gtk::glib::Properties;
-use gtk::glib::{self, g_critical, WeakRef};
+use gtk::glib::{self};
 use magpie_types::disks::PartitionInfo;
-use std::cell::{Cell, RefCell};
+use std::cell::Cell;
 use std::ops::Div;
 
 mod imp {
@@ -74,15 +72,13 @@ mod imp {
 
     impl WidgetImpl for PartitionUsageItem {}
 
-    impl BoxImpl for PartitionUsageItem {}
-
     impl ListBoxRowImpl for PartitionUsageItem {}
 }
 
 glib::wrapper! {
     pub struct PartitionUsageItem(ObjectSubclass<imp::PartitionUsageItem>)
         @extends gtk::Widget, gtk::ListBoxRow,
-        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable;
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable, gtk::Actionable;
 }
 
 impl PartitionUsageItem {
