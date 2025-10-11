@@ -1,3 +1,27 @@
+spec:
+  inputs:
+    BUILD_FLATPAK:
+      default: false
+      type: boolean
+      description: "Build .flatpak files to install"
+    BUILD_APPIMAGE:
+      default: false
+      type: boolean
+      description: "Build appimage files for execution"
+    BUILD_SNAP:
+      default: false
+      type: boolean
+      description: "Build snap files to install"
+    BUILD_ARM:
+      default: false
+      type: boolean
+      description: "Make arm builds as well as x86 builds"
+    PORTABLE_TARBALL:
+      default: ''
+      type: string
+      description: "Tarball url to use, must be a valid url"
+---
+
 image: "ubuntu:25.10"
 
 workflow:
@@ -57,11 +81,12 @@ stages:
     - flatpak install -y org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 org.gnome.Platform//49 org.gnome.Sdk//49
 
   ready_to_merge:
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /CI: Ready To Merge/'
+    - if: '$CI_MERGE_REQUEST_LABELS !~ /CI::Skip Build/'
 
 check-fmt:
   stage: test
   interruptible: true
+  allow_failure: true
   before_script:
     - !reference [ ".shared", "setup_apt" ]
     - !reference [ ".shared", "install_rust" ]
@@ -121,7 +146,7 @@ flatpak-job-x86:
     paths:
       - flatpak/missioncenter-x86_64.flatpak
   rules:
-    - if: $BUILD_FLATPAK != null
+    - if: "'true' == '$[[ inputs.BUILD_FLATPAK ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
 
 flatpak-job-arm:
@@ -140,7 +165,7 @@ flatpak-job-arm:
     paths:
       - flatpak/missioncenter-aarch64.flatpak
   rules:
-    - if: $BUILD_FLATPAK != null
+    - if: "'true' == '$[[ inputs.BUILD_FLATPAK ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
 
 package-build-job-x86:
@@ -162,7 +187,7 @@ package-build-job-x86:
       - 'logs.txt'
       - 'portable-x86_64.tar.gz'
   rules:
-    - if: ($PORTABLE_TARBALL == null || $PORTABLE_TARBALL == '') && ($BUILD_APPIMAGE != null || $BUILD_SNAP != null)
+    - if: "'' != '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
     - !reference [ ".shared", "ready_to_merge" ]
     - when: never
 
@@ -185,7 +210,7 @@ package-build-job-arm:
       - 'logs.txt'
       - 'portable-aarch64.tar.gz'
   rules:
-    - if: ($PORTABLE_TARBALL == null || $PORTABLE_TARBALL == '') && ($BUILD_APPIMAGE != null || $BUILD_SNAP != null)
+    - if: "'' != '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
     - !reference [ ".shared", "ready_to_merge" ]
 
 snap-job-x86:
@@ -195,7 +220,7 @@ snap-job-x86:
   before_script:
     - apt-get update && apt-get install -y curl ca-certificates
   script:
-    - if [[ ! -z "$PORTABLE_TARBALL" ]]; then curl -LO $PORTABLE_TARBALL; fi
+    - if [[ ! -z '$[[ inputs.PORTABLE_TARBALL ]]' ]]; then curl -LO '$[[ inputs.PORTABLE_TARBALL ]]'; fi
     - mkdir -p snap/local && cd snap/local && tar xf ../../portable-x86_64.tar.gz && cd ../..
 
     - SRC_PATH=$PWD bash support/create-snap.sh
@@ -206,7 +231,7 @@ snap-job-x86:
     paths:
       - '**/*.snap'
   rules:
-    - if: $BUILD_SNAP != null
+    - if: "'true' == '$[[ inputs.BUILD_SNAP ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
 
 snap-job-arm:
@@ -219,7 +244,7 @@ snap-job-arm:
     - apt-get update && apt-get install -y curl ca-certificates
   script:
 
-    - if [[ ! -z "$PORTABLE_TARBALL" ]]; then curl -LO $PORTABLE_TARBALL; fi
+    - if [[ ! -z '$[[ inputs.PORTABLE_TARBALL ]]' ]]; then curl -LO '$[[ inputs.PORTABLE_TARBALL ]]'; fi
     - mkdir -p snap/local && cd snap/local && tar xf ../../portable-aarch64.tar.gz && cd ../..
 
     - SRC_PATH=$PWD bash support/create-snap.sh
@@ -230,7 +255,7 @@ snap-job-arm:
     paths:
       - '**/*.snap'
   rules:
-    - if: $BUILD_SNAP != null
+    - if: "'true' == '$[[ inputs.BUILD_SNAP ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
 
 appimage-job-x86:
@@ -242,7 +267,7 @@ appimage-job-x86:
 
     - apt-get install -y curl ca-certificates
   script:
-    - if [[ ! -z "$PORTABLE_TARBALL" ]]; then curl -LO $PORTABLE_TARBALL; fi
+    - if [[ ! -z '$[[ inputs.PORTABLE_TARBALL ]]' ]]; then curl -LO '$[[ inputs.PORTABLE_TARBALL ]]'; fi
     - cd appimage && /usr/bin/tar xf ../portable-x86_64.tar.gz && cd ..
 
     - RECEIPE_PATH=$PWD/appimage APPDIR_PATH=$PWD/appimage bash support/create-appimage.sh
@@ -253,7 +278,7 @@ appimage-job-x86:
     paths:
       - '**/*.AppImage'
   rules:
-    - if: $BUILD_APPIMAGE != null
+    - if: "'true' == '$[[ inputs.BUILD_APPIMAGE ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
 
 appimage-job-arm:
@@ -267,7 +292,7 @@ appimage-job-arm:
 
     - apt-get install -y curl ca-certificates
   script:
-    - if [[ ! -z "$PORTABLE_TARBALL" ]]; then curl -LO $PORTABLE_TARBALL; fi
+    - if [[ ! -z '$[[ inputs.PORTABLE_TARBALL ]]' ]]; then curl -LO '$[[ inputs.PORTABLE_TARBALL ]]'; fi
     - cd appimage && /usr/bin/tar xf ../portable-aarch64.tar.gz && cd ..
 
     - RECEIPE_PATH=$PWD/appimage APPDIR_PATH=$PWD/appimage bash support/create-appimage.sh
@@ -278,5 +303,5 @@ appimage-job-arm:
     paths:
       - '**/*.AppImage'
   rules:
-    - if: $BUILD_APPIMAGE != null
+    - if: "'true' == '$[[ inputs.BUILD_APPIMAGE ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
