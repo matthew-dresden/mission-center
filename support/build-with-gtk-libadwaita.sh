@@ -27,7 +27,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 dpkg-reconfigure --frontend noninteractive tzdata
 
 apt-get install -y curl
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=1.87.0 -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain=1.90.0 -y
 
 apt-get install -y build-essential flex bison git gettext python3-pip python3-gi libudev-dev libdrm-dev libgbm-dev libdbus-1-dev libxslt-dev libpcre2-dev libfuse3-dev libgcrypt-dev libjpeg-turbo8-dev libpng-dev libisocodes-dev libepoxy-dev libxrandr-dev libxi-dev libxcursor-dev libxdamage-dev libxinerama-dev libgstreamer-plugins-bad1.0-dev libpixman-1-dev libfontconfig1-dev libxkbcommon-dev libcurl4-openssl-dev libyaml-dev libzstd-dev libgraphviz-dev libtiff5 libbrotli-dev shared-mime-info desktop-file-utils pkg-config gperf itstool xsltproc valac docbook-xsl libxml2-utils python3-packaging libssl-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev tk-dev python-openssl zstd
 
@@ -392,7 +392,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/gtk4.html
 # -------------------------------------------------------------
-GTK_VER=4.20.1
+GTK_VER=4.20.2
 GTK_VER_MM=$(echo $GTK_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/gtk/$GTK_VER_MM/gtk-$GTK_VER.tar.xz
@@ -458,7 +458,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/libadwaita.html
 # -------------------------------------------------------------------
-LIBADW_VER=1.8.0
+LIBADW_VER=1.8.1
 LIBADW_VER_MM=$(echo $LIBADW_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/libadwaita/$LIBADW_VER_MM/libadwaita-$LIBADW_VER.tar.xz
@@ -482,7 +482,7 @@ cd $OUT_PATH
 
 # Blueprint Compiler
 # -------------------------------------------------------------------
-BP_CMP_VER=v0.16.0
+BP_CMP_VER=v0.18.0
 # -------------------------------------------------------------------
 curl -LO https://gitlab.gnome.org/jwestman/blueprint-compiler/-/archive/$BP_CMP_VER/blueprint-compiler-$BP_CMP_VER.tar.bz2
 tar xvf blueprint-compiler-*.tar.bz2 && rm blueprint-compiler-*.tar.bz2
@@ -502,7 +502,7 @@ cd $OUT_PATH
 
 # LLVM tooling
 # -------------------------------------------------------------------
-LLVM_TOOLS_VERSION=20.1.0
+LLVM_TOOLS_VERSION=21.1.1
 # -------------------------------------------------------------------
 cd $HOME
 curl -LO "https://missioncenter.io/build-tools/llvm-tooling-$(arch)-gnu-$LLVM_TOOLS_VERSION.tar.zst"

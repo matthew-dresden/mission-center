@@ -238,13 +238,13 @@ mod imp {
                 ContentType::Service => {
                     self.icon.set_visible(true);
                     self.icon.set_margin_end(10);
-                    self.icon.set_pixel_size(24);
+                    self.icon.set_pixel_size(16);
                     self.name.remove_css_class("heading");
 
                     let this = self.obj();
                     this.set_margin_start(0);
-                    this.set_margin_top(0);
-                    this.set_margin_bottom(0);
+                    this.set_margin_top(5);
+                    this.set_margin_bottom(5);
 
                     let this = this.downgrade();
                     glib::timeout_add_local_full(

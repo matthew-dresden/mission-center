@@ -1,6 +1,6 @@
-/* ui/apps_page/details_dialog.blp
+/* ui/about_system_dialog.blp
  *
- * Copyright 2025 Mission Center Developers
+ * Copyright 2024 Romeo Calota
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,22 +21,19 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $AppsPageDetailsDialog: Adw.Dialog {
+template $AboutSystemDialog: Adw.Dialog {
   width-request: 360;
 
   Adw.ToolbarView {
     [top]
     Adw.HeaderBar {
       title-widget: Box {
-        spacing: 10;
-
-        Image icon {
-        }
-
         Label title {
           styles [
             "heading"
           ]
+
+          label: _("System Info");
         }
       };
     }
@@ -52,17 +49,24 @@ template $AppsPageDetailsDialog: Adw.Dialog {
         Box {
           margin-start: 20;
           margin-end: 20;
-          margin-top: 20;
           margin-bottom: 20;
 
           orientation: vertical;
           spacing: 32;
 
+          Image logo {
+            margin-top: 10;
+            pixel-size: 128;
+          }
+
           Adw.PreferencesGroup {
             hexpand: true;
 
+            title: _("Operating System Information");
+
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind os_name.visible;
 
               child: Box {
                 height-request: 50;
@@ -73,10 +77,10 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("PID");
+                  label: _("Name");
                 }
 
-                Label id {
+                Label os_name {
                   styles [
                     "dim-label",
                   ]
@@ -84,13 +88,13 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                   ellipsize: middle;
                   hexpand: true;
                   halign: end;
-                  label: _("N/A");
                 }
               };
             }
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind version.visible;
 
               child: Box {
                 height-request: 50;
@@ -101,10 +105,10 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("Type");
+                  label: _("Version");
                 }
 
-                Label kind {
+                Label version {
                   styles [
                     "dim-label",
                   ]
@@ -112,13 +116,13 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                   ellipsize: middle;
                   hexpand: true;
                   halign: end;
-                  label: _("N/A");
                 }
               };
             }
 
-            Adw.PreferencesRow command_line_row {
+            Adw.PreferencesRow {
               activatable: false;
+              visible: bind package_manager.visible;
 
               child: Box {
                 height-request: 50;
@@ -129,20 +133,45 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("Command Line");
+                  label: _("Package Manager");
                 }
 
-                Label command_line {
+                Label package_manager {
                   styles [
                     "dim-label",
                   ]
 
+                  ellipsize: middle;
                   hexpand: true;
                   halign: end;
+                }
+              };
+            }
 
-                  wrap: true;
-                  wrap-mode: char;
-                  natural-wrap-mode: none;
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind package_manager_version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Package Manager Version");
+                }
+
+                Label package_manager_version {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
                 }
               };
             }
@@ -151,10 +180,11 @@ template $AppsPageDetailsDialog: Adw.Dialog {
           Adw.PreferencesGroup {
             hexpand: true;
 
-            title: _("Resource Usage");
+            title: _("Kernel Information");
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind kernel_release.visible;
 
               child: Box {
                 height-request: 50;
@@ -165,64 +195,16 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("CPU");
+                  label: _("Kernel Release");
                 }
 
-                $LabelCell cpu {
+                Label kernel_release {
                   styles [
                     "dim-label",
                   ]
 
+                  ellipsize: middle;
                   hexpand: true;
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-                  label: _("Memory");
-                }
-
-                $LabelCell memory {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  hexpand: true;
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-                  label: _("Shared Memory");
-                }
-
-                $LabelCell shared_memory {
-                  styles [
-                    "dim-label",
-                  ]
-
                   halign: end;
                 }
               };
@@ -230,6 +212,7 @@ template $AppsPageDetailsDialog: Adw.Dialog {
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind kernel_version.visible;
 
               child: Box {
                 height-request: 50;
@@ -240,71 +223,30 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("Drives");
+                  label: _("Version");
                 }
 
-                $LabelCell drives {
+                Label kernel_version {
                   styles [
                     "dim-label",
                   ]
 
+                  ellipsize: middle;
                   hexpand: true;
+                  halign: end;
                 }
               };
             }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-              Label {
-                hexpand: true;
-                halign: start;
-                label: _("Network");
-              }
-
-              $LabelCell network {
-                styles [
-                  "dim-label",
-                ]
-
-                hexpand: true;
-              }
-            };
           }
 
-          Adw.PreferencesRow {
-            activatable: false;
+          Adw.PreferencesGroup {
+            hexpand: true;
 
-            child: Box {
-              height-request: 50;
-              margin-start: 12;
-              margin-end: 12;
-              spacing: 12;
-
-              Label {
-                hexpand: true;
-                halign: start;
-                label: _("GPU");
-              }
-
-                $LabelCell gpu {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  hexpand: true;
-                }
-              };
-            }
+            title: _("Desktop Environment Information");
 
             Adw.PreferencesRow {
               activatable: false;
+              visible: bind desktop_environment.visible;
 
               child: Box {
                 height-request: 50;
@@ -315,15 +257,101 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("GPU Memory");
+                  label: _("Name");
                 }
 
-                $LabelCell gpu_memory {
+                Label desktop_environment {
                   styles [
                     "dim-label",
                   ]
 
+                  ellipsize: middle;
                   hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind desktop_environment_version.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Version");
+                }
+
+                Label desktop_environment_version {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind windowing_system.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Windowing System");
+                }
+
+                Label windowing_system {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+              visible: bind virtual_terminal.visible;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+                  label: _("Virtual Terminal");
+                }
+
+                Label virtual_terminal {
+                  styles [
+                    "dim-label",
+                  ]
+
+                  ellipsize: middle;
+                  hexpand: true;
+                  halign: end;
                 }
               };
             }
@@ -333,4 +361,3 @@ template $AppsPageDetailsDialog: Adw.Dialog {
     }
   }
 }
-

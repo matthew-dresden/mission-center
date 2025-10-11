@@ -329,16 +329,24 @@ mod imp {
                 });
             }
 
-            if let Some(serial) = &disk.serial_number {
-                this.infobar_content.serial_number().set_text(serial);
-                this.infobar_content.set_serial_number_visible(true);
+            if let Some(serial) = disk.serial_number.as_ref().map(|s| s.trim()) {
+                if serial.trim().is_empty() {
+                    this.infobar_content.set_serial_number_visible(false);
+                } else {
+                    this.infobar_content.serial_number().set_text(serial);
+                    this.infobar_content.set_serial_number_visible(true);
+                }
             } else {
                 this.infobar_content.set_serial_number_visible(false);
             }
 
-            if let Some(wwn) = &disk.world_wide_name {
-                this.infobar_content.wwn().set_text(wwn);
-                this.infobar_content.set_wwn_visible(true);
+            if let Some(wwn) = disk.world_wide_name.as_ref().map(|s| s.trim()) {
+                if wwn.is_empty() {
+                    this.infobar_content.set_wwn_visible(false);
+                } else {
+                    this.infobar_content.wwn().set_text(wwn);
+                    this.infobar_content.set_wwn_visible(true);
+                }
             } else {
                 this.infobar_content.set_wwn_visible(false);
             }
@@ -553,7 +561,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePageDisk(ObjectSubclass<imp::PerformancePageDisk>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PageExt for PerformancePageDisk {

@@ -38,7 +38,6 @@
         <file preprocess="xml-stripblanks">line-solid-net.svg</file>
 
         <file preprocess="xml-stripblanks">ui/apps_page/page.ui</file>
-        <file preprocess="xml-stripblanks">ui/apps_page/details_dialog.ui</file>
 
         <file preprocess="xml-stripblanks">ui/performance_page/cpu.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/cpu_details.ui</file>
@@ -67,15 +66,16 @@
         <file preprocess="xml-stripblanks">ui/preferences/window.ui</file>
 
         <file preprocess="xml-stripblanks">ui/services_page/page.ui</file>
-        
+
         <file preprocess="xml-stripblanks">ui/process_column_view/column_view_frame.ui</file>
-        <file preprocess="xml-stripblanks">ui/process_column_view/service_action_bar.ui</file>
-        <file preprocess="xml-stripblanks">ui/process_column_view/service_details_dialog.ui</file>
         <file preprocess="xml-stripblanks">ui/process_column_view/process_action_bar.ui</file>
         <file preprocess="xml-stripblanks">ui/process_column_view/process_details_dialog.ui</file>
+        <file preprocess="xml-stripblanks">ui/process_column_view/service_action_bar.ui</file>
+        <file preprocess="xml-stripblanks">ui/process_column_view/service_details_dialog.ui</file>
 
         <file preprocess="xml-stripblanks">ui/widgets/theme_selector.ui</file>
 
+        <file preprocess="xml-stripblanks">ui/about_system_dialog.ui</file>
         <file preprocess="xml-stripblanks">ui/keyboard_shortcuts.ui</file>
         <file preprocess="xml-stripblanks">ui/window.ui</file>
     </gresource>

@@ -211,7 +211,7 @@ pub fn adjust_view_header_alignment(column_view_titlebar: Option<gtk::Widget>) {
         }
 
         container.set_hexpand(true);
-        container.set_width_request(70);
+        container.set_width_request(75);
         label.set_halign(gtk::Align::End);
         label.set_justify(gtk::Justification::Right);
 

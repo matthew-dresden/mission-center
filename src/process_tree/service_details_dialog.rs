@@ -18,13 +18,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::{Cell, OnceCell};
+use std::cell::{Cell, OnceCell, RefCell};
 use std::num::NonZeroU32;
 
+use adw::gio;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, g_warning, ParamSpec, Properties, SignalHandlerId, Value};
 
+use crate::process_tree::column_view_frame::ColumnViewFrame;
 use crate::process_tree::row_model::RowModel;
+use crate::services_page::actions;
 use crate::{app, i18n::*};
 
 mod imp {
@@ -60,6 +63,8 @@ mod imp {
         label_user: TemplateChild<gtk::Label>,
         #[template_child]
         label_group: TemplateChild<gtk::Label>,
+        #[template_child]
+        file_location: TemplateChild<gtk::Label>,
 
         #[template_child]
         logs_overlay: TemplateChild<gtk::Overlay>,
@@ -72,6 +77,8 @@ mod imp {
 
         #[property(get, set)]
         pub enabled: Cell<bool>,
+        #[property(get, construct_only)]
+        pub column_view: RefCell<ColumnViewFrame>,
 
         copy_logs_button: gtk::Button,
 
@@ -96,6 +103,7 @@ mod imp {
                 label_user: TemplateChild::default(),
                 label_group: TemplateChild::default(),
 
+                file_location: TemplateChild::default(),
                 logs_overlay: TemplateChild::default(),
                 logs_expander: TemplateChild::default(),
                 logs_buffer: TemplateChild::default(),
@@ -103,6 +111,7 @@ mod imp {
                 list_item: OnceCell::new(),
 
                 enabled: Cell::new(false),
+                column_view: RefCell::new(glib::Object::builder().build()),
 
                 copy_logs_button: gtk::Button::new(),
 
@@ -214,6 +223,16 @@ mod imp {
             });
 
             self.logs_overlay.add_overlay(&self.copy_logs_button);
+
+            let column_view = self.column_view.borrow();
+            let column_view = &*column_view;
+
+            let service_actions = gio::SimpleActionGroup::new();
+            service_actions.add_action(&actions::action_start(column_view));
+            service_actions.add_action(&actions::action_stop(column_view));
+            service_actions.add_action(&actions::action_restart(column_view));
+            self.obj()
+                .insert_action_group("service", Some(&service_actions));
         }
     }
 
@@ -265,6 +284,15 @@ mod imp {
                 self.label_group.set_text(&list_item.group());
             } else {
                 self.label_group.set_text(&i18n("N/A"));
+            }
+
+            let location = list_item.file_path();
+            if !location.is_empty() {
+                group_empty = false;
+                self.file_location.set_text(&list_item.file_path());
+                self.file_location.set_visible(true);
+            } else {
+                self.file_location.set_visible(false);
             }
 
             if group_empty {
@@ -345,11 +373,12 @@ glib::wrapper! {
 }
 
 impl ServiceDetailsDialog {
-    pub fn new(list_item: RowModel) -> Self {
+    pub fn new(column_view: &ColumnViewFrame) -> Self {
         let this: Self = glib::Object::builder()
             .property("follows-content-size", true)
+            .property("column-view", Some(column_view))
             .build();
-        let _ = this.imp().list_item.set(list_item);
+        let _ = this.imp().list_item.set(column_view.selected_item());
 
         this
     }

@@ -75,7 +75,9 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct SmartSataDialogRow(ObjectSubclass<imp::SmartSataDialogRow>);
+    pub struct SmartSataDialogRow(ObjectSubclass<imp::SmartSataDialogRow>)
+        @extends gtk::Widget,
+        @implements gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl SmartSataDialogRow {

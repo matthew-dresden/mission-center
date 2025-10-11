@@ -20,11 +20,7 @@
 
 use arrayvec::ArrayString;
 use gtk::glib::{g_critical, g_debug};
-use std::num::NonZeroU32;
-use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
-use std::time::Duration;
-use std::{cell::RefCell, collections::HashMap, sync::Arc};
-
+use magpie_types::about::{about_response, About};
 use magpie_types::apps::apps_response;
 use magpie_types::apps::apps_response::AppList;
 pub use magpie_types::apps::App;
@@ -56,6 +52,10 @@ use magpie_types::prost::Message;
 use magpie_types::services::services_response;
 use magpie_types::services::services_response::ServiceList;
 pub use magpie_types::services::Service;
+use std::num::NonZeroU32;
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+use std::time::Duration;
+use std::{cell::RefCell, collections::HashMap, sync::Arc};
 
 use crate::magpie_client::flatpak_app_path;
 use crate::{flatpak_data_dir, is_flatpak, show_error_dialog_and_exit};
@@ -65,6 +65,7 @@ mod nng {
 }
 
 type ResponseBody = response::Body;
+type AboutResponse = about_response::Response;
 type AppsResponse = apps_response::Response;
 type CpuResponse = cpu_response::Response;
 type DisksResponse = disks_response::Response;
@@ -613,6 +614,21 @@ impl Client {
     pub fn set_scale_cpu_usage_to_core_count(&self, v: bool) {
         self.scale_cpu_usage_to_core_count
             .store(v, Ordering::Relaxed);
+    }
+
+    pub fn about(&self) -> About {
+        let mut socket = self.socket.borrow_mut();
+
+        let response = make_request(ipc::req_get_about(), &mut socket, self.socket_addr.as_ref())
+            .and_then(|response| response.body);
+
+        parse_response!(
+            response,
+            ResponseBody::About,
+            AboutResponse::AboutInfo,
+            AboutResponse::Error,
+            |about: About| about
+        )
     }
 
     pub fn cpu(&self) -> Cpu {

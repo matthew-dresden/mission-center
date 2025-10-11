@@ -34,89 +34,195 @@ template $ServicesPage : Box {
 
     child: Box {
       orientation: vertical;
+      spacing: 10;
 
       Box top_legend {
-        margin-bottom: 20;
+        hexpand: true;
 
         Box {
+          orientation: vertical;
+          spacing: 5;
+          hexpand: true;
+          halign: start;
           valign: center;
-          spacing: 5;
 
-          Adw.ToggleGroup service_legend {
-            orientation: horizontal;
-            homogeneous: true;
+          Label h1 {
+            styles [
+              "title-1",
+            ]
 
-            Adw.Toggle total_service_box {
-              enabled: true;
-            }
+            ellipsize: end;
 
-            Adw.Toggle running_service_box {
-              icon-name: "service-running";
-            }
-
-            Adw.Toggle failed_service_box {
-              icon-name: "service-failed";
-            }
-
-            Adw.Toggle stopped_service_box {
-              icon-name: "service-stopped";
-            }
-
-            Adw.Toggle disabled_service_box {
-              icon-name: "service-disabled";
-            }
+            halign: start;
           }
 
-          Box {
-            hexpand: true;
+          Label h2 {
+            styles [
+              "faint-text",
+            ]
+
+            ellipsize: end;
+
+            halign: start;
+            visible: bind template.collapsed inverted;
           }
         }
 
         Box {
-          margin-top: 5;
-          margin-bottom: 5;
-        }
+          orientation: vertical;
+          spacing: 12;
+          halign: end;
 
-        Box {
           Box {
-            hexpand: true;
+            halign: end;
+            spacing: 5;
+
+            Button {
+              margin-end: 5;
+
+              action-name: "services-page.collapse-all";
+              tooltip-text: _("Collapse all expanded services");
+
+              child: Box {
+                spacing: 5;
+
+                Image {
+                  icon-name: "list-collapse-symbolic";
+                }
+
+                Label {
+                  label: _("Collapse All");
+                  visible: bind template.collapsed inverted;
+                }
+              };
+            }
+
+            $ProcessActionBar process_action_bar {
+              visible: false;
+            }
+
+            $ServiceActionBar service_action_bar {
+              visible: true;
+            }
           }
 
-          valign: end;
-          spacing: 5;
+          Box {
+            spacing: 5;
+            halign: end;
 
-          Button {
-            margin-end: 5;
+            Box {
+              styles [
+                "linked"
+              ]
 
-            action-name: "apps-page.collapse-all";
-            tooltip-text: _("Collapse all apps and processes");
+              halign: end;
+              homogeneous: true;
 
-            child: Box {
-              spacing: 5;
+              ToggleButton toggle_running {
+                name: "toggle_running";
+                tooltip-text: _("Filter running processes");
 
-              halign: center;
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
 
-              Image {
-                icon-name: "list-collapse-symbolic";
+                  Image {
+                    icon-name: "service-running";
+                  }
+
+                  Label {
+                    label: "Running";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
               }
 
-              Label collapse_label {
-                label: _("Collapse All");
+              ToggleButton toggle_failed {
+                name: "toggle_failed";
+                tooltip-text: _("Filter failed processes");
+
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
+
+                  Image {
+                    icon-name: "service-failed";
+                  }
+
+                  Label {
+                    label: "Failed";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
               }
-            };
-          }
 
-          $ProcessActionBar process_action_bar {
-            visible: false;
-          }
+              ToggleButton toggle_stopped {
+                name: "toggle_stopped";
+                tooltip-text: _("Filter stopped processes");
 
-          $ServiceActionBar service_action_bar {
-            visible: true;
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
+
+                  Image {
+                    icon-name: "service-stopped";
+                  }
+
+                  Label {
+                    label: "Stopped";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
+              }
+
+              ToggleButton toggle_disabled {
+                name: "toggle_disabled";
+                tooltip-text: _("Filter disabled processes");
+
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
+
+                  Image {
+                    icon-name: "service-disabled";
+                  }
+
+                  Label {
+                    label: "Disabled";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
+              }
+            }
+
+            Button {
+              action-name: "services-page.remove-filters";
+              tooltip-text: _("Remove all filters");
+
+              child: Box {
+                spacing: 5;
+
+                Image {
+                  icon-name: "edit-clear-all-symbolic";
+                }
+
+                Label {
+                  label: _("Remove Filters");
+                  visible: bind template.collapsed inverted;
+                }
+              };
+            }
           }
         }
       }
 
-      $ColumnViewFrame column_view {}
+      $ColumnViewFrame column_view {
+          margin-top: 10;
+      }
     };
   }
 }

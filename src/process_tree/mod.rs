@@ -6,5 +6,4 @@ pub mod process_details_dialog;
 pub mod row_model;
 pub mod service_action_bar;
 pub mod service_details_dialog;
-pub(crate) mod settings;
-mod util;
+pub mod settings;

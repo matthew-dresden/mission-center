@@ -36,7 +36,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
 
         let name_cell = NameCell::new();
 
-        let list_cell = ListCell::new("apps-page.show-context-menu");
+        let list_cell = ListCell::new("column-view.show-context-menu");
         list_cell.set_is_tree_view(true);
         list_cell.set_child(Some(&name_cell));
 

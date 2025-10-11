@@ -30,9 +30,11 @@ use gtk::{gio, glib, subclass::prelude::*};
 use crate::i18n::{i18n, ni18n_f};
 use crate::magpie_client::App;
 use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
-use crate::process_tree::models::{update_apps, update_processes};
+use crate::process_tree::models::{update_apps, update_children};
 use crate::process_tree::process_action_bar::ProcessActionBar;
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
+
+pub mod actions;
 
 mod imp {
     use super::*;
@@ -62,8 +64,6 @@ mod imp {
 
         pub app_icons: RefCell<HashMap<u32, String>>,
         pub selected_item: RefCell<RowModel>,
-
-        pub action_collapse_all: gio::SimpleAction,
     }
 
     impl Default for AppsPage {
@@ -93,8 +93,6 @@ mod imp {
 
                 app_icons: RefCell::new(HashMap::new()),
                 selected_item: RefCell::new(RowModelBuilder::new().build()),
-
-                action_collapse_all: gio::SimpleAction::new("collapse-all", None),
             }
         }
     }
@@ -138,10 +136,10 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            let actions = gio::SimpleActionGroup::new();
-            actions.add_action(&self.action_collapse_all);
+            let page_actions = gio::SimpleActionGroup::new();
 
-            self.action_collapse_all.connect_activate({
+            let action_collapse_all = gio::SimpleAction::new("collapse-all", None);
+            action_collapse_all.connect_activate({
                 let this = self.obj().downgrade();
                 move |_action, _| {
                     let Some(this) = this.upgrade() else {
@@ -192,7 +190,22 @@ mod imp {
                 }
             });
 
-            self.obj().insert_action_group("apps-page", Some(&actions));
+            page_actions.add_action(&action_collapse_all);
+            self.obj()
+                .insert_action_group("apps-page", Some(&page_actions));
+
+            let process_actions = gio::SimpleActionGroup::new();
+            process_actions.add_action(&actions::action_stop(&self.column_view));
+            process_actions.add_action(&actions::action_force_stop(&self.column_view));
+            process_actions.add_action(&actions::action_suspend(&self.column_view));
+            process_actions.add_action(&actions::action_continue(&self.column_view));
+            process_actions.add_action(&actions::action_hangup(&self.column_view));
+            process_actions.add_action(&actions::action_interrupt(&self.column_view));
+            process_actions.add_action(&actions::action_user_one(&self.column_view));
+            process_actions.add_action(&actions::action_user_two(&self.column_view));
+            process_actions.add_action(&actions::action_details(&self.column_view));
+            self.obj()
+                .insert_action_group("process", Some(&process_actions));
         }
     }
 
@@ -208,7 +221,7 @@ mod imp {
 glib::wrapper! {
     pub struct AppsPage(ObjectSubclass<imp::AppsPage>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl AppsPage {
@@ -221,7 +234,7 @@ impl AppsPage {
             &imp.processes_section,
             Some(&imp.process_action_bar),
             None,
-            None,
+            None::<[_; 0]>,
         );
 
         self.update_common(readings);
@@ -277,17 +290,17 @@ impl AppsPage {
         let mut process_model_map = HashMap::new();
         let root_process = readings.running_processes.keys().min().unwrap_or(&1);
         if let Some(init) = readings.running_processes.get(root_process) {
-            for child in &init.children {
-                update_processes(
-                    &readings.running_processes,
-                    child,
-                    &imp.processes_section.children(),
-                    &imp.app_icons.borrow(),
-                    "application-x-executable-symbolic",
-                    imp.column_view.imp().use_merged_stats.get(),
-                    &mut process_model_map,
-                );
-            }
+            update_children(
+                &readings.running_processes,
+                init.children.clone().drain(..).collect(),
+                &imp.processes_section.children(),
+                &imp.app_icons.borrow(),
+                "application-x-executable-symbolic",
+                imp.column_view.imp().use_merged_stats.get(),
+                SectionType::SecondSection,
+                None,
+                &mut process_model_map,
+            );
         }
         imp.root_process.set(*root_process);
 

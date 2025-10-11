@@ -64,6 +64,7 @@ Grid root {
       ]
 
       halign: start;
+      selectable: true;
     }
   }
 
@@ -93,6 +94,7 @@ Grid root {
       ]
 
       halign: start;
+      selectable: true;
     }
   }
 
@@ -134,7 +136,8 @@ Grid root {
         "title-4",
       ]
 
-    halign: start;
+      halign: start;
+      selectable: true;
     }
   }
 
@@ -165,6 +168,7 @@ Grid root {
       ]
 
       halign: start;
+      selectable: true;
     }
   }
 
@@ -196,6 +200,7 @@ Grid root {
       ]
 
       halign: start;
+      selectable: true;
     }
   }
 
@@ -227,6 +232,7 @@ Grid root {
       ]
 
       halign: start;
+      selectable: true;
     }
   }
 
@@ -237,6 +243,7 @@ Grid root {
     }
 
     margin-top: 20;
+    margin-end: 5;
 
     styles [
       "caption",
@@ -244,6 +251,7 @@ Grid root {
 
     halign: start;
     label: _("Speed:");
+    ellipsize: end;
   }
 
   Label {
@@ -256,8 +264,11 @@ Grid root {
       "caption",
     ]
 
+    margin-end: 5;
+
     halign: start;
     label: _("Slots used:");
+    ellipsize: end;
   }
 
   Label {
@@ -270,8 +281,11 @@ Grid root {
       "caption",
     ]
 
+    margin-end: 5;
+
     halign: start;
     label: _("Form factor:");
+    ellipsize: end;
   }
 
   Label {
@@ -284,8 +298,11 @@ Grid root {
       "caption",
     ]
 
+    margin-end: 5;
+
     halign: start;
     label: _("Type:");
+    ellipsize: end;
   }
 
   Label speed {
@@ -300,6 +317,7 @@ Grid root {
 
     halign: start;
     margin-top: 20;
+    selectable: true;
   }
 
   Label slots_used {
@@ -313,6 +331,7 @@ Grid root {
     ]
 
     halign: start;
+    selectable: true;
   }
 
   Label form_factor {
@@ -326,6 +345,7 @@ Grid root {
     ]
 
     halign: start;
+    selectable: true;
   }
 
   Label ram_type {
@@ -339,5 +359,6 @@ Grid root {
     ]
 
     halign: start;
+    selectable: true;
   }
 }
