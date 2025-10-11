@@ -357,6 +357,7 @@ mod imp {
             if prev_width != width || prev_height != height {
                 this.emit_by_name::<()>("resize", &[]);
                 self.prev_size.set((width, height));
+                self.obj().force_redraw();
             }
 
             self.render(snapshot, width as f32, height as f32, surface.scale());
