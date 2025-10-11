@@ -275,7 +275,8 @@ mod imp {
                 }
                 PointsUpdateSource::UpdateInterval => {
                     let raw_interval = self.update_interval.value();
-                    let new_interval = ((raw_interval / INTERVAL_STEP).round() as u64).clamp(MIN_INTERVAL_TICKS, MAX_INTERVAL_TICKS);
+                    let new_interval = ((raw_interval / INTERVAL_STEP).round() as u64)
+                        .clamp(MIN_INTERVAL_TICKS, MAX_INTERVAL_TICKS);
 
                     if settings
                         .set_uint64("app-update-interval-u64", new_interval)
