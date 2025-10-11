@@ -218,7 +218,7 @@ mod imp {
         }
 
         pub fn configure_update_speed(&self, source: PointsUpdateSource) {
-            let mut guard = match self.interval_updating.try_lock() {
+            let _lock = match self.interval_updating.try_lock() {
                 Ok(g) => g,
                 Err(_) => {
                     return;
@@ -275,7 +275,7 @@ mod imp {
                 }
                 PointsUpdateSource::UpdateInterval => {
                     let raw_interval = self.update_interval.value();
-                    let new_interval = (raw_interval / INTERVAL_STEP).round() as u64;
+                    let new_interval = ((raw_interval / INTERVAL_STEP).round() as u64).clamp(MIN_INTERVAL_TICKS, MAX_INTERVAL_TICKS);
 
                     if settings
                         .set_uint64("app-update-interval-u64", new_interval)
@@ -290,7 +290,6 @@ mod imp {
                     let points = (self.data_points.value() as i32).clamp(MIN_POINTS, MAX_POINTS);
 
                     let seconds = points as f64 * raw_interval;
-                    let max_seconds = MAX_POINTS as f64 * raw_interval;
 
                     self.range_seconds
                         .adjustment()
@@ -329,7 +328,7 @@ mod imp {
                 | PointsUpdateSource::SecondsWrapped => {
                     let interval = self.update_interval.value();
 
-                    let mut minutes_value = self.range_minutes.value();
+                    let minutes_value = self.range_minutes.value();
                     let seconds_value = self.range_seconds.value();
 
                     let seconds = minutes_value * 60. + seconds_value;
