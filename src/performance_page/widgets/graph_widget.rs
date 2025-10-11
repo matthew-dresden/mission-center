@@ -46,6 +46,8 @@ mod imp {
     use super::*;
     use crate::performance_page::widgets::graph_widget_utils::DatasetGroup;
     use gtk::glib::g_warning;
+    use gtk::gsk::Transform;
+    use gtk::TextDirection;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::GraphWidget)]
@@ -269,6 +271,11 @@ mod imp {
             };
 
             snapshot.push_rounded_clip(&bounds);
+
+            if self.obj().direction() == TextDirection::Rtl {
+                snapshot.scale(-1., 1.);
+                snapshot.translate(&graphene::Point::new(-width, 0.));
+            }
 
             if self.do_animation.get() {
                 snapshot.save();
