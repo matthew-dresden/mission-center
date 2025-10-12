@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-10-02 13:02+0000\n"
+"PO-Revision-Date: 2025-10-05 20:02+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/cs/>\n"
@@ -62,8 +62,8 @@ msgid ""
 "See system process, thread, and handle count, uptime, clock speed (base and "
 "current), cache sizes"
 msgstr ""
-"Zobrazte si počty systémových procesů, vláken a popisovačů, dobu od "
-"spuštění, takt (základní i momentální) a velikosti mezipamětí"
+"Zobrazte si počty systémových procesů, vláken a popisovačů, dobu od zapnutí, "
+"takt (základní i momentální) a velikosti mezipamětí"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:23
 msgid "Monitor RAM and Swap usage"
@@ -202,11 +202,11 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:95
 msgid "Whether or not to use bits (default) or Bytes for network speed"
-msgstr "Zda pro rychlost sítě použít bity (výchozí) či bajty"
+msgstr "Zda pro rychlost sítě používat bity (výchozí) či bajty"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:100
 msgid "Whether or not to use base-10 (default) or base-2 for network speed"
-msgstr "Zda pro rychlost sítě použít desítkové (výchozí) nebo dvojkové řády"
+msgstr "Zda pro rychlost sítě používat desítkové (výchozí) nebo dvojkové řády"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:105
 msgid ""
@@ -221,7 +221,7 @@ msgstr ""
 msgid "Parent and child process stats are shown individually or merged upwards"
 msgstr ""
 "Statistiky nadřazených a podřízených procesů jsou zobrazeny samostatně či "
-"spojeny nahoru"
+"sloučeny nahoru"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:115
 msgid "Column sorting is persisted across app restarts"
@@ -236,7 +236,7 @@ msgid ""
 "Show CPU usage for Apps and Processes scaled to the number of available cores"
 msgstr ""
 "Zobrazit využití procesoru u aplikací a procesů v měřítku podle počtu "
-"dostupných jader"
+"přítomných jader"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:130
 msgid "Show a separator between each column in the Apps view"
@@ -268,7 +268,7 @@ msgstr "Pořadí sloupců v zobrazení na stránce „Služby“"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
-msgstr "Který graf se zobrazí na stránce Výkon procesoru"
+msgstr "Který graf bude zobrazován na stránce „Výkon procesoru“"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:171
 msgid "Show kernel times in the CPU graphs"
@@ -276,7 +276,7 @@ msgstr "V grafech procesoru zobrazovat časy jádra systému"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:176
 msgid "Which page is shown on application startup, in the performance tab"
-msgstr "Která stránka se zobrazí po spuštění aplikace, na záložce výkon"
+msgstr "Která stránka bude zobrazována po spuštění aplikace, na záložce výkon"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:182
 msgid "Should performance graphs be smooth or jagged"
@@ -322,7 +322,7 @@ msgstr "Zobrazit prvek týkající se skladby využití paměti"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:227
 msgid "Show the swap graph"
-msgstr "Zobrazit graf odkládacího prostoru"
+msgstr "Zobrazovat graf odkládacího prostoru"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
 msgid "Show the gpu encode-decode graph"
@@ -330,11 +330,11 @@ msgstr "Zobrazovat graf kódování a dekódování na grafice"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
-msgstr "Pořadí položek v postranním panelu aplikace"
+msgstr "Řazení položek v postranním panelu aplikace"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:242
 msgid "Graphs that should be hidden in the application sidebar"
-msgstr "Grafy, které nezobrazovat v postranním panelu aplikace"
+msgstr "Grafy, které v postranním panelu aplikace schovat"
 
 #: resources/ui/apps_page/details_dialog.blp:76
 #: resources/ui/process_column_view/column_view_frame.blp:48
@@ -584,7 +584,7 @@ msgstr "Z_kopírovat"
 
 #: resources/ui/performance_page/disk.blp:66
 msgid "Show SMART Data"
-msgstr "Zobrazit data ze SMART"
+msgstr "Zobrazit data ze SMART diagnostiky"
 
 #: resources/ui/performance_page/disk.blp:77
 msgid "Eject Disk"
@@ -666,7 +666,7 @@ msgstr "V mezipaměti"
 
 #: resources/ui/performance_page/memory_details.blp:190
 msgid "Swap used"
-msgstr "Použitý odkládací prostor"
+msgstr "Použitý odkl. prostor"
 
 #: resources/ui/performance_page/memory_details.blp:221
 msgid "Swap available"
@@ -727,7 +727,7 @@ msgstr "Síla signálu:"
 
 #: resources/ui/performance_page/network_details.blp:243
 msgid "Maximum Bitrate:"
-msgstr "Maximální datový tok:"
+msgstr "Max. datový tok:"
 
 #: resources/ui/performance_page/network_details.blp:258
 msgid "Frequency:"
@@ -747,7 +747,7 @@ msgstr "IPv6 adresa:"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
-msgstr "Data ze SMART"
+msgstr "Data ze SMART diagnostiky"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:48
 msgid "Last Updated"
@@ -755,7 +755,7 @@ msgstr "Naposledy aktualizováno"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:72
 msgid "Powered On"
-msgstr "Zapnuto"
+msgstr "Celková doba chodu"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:96
 msgid "Drive Health"
@@ -763,7 +763,7 @@ msgstr "Stav jednotky"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
-msgstr "Stav SMART testu"
+msgstr "Stav SMART diag. testu"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
@@ -853,7 +853,7 @@ msgstr "PCIe propustnost:"
 
 #: resources/ui/performance_page/gpu_details.blp:566
 msgid "Max PCI Express speed:"
-msgstr "Nejvyšší PCIe propustnost:"
+msgstr "Nej. PCIe propustnost:"
 
 #: resources/ui/performance_page/gpu_details.blp:582
 msgid "PCI bus address:"
@@ -861,7 +861,7 @@ msgstr "PCIe adresa:"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
 msgid "Failed To Get SMART Data"
-msgstr "Nepodařilo se získat data ze SMART"
+msgstr "Nepodařilo se získat data ze SMART diagnostiky"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:31
 msgid ""
@@ -1157,15 +1157,15 @@ msgstr "Používat bity jako jednotku měření využití jednotek úložiště"
 
 #: resources/ui/preferences/page.blp:190
 msgid "Drive Usage Base"
-msgstr "Řády jednotek pro využití úložných jednotek"
+msgstr "Řády jednotek pro využití jednotek úložiště"
 
 #: resources/ui/preferences/page.blp:197
 msgid "Use Base 10 for Disk Drives"
-msgstr "Používat desítkový řád pro úložné jednotky"
+msgstr "Používat desítkový řád pro jednotky úložiště"
 
 #: resources/ui/preferences/page.blp:202
 msgid "Use Base 2 for Disk Drives"
-msgstr "Používat dvojkový řád pro úložné jednotky"
+msgstr "Používat dvojkový řád pro jednotky úložiště"
 
 #: resources/ui/preferences/page.blp:209
 msgid "Network Usage Unit"
@@ -1479,7 +1479,7 @@ msgstr "Status"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:213
 msgid "Enabled"
-msgstr "Povoleno"
+msgstr "Trvale aktivováno"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:220
 #: src/process_tree/row_model.rs:266
@@ -1681,15 +1681,15 @@ msgstr "V pořádku"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
-msgstr "Procento využití"
+msgstr "Dosud spotřebovaná životnost"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:205
 msgid "Available Spare"
-msgstr "Náhradních k dispozici"
+msgstr "Náhradních bloků k dispozici"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
-msgstr "Práh počtu náhradních"
+msgstr "Spodní práh počtu náhradních"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:221
 msgid "Total Data Read"
@@ -1701,20 +1701,20 @@ msgstr "Celkem zapsáno dat"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:240
 msgid "Warning Temp Time"
-msgstr "Okamžik varování ohledně teploty"
+msgstr "Doba provozování na varovné teplotě"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:248
 msgid "Critical Temp Time"
-msgstr "Okamžik kritické teploty"
+msgstr "Doba provozování na kritické teplotě"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:256
 #: src/performance_page/widgets/smart_data_dialog.rs:313
 msgid "Control Busy Time"
-msgstr "Okamžik vytíženosti kontrolou"
+msgstr "Doba po kterou vytíženo kontrolami"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:264
 msgid "Warning Temperature"
-msgstr "Teplota varování"
+msgstr "Varovná teplota"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:266
 #: src/performance_page/widgets/smart_data_dialog.rs:274
@@ -1734,11 +1734,11 @@ msgstr "Teploty"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:281
 msgid "Unsafe Shutdowns"
-msgstr "Neočekávaná vypnutí"
+msgstr "Neočekávaných vypnutí"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:289
 msgid "Media Errors"
-msgstr "Chyby média"
+msgstr "Chyb média"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:297
 msgid "Number Error Log Entries"
@@ -1792,9 +1792,9 @@ msgid ""
 msgstr ""
 "Volná ({})\n"
 "\n"
-"Paměť která v tuto chvíli není využívána a která bude opětovně využita v "
-"okamžiku kdy operační systém, ovladače či aplikace budou potřebovat více "
-"paměti"
+"Paměť která v tuto chvíli není využívána a která bude opětovně jako první "
+"využita v okamžiku kdy operační systém, ovladače či aplikace budou "
+"potřebovat více paměti"
 
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
 #, rust-format
@@ -1804,7 +1804,7 @@ msgstr "{} sektorů"
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
 msgid "Unsupported"
-msgstr "Nepodporovaná"
+msgstr "Nepodporováno"
 
 #: src/performance_page/cpu.rs:351 src/performance_page/disk.rs:232
 msgid "Yes"
@@ -1916,7 +1916,7 @@ msgstr "{} z {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
-msgstr "Získání dalších informací o paměti se nezdařilo"
+msgstr "Získávání dalších informací o paměti se nezdařilo"
 
 #: src/performance_page/mod.rs:1136
 #, rust-format
@@ -1953,7 +1953,7 @@ msgstr "Zastaveno"
 
 #: src/services_page/mod.rs:134
 msgid "Disabled"
-msgstr "Zakázáno"
+msgstr "Trvale deaktivováno"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
@@ -2073,7 +2073,7 @@ msgstr "{} a {}"
 
 #: src/main.rs:174
 msgid "Less than a minute"
-msgstr "Méně než minuta"
+msgstr "Méně než minutou"
 
 #: src/main.rs:404
 msgid "_Quit"
