@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-06-03 18:04+0000\n"
+"PO-Revision-Date: 2025-10-20 04:51+0000\n"
 "Last-Translator: therealmate <hellogaming91@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/hu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -267,21 +267,18 @@ msgid "The order of columns in the Apps page view"
 msgstr "Az alkalmazások oldalon az oszlopok sorrendje"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
 msgstr ""
-"Az oszlop azonosítója, amely szerint az alkalmazások oldal nézete rendezve "
+"Az oszlop azonosítója, amely szerint a Szolgáltatások oldal nézete rendezve "
 "van"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "Az Alkalmazások oldal nézetének rendezési iránya"
+msgstr "A Szolgáltatások oldal nézetének rendezési iránya"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "Az alkalmazások oldalon az oszlopok sorrendje"
+msgstr "A szolgáltatások oldalon az oszlopok sorrendje"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -927,11 +924,11 @@ msgstr "Rendszerlemez:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Sorozatszám:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
