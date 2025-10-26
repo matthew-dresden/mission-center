@@ -95,7 +95,6 @@ src/process_tree/mod.rs
 src/process_tree/models/mod.rs
 src/process_tree/models/processes.rs
 src/process_tree/process_details_dialog.rs
-src/process_tree/util.rs
 src/process_tree/column_view_frame.rs
 src/process_tree/process_action_bar.rs
 src/process_tree/row_model.rs
