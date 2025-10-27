@@ -102,7 +102,7 @@ fn update_service(
 
 pub fn update_services(
     process_map: &HashMap<u32, Process>,
-    services: &HashMap<String, Service>,
+    services: &HashMap<u64, Service>,
     list: &gio::ListStore,
     app_icons: &HashMap<u32, String>,
     icon: &str,
@@ -113,9 +113,8 @@ pub fn update_services(
     let mut does_exist = HashSet::new();
 
     list.iter::<RowModel>().flatten().for_each(|row_model| {
-        let g_string = row_model.id();
-        let sid = g_string.to_string();
-        if let Some(service) = services.get(&sid) {
+        let service_id = row_model.service_id();
+        if let Some(service) = services.get(&service_id) {
             update_service(
                 process_map,
                 &row_model,
@@ -125,19 +124,26 @@ pub fn update_services(
                 use_merged_stats,
             );
 
-            does_exist.insert(sid);
+            does_exist.insert(service_id);
         } else {
-            has_died.insert(sid);
+            has_died.insert(service_id);
         }
     });
 
     list.retain(|object| {
-        !has_died.contains(&object.downcast_ref::<RowModel>().unwrap().id().to_string())
+        let Some(row_model) = object.downcast_ref::<RowModel>() else {
+            g_critical!(
+                "MissionCenter::Services",
+                "Object in services list is not a RowModel, filtering it out!"
+            );
+            return false;
+        };
+        !has_died.contains(&row_model.service_id())
     });
 
     for (_, service) in services
         .iter()
-        .filter(|(_, serv)| !does_exist.contains(&serv.id))
+        .filter(|(service_id, _)| !does_exist.contains(*service_id))
     {
         let service_section_type = service_to_section_type(&service);
 
@@ -148,8 +154,8 @@ pub fn update_services(
         let row_model = RowModelBuilder::new()
             .content_type(ContentType::Service)
             .section_type(service_section_type)
-            .id(&service.id)
-            .name(&service.id)
+            .service_id(service.id)
+            .name(&service.name)
             .file_path(&service.file_path())
             .user(&service.user.clone().unwrap_or("".to_string()))
             .group(&service.group.clone().unwrap_or("".to_string()))

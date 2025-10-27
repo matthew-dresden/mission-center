@@ -459,7 +459,7 @@ impl ServicesPage {
         self.update_service_counts(&readings.services);
     }
 
-    fn update_service_counts(&self, services: &HashMap<String, Service>) {
+    fn update_service_counts(&self, services: &HashMap<u64, Service>) {
         let services = services.values().collect::<Vec<_>>();
 
         let total_services = services.len();

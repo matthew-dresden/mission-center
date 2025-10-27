@@ -38,6 +38,9 @@ mod imp {
         #[property(get, set)]
         pub pid: Cell<u32>,
 
+        #[property(get, set)]
+        pub service_id: Cell<u64>,
+
         #[property(get = Self::icon, set = Self::set_icon)]
         pub icon: Cell<glib::GString>,
         #[property(get = Self::name, set = Self::set_name)]
@@ -93,6 +96,8 @@ mod imp {
                 id: Cell::new(glib::GString::default()),
 
                 pid: Cell::new(0),
+
+                service_id: Cell::new(0),
 
                 icon: Cell::new(glib::GString::default()),
                 name: Cell::new(glib::GString::default()),
@@ -280,6 +285,8 @@ pub struct RowModelBuilder {
 
     pid: u32,
 
+    service_id: u64,
+
     icon: glib::GString,
     name: glib::GString,
     command_line: glib::GString,
@@ -315,6 +322,8 @@ impl RowModelBuilder {
 
             pid: 0,
 
+            service_id: 0,
+
             icon: "application-x-executable-symbolic".into(),
             name: glib::GString::default(),
             command_line: Default::default(),
@@ -349,6 +358,11 @@ impl RowModelBuilder {
 
     pub fn pid(mut self, pid: u32) -> Self {
         self.pid = pid;
+        self
+    }
+
+    pub fn service_id(mut self, service_id: u64) -> Self {
+        self.service_id = service_id;
         self
     }
 
@@ -460,6 +474,7 @@ impl RowModelBuilder {
 
             this.id.set(self.id);
             this.pid.set(self.pid);
+            this.service_id.set(self.service_id);
             this.icon.set(self.icon);
             this.name.set(self.name);
 

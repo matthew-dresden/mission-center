@@ -886,7 +886,7 @@ impl Client {
         )
     }
 
-    pub fn services(&self) -> HashMap<String, Service> {
+    pub fn services(&self) -> HashMap<u64, Service> {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(
@@ -905,13 +905,13 @@ impl Client {
                 service_list
                     .services
                     .drain(..)
-                    .map(|service| (service.id.clone(), service))
+                    .map(|service| (service.id, service))
                     .collect()
             }
         )
     }
 
-    pub fn service_logs(&self, service_id: String, pid: Option<NonZeroU32>) -> String {
+    pub fn service_logs(&self, service_id: u64, pid: Option<NonZeroU32>) -> String {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(
@@ -1082,7 +1082,7 @@ impl Client {
         )
     }
 
-    pub fn start_service(&self, service_id: String) {
+    pub fn start_service(&self, service_id: u64) {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(
@@ -1101,7 +1101,7 @@ impl Client {
         )
     }
 
-    pub fn stop_service(&self, service_id: String) {
+    pub fn stop_service(&self, service_id: u64) {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(
@@ -1120,7 +1120,7 @@ impl Client {
         )
     }
 
-    pub fn restart_service(&self, service_id: String) {
+    pub fn restart_service(&self, service_id: u64) {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(
@@ -1139,7 +1139,7 @@ impl Client {
         )
     }
 
-    pub fn enable_service(&self, service_id: String) {
+    pub fn enable_service(&self, service_id: u64) {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(
@@ -1158,7 +1158,7 @@ impl Client {
         )
     }
 
-    pub fn disable_service(&self, service_id: String) {
+    pub fn disable_service(&self, service_id: u64) {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(

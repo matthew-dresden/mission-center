@@ -71,9 +71,9 @@ macro_rules! new_action {
         action.connect_activate({
             let column_view = $column_view.downgrade();
             move |_action, _| {
-                make_magpie_request(&column_view, |magpie, service_name| {
+                make_magpie_request(&column_view, |magpie, service_id| {
                     paste::paste! {
-                       magpie.[<$name _service>](service_name.to_string())
+                       magpie.[<$name _service>](service_id)
                     }
                 });
             }
@@ -139,7 +139,7 @@ pub fn action_details(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction 
 
 fn make_magpie_request(
     column_view_frame: &WeakRef<ColumnViewFrame>,
-    request: fn(&MagpieClient, &str),
+    request: fn(&MagpieClient, u64),
 ) {
     let app = app!();
     let Some(column_view_frame) = column_view_frame.upgrade() else {
@@ -153,7 +153,7 @@ fn make_magpie_request(
     let selected_item = column_view_frame.selected_item();
     match app.sys_info() {
         Ok(sys_info) => {
-            request(&sys_info, &selected_item.name());
+            request(&sys_info, selected_item.service_id());
         }
         Err(e) => {
             g_critical!(
