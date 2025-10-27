@@ -93,12 +93,12 @@ enum Message {
     HangupProcesses(Vec<Pid>),
     ContinueProcesses(Vec<Pid>),
     SuspendProcesses(Vec<Pid>),
-    GetServiceLogs(String, Option<NonZeroU32>),
-    StartService(String),
-    StopService(String),
-    RestartService(String),
-    EnableService(String),
-    DisableService(String),
+    GetServiceLogs(u64, Option<NonZeroU32>),
+    StartService(u64),
+    StopService(u64),
+    RestartService(u64),
+    EnableService(u64),
+    DisableService(u64),
     EjectDisk(String),
     SmartData(String),
     AboutSystem,
@@ -126,7 +126,7 @@ pub struct Readings {
 
     pub network_stats_error: Option<NetworkStatsError>,
 
-    pub services: HashMap<String, Service>,
+    pub services: HashMap<u64, Service>,
 }
 
 impl Readings {
@@ -380,7 +380,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn service_logs(&self, service_id: String, pid: Option<NonZeroU32>) -> String {
+    pub fn service_logs(&self, service_id: u64, pid: Option<NonZeroU32>) -> String {
         let sid = service_id.clone();
         match self.sender.send(Message::GetServiceLogs(service_id, pid)) {
             Err(e) => {
@@ -415,7 +415,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn start_service(&self, service_id: String) {
+    pub fn start_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::StartService(service_id)) {
             Err(e) => {
@@ -428,7 +428,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn stop_service(&self, service_id: String) {
+    pub fn stop_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::StopService(service_id)) {
             Err(e) => {
@@ -441,7 +441,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn restart_service(&self, service_id: String) {
+    pub fn restart_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::RestartService(service_id)) {
             Err(e) => {
@@ -454,7 +454,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn enable_service(&self, service_id: String) {
+    pub fn enable_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::EnableService(service_id)) {
             Err(e) => {
@@ -467,7 +467,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn disable_service(&self, service_id: String) {
+    pub fn disable_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::DisableService(service_id)) {
             Err(e) => {

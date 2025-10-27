@@ -180,8 +180,8 @@ mod imp {
                         match app!().sys_info().and_then(move |sys_info| {
                             match this.switch_enabled.is_active() {
                                 // Emitted after the switch is toggled
-                                true => sys_info.enable_service(list_item.name().to_string()),
-                                false => sys_info.disable_service(list_item.name().to_string()),
+                                true => sys_info.enable_service(list_item.service_id()),
+                                false => sys_info.disable_service(list_item.service_id()),
                             }
 
                             Ok(())
@@ -302,7 +302,7 @@ mod imp {
             }
 
             let logs = app!().sys_info().and_then(|sys_info| {
-                Ok(sys_info.service_logs(list_item.name().to_string(), NonZeroU32::new(pid)))
+                Ok(sys_info.service_logs(list_item.service_id(), NonZeroU32::new(pid)))
             });
 
             match logs {
