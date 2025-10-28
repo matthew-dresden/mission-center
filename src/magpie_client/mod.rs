@@ -126,7 +126,8 @@ pub struct Readings {
 
     pub network_stats_error: Option<NetworkStatsError>,
 
-    pub services: HashMap<u64, Service>,
+    pub user_services: HashMap<u64, Service>,
+    pub system_services: HashMap<u64, Service>,
 }
 
 impl Readings {
@@ -144,7 +145,8 @@ impl Readings {
             running_processes: HashMap::new(),
             network_stats_error: None,
 
-            services: HashMap::new(),
+            user_services: HashMap::new(),
+            system_services: HashMap::new(),
         }
     }
 }
@@ -702,7 +704,8 @@ impl MagpieClient {
             mem_devices: magpie.memory_devices(),
             fans: magpie.fans_info(),
             network_connections: magpie.network_connections(),
-            services: magpie.services(),
+            user_services: magpie.user_services(),
+            system_services: magpie.system_services(),
         };
 
         readings
@@ -724,7 +727,8 @@ impl MagpieClient {
                 running_apps: std::mem::take(&mut readings.running_apps),
                 running_processes: std::mem::take(&mut readings.running_processes),
                 network_stats_error: std::mem::take(&mut readings.network_stats_error),
-                services: std::mem::take(&mut readings.services),
+                user_services: std::mem::take(&mut readings.user_services),
+                system_services: std::mem::take(&mut readings.system_services),
             };
 
             move || {
@@ -822,10 +826,18 @@ impl MagpieClient {
             );
 
             let timer = std::time::Instant::now();
-            readings.services = magpie.services();
+            readings.user_services = magpie.user_services();
             g_debug!(
                 "MissionCenter::Perf",
-                "Services load took: {:?}",
+                "User services load took: {:?}",
+                timer.elapsed()
+            );
+
+            let timer = std::time::Instant::now();
+            readings.system_services = magpie.system_services();
+            g_debug!(
+                "MissionCenter::Perf",
+                "System services load took: {:?}",
                 timer.elapsed()
             );
 
@@ -852,7 +864,8 @@ impl MagpieClient {
                     running_apps: std::mem::take(&mut readings.running_apps),
                     running_processes: std::mem::take(&mut readings.running_processes),
                     network_stats_error: std::mem::take(&mut readings.network_stats_error),
-                    services: std::mem::take(&mut readings.services),
+                    user_services: std::mem::take(&mut readings.user_services),
+                    system_services: std::mem::take(&mut readings.system_services),
                 };
 
                 move || {

@@ -26,8 +26,6 @@ use adw::prelude::*;
 use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
 
-use magpie_types::services::Service;
-
 use crate::i18n::{i18n, ni18n_f};
 use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
 use crate::process_tree::models;
@@ -82,7 +80,7 @@ pub(crate) mod imp {
     }
 
     impl ServicesPage {
-        pub(crate) fn update_headers(&self) {
+        pub fn update_headers(&self) {
             let mut fmt_buffer = arrayvec::ArrayString::<12>::new();
 
             let total = self.total_services.get();
@@ -420,13 +418,6 @@ impl ServicesPage {
             Some(toggle_group),
         );
 
-        imp.user_section.children().append(
-            &RowModelBuilder::new()
-                .content_type(ContentType::SectionHeader)
-                .name(&i18n("Not Implemented"))
-                .build(),
-        );
-
         self.update_common(readings);
 
         true
@@ -437,18 +428,7 @@ impl ServicesPage {
 
         models::update_services(
             &readings.running_processes,
-            &readings.services,
-            &imp.system_section.children(),
-            &HashMap::new(),
-            "application-x-executable-symbolic",
-            imp.column_view.imp().use_merged_stats.get(),
-            SectionType::SecondSection,
-        );
-
-        self.update_service_counts(&readings.services);
-        models::update_services(
-            &readings.running_processes,
-            &readings.services,
+            &readings.user_services,
             &imp.user_section.children(),
             &HashMap::new(),
             "application-x-executable-symbolic",
@@ -456,11 +436,18 @@ impl ServicesPage {
             SectionType::FirstSection,
         );
 
-        self.update_service_counts(&readings.services);
-    }
+        models::update_services(
+            &readings.running_processes,
+            &readings.system_services,
+            &imp.system_section.children(),
+            &HashMap::new(),
+            "application-x-executable-symbolic",
+            imp.column_view.imp().use_merged_stats.get(),
+            SectionType::SecondSection,
+        );
 
-    fn update_service_counts(&self, services: &HashMap<u64, Service>) {
-        let services = services.values().collect::<Vec<_>>();
+        let mut services = readings.user_services.values().collect::<Vec<_>>();
+        services.extend(readings.system_services.values());
 
         let total_services = services.len();
         let mut disabled_services = 0;
@@ -478,8 +465,6 @@ impl ServicesPage {
                 disabled_services += 1;
             }
         }
-
-        let imp = self.imp();
 
         imp.total_services.set(total_services as u32);
         imp.running_services.set(running_services);

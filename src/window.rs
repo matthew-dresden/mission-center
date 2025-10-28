@@ -1133,7 +1133,7 @@ impl MissionCenterWindow {
         result &= this.performance_page.update_readings(readings);
         result &= this.apps_page.update_readings(readings);
 
-        if !readings.services.is_empty() {
+        if !readings.system_services.is_empty() || !readings.user_services.is_empty() {
             this.services_stack_page.set_visible(true);
             result &= this.services_page.update_readings(readings);
         } else {
