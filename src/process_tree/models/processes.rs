@@ -31,15 +31,7 @@ use magpie_types::services::Service;
 
 use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
-fn service_to_section_type(service: &Service) -> SectionType {
-    if service.is_user_service {
-        SectionType::FirstSection
-    } else {
-        SectionType::SecondSection
-    }
-}
-
-fn get_service_icon(service: &Service) -> String {
+fn service_icon(service: &Service) -> String {
     if service.running {
         "service-running".into()
     } else {
@@ -62,7 +54,7 @@ fn update_service(
     use_merged_stats: bool,
 ) {
     set_service(&row_model, service);
-    row_model.set_icon(get_service_icon(&service));
+    row_model.set_icon(service_icon(&service));
 
     row_model.set_pid(service.pid.clone().unwrap_or_default());
     row_model.set_user(service.user.clone().unwrap_or_default());
@@ -131,29 +123,16 @@ pub fn update_services(
     });
 
     list.retain(|object| {
-        let Some(row_model) = object.downcast_ref::<RowModel>() else {
-            g_critical!(
-                "MissionCenter::Services",
-                "Object in services list is not a RowModel, filtering it out!"
-            );
-            return false;
-        };
-        !has_died.contains(&row_model.service_id())
+        !has_died.contains(&object.downcast_ref::<RowModel>().unwrap().service_id())
     });
 
     for (_, service) in services
         .iter()
         .filter(|(service_id, _)| !does_exist.contains(*service_id))
     {
-        let service_section_type = service_to_section_type(&service);
-
-        if service_section_type != section_type {
-            continue;
-        }
-
         let row_model = RowModelBuilder::new()
             .content_type(ContentType::Service)
-            .section_type(service_section_type)
+            .section_type(section_type)
             .service_id(service.id)
             .name(&service.name)
             .file_path(&service.file_path())

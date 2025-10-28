@@ -886,11 +886,36 @@ impl Client {
         )
     }
 
-    pub fn services(&self) -> HashMap<u64, Service> {
+    pub fn user_services(&self) -> HashMap<u64, Service> {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(
-            ipc::req_get_services(),
+            ipc::req_get_user_services(),
+            &mut socket,
+            self.socket_addr.as_ref(),
+        )
+        .and_then(|response| response.body);
+
+        parse_response!(
+            response,
+            ResponseBody::Services,
+            ServicesResponse::Services,
+            ServicesResponse::Error,
+            |mut service_list: ServiceList| {
+                service_list
+                    .services
+                    .drain(..)
+                    .map(|service| (service.id, service))
+                    .collect()
+            }
+        )
+    }
+
+    pub fn system_services(&self) -> HashMap<u64, Service> {
+        let mut socket = self.socket.borrow_mut();
+
+        let response = make_request(
+            ipc::req_get_system_services(),
             &mut socket,
             self.socket_addr.as_ref(),
         )
