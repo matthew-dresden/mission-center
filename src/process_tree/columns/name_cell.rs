@@ -243,8 +243,8 @@ mod imp {
 
                     let this = self.obj();
                     this.set_margin_start(0);
-                    this.set_margin_top(5);
-                    this.set_margin_bottom(5);
+                    this.set_margin_top(3);
+                    this.set_margin_bottom(3);
 
                     let this = this.downgrade();
                     glib::timeout_add_local_full(

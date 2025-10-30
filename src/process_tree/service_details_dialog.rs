@@ -159,12 +159,6 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            if let Some(_) = std::env::var_os("SNAP_CONTEXT") {
-                self.switch_enabled.set_sensitive(false);
-                self.box_buttons.set_visible(false);
-                self.restart.set_visible(false);
-            }
-
             self.switch_enabled.connect_active_notify({
                 let this = self.obj().downgrade();
                 move |_| {

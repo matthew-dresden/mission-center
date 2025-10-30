@@ -128,7 +128,7 @@ pub fn update_services(
 
     for (_, service) in services
         .iter()
-        .filter(|(service_id, _)| !does_exist.contains(*service_id))
+        .filter(|(_, serv)| !does_exist.contains(&serv.id))
     {
         let row_model = RowModelBuilder::new()
             .content_type(ContentType::Service)
