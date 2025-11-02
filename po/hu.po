@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-10-20 04:51+0000\n"
-"Last-Translator: therealmate <hellogaming91@gmail.com>\n"
+"PO-Revision-Date: 2025-11-02 10:47+0000\n"
+"Last-Translator: KAMI <kami911@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/hu/>\n"
 "Language: hu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -932,7 +932,7 @@ msgstr "Sorozatszám:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Fordulatszám"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1007,9 +1007,8 @@ msgid "Update Interval"
 msgstr "Frissítési időköz"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} másodperc{}"
+msgstr "másodpercenként"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1072,9 +1071,8 @@ msgid "Show Fan Information"
 msgstr "Ventilátor információk megjelenítése"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "Szolgáltatások oldal"
+msgstr "Alkalmazások és szolgáltatások oldal"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1085,11 +1083,8 @@ msgid "Remember Sorting"
 msgstr "Emlékezz a válogatásra"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
-msgstr ""
-"Az alkalmazás- és folyamatsorrend oszlop szerinti rendezése megmarad "
-"újraindítás után is"
+msgstr "Újraindítás után is megmaradó oszlop szerinti rendezés"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
@@ -1104,11 +1099,9 @@ msgid "Scale CPU Usage to Core Count"
 msgstr "A CPU-használat skálázza a magok számához"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
 msgstr ""
-"Alkalmazások és folyamatok CPU-használatának megjelenítése, a rendelkezésre "
-"álló magok számához igazítva"
+"CPU-használatának megjelenítése, a rendelkezésre álló magok számához igazítva"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1220,35 +1213,32 @@ msgstr ""
 "alapjaként"
 
 #: resources/ui/services_page/page.blp:84
-#, fuzzy
 msgid "Collapse all expanded services"
-msgstr "Összes alkalmazás és folyamat összecsukása"
+msgstr "Összes kinyitott folyamat összecsukása"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "{} futó folyamat"
+msgstr "Szűrés a futó folyamatokra"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Virtuális processzorok:"
+msgstr "Szűrés a hibás folyamatokra"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Szűrés a leállt folyamatokra"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Szűrés a letiltott folyamatokra"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "Minden szűrő eltávolítása"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "Szűrők eltávolítása"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
@@ -1274,24 +1264,21 @@ msgid "Global"
 msgstr "Globális"
 
 #: resources/ui/keyboard_shortcuts.blp:21
-#, fuzzy
 msgid "Open Menu"
-msgstr "Főmenü"
+msgstr "Menü megnyitása"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Ablak bezárása"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Beállítások"
+msgstr "Beállítások"
 
 #: resources/ui/keyboard_shortcuts.blp:41
-#, fuzzy
 msgid "Show Keyboard Shortcuts"
-msgstr "Billentyűparancsok"
+msgstr "Gyorsbillentyűk"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1415,43 +1402,43 @@ msgstr "Részletek"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "Jelzés küldése"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "Felfüggesztés (STOP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "Folytatás (CONT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "Leválasztás (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "Megszakítás (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "Befejezés (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "Azonnali leállítás (KILL)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "Felhasználó 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "Felhasználó 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "Alkalmazás azonosító"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1538,59 +1525,53 @@ msgstr "Csoport"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Fájl helye"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "Naplók"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Rendszerlemez:"
+msgstr "Rendszerinformáció"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Eszközinformációk másolása"
+msgstr "Operációs rendszer információ"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Vulkan verzió:"
+msgstr "Verzió"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "Csomagkezelő"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Csomagkezelő verzió"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Ventilátor információk megjelenítése"
+msgstr "Rendszermag információ"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Rendszermag kiadás"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Eszközinformációk másolása"
+msgstr "Asztali környezet információ"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Ablakkezelő"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Virtuális gép:"
+msgstr "Virtuális terminál"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1650,7 +1631,7 @@ msgstr "_Billentyűparancsok"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "A _rendszerről"
 
 #: resources/ui/window.blp:256
 msgid "_About Mission Center"
@@ -1951,7 +1932,7 @@ msgstr "Összes megosztott memória"
 #: src/performance_page/memory.rs:376
 #, rust-format
 msgid "{} of {}"
-msgstr "{} a {}-ból/-ből"
+msgstr "{}, összesen: {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
@@ -1968,11 +1949,11 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Szolgáltatás indítása"
-msgstr[1] "Szolgáltatás indítása"
+msgstr[0] "{} szolgáltatás összesen"
+msgstr[1] "{} szolgáltatás összesen"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1990,47 +1971,43 @@ msgid "Stopped"
 msgstr "Leállítva"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "Összes letiltása"
+msgstr "Letiltva"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "Nincs a szűrésnek megfelelő szolgáltatás"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "Nincs szűrő"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} futó szolgáltatás"
-msgstr[1] "{} futó szolgáltatás"
+msgstr[0] "{} {} szolgáltatás"
+msgstr[1] "{} {} szolgáltatás"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Szolgáltatások"
+msgstr "Felhasználói szolgáltatások"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Szolgáltatás leállítása"
+msgstr "Rendszer szolgáltatások"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
-msgstr ""
+msgstr "Nincs megvalósítva"
 
 #: src/process_tree/row_model.rs:263
 msgid "Section Header"
 msgstr "Szakaszfejléc"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Szolgáltatások"
+msgstr "Szolgáltatás"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"
