@@ -104,25 +104,26 @@ Source code is available at [GitLab](https://gitlab.com/mission-center-devs/miss
 
 **Requirements:**
 
-* Meson (version >= 0.63)
-* Rust (version >= 1.69)
-* CMake
-* Protobuf
-* Python3
-* Python GObject Introspection (required for Blueprint)
-* DRM development libraries
-* GBM development libraries
-* udev development libraries
-* GTK 4
-* libadwaita
+| Dependency                   | Comment                    | Minimum Version |
+|------------------------------|----------------------------|----------------:|
+| Meson                        |                            |           1.0.2 |
+| Rust                         |                            |            1.90 |
+| CMake                        |                            |            3.15 |
+| Python3                      |                            |            3.10 |
+| Python GObject Introspection | Used by Blueprint Compiler |             N/A |
+| DRM development libraries    |                            |             N/A |
+| GBM development libraries    |                            |             N/A |
+| udev development libraries   |                            |             N/A |
+| GTK 4                        |                            |            4.20 |
+| libadwaita                   |                            |             1.8 |
 
 **Build instructions**
 
-Note: A native build requires, at least, GTK 4.18 and libadwaita 1.7. That means ArchLinux >= 20250501, Fedora >= 42,
-Ubuntu >= 25.04.
+Note: A native build requires, at least, GTK 4.20 and libadwaita 1.8. That means ArchLinux >= 20251001, Fedora >= 43,
+Ubuntu >= 25.10.
 
 ```bash
-# On Ubuntu 25.04 all dependencies, except for the Rust toolchain, can be installed with:
+# On Ubuntu 25.10 all dependencies, except for the Rust toolchain, can be installed with:
 sudo apt install build-essential cmake curl desktop-file-utils gettext git libadwaita-1-dev libdbus-1-dev libdrm-dev libgbm-dev libudev-dev meson pkg-config protobuf-compiler python3-gi python3-pip
 
 BUILD_ROOT="$(pwd)/build-meson-debug"
@@ -163,7 +164,7 @@ missioncenter
 ### Building - AppImage
 
 ```bash
-# On Ubuntu 25.04 all dependencies, except for the Rust toolchain, can be installed with:
+# On Ubuntu 25.10 all dependencies, except for the Rust toolchain, can be installed with:
 sudo apt install build-essential cmake curl desktop-file-utils gettext git libadwaita-1-dev libdbus-1-dev libdrm-dev libgbm-dev libudev-dev meson pkg-config protobuf-compiler python3-gi python3-pip
 
 meson setup _build -Dbuildtype=debug # Alternatively pass `-Dbuildtype=release` for a release build
@@ -201,10 +202,10 @@ Install the required Flatpak runtimes and SDKs:
 
 ```bash
 flatpak install -y \
-    org.freedesktop.Platform//24.08 \
-    org.freedesktop.Sdk//24.08 \
-    org.gnome.Platform//48 \
-    org.gnome.Sdk//48
+    org.freedesktop.Platform//25.08 \
+    org.freedesktop.Sdk//25.08 \
+    org.gnome.Platform//49 \
+    org.gnome.Sdk//49
 ```
 
 Finally build a Flatpak package:
