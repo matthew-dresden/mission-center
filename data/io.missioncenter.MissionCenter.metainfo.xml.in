@@ -12,6 +12,7 @@
     <url type="bugtracker">https://gitlab.com/mission-center-devs/mission-center/-/issues</url>
     <url type="translate">https://hosted.weblate.org/projects/mission-center/mission-center</url>
     <url type="vcs-browser">https://gitlab.com/mission-center-devs/mission-center/</url>
+    <url type="donation">https://opencollective.com/mission-center/</url>
 
     <summary>Monitor system resource usage</summary>
     <description>
@@ -55,6 +56,16 @@
         <color type="primary" scheme_preference="light">#91b3c3</color>
         <color type="primary" scheme_preference="dark">#071f2b</color>
     </branding>
+
+    <recommends>
+        <control>keyboard</control>
+        <control>pointing</control>
+        <control>touch</control>
+    </recommends>
+
+    <requires>
+        <display_length compare="ge">360</display_length>
+    </requires>
 
     <screenshots>
         <screenshot type="default">

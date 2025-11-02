@@ -248,6 +248,18 @@ to [Weblate](https://hosted.weblate.org/engage/mission-center/).
   <img src="https://hosted.weblate.org/widgets/mission-center/-/mission-center/multi-auto.svg" alt="Translation status" />
 </a>
 
+### Monetary Contributions
+
+Instead of donating to Mission Center directly, consider supporting the projects that Mission Center depends on:
+
+* [GNOME](https://donate.gnome.org/)
+* [NNG](https://github.com/gdamore)
+* [NVTOP](https://github.com/Syllo/nvtop)
+* [Rust Foundation](https://rustfoundation.org/get-involved/)
+
+If you'd, still, like to support the development of Mission Center financially, please visit
+our [Open Collective page](https://opencollective.com/mission-center).
+
 Comments, suggestions, bug reports and contributions are welcome.
 
 ## License
