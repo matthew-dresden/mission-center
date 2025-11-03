@@ -1,4 +1,4 @@
-/* process_tree/columns/cpu.rs
+/* table_view/columns/cpu.rs
  *
  * Copyright 2025 Mission Center Developers
  *

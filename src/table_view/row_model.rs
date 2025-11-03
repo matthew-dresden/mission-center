@@ -1,4 +1,4 @@
-/* process_tree/row_model.rs
+/* table_view/row_model.rs
  *
  * Copyright 2025 Mission Center Developers
  *

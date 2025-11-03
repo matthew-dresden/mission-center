@@ -1,4 +1,4 @@
-/* process_tree/service_action_bar.rs
+/* table_view/process_action_bar.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -18,8 +18,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use crate::process_tree::column_view_frame::ColumnViewFrame;
-use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::table_view::row_model::ContentType;
+use crate::table_view::TableView;
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
 
@@ -27,35 +27,30 @@ mod imp {
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]
-    #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/process_column_view/service_action_bar.ui"
-    )]
-    pub struct ServiceActionBar {
+    #[template(resource = "/io/missioncenter/MissionCenter/ui/table_view/process_action_bar.ui")]
+    pub struct ProcessActionBar {
         #[template_child]
-        pub service_start_label: TemplateChild<gtk::Label>,
+        pub stop_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub service_stop_label: TemplateChild<gtk::Label>,
+        pub force_stop_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub service_restart_label: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub service_details_label: TemplateChild<gtk::Label>,
+        pub details_label: TemplateChild<gtk::Label>,
     }
 
-    impl Default for ServiceActionBar {
+    impl Default for ProcessActionBar {
         fn default() -> Self {
             Self {
-                service_start_label: Default::default(),
-                service_stop_label: Default::default(),
-                service_restart_label: Default::default(),
-                service_details_label: Default::default(),
+                stop_label: Default::default(),
+                force_stop_label: Default::default(),
+                details_label: Default::default(),
             }
         }
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ServiceActionBar {
-        const NAME: &'static str = "ServiceActionBar";
-        type Type = super::ServiceActionBar;
+    impl ObjectSubclass for ProcessActionBar {
+        const NAME: &'static str = "ProcessActionBar";
+        type Type = super::ProcessActionBar;
         type ParentType = gtk::Box;
 
         fn class_init(klass: &mut Self::Class) {
@@ -67,61 +62,47 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ServiceActionBar {
+    impl ObjectImpl for ProcessActionBar {
         fn constructed(&self) {
             self.parent_constructed();
         }
     }
 
-    impl WidgetImpl for ServiceActionBar {
+    impl WidgetImpl for ProcessActionBar {
         fn realize(&self) {
             self.parent_realize();
         }
     }
 
-    impl BoxImpl for ServiceActionBar {}
+    impl BoxImpl for ProcessActionBar {}
 
-    impl ServiceActionBar {
+    impl ProcessActionBar {
         pub fn collapse(&self) {
-            self.service_stop_label.set_visible(false);
-            self.service_start_label.set_visible(false);
-            self.service_restart_label.set_visible(false);
-            self.service_details_label.set_visible(false);
+            self.stop_label.set_visible(false);
+            self.force_stop_label.set_visible(false);
+            self.details_label.set_visible(false);
         }
 
         pub fn expand(&self) {
-            self.service_stop_label.set_visible(true);
-            self.service_start_label.set_visible(true);
-            self.service_restart_label.set_visible(true);
-            self.service_details_label.set_visible(true);
-        }
-
-        pub fn handle_changed_selection(&self, row_model: &RowModel) {
-            match row_model.content_type() {
-                ContentType::Service => {
-                    self.obj().set_visible(true);
-                }
-                ContentType::SectionHeader => {}
-                _ => {
-                    self.obj().set_visible(false);
-                }
-            }
+            self.stop_label.set_visible(true);
+            self.force_stop_label.set_visible(true);
+            self.details_label.set_visible(true);
         }
     }
 }
 
 glib::wrapper! {
-    pub struct ServiceActionBar(ObjectSubclass<imp::ServiceActionBar>)
+    pub struct ProcessActionBar(ObjectSubclass<imp::ProcessActionBar>)
         @extends gtk::Box, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
-impl ServiceActionBar {
-    pub fn set_column_view(&self, column_view: &ColumnViewFrame) {
-        let handle_selection_change = |this: &Self, column_view: ColumnViewFrame| {
+impl ProcessActionBar {
+    pub fn set_column_view(&self, column_view: &TableView) {
+        let handle_selection_change = |this: &Self, column_view: TableView| {
             let selected_item = column_view.selected_item();
             match selected_item.content_type() {
-                ContentType::Service => {
+                ContentType::Process | ContentType::App => {
                     this.set_visible(true);
                 }
                 ContentType::SectionHeader => {}

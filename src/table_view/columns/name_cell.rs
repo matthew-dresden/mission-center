@@ -1,4 +1,4 @@
-/* process_tree/columns/name_cell.rs
+/* table_view/columns/name_cell.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -25,7 +25,7 @@ use gtk::glib::g_critical;
 use gtk::glib::FileError;
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
-use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::table_view::row_model::{ContentType, RowModel};
 use crate::widgets::ListCell;
 
 mod icon_cache {

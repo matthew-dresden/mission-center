@@ -42,8 +42,8 @@ mod i18n;
 mod magpie_client;
 mod performance_page;
 mod preferences;
-mod process_tree;
 mod services_page;
+mod table_view;
 mod widgets;
 mod window;
 

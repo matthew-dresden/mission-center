@@ -1,4 +1,4 @@
-/* process_tree/columns/shared_memory.rs
+/* table_view/columns/memory.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -20,14 +20,14 @@
 
 use std::cmp::Ordering;
 
+use gtk::glib;
 use gtk::prelude::*;
 
-pub use super::memory_label_formatter as label_formatter;
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::label_cell_factory;
+use crate::{label_cell_factory, DataType};
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    label_cell_factory!("shared-memory-usage", label_formatter)
+    label_cell_factory!("memory-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
@@ -38,11 +38,18 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
         };
 
         compare_column_entries_by(lhs, rhs, sort_order(&column_view), |lhs, rhs| {
-            let lhs = lhs.shared_memory_usage();
-            let rhs = rhs.shared_memory_usage();
+            let lhs = lhs.memory_usage();
+            let rhs = rhs.memory_usage();
 
-            lhs.cmp(&rhs)
+            lhs.partial_cmp(&rhs).unwrap_or(Ordering::Equal)
         })
         .into()
     })
+}
+
+pub fn label_formatter(label: &LabelCell, value: glib::Value) {
+    let memory_usage: u64 = value.get().unwrap();
+    label.set_label(
+        crate::to_human_readable_nice(memory_usage as f32, &DataType::MemoryBytes).as_str(),
+    );
 }

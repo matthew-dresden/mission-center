@@ -24,14 +24,12 @@ use gtk::{gio, glib};
 
 use crate::app;
 use crate::magpie_client::MagpieClient;
-use crate::process_tree::column_view_frame::ColumnViewFrame;
-use crate::process_tree::row_model::{ContentType, RowModel};
-use crate::process_tree::service_details_dialog::ServiceDetailsDialog;
+use crate::table_view::{ContentType, RowModel, ServiceDetailsDialog, TableView};
 
 macro_rules! new_action {
     ($name: literal, $column_view: expr, $cond: expr) => {{
         use gtk::prelude::*;
-        use $crate::process_tree::row_model::ContentType;
+        use $crate::table_view::ContentType;
 
         let action = gio::SimpleAction::new($name, None);
 
@@ -86,25 +84,25 @@ pub mod apps {
     pub use crate::apps_page::actions::*;
 }
 
-pub fn action_start(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_start(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("start", column_view_frame, |selected_item: &RowModel| {
         !selected_item.service_running()
     })
 }
 
-pub fn action_stop(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_stop(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("stop", column_view_frame, |selected_item: &RowModel| {
         selected_item.service_running()
     })
 }
 
-pub fn action_restart(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_restart(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("restart", column_view_frame, |selected_item: &RowModel| {
         selected_item.service_running()
     })
 }
 
-pub fn action_details(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_details(column_view_frame: &TableView) -> gio::SimpleAction {
     let action = gio::SimpleAction::new("details", None);
     action.set_enabled(column_view_frame.selected_item().content_type() == ContentType::Service);
 
@@ -137,10 +135,7 @@ pub fn action_details(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction 
     action
 }
 
-fn make_magpie_request(
-    column_view_frame: &WeakRef<ColumnViewFrame>,
-    request: fn(&MagpieClient, u64),
-) {
+fn make_magpie_request(column_view_frame: &WeakRef<TableView>, request: fn(&MagpieClient, u64)) {
     let app = app!();
     let Some(column_view_frame) = column_view_frame.upgrade() else {
         g_critical!(

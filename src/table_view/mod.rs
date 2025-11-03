@@ -1,4 +1,4 @@
-/* process_tree/column_view_frame.rs
+/* table_view/mod.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -31,23 +31,72 @@ use gtk::{gdk, gio, glib, subclass::prelude::*};
 use textdistance::{Algorithm, Levenshtein};
 
 use crate::i18n::i18n;
-use crate::process_tree::columns::*;
-use crate::process_tree::process_action_bar::ProcessActionBar;
-use crate::process_tree::row_model::RowModelBuilder;
-use crate::process_tree::row_model::{ContentType, RowModel};
-use crate::process_tree::service_action_bar::ServiceActionBar;
-use crate::process_tree::settings::configure_column_frame;
 use crate::{app, settings, DataType};
 
-pub(crate) mod imp {
+use columns::*;
+pub use models::*;
+pub use process_action_bar::ProcessActionBar;
+pub use process_details_dialog::ProcessDetailsDialog;
+pub use row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
+pub use service_action_bar::ServiceActionBar;
+pub use service_details_dialog::ServiceDetailsDialog;
+
+pub mod columns;
+mod models;
+mod process_action_bar;
+mod process_details_dialog;
+mod row_model;
+mod service_action_bar;
+mod service_details_dialog;
+mod settings;
+
+#[derive(Copy, Clone, Default)]
+pub enum SettingsNamespace {
+    #[default]
+    AppsPage,
+    ServicesPage,
+}
+
+impl SettingsNamespace {
+    pub fn key_to_string(&self) -> &'static str {
+        match self {
+            SettingsNamespace::AppsPage => "apps-page",
+            SettingsNamespace::ServicesPage => "services-page",
+        }
+    }
+
+    #[inline]
+    pub fn format_value(&self, value: &SettingsValues) -> String {
+        format!("{}-{}", self.key_to_string(), value.key_to_string())
+    }
+}
+
+// this only has settings that exist in all namespaces
+#[derive(Copy, Clone, Default)]
+pub enum SettingsValues {
+    #[default]
+    SortingColumnName,
+    SortingOrder,
+    ColumnOrder,
+}
+
+impl SettingsValues {
+    pub fn key_to_string(&self) -> &'static str {
+        match self {
+            SettingsValues::SortingColumnName => "sorting-column-name",
+            SettingsValues::SortingOrder => "sorting-order",
+            SettingsValues::ColumnOrder => "column-order",
+        }
+    }
+}
+
+mod imp {
     use super::*;
 
     #[derive(Properties, gtk::CompositeTemplate)]
-    #[properties(wrapper_type = super::ColumnViewFrame)]
-    #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/process_column_view/column_view_frame.ui"
-    )]
-    pub struct ColumnViewFrame {
+    #[properties(wrapper_type = super::TableView)]
+    #[template(resource = "/io/missioncenter/MissionCenter/ui/table_view/table_view.ui")]
+    pub struct TableView {
         #[template_child]
         pub column_view: TemplateChild<gtk::ColumnView>,
         #[template_child]
@@ -88,12 +137,12 @@ pub(crate) mod imp {
 
         pub use_merged_stats: Cell<bool>,
 
-        pub settings_namespace: Cell<ColumnViewSettingsNamespaces>,
+        pub settings_namespace: Cell<SettingsNamespace>,
 
         service_state_connections: RefCell<[Option<glib::SignalHandlerId>; 2]>,
     }
 
-    impl Default for ColumnViewFrame {
+    impl Default for TableView {
         fn default() -> Self {
             Self {
                 column_view: Default::default(),
@@ -127,9 +176,9 @@ pub(crate) mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ColumnViewFrame {
-        const NAME: &'static str = "ColumnViewFrame";
-        type Type = super::ColumnViewFrame;
+    impl ObjectSubclass for TableView {
+        const NAME: &'static str = "TableView";
+        type Type = super::TableView;
         type ParentType = gtk::Box;
 
         fn class_init(klass: &mut Self::Class) {
@@ -141,7 +190,7 @@ pub(crate) mod imp {
         }
     }
 
-    impl ObjectImpl for ColumnViewFrame {
+    impl ObjectImpl for TableView {
         fn properties() -> &'static [ParamSpec] {
             Self::derived_properties()
         }
@@ -224,7 +273,7 @@ pub(crate) mod imp {
                         entry.and_then(|s| s.get::<(String, u64, f64, f64)>())
                     else {
                         g_critical!(
-                            "MissionCenter::ColumnViewFrame",
+                            "MissionCenter::TableView",
                             "Failed to get service name and button from show-context-menu action"
                         );
                         return;
@@ -259,7 +308,7 @@ pub(crate) mod imp {
         }
     }
 
-    impl WidgetImpl for ColumnViewFrame {
+    impl WidgetImpl for TableView {
         fn realize(&self) {
             self.parent_realize();
 
@@ -268,12 +317,12 @@ pub(crate) mod imp {
         }
     }
 
-    impl BoxImpl for ColumnViewFrame {}
+    impl BoxImpl for TableView {}
 
-    impl ColumnViewFrame {
+    impl TableView {
         pub fn setup<const TOGGLE_COUNT: usize>(
             &self,
-            settings_namespace: ColumnViewSettingsNamespaces,
+            settings_namespace: SettingsNamespace,
             section_item_1: &RowModel,
             section_item_2: &RowModel,
             process_action_bar: Option<&ProcessActionBar>,
@@ -306,7 +355,7 @@ pub(crate) mod imp {
                 service_action_bar.set_column_view(&self.obj());
             }
 
-            configure_column_frame(self);
+            settings::configure(&self.obj());
         }
 
         fn create_tree_model(model: impl IsA<gio::ListModel>) -> gtk::TreeListModel {
@@ -429,7 +478,7 @@ pub(crate) mod imp {
                                     }
                                     _ => {
                                         g_warning!(
-                                            "MissionCenter::ColumnViewFrame",
+                                            "MissionCenter::TableView",
                                             "Unknown toggle button: {}",
                                             name
                                         );
@@ -478,10 +527,9 @@ pub(crate) mod imp {
         ) -> (gtk::SortListModel, gtk::TreeListRowSorter) {
             let column_view_sorter = self.column_view.sorter();
 
-            let sorting_settings_key =
-                self.format_settings_key(&ColumnViewSettingsValues::SortingColumnName);
+            let sorting_settings_key = self.format_settings_key(&SettingsValues::SortingColumnName);
             let sorting_order_settings_key =
-                self.format_settings_key(&ColumnViewSettingsValues::SortingOrder);
+                self.format_settings_key(&SettingsValues::SortingOrder);
 
             if let Some(column_view_sorter) = column_view_sorter.as_ref() {
                 column_view_sorter.connect_changed({
@@ -696,7 +744,7 @@ pub(crate) mod imp {
 
             let settings = settings!();
 
-            let order_key = &self.format_settings_key(&ColumnViewSettingsValues::ColumnOrder);
+            let order_key = &self.format_settings_key(&SettingsValues::ColumnOrder);
 
             if settings.boolean("apps-page-remember-column-order") {
                 let columns = column_view.columns();
@@ -766,55 +814,30 @@ pub(crate) mod imp {
         }
 
         #[inline]
-        pub fn format_settings_key(&self, key: &ColumnViewSettingsValues) -> String {
+        pub fn format_settings_key(&self, key: &SettingsValues) -> String {
             self.settings_namespace.get().format_value(key)
         }
     }
 }
 
 glib::wrapper! {
-    pub struct ColumnViewFrame(ObjectSubclass<imp::ColumnViewFrame>)
+    pub struct TableView(ObjectSubclass<imp::TableView>)
         @extends gtk::Box, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
-#[derive(Copy, Clone, Default)]
-pub enum ColumnViewSettingsNamespaces {
-    #[default]
-    AppsPage,
-    ServicesPage,
-}
+impl TableView {
+    pub fn set_use_merged_stats(&self, use_merged: bool) {
+        self.imp().use_merged_stats.set(use_merged);
+    }
 
-impl ColumnViewSettingsNamespaces {
-    pub fn key_to_string(&self) -> &'static str {
-        match self {
-            ColumnViewSettingsNamespaces::AppsPage => "apps-page",
-            ColumnViewSettingsNamespaces::ServicesPage => "services-page",
-        }
+    pub fn column_view(&self) -> &gtk::ColumnView {
+        &self.imp().column_view
     }
 
     #[inline]
-    pub fn format_value(&self, value: &ColumnViewSettingsValues) -> String {
-        format!("{}-{}", self.key_to_string(), value.key_to_string())
-    }
-}
-
-// this only has settings that exist in all namespaces
-#[derive(Copy, Clone, Default)]
-pub enum ColumnViewSettingsValues {
-    #[default]
-    SortingColumnName,
-    SortingOrder,
-    ColumnOrder,
-}
-
-impl ColumnViewSettingsValues {
-    pub fn key_to_string(&self) -> &'static str {
-        match self {
-            ColumnViewSettingsValues::SortingColumnName => "sorting-column-name",
-            ColumnViewSettingsValues::SortingOrder => "sorting-order",
-            ColumnViewSettingsValues::ColumnOrder => "column-order",
-        }
+    pub fn format_settings_key(&self, key: &SettingsValues) -> String {
+        self.imp().format_settings_key(key)
     }
 }
 
@@ -835,7 +858,7 @@ fn calculate_anchor_point(
 ) -> gdk::Rectangle {
     let Some(anchor_widget) = anchor_widget else {
         g_warning!(
-            "MissionCenter::ColumnViewFrame",
+            "MissionCenter::TableView",
             "Failed to get anchor widget, popup will display in an arbitrary location"
         );
         return gdk::Rectangle::new(0, 0, 0, 0);
@@ -846,7 +869,7 @@ fn calculate_anchor_point(
             Some(p) => gdk::Rectangle::new(p.x().round() as i32, p.y().round() as i32, 1, 1),
             None => {
                 g_critical!(
-                    "MissionCenter::ColumnViewFrame",
+                    "MissionCenter::TableView",
                     "Failed to compute_point, context menu will not be anchored to mouse position"
                 );
                 gdk::Rectangle::new(x.round() as i32, y.round() as i32, 1, 1)
@@ -862,7 +885,7 @@ fn calculate_anchor_point(
             )
         } else {
             g_warning!(
-                "MissionCenter::ColumnViewFrame",
+                "MissionCenter::TableView",
                 "Failed to get bounds for menu button, popup will display in an arbitrary location"
             );
             gdk::Rectangle::new(0, 0, 0, 0)

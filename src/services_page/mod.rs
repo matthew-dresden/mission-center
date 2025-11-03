@@ -27,11 +27,10 @@ use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::i18n::{i18n, ni18n_f};
-use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
-use crate::process_tree::models;
-use crate::process_tree::process_action_bar::ProcessActionBar;
-use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
-use crate::process_tree::service_action_bar::ServiceActionBar;
+use crate::table_view::{
+    update_services, ContentType, ProcessActionBar, RowModel, RowModelBuilder, SectionType,
+    ServiceActionBar, SettingsNamespace, TableView,
+};
 
 pub mod actions;
 
@@ -60,7 +59,7 @@ pub(crate) mod imp {
         pub toggle_disabled: TemplateChild<gtk::ToggleButton>,
 
         #[template_child]
-        pub column_view: TemplateChild<ColumnViewFrame>,
+        pub table_view: TemplateChild<TableView>,
 
         #[template_child]
         pub process_action_bar: TemplateChild<ProcessActionBar>,
@@ -168,7 +167,7 @@ pub(crate) mod imp {
                 toggle_stopped: Default::default(),
                 toggle_disabled: Default::default(),
 
-                column_view: Default::default(),
+                table_view: Default::default(),
 
                 process_action_bar: Default::default(),
                 service_action_bar: Default::default(),
@@ -296,7 +295,7 @@ pub(crate) mod imp {
                     let imp = this.imp();
 
                     let Some(selection_model) = imp
-                        .column_view
+                        .table_view
                         .imp()
                         .column_view
                         .model()
@@ -359,23 +358,23 @@ pub(crate) mod imp {
                 .insert_action_group("services-page", Some(&actions));
 
             let service_actions = gio::SimpleActionGroup::new();
-            service_actions.add_action(&actions::action_start(&self.column_view));
-            service_actions.add_action(&actions::action_stop(&self.column_view));
-            service_actions.add_action(&actions::action_restart(&self.column_view));
-            service_actions.add_action(&actions::action_details(&self.column_view));
+            service_actions.add_action(&actions::action_start(&self.table_view));
+            service_actions.add_action(&actions::action_stop(&self.table_view));
+            service_actions.add_action(&actions::action_restart(&self.table_view));
+            service_actions.add_action(&actions::action_details(&self.table_view));
             self.obj()
                 .insert_action_group("service", Some(&service_actions));
 
             let process_actions = gio::SimpleActionGroup::new();
-            process_actions.add_action(&actions::apps::action_stop(&self.column_view));
-            process_actions.add_action(&actions::apps::action_force_stop(&self.column_view));
-            process_actions.add_action(&actions::apps::action_suspend(&self.column_view));
-            process_actions.add_action(&actions::apps::action_continue(&self.column_view));
-            process_actions.add_action(&actions::apps::action_hangup(&self.column_view));
-            process_actions.add_action(&actions::apps::action_interrupt(&self.column_view));
-            process_actions.add_action(&actions::apps::action_user_one(&self.column_view));
-            process_actions.add_action(&actions::apps::action_user_two(&self.column_view));
-            process_actions.add_action(&actions::apps::action_details(&self.column_view));
+            process_actions.add_action(&actions::apps::action_stop(&self.table_view));
+            process_actions.add_action(&actions::apps::action_force_stop(&self.table_view));
+            process_actions.add_action(&actions::apps::action_suspend(&self.table_view));
+            process_actions.add_action(&actions::apps::action_continue(&self.table_view));
+            process_actions.add_action(&actions::apps::action_hangup(&self.table_view));
+            process_actions.add_action(&actions::apps::action_interrupt(&self.table_view));
+            process_actions.add_action(&actions::apps::action_user_one(&self.table_view));
+            process_actions.add_action(&actions::apps::action_user_two(&self.table_view));
+            process_actions.add_action(&actions::apps::action_details(&self.table_view));
             self.obj()
                 .insert_action_group("process", Some(&process_actions));
         }
@@ -409,8 +408,8 @@ impl ServicesPage {
 
         // Set up the models here since we need access to the main application window
         // which is not yet available in the constructor.
-        imp.column_view.imp().setup(
-            ColumnViewSettingsNamespaces::ServicesPage,
+        imp.table_view.imp().setup(
+            SettingsNamespace::ServicesPage,
             &imp.user_section,
             &imp.system_section,
             Some(&imp.process_action_bar),
@@ -426,23 +425,23 @@ impl ServicesPage {
     fn update_common(&self, readings: &mut crate::magpie_client::Readings) {
         let imp = self.imp();
 
-        models::update_services(
+        update_services(
             &readings.running_processes,
             &readings.user_services,
             &imp.user_section.children(),
             &HashMap::new(),
             "application-x-executable-symbolic",
-            imp.column_view.imp().use_merged_stats.get(),
+            imp.table_view.imp().use_merged_stats.get(),
             SectionType::FirstSection,
         );
 
-        models::update_services(
+        update_services(
             &readings.running_processes,
             &readings.system_services,
             &imp.system_section.children(),
             &HashMap::new(),
             "application-x-executable-symbolic",
-            imp.column_view.imp().use_merged_stats.get(),
+            imp.table_view.imp().use_merged_stats.get(),
             SectionType::SecondSection,
         );
 
@@ -480,12 +479,12 @@ impl ServicesPage {
 
         self.update_common(readings);
 
-        if let Some(row_sorter) = imp.column_view.imp().row_sorter.get() {
+        if let Some(row_sorter) = imp.table_view.imp().row_sorter.get() {
             row_sorter.changed(gtk::SorterChange::Different)
         }
 
         if readings.network_stats_error.is_some() {
-            imp.column_view
+            imp.table_view
                 .get()
                 .imp()
                 .network_usage_column
