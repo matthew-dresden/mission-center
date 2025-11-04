@@ -331,4 +331,8 @@ impl AppsPage {
     pub fn running_apps(&self) -> HashMap<String, App> {
         self.imp().running_apps.borrow().clone()
     }
+
+    pub fn activate_table_view_action(&self, name: &str) -> Result<(), glib::error::BoolError> {
+        WidgetExt::activate_action(&*self.imp().table_view, name, None)
+    }
 }

@@ -1,171 +1,132 @@
 using Gtk 4.0;
 using Adw 1;
 
-Adw.PreferencesDialog keyboard_shortcuts {
+Adw.ShortcutsDialog keyboard_shortcuts {
   title: _("Keyboard Shortcuts");
 
+  Adw.ShortcutsSection {
+    title: _("Global");
 
-  Adw.PreferencesPage {
-    Adw.PreferencesGroup {
-      title: _("Global");
-
-      Box {
-        margin-top: 5;
-        margin-bottom: 5;
-        margin-start: 5;
-
-        orientation: vertical;
-        spacing: 7;
-
-        ShortcutsShortcut {
-          title: _("Open Menu");
-          accelerator: "F10";
-        }
-
-        ShortcutsShortcut {
-          title: _("Close Window");
-          accelerator: "<Control>Q";
-        }
-
-        ShortcutsShortcut {
-          title: _("Close Window");
-          accelerator: "<Control>W";
-        }
-
-        ShortcutsShortcut {
-          title: _("Open Preferences");
-          accelerator: "<Control>comma";
-        }
-
-        ShortcutsShortcut {
-          title: _("Show Keyboard Shortcuts");
-          accelerator: "<Control>question";
-        }
-
-        ShortcutsShortcut {
-          title: _("Show Performance Page");
-          accelerator: "<Control>1";
-        }
-
-        ShortcutsShortcut {
-          title: _("Show Apps Page");
-          accelerator: "<Control>2";
-        }
-
-        ShortcutsShortcut {
-          title: _("Show Services Page");
-          accelerator: "<Control>3";
-        }
-
-        ShortcutsShortcut {
-          title: _("Toggle Sidebar");
-          accelerator: "<Control>T";
-        }
-      }
+    Adw.ShortcutsItem {
+      title: _("Open Menu");
+      accelerator: "F10";
     }
 
-    Adw.PreferencesGroup {
-      title: _("Performance Page");
-
-      Box {
-        margin-top: 5;
-        margin-bottom: 5;
-        margin-start: 5;
-
-        orientation: vertical;
-        spacing: 7;
-
-        ShortcutsShortcut {
-          title: _("Copy Device Information");
-          accelerator: "<Control>C";
-        }
-
-        ShortcutsShortcut {
-          title: _("Toggle Summary Mode");
-          accelerator: "<Control>M";
-        }
-
-        ShortcutsShortcut {
-          title: _("Select a Device");
-          accelerator: "F1...F9";
-        }
-      }
+    Adw.ShortcutsItem {
+      title: _("Close Window");
+      accelerator: "<Control>Q";
     }
 
-    Adw.PreferencesGroup {
-      title: _("Apps Page");
-
-      Box {
-        margin-top: 5;
-        margin-bottom: 5;
-        margin-start: 5;
-
-        orientation: vertical;
-        spacing: 7;
-
-        ShortcutsShortcut {
-          title: _("Search");
-          accelerator: "<Control>F";
-        }
-
-        ShortcutsShortcut {
-          title: _("Collapse All");
-          accelerator: "<Control>L";
-        }
-
-        ShortcutsShortcut {
-          title: _("Stop App or Process");
-          accelerator: "<Control>E";
-        }
-
-        ShortcutsShortcut {
-          title: _("Force Stop App or Process");
-          accelerator: "<Control>X";
-        }
-
-        ShortcutsShortcut {
-          title: _("Show Details Dialog");
-          accelerator: "<Control>I";
-        }
-      }
+    Adw.ShortcutsItem {
+      title: _("Close Window");
+      accelerator: "<Control>W";
     }
 
-    Adw.PreferencesGroup {
-      title: _("Services Page");
+    Adw.ShortcutsItem {
+      title: _("Open Preferences");
+      accelerator: "<Control>comma";
+    }
 
-      Box {
-        margin-top: 5;
-        margin-bottom: 5;
-        margin-start: 5;
+    Adw.ShortcutsItem {
+      title: _("Show Keyboard Shortcuts");
+      accelerator: "<Control>question";
+    }
 
-        orientation: vertical;
-        spacing: 7;
+    Adw.ShortcutsItem {
+      title: _("Show Performance Page");
+      accelerator: "<Control>1";
+    }
 
-        ShortcutsShortcut {
-          title: _("Search");
-          accelerator: "<Control>F";
-        }
+    Adw.ShortcutsItem {
+      title: _("Show Apps Page");
+      accelerator: "<Control>2";
+    }
 
-        ShortcutsShortcut {
-          title: _("Start Service");
-          accelerator: "<Control>L";
-        }
+    Adw.ShortcutsItem {
+      title: _("Show Services Page");
+      accelerator: "<Control>3";
+    }
 
-        ShortcutsShortcut {
-          title: _("Stop Service");
-          accelerator: "<Control>E";
-        }
+    Adw.ShortcutsItem {
+      title: _("Toggle Sidebar");
+      accelerator: "<Control>T";
+    }
+  }
 
-        ShortcutsShortcut {
-          title: _("Restart Service");
-          accelerator: "<Control>R";
-        }
+  Adw.ShortcutsSection {
+    title: _("Performance Page");
 
-        ShortcutsShortcut {
-          title: _("Show Details Dialog");
-          accelerator: "<Control>I";
-        }
-      }
+    Adw.ShortcutsItem {
+      title: _("Copy Device Information");
+      accelerator: "<Control>C";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Toggle Summary Mode");
+      accelerator: "<Control>M";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Select a Device");
+      accelerator: "F1...F9";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: _("Apps Page");
+
+    Adw.ShortcutsItem {
+      title: _("Search");
+      accelerator: "<Control>F";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Collapse All");
+      accelerator: "<Control>L";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Stop App or Process");
+      accelerator: "<Control>E";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Force Stop App or Process");
+      accelerator: "<Control>X";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Show Details Dialog");
+      accelerator: "<Control>I";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: _("Services Page");
+
+    Adw.ShortcutsItem {
+      title: _("Search");
+      accelerator: "<Control>F";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Start Service");
+      accelerator: "<Control>L";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Stop Service");
+      accelerator: "<Control>E";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Restart Service");
+      accelerator: "<Control>R";
+    }
+
+    Adw.ShortcutsItem {
+      title: _("Show Details Dialog");
+      accelerator: "<Control>I";
     }
   }
 }

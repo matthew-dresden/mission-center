@@ -34,7 +34,7 @@ use crate::table_view::{
 
 pub mod actions;
 
-pub(crate) mod imp {
+mod imp {
     use super::*;
 
     #[derive(Properties, gtk::CompositeTemplate)]
@@ -502,5 +502,9 @@ impl ServicesPage {
     #[inline]
     pub fn expand(&self) {
         self.imp().expand();
+    }
+
+    pub fn activate_table_view_action(&self, name: &str) -> Result<(), glib::error::BoolError> {
+        WidgetExt::activate_action(&*self.imp().table_view, name, None)
     }
 }
