@@ -131,6 +131,18 @@ fn special_shortcuts(
         false
     }
 
+    fn services_start(window: &MissionCenterWindow) -> bool {
+        let imp = window.imp();
+
+        let result = window.services_page_active();
+        if result {
+            let _ = imp
+                .services_page
+                .activate_table_view_action("service.start");
+        }
+        result
+    }
+
     fn ctrl_e(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
@@ -230,6 +242,8 @@ fn special_shortcuts(
         ctrl_shortcuts.insert(gdk::Key::x, force_stop);
         ctrl_shortcuts.insert(gdk::Key::I, ctrl_i);
         ctrl_shortcuts.insert(gdk::Key::i, ctrl_i);
+        ctrl_shortcuts.insert(gdk::Key::S, services_start);
+        ctrl_shortcuts.insert(gdk::Key::s, services_start);
         ctrl_shortcuts.insert(gdk::Key::R, services_restart);
         ctrl_shortcuts.insert(gdk::Key::r, services_restart);
         shortcuts.insert(gdk::ModifierType::CONTROL_MASK, ctrl_shortcuts);
