@@ -47,6 +47,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
         expander.set_indent_for_icon(true);
         expander.set_indent_for_depth(true);
         expander.set_halign(gtk::Align::Start);
+        expander.set_width_request(218);
 
         list_item.set_child(Some(&expander));
 
