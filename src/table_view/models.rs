@@ -228,6 +228,7 @@ pub fn update_services(
         .filter(|(_, serv)| !does_exist.contains(&serv.id))
     {
         let row_model = RowModelBuilder::new()
+            .id(&service.id.to_string())
             .content_type(ContentType::Service)
             .section_type(section_type)
             .service_id(service.id)
