@@ -290,9 +290,8 @@ mod imp {
             if !location.is_empty() {
                 group_empty = false;
                 self.file_location.set_text(&list_item.file_path());
-                self.file_location.set_visible(true);
             } else {
-                self.file_location.set_visible(false);
+                self.file_location.set_text(&i18n("Unknown"));
             }
 
             if group_empty {
