@@ -33,6 +33,8 @@ template $ServiceActionBar: Box {
       action-name: "service.start";
       tooltip-text: _("Start the selected service");
 
+      visible: bind template.is_snap inverted;
+
       child: Box {
         spacing: 5;
 
@@ -51,6 +53,8 @@ template $ServiceActionBar: Box {
     Button service_stop {
       action-name: "service.stop";
       tooltip-text: _("Stop the selected service");
+
+      visible: bind template.is_snap inverted;
 
       child: Box {
         spacing: 5;
@@ -71,6 +75,8 @@ template $ServiceActionBar: Box {
   Button service_restart {
     action-name: "service.restart";
     tooltip-text: _("Restart the selected service");
+
+    visible: bind template.is_snap inverted;
 
     child: Box {
       spacing: 5;

@@ -19,10 +19,10 @@
  */
 
 use std::cell::{Cell, RefCell};
+use std::time::Duration;
 
 use gdk::pango::EllipsizeMode;
-use gtk::glib::g_critical;
-use gtk::glib::FileError;
+use glib::{g_critical, g_debug, FileError};
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
 use crate::table_view::row_model::{ContentType, RowModel};
@@ -56,7 +56,6 @@ mod icon_cache {
 
 mod imp {
     use super::*;
-    use std::time::Duration;
 
     pub struct NameCell {
         icon: gtk::Image,
@@ -204,7 +203,12 @@ mod imp {
                 }
                 Err(e) => {
                     if !e.matches(FileError::Noent) {
-                        g_critical!("MissionCenter::ProcessTree", "Failed to load icon: {}", e);
+                        if let Some(_) = std::env::var_os("SNAP_CONTEXT") {
+                            g_debug!("MissionCenter::ProcessTree", "Failed to load icon: {}. This is unfortunate but expected in a Snap context.", e);
+                        } else {
+                            g_critical!("MissionCenter::ProcessTree", "Failed to load icon: {}", e);
+                        }
+                        self.icon.set_icon_name(Some("application-x-executable"));
                         return;
                     }
                 }

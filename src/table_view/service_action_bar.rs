@@ -18,14 +18,20 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::cell::Cell;
+
+use adw::prelude::*;
+use glib::{ParamSpec, Properties, Value};
+use gtk::{gio, glib, subclass::prelude::*};
+
 use crate::table_view::row_model::{ContentType, RowModel};
 use crate::table_view::TableView;
-use adw::prelude::*;
-use gtk::{gio, glib, subclass::prelude::*};
 
 mod imp {
     use super::*;
 
+    #[derive(Properties)]
+    #[properties(wrapper_type = super::ServiceActionBar)]
     #[derive(gtk::CompositeTemplate)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/table_view/service_action_bar.ui")]
     pub struct ServiceActionBar {
@@ -37,6 +43,9 @@ mod imp {
         pub service_restart_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub service_details_label: TemplateChild<gtk::Label>,
+
+        #[property(get)]
+        is_snap: Cell<bool>,
     }
 
     impl Default for ServiceActionBar {
@@ -46,6 +55,8 @@ mod imp {
                 service_stop_label: Default::default(),
                 service_restart_label: Default::default(),
                 service_details_label: Default::default(),
+
+                is_snap: Cell::new(false),
             }
         }
     }
@@ -66,8 +77,25 @@ mod imp {
     }
 
     impl ObjectImpl for ServiceActionBar {
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec)
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
+        }
+
         fn constructed(&self) {
             self.parent_constructed();
+
+            if let Some(_) = std::env::var_os("SNAP_CONTEXT") {
+                self.is_snap.set(true);
+                self.obj().notify_is_snap();
+            }
         }
     }
 
