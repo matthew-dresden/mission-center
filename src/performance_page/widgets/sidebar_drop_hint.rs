@@ -133,7 +133,7 @@ mod imp {
 glib::wrapper! {
     pub struct SidebarDropHint(ObjectSubclass<imp::SidebarDropHint>)
         @extends gtk::Widget,
-        @implements gtk::Buildable;
+        @implements gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl SidebarDropHint {

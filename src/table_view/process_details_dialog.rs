@@ -1,4 +1,4 @@
-/* apps_page/details_dialog.rs
+/* table_view/process_details_dialog.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -21,27 +21,32 @@
 use std::cell::RefCell;
 
 use adw::subclass::prelude::*;
+use adw::PreferencesRow;
 use gtk::glib::{self};
-use gtk::prelude::StaticTypeExt;
+use gtk::prelude::{StaticTypeExt, WidgetExt};
 
-use super::columns::*;
-use super::row_model::{ContentType, RowModel};
+use crate::table_view::columns::*;
+use crate::table_view::row_model::{ContentType, RowModel};
 
 mod imp {
     use super::*;
-    use adw::PreferencesRow;
-    use gtk::prelude::WidgetExt;
 
     #[derive(gtk::CompositeTemplate)]
-    #[template(resource = "/io/missioncenter/MissionCenter/ui/apps_page/details_dialog.ui")]
-    pub struct DetailsDialog {
+    #[template(
+        resource = "/io/missioncenter/MissionCenter/ui/table_view/process_details_dialog.ui"
+    )]
+    pub struct ProcessDetailsDialog {
         #[template_child]
         icon: TemplateChild<gtk::Image>,
         #[template_child]
         title: TemplateChild<gtk::Label>,
 
         #[template_child]
-        id: TemplateChild<gtk::Label>,
+        id_value: TemplateChild<gtk::Label>,
+        #[template_child]
+        app_id_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pid_label: TemplateChild<gtk::Label>,
         #[template_child]
         kind: TemplateChild<gtk::Label>,
         #[template_child]
@@ -67,16 +72,18 @@ mod imp {
         pub model: RefCell<RowModel>,
     }
 
-    impl Default for DetailsDialog {
+    impl Default for ProcessDetailsDialog {
         fn default() -> Self {
             Self {
                 icon: TemplateChild::default(),
                 title: TemplateChild::default(),
 
-                id: TemplateChild::default(),
+                id_value: TemplateChild::default(),
+                app_id_label: TemplateChild::default(),
+                pid_label: TemplateChild::default(),
                 kind: TemplateChild::default(),
-                command_line_row: Default::default(),
-                command_line: Default::default(),
+                command_line_row: TemplateChild::default(),
+                command_line: TemplateChild::default(),
 
                 cpu: TemplateChild::default(),
                 memory: TemplateChild::default(),
@@ -91,14 +98,20 @@ mod imp {
         }
     }
 
-    impl DetailsDialog {
+    impl ProcessDetailsDialog {
         pub fn bind(&self) {
             let model = self.model.borrow();
 
-            if model.content_type() == ContentType::App {
-                self.icon.set_pixel_size(24);
-            } else {
-                self.icon.set_pixel_size(16);
+            match model.content_type() {
+                ContentType::App => {
+                    self.app_id_label.set_visible(true);
+                    self.pid_label.set_visible(false);
+                }
+                ContentType::Process => {
+                    self.app_id_label.set_visible(false);
+                    self.pid_label.set_visible(true);
+                }
+                _ => {} // should never happen
             }
 
             let icon = model.icon();
@@ -118,7 +131,7 @@ mod imp {
 
             self.title.set_label(&model.name());
 
-            self.id.set_label(&model.id());
+            self.id_value.set_label(&model.id());
 
             let content_type: String = model.content_type().into();
             self.kind.set_label(&content_type);
@@ -169,9 +182,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for DetailsDialog {
-        const NAME: &'static str = "AppsPageDetailsDialog";
-        type Type = super::DetailsDialog;
+    impl ObjectSubclass for ProcessDetailsDialog {
+        const NAME: &'static str = "ProcessDetailsDialog";
+        type Type = super::ProcessDetailsDialog;
         type ParentType = adw::Dialog;
 
         fn class_init(klass: &mut Self::Class) {
@@ -185,19 +198,19 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DetailsDialog {
+    impl ObjectImpl for ProcessDetailsDialog {
         fn constructed(&self) {
             self.parent_constructed();
         }
     }
 
-    impl WidgetImpl for DetailsDialog {
+    impl WidgetImpl for ProcessDetailsDialog {
         fn realize(&self) {
             self.parent_realize();
         }
     }
 
-    impl AdwDialogImpl for DetailsDialog {
+    impl AdwDialogImpl for ProcessDetailsDialog {
         fn closed(&self) {
             self.unbind();
         }
@@ -205,12 +218,12 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct DetailsDialog(ObjectSubclass<imp::DetailsDialog>)
+    pub struct ProcessDetailsDialog(ObjectSubclass<imp::ProcessDetailsDialog>)
         @extends adw::Dialog, gtk::Widget,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl DetailsDialog {
+impl ProcessDetailsDialog {
     pub fn new(model: RowModel) -> Self {
         let this: Self = glib::Object::builder()
             .property("follows-content-size", true)

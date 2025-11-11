@@ -1,4 +1,4 @@
-/* apps_page/columns/name_cell.rs
+/* table_view/columns/name_cell.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -19,13 +19,13 @@
  */
 
 use std::cell::{Cell, RefCell};
+use std::time::Duration;
 
 use gdk::pango::EllipsizeMode;
-use gtk::glib::g_critical;
-use gtk::glib::FileError;
+use glib::{g_critical, g_debug, FileError};
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
-use crate::apps_page::row_model::{ContentType, RowModel};
+use crate::table_view::row_model::{ContentType, RowModel};
 use crate::widgets::ListCell;
 
 mod icon_cache {
@@ -56,7 +56,6 @@ mod icon_cache {
 
 mod imp {
     use super::*;
-    use std::time::Duration;
 
     pub struct NameCell {
         icon: gtk::Image,
@@ -204,7 +203,12 @@ mod imp {
                 }
                 Err(e) => {
                     if !e.matches(FileError::Noent) {
-                        g_critical!("MissionCenter::AppsPage", "Failed to load icon: {}", e);
+                        if let Some(_) = std::env::var_os("SNAP_CONTEXT") {
+                            g_debug!("MissionCenter::ProcessTree", "Failed to load icon: {}. This is unfortunate but expected in a Snap context.", e);
+                        } else {
+                            g_critical!("MissionCenter::ProcessTree", "Failed to load icon: {}", e);
+                        }
+                        self.icon.set_icon_name(Some("application-x-executable"));
                         return;
                     }
                 }
@@ -235,16 +239,16 @@ mod imp {
                         expander.set_indent_for_icon(false);
                     };
                 }
-                ContentType::App => {
+                ContentType::Service => {
                     self.icon.set_visible(true);
                     self.icon.set_margin_end(10);
-                    self.icon.set_pixel_size(24);
+                    self.icon.set_pixel_size(16);
                     self.name.remove_css_class("heading");
 
                     let this = self.obj();
                     this.set_margin_start(0);
-                    this.set_margin_top(0);
-                    this.set_margin_bottom(0);
+                    this.set_margin_top(3);
+                    this.set_margin_bottom(3);
 
                     let this = this.downgrade();
                     glib::timeout_add_local_full(
@@ -274,6 +278,35 @@ mod imp {
                     this.set_margin_start(0);
                     this.set_margin_top(0);
                     this.set_margin_bottom(0);
+
+                    if let Some(expander) = self.expander.borrow().upgrade() {
+                        expander.set_indent_for_icon(true);
+                    };
+                }
+                ContentType::App => {
+                    self.icon.set_visible(true);
+                    self.icon.set_margin_end(10);
+                    self.icon.set_pixel_size(24);
+                    self.name.remove_css_class("heading");
+
+                    let this = self.obj();
+                    this.set_margin_start(0);
+                    this.set_margin_top(0);
+                    this.set_margin_bottom(0);
+
+                    let this = this.downgrade();
+                    glib::timeout_add_local_full(
+                        Duration::from_millis(0),
+                        glib::Priority::HIGH,
+                        move || {
+                            let Some(this) = this.upgrade() else {
+                                return glib::ControlFlow::Break;
+                            };
+                            let _ = this.activate_action("listitem.collapse", None);
+
+                            glib::ControlFlow::Break
+                        },
+                    );
 
                     if let Some(expander) = self.expander.borrow().upgrade() {
                         expander.set_indent_for_icon(true);

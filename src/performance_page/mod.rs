@@ -1938,11 +1938,8 @@ mod imp {
                     Pages::Memory((summary, page)) => {
                         let mem_info = &readings.mem_info;
                         let total_raw = mem_info.mem_total;
-                        let total = crate::to_human_readable_nice(
-                            total_raw as _,
-                            &DataType::MemoryBytes,
-                            &settings,
-                        );
+                        let total =
+                            crate::to_human_readable_nice(total_raw as _, &DataType::MemoryBytes);
 
                         // https://gitlab.com/procps-ng/procps/-/blob/master/library/meminfo.c?ref_type=heads#L736
                         let mem_avail = if mem_info.mem_available > mem_info.mem_total {
@@ -1959,11 +1956,8 @@ mod imp {
                         graph_widget.set_expected_animation_ticks(delay);
                         graph_widget.add_data_point(0, readings.mem_info.committed as _);
                         graph_widget.add_data_point(1, used_raw as _);
-                        let used = crate::to_human_readable_nice(
-                            used_raw as _,
-                            &DataType::MemoryBytes,
-                            &settings,
-                        );
+                        let used =
+                            crate::to_human_readable_nice(used_raw as _, &DataType::MemoryBytes);
 
                         summary.set_info1(format!("{} {}", used, total,));
                         summary.set_info2(format!(
@@ -2094,12 +2088,10 @@ mod imp {
                                 let sent_speed = crate::to_human_readable_nice(
                                     send_speed,
                                     &DataType::NetworkBytesPerSecond,
-                                    &settings,
                                 );
                                 let rect_speeed = crate::to_human_readable_nice(
                                     rec_speed,
                                     &DataType::NetworkBytesPerSecond,
-                                    &settings,
                                 );
 
                                 summary.set_info1(i18n_f("{}: {}", &["S", &sent_speed]));
@@ -2494,7 +2486,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePage(ObjectSubclass<imp::PerformancePage>)
         @extends adw::BreakpointBin, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PerformancePage {

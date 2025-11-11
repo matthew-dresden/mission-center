@@ -123,45 +123,73 @@ fn special_shortcuts(
             let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.collapse-all", None);
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page, "win.selected-svc-start", None);
+            let _ =
+                WidgetExt::activate_action(&*imp.services_page, "services-page.collapse-all", None);
             return true;
         }
 
         false
     }
 
-    fn crl_e(window: &MissionCenterWindow) -> bool {
+    fn services_start(window: &MissionCenterWindow) -> bool {
+        let imp = window.imp();
+
+        let result = window.services_page_active();
+        if result {
+            let _ = imp
+                .services_page
+                .activate_table_view_action("service.start");
+        }
+        result
+    }
+
+    fn ctrl_e(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.stop", None);
+            let _ = imp.apps_page.activate_table_view_action("process.stop");
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page, "win.selected-svc-stop", None);
+            let _ = imp.services_page.activate_table_view_action("process.stop");
+            let _ = imp.services_page.activate_table_view_action("service.stop");
             return true;
         }
 
         false
     }
 
-    fn apps_force_stop(window: &MissionCenterWindow) -> bool {
+    fn force_stop(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
-        let result = window.apps_page_active();
-        if result {
-            let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.force-stop", None);
+        if window.apps_page_active() {
+            let _ = imp
+                .apps_page
+                .activate_table_view_action("process.force-stop");
+            return true;
+        } else if window.services_page_active() {
+            let _ = imp
+                .services_page
+                .activate_table_view_action("process.force-stop");
+            let _ = imp.services_page.activate_table_view_action("service.stop");
+            return true;
         }
-        result
+
+        false
     }
 
     fn ctrl_i(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.details", None);
+            let _ = imp.apps_page.activate_table_view_action("process.details");
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page, "services-page.details", None);
+            let _ = imp
+                .services_page
+                .activate_table_view_action("process.details");
+            let _ = imp
+                .services_page
+                .activate_table_view_action("service.details");
             return true;
         }
 
@@ -173,8 +201,9 @@ fn special_shortcuts(
 
         let result = window.services_page_active();
         if result {
-            let _ =
-                WidgetExt::activate_action(&*imp.services_page, "win.selected-svc-restart", None);
+            let _ = imp
+                .services_page
+                .activate_table_view_action("service.restart");
         }
         result
     }
@@ -207,12 +236,14 @@ fn special_shortcuts(
         ctrl_shortcuts.insert(gdk::Key::c, graph_copy);
         ctrl_shortcuts.insert(gdk::Key::L, ctrl_l);
         ctrl_shortcuts.insert(gdk::Key::l, ctrl_l);
-        ctrl_shortcuts.insert(gdk::Key::E, crl_e);
-        ctrl_shortcuts.insert(gdk::Key::e, crl_e);
-        ctrl_shortcuts.insert(gdk::Key::X, apps_force_stop);
-        ctrl_shortcuts.insert(gdk::Key::x, apps_force_stop);
+        ctrl_shortcuts.insert(gdk::Key::E, ctrl_e);
+        ctrl_shortcuts.insert(gdk::Key::e, ctrl_e);
+        ctrl_shortcuts.insert(gdk::Key::X, force_stop);
+        ctrl_shortcuts.insert(gdk::Key::x, force_stop);
         ctrl_shortcuts.insert(gdk::Key::I, ctrl_i);
         ctrl_shortcuts.insert(gdk::Key::i, ctrl_i);
+        ctrl_shortcuts.insert(gdk::Key::S, services_start);
+        ctrl_shortcuts.insert(gdk::Key::s, services_start);
         ctrl_shortcuts.insert(gdk::Key::R, services_restart);
         ctrl_shortcuts.insert(gdk::Key::r, services_restart);
         shortcuts.insert(gdk::ModifierType::CONTROL_MASK, ctrl_shortcuts);
@@ -587,16 +618,6 @@ mod imp {
             });
             self.obj().add_action(&action);
             app.set_accels_for_action("win.close", &["<Control>W"]);
-
-            // Not clear how actions actually become usable, what I know is that they need to be
-            // created and configured at object construction otherwise they flat out don't work.
-            // And since these actions *need* to be tied to the window they are created here.
-            self.obj()
-                .add_action(&gio::SimpleAction::new("selected-svc-start", None));
-            self.obj()
-                .add_action(&gio::SimpleAction::new("selected-svc-stop", None));
-            self.obj()
-                .add_action(&gio::SimpleAction::new("selected-svc-restart", None));
         }
 
         fn configure_theme_selection(&self) {
@@ -974,7 +995,8 @@ mod imp {
 glib::wrapper! {
     pub struct MissionCenterWindow(ObjectSubclass<imp::MissionCenterWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible,
+                    gtk::Buildable, gtk::ShortcutManager, gtk::Root, gtk::Native;
 }
 
 impl MissionCenterWindow {
@@ -1099,7 +1121,7 @@ impl MissionCenterWindow {
         result &= this.performance_page.update_readings(readings);
         result &= this.apps_page.update_readings(readings);
 
-        if !readings.services.is_empty() {
+        if !readings.system_services.is_empty() || !readings.user_services.is_empty() {
             this.services_stack_page.set_visible(true);
             result &= this.services_page.update_readings(readings);
         } else {

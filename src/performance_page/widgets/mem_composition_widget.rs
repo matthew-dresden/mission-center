@@ -36,7 +36,6 @@ use magpie_types::memory::Memory;
 
 use super::GRAPH_RADIUS;
 use crate::i18n::i18n_f;
-use crate::settings;
 
 mod imp {
     use super::*;
@@ -187,8 +186,6 @@ mod imp {
         }
 
         fn render(&self, snapshot: &Snapshot, width: f32, height: f32, scale_factor: f64) {
-            let settings = &settings!();
-
             let texture = gdk::Texture::for_pixbuf(
                 &self.generate_pattern(scale_factor as f32, self.base_color.get()),
             );
@@ -245,8 +242,7 @@ mod imp {
                 Some(&fill_color),
             );
 
-            let used_hr =
-                crate::to_human_readable_nice(used as _, &DataType::MemoryBytes, settings);
+            let used_hr = crate::to_human_readable_nice(used as _, &DataType::MemoryBytes);
             tooltip_texts.push((
                 x,
                 i18n_f(
@@ -276,8 +272,7 @@ mod imp {
 
             let x = new_x;
 
-            let modified_hr =
-                crate::to_human_readable_nice(modified, &DataType::MemoryBytes, settings);
+            let modified_hr = crate::to_human_readable_nice(modified, &DataType::MemoryBytes);
             tooltip_texts.push((
                 x,
                 i18n_f(
@@ -301,8 +296,7 @@ mod imp {
 
             let x = new_x;
 
-            let standby_hr =
-                crate::to_human_readable_nice(standby as _, &DataType::MemoryBytes, &settings!());
+            let standby_hr = crate::to_human_readable_nice(standby as _, &DataType::MemoryBytes);
             tooltip_texts.push((
                 x,
                 i18n_f(
@@ -315,7 +309,7 @@ mod imp {
             let free = mem_info.mem_free as f32;
             self.render_bar(snapshot, x, 1., height, &stroke, &stroke_color, None);
 
-            let free_hr = crate::to_human_readable_nice(free, &DataType::MemoryBytes, settings);
+            let free_hr = crate::to_human_readable_nice(free, &DataType::MemoryBytes);
             tooltip_texts.push((
                 width + 1.,
                 i18n_f(
@@ -404,7 +398,7 @@ mod imp {
 glib::wrapper! {
     pub struct MemoryCompositionWidget(ObjectSubclass<imp::MemoryCompositionWidget>)
         @extends gtk::Widget,
-        @implements gtk::Buildable;
+        @implements gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl MemoryCompositionWidget {

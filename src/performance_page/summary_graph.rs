@@ -229,7 +229,7 @@ mod imp {
 glib::wrapper! {
     pub struct SummaryGraph(ObjectSubclass<imp::SummaryGraph>)
         @extends gtk::Widget, gtk::Box,
-        @implements gtk::Buildable;
+        @implements gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl SummaryGraph {

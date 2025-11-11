@@ -36,7 +36,7 @@ use super::PageExt;
 mod imp {
     use super::*;
     use crate::performance_page::disk_details::DiskDetails;
-    use crate::{settings, DataType};
+    use crate::DataType;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageDisk)]
@@ -193,7 +193,6 @@ mod imp {
                 });
 
             let this = this.imp();
-            let settings = &settings!();
 
             let _ = this.raw_disk_id.set(disk.id.clone());
 
@@ -224,7 +223,7 @@ mod imp {
 
             let cap = disk.capacity_bytes;
             this.infobar_content.capacity().set_text(&if cap > 0 {
-                crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes, settings)
+                crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes)
             } else {
                 i18n("Unknown")
             });
@@ -327,16 +326,24 @@ mod imp {
                 });
             }
 
-            if let Some(serial) = &disk.serial_number {
-                this.infobar_content.serial_number().set_text(serial);
-                this.infobar_content.set_serial_number_visible(true);
+            if let Some(serial) = disk.serial_number.as_ref().map(|s| s.trim()) {
+                if serial.trim().is_empty() {
+                    this.infobar_content.set_serial_number_visible(false);
+                } else {
+                    this.infobar_content.serial_number().set_text(serial);
+                    this.infobar_content.set_serial_number_visible(true);
+                }
             } else {
                 this.infobar_content.set_serial_number_visible(false);
             }
 
-            if let Some(wwn) = &disk.world_wide_name {
-                this.infobar_content.wwn().set_text(wwn);
-                this.infobar_content.set_wwn_visible(true);
+            if let Some(wwn) = disk.world_wide_name.as_ref().map(|s| s.trim()) {
+                if wwn.is_empty() {
+                    this.infobar_content.set_wwn_visible(false);
+                } else {
+                    this.infobar_content.wwn().set_text(wwn);
+                    this.infobar_content.set_wwn_visible(true);
+                }
             } else {
                 this.infobar_content.set_wwn_visible(false);
             }
@@ -350,7 +357,6 @@ mod imp {
             disk: &Disk,
         ) -> bool {
             let this = this.imp();
-            let settings = &settings!();
 
             if index.is_some() {
                 this.disk_id.set_text(&i18n_f(
@@ -364,7 +370,6 @@ mod imp {
             this.max_y.set_text(&crate::to_human_readable_nice(
                 this.disk_transfer_rate_graph.value_range_max(),
                 &DataType::DriveBytesPerSecond,
-                settings,
             ));
 
             this.usage_graph.add_data_point(0, disk.busy_percent);
@@ -373,7 +378,7 @@ mod imp {
             this.infobar_content
                 .formatted()
                 .set_text(&if let Some(cap) = cap {
-                    crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes, settings)
+                    crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes)
                 } else {
                     i18n("Unknown")
                 });
@@ -402,7 +407,6 @@ mod imp {
                 .set_text(&crate::to_human_readable_nice(
                     disk.rx_speed_bytes_ps as f32,
                     &DataType::DriveBytesPerSecond,
-                    settings,
                 ));
 
             this.infobar_content
@@ -410,7 +414,6 @@ mod imp {
                 .set_text(&crate::to_human_readable_nice(
                     disk.rx_bytes_total as f32,
                     &DataType::DriveBytes,
-                    settings,
                 ));
 
             this.disk_transfer_rate_graph
@@ -420,7 +423,6 @@ mod imp {
                 .set_text(&crate::to_human_readable_nice(
                     disk.tx_speed_bytes_ps as f32,
                     &DataType::DriveBytesPerSecond,
-                    settings,
                 ));
 
             this.infobar_content
@@ -428,7 +430,6 @@ mod imp {
                 .set_text(&crate::to_human_readable_nice(
                     disk.tx_bytes_total as f32,
                     &DataType::DriveBytes,
-                    settings,
                 ));
 
             true
@@ -523,7 +524,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePageDisk(ObjectSubclass<imp::PerformancePageDisk>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PageExt for PerformancePageDisk {

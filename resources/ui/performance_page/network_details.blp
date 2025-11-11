@@ -69,6 +69,7 @@ Box root {
         ]
 
         halign: start;
+        selectable: true;
       }
     }
 
@@ -107,6 +108,7 @@ Box root {
         ]
 
         halign: start;
+        selectable: true;
       }
     }
 
@@ -136,6 +138,7 @@ Box root {
         ]
 
         halign: start;
+        selectable: true;
       }
     }
 
@@ -165,6 +168,7 @@ Box root {
         ]
 
         halign: start;
+        selectable: true;
       }
     }
 
@@ -181,7 +185,10 @@ Box root {
       margin-top: 20;
 
       halign: start;
+      margin-end: 5;
+
       label: _("Interface name:");
+      ellipsize: end;
     }
 
     Label {
@@ -195,7 +202,10 @@ Box root {
       ]
 
       halign: start;
+      margin-end: 5;
+
       label: _("Connection type:");
+      ellipsize: end;
     }
 
     Label {
@@ -223,8 +233,12 @@ Box root {
       ]
 
       halign: start;
+      margin-end: 5;
+
       visible: bind ssid.visible;
+
       label: _("SSID:");
+      ellipsize: end;
     }
 
     Label {
@@ -238,8 +252,12 @@ Box root {
       ]
 
       halign: start;
+      margin-end: 5;
+
       visible: bind signal_strength.visible;
+
       label: _("Signal strength:");
+      ellipsize: end;
     }
 
     Label {
@@ -253,8 +271,12 @@ Box root {
       ]
 
       halign: start;
+      margin-end: 5;
+
       visible: bind max_bitrate.visible;
+
       label: _("Maximum Bitrate:");
+      ellipsize: end;
     }
 
     Label {
@@ -268,8 +290,12 @@ Box root {
       ]
 
       halign: start;
+      margin-end: 5;
+
       visible: bind frequency.visible;
+
       label: _("Frequency:");
+      ellipsize: end;
     }
 
     Label {
@@ -283,9 +309,10 @@ Box root {
       ]
 
       halign: start;
-      label: _("Hardware address:");
+      margin-end: 5;
 
-      ellipsize: middle;
+      label: _("Hardware address:");
+      ellipsize: end;
     }
 
     Label interface_name_label {
@@ -427,6 +454,7 @@ Box root {
         ]
 
         halign: start;
+        margin-end: 5;
         label: _("IPv4 address:");
 
         ellipsize: end;
@@ -439,6 +467,7 @@ Box root {
 
         halign: start;
 
+        ellipsize: middle;
         selectable: true;
       }
     }
@@ -453,8 +482,9 @@ Box root {
         ]
 
         halign: start;
-        label: _("IPv6 address:");
+        margin-end: 5;
 
+        label: _("IPv6 address:");
         ellipsize: end;
       }
 

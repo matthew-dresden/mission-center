@@ -324,7 +324,7 @@ mod imp {
 glib::wrapper! {
     pub struct PreferencesPage(ObjectSubclass<imp::PreferencesPage>)
         @extends adw::PreferencesPage, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PreferencesPage {

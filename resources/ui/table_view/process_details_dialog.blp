@@ -1,4 +1,4 @@
-/* ui/apps_page/details_dialog.blp
+/* ui/table_view/process_details_dialog.blp
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -21,7 +21,7 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $AppsPageDetailsDialog: Adw.Dialog {
+template $ProcessDetailsDialog: Adw.Dialog {
   width-request: 360;
 
   Adw.ToolbarView {
@@ -70,13 +70,21 @@ template $AppsPageDetailsDialog: Adw.Dialog {
                 margin-end: 12;
                 spacing: 12;
 
-                Label {
+                Label pid_label {
                   hexpand: true;
                   halign: start;
                   label: _("PID");
                 }
 
-                Label id {
+                Label app_id_label {
+                  visible: false;
+
+                  hexpand: true;
+                  halign: start;
+                  label: _("App ID");
+                }
+
+                Label id_value {
                   styles [
                     "dim-label",
                   ]

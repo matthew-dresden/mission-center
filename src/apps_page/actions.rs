@@ -18,384 +18,145 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::gdk;
-use adw::glib::g_warning;
-use adw::prelude::AdwDialogExt;
+use adw::prelude::*;
 use gtk::gio;
-use gtk::glib::{g_critical, VariantTy};
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
 
-use crate::app;
+use crate::table_view::ProcessDetailsDialog;
+use crate::table_view::TableView;
+use crate::table_view::{ContentType, RowModel};
 
-use super::details_dialog::DetailsDialog;
-use super::imp::AppsPage as AppsPageImp;
-use super::row_model::{ContentType, RowModel};
-use super::AppsPage;
-use super::{select_item, upgrade_weak_ptr};
+macro_rules! new_action {
+    ($name: literal, $column_view: expr, $magpie_function: ident) => {{
+        use gtk::prelude::*;
+        use $crate::table_view::ContentType;
 
-pub fn configure(imp: &AppsPageImp) {
-    let this = imp.obj();
+        let action = gio::SimpleAction::new($name, None);
 
-    let actions = gio::SimpleActionGroup::new();
-    this.insert_action_group("apps-page", Some(&actions));
+        let selected_item = $column_view.selected_item();
+        action.set_enabled(
+            selected_item.content_type() == ContentType::Process
+                || selected_item.content_type() == ContentType::App,
+        );
 
-    let action = gio::SimpleAction::new("show-context-menu", Some(VariantTy::TUPLE));
-    action.connect_activate({
-        let this = this.downgrade();
-        move |_action, entry| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let imp = this.imp();
-
-            let Some(model) = imp.column_view.model().as_ref().cloned() else {
-                g_critical!(
-                    "MissionCenter::AppsPage",
-                    "Failed to get model for `show-context-menu` action"
-                );
-                return;
-            };
-
-            let Some((id, anchor_widget, x, y)) =
-                entry.and_then(|s| s.get::<(String, u64, f64, f64)>())
-            else {
-                g_critical!(
-                    "MissionCenter::AppsPage",
-                    "Failed to get service name and button from show-context-menu action"
-                );
-                return;
-            };
-
-            let anchor_widget = upgrade_weak_ptr(anchor_widget as _);
-            let anchor = calculate_anchor_point(&this, &anchor_widget, x, y);
-
-            if select_item(&model, &id) {
-                imp.context_menu.set_pointing_to(Some(&anchor));
-                imp.context_menu.popup();
-            }
-        }
-    });
-    actions.add_action(&action);
-
-    imp.action_stop.set_enabled(false);
-    imp.action_stop.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.terminate_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.terminate_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_stop);
-
-    imp.action_force_stop.set_enabled(false);
-    imp.action_force_stop.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.kill_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.kill_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_force_stop);
-
-    imp.action_suspend.set_enabled(false);
-    imp.action_suspend.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.suspend_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.suspend_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_suspend);
-
-    imp.action_continue.set_enabled(false);
-    imp.action_continue.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.continue_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.continue_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_continue);
-
-    imp.action_hangup.set_enabled(false);
-    imp.action_hangup.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.hangup_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.hangup_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_hangup);
-
-    imp.action_interrupt.set_enabled(false);
-    imp.action_interrupt.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.interrupt_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.interrupt_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_interrupt);
-
-    imp.action_user_one.set_enabled(false);
-    imp.action_user_one.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.user_signal_one_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.user_signal_one_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_user_one);
-
-    imp.action_user_two.set_enabled(false);
-    imp.action_user_two.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let this = this.imp();
-
-            let selected_item = this.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            if let Ok(magpie_client) = app!().sys_info() {
-                if selected_item.content_type() == ContentType::App {
-                    magpie_client.user_signal_two_processes(app_pids(&*selected_item));
-                } else {
-                    magpie_client.user_signal_two_process(selected_item.pid());
-                }
-            }
-        }
-    });
-    actions.add_action(&imp.action_user_two);
-
-    imp.action_details.set_enabled(false);
-    imp.action_details.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let imp = this.imp();
-
-            let selected_item = imp.selected_item.borrow();
-            if selected_item.content_type() == ContentType::SectionHeader {
-                return;
-            }
-
-            let details_dialog = DetailsDialog::new(imp.selected_item.borrow().clone());
-            details_dialog.present(Some(&this));
-        }
-    });
-    actions.add_action(&imp.action_details);
-
-    let action = gio::SimpleAction::new("collapse-all", None);
-    action.connect_activate({
-        let this = this.downgrade();
-        move |_action, _| {
-            let Some(this) = this.upgrade() else {
-                return;
-            };
-            let imp = this.imp();
-
-            let Some(selection_model) = imp
-                .column_view
-                .model()
-                .and_then(|model| model.downcast::<gtk::SingleSelection>().ok())
-            else {
-                g_critical!(
-                    "MissionCenter::AppsPage",
-                    "Failed to get model for `collapse-all` action"
-                );
-                return;
-            };
-
-            let mut count = 0;
-            for i in 0..selection_model.n_items() {
-                let Some(row) = selection_model
-                    .item(i)
-                    .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
-                else {
+        $column_view.connect_selected_item_notify({
+            let action = action.downgrade();
+            move |column_view| {
+                let Some(action) = action.upgrade() else {
                     return;
                 };
 
-                let Some(row_model) = row.item().and_then(|item| item.downcast::<RowModel>().ok())
-                else {
-                    continue;
+                let selected_item = column_view.selected_item();
+                action.set_enabled(
+                    selected_item.content_type() == ContentType::Process
+                        || selected_item.content_type() == ContentType::App,
+                );
+            }
+        });
+
+        action.connect_activate({
+            let column_view = $column_view.downgrade();
+            move |_action, _| {
+                let Some(column_view) = column_view.upgrade() else {
+                    return;
                 };
 
-                if row_model.content_type() != ContentType::SectionHeader {
-                    continue;
+                let selected_item = column_view.selected_item();
+                if selected_item.content_type() != ContentType::Process
+                    && selected_item.content_type() != ContentType::App
+                {
+                    return;
                 }
 
-                row.set_expanded(false);
-                count += 1;
-
-                if count >= 2 {
-                    break;
+                if let Ok(magpie_client) = $crate::app!().sys_info() {
+                    match selected_item.content_type() {
+                        ContentType::Process => {
+                            magpie_client.$magpie_function(vec![selected_item.pid()]);
+                        }
+                        ContentType::App => {
+                            magpie_client.$magpie_function(app_pids(&selected_item));
+                        }
+                        _ => {}
+                    }
                 }
+            }
+        });
+        action
+    }};
+}
+
+pub fn action_stop(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("stop", column_view_frame, terminate_processes)
+}
+
+pub fn action_force_stop(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("force-stop", column_view_frame, kill_processes)
+}
+
+pub fn action_suspend(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("suspend", column_view_frame, suspend_processes)
+}
+
+pub fn action_continue(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("continue", column_view_frame, continue_processes)
+}
+
+pub fn action_hangup(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("hangup", column_view_frame, hangup_processes)
+}
+
+pub fn action_interrupt(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("interrupt", column_view_frame, interrupt_processes)
+}
+
+pub fn action_user_one(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("user-one", column_view_frame, user_signal_one_processes)
+}
+
+pub fn action_user_two(column_view_frame: &TableView) -> gio::SimpleAction {
+    new_action!("user-two", column_view_frame, user_signal_two_processes)
+}
+
+pub fn action_details(column_view_frame: &TableView) -> gio::SimpleAction {
+    let action = gio::SimpleAction::new("details", None);
+
+    let selected_item = column_view_frame.selected_item();
+    action.set_enabled(
+        selected_item.content_type() == ContentType::Process
+            || selected_item.content_type() == ContentType::App,
+    );
+
+    column_view_frame.connect_selected_item_notify({
+        let action = action.downgrade();
+        move |column_view| {
+            let Some(action) = action.upgrade() else {
+                return;
+            };
+
+            let selected_item = column_view.selected_item();
+            action.set_enabled(
+                selected_item.content_type() == ContentType::Process
+                    || selected_item.content_type() == ContentType::App,
+            );
+        }
+    });
+
+    action.connect_activate({
+        let column_view_frame = column_view_frame.downgrade();
+        move |_action, _| {
+            let Some(column_view_frame) = column_view_frame.upgrade() else {
+                return;
+            };
+
+            let selected_item = column_view_frame.selected_item();
+            if selected_item.content_type() == ContentType::Process
+                || selected_item.content_type() == ContentType::App
+            {
+                let dialog = ProcessDetailsDialog::new(selected_item);
+                dialog.present(Some(&column_view_frame));
             }
         }
     });
-    actions.add_action(&action);
-}
-
-fn calculate_anchor_point(
-    apps_page: &AppsPage,
-    widget: &Option<gtk::Widget>,
-    x: f64,
-    y: f64,
-) -> gdk::Rectangle {
-    let imp = apps_page.imp();
-
-    let Some(anchor_widget) = widget else {
-        g_warning!(
-            "MissionCenter::AppsPage",
-            "Failed to get anchor widget, popup will display in an arbitrary location"
-        );
-        return gdk::Rectangle::new(0, 0, 0, 0);
-    };
-
-    if x > 0. && y > 0. {
-        imp.context_menu.set_has_arrow(false);
-
-        match anchor_widget.compute_point(apps_page, &gtk::graphene::Point::new(x as _, y as _)) {
-            Some(p) => gdk::Rectangle::new(p.x().round() as i32, p.y().round() as i32, 1, 1),
-            None => {
-                g_critical!(
-                    "MissionCenter::AppsPage",
-                    "Failed to compute_point, context menu will not be anchored to mouse position"
-                );
-                gdk::Rectangle::new(x.round() as i32, y.round() as i32, 1, 1)
-            }
-        }
-    } else {
-        imp.context_menu.set_has_arrow(true);
-
-        if let Some(bounds) = anchor_widget.compute_bounds(&*imp.obj()) {
-            gdk::Rectangle::new(
-                bounds.x() as i32,
-                bounds.y() as i32,
-                bounds.width() as i32,
-                bounds.height() as i32,
-            )
-        } else {
-            g_warning!(
-                "MissionCenter::AppsPage",
-                "Failed to get bounds for menu button, popup will display in an arbitrary location"
-            );
-            gdk::Rectangle::new(0, 0, 0, 0)
-        }
-    }
+    action
 }
 
 fn app_pids(row_model: &RowModel) -> Vec<u32> {
