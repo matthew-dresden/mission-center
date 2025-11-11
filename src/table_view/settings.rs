@@ -1,28 +1,26 @@
-use crate::process_tree::column_view_frame::imp::ColumnViewFrame;
-use crate::process_tree::column_view_frame::ColumnViewSettingsValues::*;
-use crate::settings;
 use glib::g_critical;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-pub fn configure_column_frame(imp: &ColumnViewFrame) {
-    let obj = imp.obj();
+use crate::settings;
+use crate::table_view::SettingsValues::*;
+use crate::table_view::TableView;
 
+pub fn configure(table_view: &TableView) {
     let settings = settings!();
 
     settings
         .bind(
             "apps-page-show-column-separators",
-            &*obj,
+            &*table_view,
             "show-column-separators",
         )
         .build();
 
-    imp.use_merged_stats
-        .set(settings.boolean("apps-page-merged-process-stats"));
+    table_view.set_use_merged_stats(settings.boolean("apps-page-merged-process-stats"));
     settings.connect_changed(Some("apps-page-merged-process-stats"), {
-        let this = obj.downgrade();
+        let this = table_view.downgrade();
         move |settings, _| {
             if let Some(this) = this.upgrade() {
                 this.imp()
@@ -32,14 +30,14 @@ pub fn configure_column_frame(imp: &ColumnViewFrame) {
         }
     });
 
-    configure_sorting(imp, &settings!());
+    configure_sorting(table_view, &settings);
 }
 
-fn configure_sorting(column_view_frame: &ColumnViewFrame, settings: &gio::Settings) {
-    let column_view = &column_view_frame.column_view;
+fn configure_sorting(table_view: &TableView, settings: &gio::Settings) {
+    let column_view = table_view.column_view();
 
-    let sorting_column_name_key = &column_view_frame.format_settings_key(&SortingColumnName);
-    let sorting_order_key = &column_view_frame.format_settings_key(&SortingOrder);
+    let sorting_column_name_key = &table_view.format_settings_key(&SortingColumnName);
+    let sorting_order_key = &table_view.format_settings_key(&SortingOrder);
 
     if !settings.boolean("apps-page-remember-sorting") {
         let _ = settings.set_string(sorting_column_name_key, "");

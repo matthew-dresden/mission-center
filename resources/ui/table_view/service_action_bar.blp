@@ -1,4 +1,4 @@
-/* ui/process_column_view/service_action_bar.blp
+/* ui/table_view/service_action_bar.blp
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -19,7 +19,6 @@
  */
 
 using Gtk 4.0;
-using Adw 1;
 
 template $ServiceActionBar: Box {
   valign: center;
@@ -31,8 +30,10 @@ template $ServiceActionBar: Box {
     ]
 
     Button service_start {
-      action-name: "services-page.selected-svc-start";
+      action-name: "service.start";
       tooltip-text: _("Start the selected service");
+
+      visible: bind template.is_snap inverted;
 
       child: Box {
         spacing: 5;
@@ -50,8 +51,10 @@ template $ServiceActionBar: Box {
     }
 
     Button service_stop {
-      action-name: "services-page.selected-svc-stop";
+      action-name: "service.stop";
       tooltip-text: _("Stop the selected service");
+
+      visible: bind template.is_snap inverted;
 
       child: Box {
         spacing: 5;
@@ -70,8 +73,10 @@ template $ServiceActionBar: Box {
   }
 
   Button service_restart {
-    action-name: "services-page.selected-svc-restart";
+    action-name: "service.restart";
     tooltip-text: _("Restart the selected service");
+
+    visible: bind template.is_snap inverted;
 
     child: Box {
       spacing: 5;
@@ -89,7 +94,7 @@ template $ServiceActionBar: Box {
   }
 
   Button service_status {
-    action-name: "services-page.details";
+    action-name: "service.details";
     tooltip-text: _("Show details of the selected service");
 
     child: Box {
@@ -106,34 +111,5 @@ template $ServiceActionBar: Box {
       }
     };
   }
-
-  PopoverMenu service_context_menu {
-    menu-model: service_context_menu_model;
-  }
 }
 
-menu service_context_menu_model {
-  section {
-    item {
-      label: _("Start");
-      action: "services-page.selected-svc-start";
-    }
-
-    item {
-      label: _("Stop");
-      action: "services-page.selected-svc-stop";
-    }
-
-    item {
-      label: _("Restart");
-      action: "services-page.selected-svc-restart";
-    }
-  }
-
-  section {
-    item {
-      label: _("Details");
-      action: "services-page.details";
-    }
-  }
-}

@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-06-05 00:02+0000\n"
-"Last-Translator: Yiğit Alıcıkuş <yigitalkcs0@outlook.com>\n"
+"PO-Revision-Date: 2025-10-20 04:51+0000\n"
+"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/tr/>\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -43,11 +43,12 @@ msgid "Monitor system resource usage"
 msgstr "Sistem kaynakları kullanımını izle"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:18
-#, fuzzy
 msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
-msgstr "İşlemci, Bellek, Disk, Ağ ve Ekran Kartı kullanımlarınızı izleyin"
+msgstr ""
+"İşlemci, Bellek, Disk, Ağ ve Ekran Kartı kullanımlarınızı uygulama ve süreç "
+"bazına kırılımların istatistikleriyle izleyin"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 msgid "Features:"
@@ -165,7 +166,7 @@ msgstr "Arayüz stili"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:52
 msgid "If light or dark interface style should be used"
-msgstr ""
+msgstr "Açık veya koyu arayüz biçemi kullanılması gerekiyorsa"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:58
 msgid "DEPRECATED! NO LONGER IN USE!"
@@ -184,34 +185,29 @@ msgid "How many points should be displayed on each chart?"
 msgstr "Her grafikte kaç nokta gösterilmeli?"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:75
-#, fuzzy
 msgid "Whether or not to use bits or bytes (default) for memory"
-msgstr "Ağ hızı için bit (öntanımlı) ya da Bayt kullanılma durumu"
+msgstr "Bellek için bit (öntanımlı) ya da Bayt kullanılma durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:80
-#, fuzzy
 msgid "Whether or not to use base-10 or base-2 (default) for memory"
-msgstr "Ağ hızı için bit (öntanımlı) ya da Bayt kullanılma durumu"
+msgstr "Bellek için taban-10 ya da taban-2 (öntanımlı) kullanılma durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:85
-#, fuzzy
 msgid "Whether or not to use bits or bytes (default) for drive speed + size"
-msgstr "Ağ hızı için bit (öntanımlı) ya da Bayt kullanılma durumu"
+msgstr "Sürücü hızları ve boyutları için bit ya da bayt kullanım durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:90
-#, fuzzy
 msgid ""
 "Whether or not to use base-10 or base-2 (default) for drive speed + size"
-msgstr "Ağ hızı için bit (öntanımlı) ya da Bayt kullanılma durumu"
+msgstr "Sürücü hızları ve boyutları için taban-10 ya da taban-2 kullanım durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:95
 msgid "Whether or not to use bits (default) or Bytes for network speed"
 msgstr "Ağ hızı için bit (öntanımlı) ya da Bayt kullanılma durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:100
-#, fuzzy
 msgid "Whether or not to use base-10 (default) or base-2 for network speed"
-msgstr "Ağ hızı için bit (öntanımlı) ya da Bayt kullanılma durumu"
+msgstr "Ağ hızları ve boyutları için taban-10 ya da taban-2 kullanım durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:105
 msgid ""
@@ -232,7 +228,6 @@ msgid "Column sorting is persisted across app restarts"
 msgstr "Sütun sıralaması uygulama yeniden başlatıldığında da korunur"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:120
-#, fuzzy
 msgid "Column order is persisted across app restarts"
 msgstr "Sütun sıralaması uygulama yeniden başlatıldığında da korunur"
 
@@ -245,36 +240,31 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:130
 msgid "Show a separator between each column in the Apps view"
-msgstr ""
+msgstr "Uygulamalar görünümünde her sütun arasında ayırıcı göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:135
-#, fuzzy
 msgid "The column name by which the Apps page view is sorted"
-msgstr "Uygulamalar sayfa görünümünün sıralandığı sütun kimliği"
+msgstr "Uygulamalar sayfası görünümünün sıralandığı sütun adı"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:140
 msgid "The sorting direction of the Apps page view"
 msgstr "Uygulamalar sayfa görünümünün sıralama yönü"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:145
-#, fuzzy
 msgid "The order of columns in the Apps page view"
-msgstr "Uygulamalar sayfa görünümünün sıralama yönü"
+msgstr "Uygulamalar sayfası görünümünün sütun sıralaması"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
-msgstr "Uygulamalar sayfa görünümünün sıralandığı sütun kimliği"
+msgstr "Hizmetler sayfası görünümünün sıralandığı sütun adı"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "Uygulamalar sayfa görünümünün sıralama yönü"
+msgstr "Hizmetler sayfası görünümünün sıralama yönü"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "Uygulamalar sayfa görünümünün sıralama yönü"
+msgstr "Hizmetler sayfası görünümünün sıralama yönü"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -294,9 +284,8 @@ msgid "Should performance graphs be smooth or jagged"
 msgstr "Başarım grafiklerinin yumuşak ya da pürüzlü olma durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:187
-#, fuzzy
 msgid "Should graphs be animated"
-msgstr "Başarım grafiklerinin yumuşak ya da pürüzlü olma durumu"
+msgstr "Grafiklerinin canlandırılma durumu"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:192
 #: resources/ui/preferences/page.blp:65
@@ -306,17 +295,17 @@ msgstr "İşlemci bilgilerini öntanımlı olarak göster"
 #: data/io.missioncenter.MissionCenter.gschema.xml:197
 #: resources/ui/preferences/page.blp:71
 msgid "Show memory information by default"
-msgstr "Bellek bilgilerini öntanımlı  olarak göster"
+msgstr "Bellek bilgilerini öntanımlı olarak göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:202
 #: resources/ui/preferences/page.blp:77
 msgid "Show disk information by default"
-msgstr "Disk bilgilerini öntanımlı  olarak göster"
+msgstr "Disk bilgilerini öntanımlı olarak göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:207
 #: resources/ui/preferences/page.blp:83
 msgid "Show network information by default"
-msgstr "Ağ bilgilerini öntanımlı  olarak göster"
+msgstr "Ağ bilgilerini öntanımlı olarak göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:212
 #: resources/ui/preferences/page.blp:89
@@ -337,9 +326,8 @@ msgid "Show the swap graph"
 msgstr "Takas grafiğini göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
-#, fuzzy
 msgid "Show the gpu encode-decode graph"
-msgstr "Gpu kodlama-kod çözme grafiğini göster"
+msgstr "Ekran kartı kodlama-kod çözme grafiğini göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
@@ -390,20 +378,18 @@ msgstr "Yok"
 #: resources/ui/apps_page/details_dialog.blp:104
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:205
 #: resources/ui/process_column_view/process_details_dialog.blp:112
-#, fuzzy
 msgid "Type"
-msgstr "Tür:"
+msgstr "Tür"
 
 #: resources/ui/apps_page/details_dialog.blp:132
 #: resources/ui/process_column_view/process_details_dialog.blp:140
 msgid "Command Line"
-msgstr ""
+msgstr "Komut Satırı"
 
 #: resources/ui/apps_page/details_dialog.blp:154
 #: resources/ui/process_column_view/process_details_dialog.blp:162
-#, fuzzy
 msgid "Resource Usage"
-msgstr "Bellek kullanımı"
+msgstr "Kaynak Kullanımı"
 
 #: resources/ui/apps_page/details_dialog.blp:168
 #: resources/ui/performance_page/cpu.blp:45
@@ -423,24 +409,21 @@ msgstr "Bellek"
 
 #: resources/ui/apps_page/details_dialog.blp:218
 #: resources/ui/process_column_view/process_details_dialog.blp:226
-#, fuzzy
 msgid "Shared Memory"
-msgstr "Bellek"
+msgstr "Paylaşılan Bellek"
 
 #: resources/ui/apps_page/details_dialog.blp:243
 #: resources/ui/process_column_view/process_details_dialog.blp:251
-#, fuzzy
 msgid "Drives"
-msgstr "Sürücü"
+msgstr "Sürücüler"
 
 #: resources/ui/apps_page/details_dialog.blp:268
 #: resources/ui/process_column_view/column_view_frame.blp:78
 #: resources/ui/process_column_view/process_details_dialog.blp:276
 #: src/process_tree/column_view_frame.rs:579
 #: src/process_tree/column_view_frame.rs:588
-#, fuzzy
 msgid "Network"
-msgstr "_Ağ"
+msgstr "Ağ"
 
 #: resources/ui/apps_page/details_dialog.blp:293
 #: resources/ui/process_column_view/column_view_frame.blp:84
@@ -456,42 +439,41 @@ msgstr "Ekran Kartı"
 #: resources/ui/process_column_view/process_details_dialog.blp:326
 #: src/process_tree/column_view_frame.rs:598
 #: src/process_tree/column_view_frame.rs:617
-#, fuzzy
 msgid "GPU Memory"
 msgstr "Ekran Kartı Belleği"
 
 #: resources/ui/apps_page/page.blp:75
 msgid "Collapse all apps and processes"
-msgstr ""
+msgstr "Tüm uygulamaları ve süreçleri daralt"
 
 #: resources/ui/apps_page/page.blp:87 resources/ui/services_page/page.blp:94
 #: resources/ui/keyboard_shortcuts.blp:112
 msgid "Collapse All"
-msgstr ""
+msgstr "Tümünü Daralt"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
-msgstr ""
+msgstr "Çıkartılamadı"
 
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
-msgstr ""
+msgstr "Sonlandır"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:31
 msgid "In Use:"
-msgstr ""
+msgstr "Kullanımda:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:36
 msgid "Modified:"
-msgstr ""
+msgstr "Değiştirilme:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:41
 msgid "Standby:"
-msgstr ""
+msgstr "Beklemede:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:46
 msgid "Free:"
-msgstr ""
+msgstr "Boş:"
 
 #: resources/ui/performance_page/cpu.blp:63
 #: resources/ui/performance_page/gpu.blp:72
@@ -603,11 +585,11 @@ msgstr "K_opyala"
 
 #: resources/ui/performance_page/disk.blp:66
 msgid "Show SMART Data"
-msgstr ""
+msgstr "SMART Verilerini Göster"
 
 #: resources/ui/performance_page/disk.blp:77
 msgid "Eject Disk"
-msgstr ""
+msgstr "Diski Çıkart"
 
 #: resources/ui/performance_page/disk.blp:99
 msgid "Active time over "
@@ -632,7 +614,7 @@ msgstr "Fan Hızı"
 
 #: resources/ui/performance_page/fan_details.blp:98
 msgid "PWM Percentage"
-msgstr ""
+msgstr "PWM Yüzdeki"
 
 #: resources/ui/performance_page/fan_details.blp:125
 msgid "Current Temperature"
@@ -766,61 +748,57 @@ msgstr "IPv6 adresi:"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
-msgstr ""
+msgstr "SMART Verileri"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:48
 msgid "Last Updated"
-msgstr ""
+msgstr "Son Güncelleme"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:72
-#, fuzzy
 msgid "Powered On"
-msgstr "Güç kullanımı"
+msgstr "Güç Açıldı"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:96
 msgid "Drive Health"
-msgstr ""
+msgstr "Sürücü Sağlığı"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
-msgstr ""
+msgstr "SMART Sınama Durumu"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
 msgid "Attribute"
-msgstr ""
+msgstr "Öznitelik"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
 msgid "Value"
-msgstr ""
+msgstr "Değer"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
-#, fuzzy
 msgid "ID"
-msgstr "PID"
+msgstr "Kimlik"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
-#, fuzzy
 msgid "Normalized"
-msgstr "Biçimlendirilmiş:"
+msgstr "Normalleştirilmiş"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:193
-#, fuzzy
 msgid "Threshold"
-msgstr "İş Parçacığı"
+msgstr "Eşik"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:199
 msgid "Worst"
-msgstr ""
+msgstr "En Kötü"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:211
 msgid "Updates"
-msgstr ""
+msgstr "Güncellemeler"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:217
 msgid "Assessment"
-msgstr ""
+msgstr "Değerlendirme"
 
 #: resources/ui/performance_page/gpu_details.blp:51
 #: resources/ui/performance_page/cpu_details.blp:46
@@ -833,26 +811,22 @@ msgstr "Saat Hızı"
 
 #: resources/ui/performance_page/gpu_details.blp:132
 #: resources/ui/performance_page/cpu_details.blp:91
-#, fuzzy
 msgid "Power Draw"
-msgstr "Güç kullanımı"
+msgstr "Güç Kullanımı"
 
 #: resources/ui/performance_page/gpu_details.blp:200
 #: src/performance_page/gpu.rs:552
-#, fuzzy
 msgid "Memory Usage"
-msgstr "Bellek kullanımı"
+msgstr "Bellek Kullanımı"
 
 #: resources/ui/performance_page/gpu_details.blp:274
 #: src/performance_page/gpu.rs:629
-#, fuzzy
 msgid "Shared Memory Usage"
-msgstr "Bellek kullanımı"
+msgstr "Paylaşılan Bellek Kullanımı"
 
 #: resources/ui/performance_page/gpu_details.blp:332
-#, fuzzy
 msgid "Memory Speed"
-msgstr "Bellek hızı"
+msgstr "Bellek Hızı"
 
 #: resources/ui/performance_page/gpu_details.blp:407
 msgid "Video encode"
@@ -879,9 +853,8 @@ msgid "PCI Express speed:"
 msgstr "PCI Express hızı:"
 
 #: resources/ui/performance_page/gpu_details.blp:566
-#, fuzzy
 msgid "Max PCI Express speed:"
-msgstr "PCI Express hızı:"
+msgstr "En çok PCI Express Hızı:"
 
 #: resources/ui/performance_page/gpu_details.blp:582
 msgid "PCI bus address:"
@@ -889,13 +862,15 @@ msgstr "PCI veri yolu adresi:"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
 msgid "Failed To Get SMART Data"
-msgstr ""
+msgstr "SMART Verileri Alınamadı"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:31
 msgid ""
 "There was a problem fetching SMART data. Try running from the command line "
 "to get more information."
 msgstr ""
+"SMART verileri alınırken sorun oluştu. Daha çok bilgi için komut satırından "
+"çalıştırmayı deneyin."
 
 #: resources/ui/performance_page/disk_details.blp:63
 msgid "Read speed"
@@ -906,14 +881,12 @@ msgid "Write speed"
 msgstr "Yazma hızı"
 
 #: resources/ui/performance_page/disk_details.blp:130
-#, fuzzy
 msgid "Total Read"
-msgstr "Toplam Alınan"
+msgstr "Toplam Okuma"
 
 #: resources/ui/performance_page/disk_details.blp:159
-#, fuzzy
 msgid "Total Written"
-msgstr "Toplam Gönderilen"
+msgstr "Toplam Yazma"
 
 #: resources/ui/performance_page/disk_details.blp:188
 msgid "Active time"
@@ -937,15 +910,15 @@ msgstr "Sistem diski:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Seri numarası:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Döndürme Oranı"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1020,9 +993,8 @@ msgid "Update Interval"
 msgstr "Güncelleme Aralığı"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} saniye{}"
+msgstr "Saniyeler içinde"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1030,7 +1002,7 @@ msgstr "Grafik Veri Noktaları"
 
 #: resources/ui/preferences/page.blp:46 resources/ui/keyboard_shortcuts.blp:68
 msgid "Performance Page"
-msgstr "Performans Sayfası"
+msgstr "Başarım Sayfası"
 
 #: resources/ui/preferences/page.blp:49
 msgid "Smooth Graphs"
@@ -1042,11 +1014,11 @@ msgstr "Grafikleri tırtıklı çizgi yerine yumuşak çizgi olarak çiz"
 
 #: resources/ui/preferences/page.blp:54
 msgid "Sliding Graphs"
-msgstr ""
+msgstr "Kayan Grafikler"
 
 #: resources/ui/preferences/page.blp:55
 msgid "Animate graphs (may negatively impact performance)"
-msgstr ""
+msgstr "Grafikleri canlandır (baraşımı olumsuz etkileyebilir)"
 
 #: resources/ui/preferences/page.blp:59
 msgid "Scale Network Graphs Dynamically"
@@ -1085,9 +1057,8 @@ msgid "Show Fan Information"
 msgstr "Fan Bilgilerini Göster"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "Hizmetler"
+msgstr "Uygulama ve Hizmet Sayfaları"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1098,288 +1069,263 @@ msgid "Remember Sorting"
 msgstr "Sıralamayı Hatırla"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
-msgstr ""
-"Uygulama yeniden başlatmalarında uygulama ve işlem listesinin sıralamasını "
-"hatırla"
+msgstr "Uygulama yeniden başlatıldığında sütuna göre sıralamayı koru"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
-msgstr ""
+msgstr "Sütun Sırasını Anımsa"
 
 #: resources/ui/preferences/page.blp:115
-#, fuzzy
 msgid "Persist the order of the columns, across app restarts"
-msgstr ""
-"Uygulama yeniden başlatmalarında uygulama ve işlem listesinin sıralamasını "
-"hatırla"
+msgstr "Uygulama yeniden başlatıldığında sütunların sırasını koru"
 
 #: resources/ui/preferences/page.blp:119
 msgid "Scale CPU Usage to Core Count"
 msgstr "İşlemci Kullanımını Çekirdek Sayısına Ölçekle"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
 msgstr ""
-"Uygulamalar ve Süreçlerin İşlemci kullanımını var olan çekirdek sayısına "
-"göre ölçeklendirilmiş göster"
+"İşlemci kullanımını var olan çekirdek sayısına göre ölçeklendirilmiş göster"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
-msgstr ""
+msgstr "Sütun Ayırıcıları Göster"
 
 #: resources/ui/preferences/page.blp:125
 msgid "Show a separator between each column"
-msgstr ""
+msgstr "Her sütun arasında ayırıcı göster"
 
 #: resources/ui/preferences/page.blp:130
 msgid "Global Units"
-msgstr ""
+msgstr "Genel Birimler"
 
 #: resources/ui/preferences/page.blp:133
-#, fuzzy
 msgid "Memory Usage Unit"
-msgstr "Bellek kullanımı"
+msgstr "Bellek Kullanımı Birimi"
 
 #: resources/ui/preferences/page.blp:140
 msgid "Use Bytes as a Unit of Measurement for Memory"
-msgstr ""
+msgstr "Bellek ölçüm birimi olarak Bayt kullan"
 
 #: resources/ui/preferences/page.blp:141 resources/ui/preferences/page.blp:179
 #: resources/ui/preferences/page.blp:217
 msgid "Bytes"
-msgstr ""
+msgstr "Byte"
 
 #: resources/ui/preferences/page.blp:145
 msgid "Use Bits as a Unit of Measurement for Memory"
-msgstr ""
+msgstr "Bellek ölçüm birimi olarak Bit kullan"
 
 #: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
 #: resources/ui/preferences/page.blp:222
 msgid "Bits"
-msgstr ""
+msgstr "Bit"
 
 #: resources/ui/preferences/page.blp:152
-#, fuzzy
 msgid "Memory Usage Base"
-msgstr "Bellek kullanımı"
+msgstr "Bellek Kullanım Tabanı"
 
 #: resources/ui/preferences/page.blp:159
 msgid "Use Base 10 for Memory"
-msgstr ""
+msgstr "Bellek için Taban 10 kullan"
 
 #: resources/ui/preferences/page.blp:160 resources/ui/preferences/page.blp:198
 #: resources/ui/preferences/page.blp:236
 msgid "Base 10"
-msgstr ""
+msgstr "Taban 10"
 
 #: resources/ui/preferences/page.blp:164
 msgid "Use Base 2 for Memory"
-msgstr ""
+msgstr "Bellek için taban 2 kullan"
 
 #: resources/ui/preferences/page.blp:165 resources/ui/preferences/page.blp:203
 #: resources/ui/preferences/page.blp:241
 msgid "Base 2"
-msgstr ""
+msgstr "Taban 2"
 
 #: resources/ui/preferences/page.blp:171
 msgid "Drive Usage Unit"
-msgstr ""
+msgstr "Bellek Kullanımı Birimi"
 
 #: resources/ui/preferences/page.blp:178
 msgid "Use Bytes as a Unit of Measurement for Disk Drives"
-msgstr ""
+msgstr "Disk Sürücüleri ölçüm birimi olarak Bayt kullan"
 
 #: resources/ui/preferences/page.blp:183
 msgid "Use Bits as a Unit of Measurement for Disk Drives"
-msgstr ""
+msgstr "Disk Sürücüleri ölçüm birimi olarak Bit kullan"
 
 #: resources/ui/preferences/page.blp:190
 msgid "Drive Usage Base"
-msgstr ""
+msgstr "Bellek Kullanım Tabanı"
 
 #: resources/ui/preferences/page.blp:197
 msgid "Use Base 10 for Disk Drives"
-msgstr ""
+msgstr "Disk Sürücüleri İçin Taban 10 Kullan"
 
 #: resources/ui/preferences/page.blp:202
 msgid "Use Base 2 for Disk Drives"
-msgstr ""
+msgstr "Disk Sürücüleri İçin Taban 2 Kullan"
 
 #: resources/ui/preferences/page.blp:209
 msgid "Network Usage Unit"
-msgstr ""
+msgstr "Ağ Kullanım Birimi"
 
 #: resources/ui/preferences/page.blp:216
 msgid "Use Bytes as a Unit of Measurement for Network Interfaces"
-msgstr ""
+msgstr "Ağ Arayüzleri ölçüm birimi olarak Bayt kullan"
 
 #: resources/ui/preferences/page.blp:221
 msgid "Use Bits as a Unit of Measurement for Network Interfaces"
-msgstr ""
+msgstr "Ağ Arayüzleri ölçüm birimi olarak Bit kullan"
 
 #: resources/ui/preferences/page.blp:228
 msgid "Network Usage Base"
-msgstr ""
+msgstr "Ağ Kullanım Tabanı"
 
 #: resources/ui/preferences/page.blp:235
 msgid "Use Base 10 for Network Interfaces"
-msgstr ""
+msgstr "Ağ Arayüzleri İçin Taban 10 Kullan"
 
 #: resources/ui/preferences/page.blp:240
 msgid "Use Base 2 for Network Interfaces"
-msgstr ""
+msgstr "Ağ Erayüzü İçin Taban 2 Kullan"
 
 #: resources/ui/services_page/page.blp:84
 msgid "Collapse all expanded services"
-msgstr ""
+msgstr "Tüm genişletilmiş hizmetleri kapat"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "{} Hizmet Çalışıyor"
+msgstr "Çalışan süreçleri süz"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Sanal işlemci:"
+msgstr "Başarısız süreçleri süz"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Durmuş süreçleri süz"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Devre dışı süreçleri süz"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "Tüm süzgeçleri kaldır"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "Süzgeçleri Kaldır"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
 msgid "Follow system style"
-msgstr ""
+msgstr "Sistem biçemini izle"
 
 #: resources/ui/widgets/theme_selector.blp:35
 #: resources/ui/widgets/theme_selector.blp:38
 msgid "Light style"
-msgstr ""
+msgstr "Açık biçem"
 
 #: resources/ui/widgets/theme_selector.blp:53
 #: resources/ui/widgets/theme_selector.blp:56
 msgid "Dark style"
-msgstr ""
+msgstr "Koyu biçem"
 
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Klavye Kısayolları"
 
 #: resources/ui/keyboard_shortcuts.blp:10
 msgid "Global"
-msgstr ""
+msgstr "Genel"
 
 #: resources/ui/keyboard_shortcuts.blp:21
 msgid "Open Menu"
-msgstr ""
+msgstr "Menüyü Aç"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Pencereyi Kapat"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Tercihler"
+msgstr "Tercihleri Aç"
 
 #: resources/ui/keyboard_shortcuts.blp:41
 msgid "Show Keyboard Shortcuts"
-msgstr ""
+msgstr "Klavye Kısayollarını Göster"
 
 #: resources/ui/keyboard_shortcuts.blp:46
-#, fuzzy
 msgid "Show Performance Page"
-msgstr "Performans Sayfası"
+msgstr "Başarım Sayfasını Göster"
 
 #: resources/ui/keyboard_shortcuts.blp:51
-#, fuzzy
 msgid "Show Apps Page"
-msgstr "Uygulama Sayfası"
+msgstr "Uygulamalar Sayfasını Göster"
 
 #: resources/ui/keyboard_shortcuts.blp:56
-#, fuzzy
 msgid "Show Services Page"
-msgstr "Hizmetler"
+msgstr "Hizmetler Sayfasını Göster"
 
 #: resources/ui/keyboard_shortcuts.blp:61 resources/ui/window.blp:95
 msgid "Toggle Sidebar"
 msgstr "Yan Çubuğunu Aç/Kapat"
 
 #: resources/ui/keyboard_shortcuts.blp:79
-#, fuzzy
 msgid "Copy Device Information"
-msgstr "Disk Bilgilerini Göster"
+msgstr "Aygıt Bilgilerini Kopyala"
 
 #: resources/ui/keyboard_shortcuts.blp:84
-#, fuzzy
 msgid "Toggle Summary Mode"
-msgstr "Yan Çubuğunu Aç/Kapat"
+msgstr "Özet Kipini Aç/Kapat"
 
 #: resources/ui/keyboard_shortcuts.blp:89
 msgid "Select a Device"
-msgstr ""
+msgstr "Aygıt Seç"
 
 #: resources/ui/keyboard_shortcuts.blp:96
-#, fuzzy
 msgid "Apps Page"
-msgstr "Uygulama Sayfası"
+msgstr "Uygulamalar Sayfası"
 
 #: resources/ui/keyboard_shortcuts.blp:107
 #: resources/ui/keyboard_shortcuts.blp:145 resources/ui/window.blp:143
 msgid "Search"
-msgstr ""
+msgstr "Ara"
 
 #: resources/ui/keyboard_shortcuts.blp:117
-#, fuzzy
 msgid "Stop App or Process"
-msgstr "Süreci Durdur"
+msgstr "Uygulama ya da Süreci Durdur"
 
 #: resources/ui/keyboard_shortcuts.blp:122
-#, fuzzy
 msgid "Force Stop App or Process"
-msgstr "Süreci Durmaya Zorla"
+msgstr "Uygulama ya da Süreci Durmaya Zorla"
 
 #: resources/ui/keyboard_shortcuts.blp:127
 #: resources/ui/keyboard_shortcuts.blp:165
 msgid "Show Details Dialog"
-msgstr ""
+msgstr "Ayrıntılar İletişim Kutusunu Göster"
 
 #: resources/ui/keyboard_shortcuts.blp:134
-#, fuzzy
 msgid "Services Page"
-msgstr "Hizmetler"
+msgstr "Hizmetler Sayfası"
 
 #: resources/ui/keyboard_shortcuts.blp:150
-#, fuzzy
 msgid "Start Service"
-msgstr "Hizmetler"
+msgstr "Hizmeti Başlat"
 
 #: resources/ui/keyboard_shortcuts.blp:155
-#, fuzzy
 msgid "Stop Service"
-msgstr "Hizmetler"
+msgstr "Hizmeti Durdur"
 
 #: resources/ui/keyboard_shortcuts.blp:160
-#, fuzzy
 msgid "Restart Service"
-msgstr "Yeniden Başlat"
+msgstr "Hizmeti Yeniden Başlat"
 
 #. The `Name` column should be default aligned
 #. The column that contains the context menu button should be default aligned
@@ -1406,7 +1352,7 @@ msgstr "Sürücü"
 
 #: resources/ui/process_column_view/process_action_bar.blp:34
 msgid "Stop the selected app"
-msgstr ""
+msgstr "Seçili uygulamayı durdur"
 
 #: resources/ui/process_column_view/process_action_bar.blp:46
 #: resources/ui/process_column_view/process_action_bar.blp:98
@@ -1417,17 +1363,16 @@ msgstr "Durdur"
 
 #: resources/ui/process_column_view/process_action_bar.blp:53
 msgid "Force stop the selected app"
-msgstr ""
+msgstr "Seçili uygulamayı durmaya zorla"
 
 #: resources/ui/process_column_view/process_action_bar.blp:65
 #: resources/ui/process_column_view/process_action_bar.blp:103
-#, fuzzy
 msgid "Force Stop"
-msgstr "Süreci Durmaya Zorla"
+msgstr "Durmaya Zorla"
 
 #: resources/ui/process_column_view/process_action_bar.blp:73
 msgid "Show details of the selected app"
-msgstr ""
+msgstr "Seçili uygulamanın ayrıntılarını göster"
 
 #: resources/ui/process_column_view/process_action_bar.blp:85
 #: resources/ui/process_column_view/process_action_bar.blp:154
@@ -1438,47 +1383,47 @@ msgstr "Ayrıntılar"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "Sinyal Gönder"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "Askıya Al (STOP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "Sürdür (CONT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "Aniden Kapat (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "Yarıda Kes (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "Sonlandır (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "Öldür (KILL)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "Kullanıcı 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "Kullanıcı 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "Uygulama Kimliği"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
-msgstr ""
+msgstr "Seçili hizmeti başlat"
 
 #: resources/ui/process_column_view/service_action_bar.blp:47
 #: resources/ui/process_column_view/service_action_bar.blp:118
@@ -1487,11 +1432,11 @@ msgstr "Başlat"
 
 #: resources/ui/process_column_view/service_action_bar.blp:54
 msgid "Stop the selected service"
-msgstr ""
+msgstr "Seçili hizmeti durdur"
 
 #: resources/ui/process_column_view/service_action_bar.blp:74
 msgid "Restart the selected service"
-msgstr ""
+msgstr "Seçili hizmeti yeniden başlat"
 
 #: resources/ui/process_column_view/service_action_bar.blp:86
 #: resources/ui/process_column_view/service_action_bar.blp:128
@@ -1500,7 +1445,7 @@ msgstr "Yeniden Başlat"
 
 #: resources/ui/process_column_view/service_action_bar.blp:93
 msgid "Show details of the selected service"
-msgstr ""
+msgstr "Seçili hizmetin ayrıntılarını göster"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:33
 msgid "Service Details"
@@ -1515,19 +1460,16 @@ msgid "The current state of the service"
 msgstr "Hizmetin geçerli durumu"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:75
-#, fuzzy
 msgid "Start service"
-msgstr "Hizmetler"
+msgstr "Hizmeti başlat"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:90
-#, fuzzy
 msgid "Stop service"
-msgstr "Hizmetler"
+msgstr "Hizmeti durdur"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:106
-#, fuzzy
 msgid "Restart service"
-msgstr "Yeniden Başlat"
+msgstr "Hizmeti yeniden başlat"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:164
 msgid "Description"
@@ -1564,59 +1506,53 @@ msgstr "Grup"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Dosya yöneticisinde dosya konumunu göster"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "Günlükler"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Sistem diski:"
+msgstr "Sistem Bilgileri"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Disk Bilgilerini Göster"
+msgstr "İşletim Sistemi Bilgileri"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Vulkan sürümü:"
+msgstr "Sürüm"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "Paket yöneticisi meydana getirilemiyor: %s"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Paket Yöneticisi Sürümü"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Fan Bilgilerini Göster"
+msgstr "Çekirdek Bilgileri"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Çekirdek Sürümü"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Disk Bilgilerini Göster"
+msgstr "Masaüstü Ortamı Bilgileri"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Pencere Sistemi"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Sanal makine:"
+msgstr "Sanal Uçbirim"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1643,13 +1579,12 @@ msgid "Type a name or PID to search"
 msgstr "Aramak için bir ad veya PID girin"
 
 #: resources/ui/window.blp:133
-#, fuzzy
 msgid "Toggle Device Information"
-msgstr "Disk Bilgilerini Göster"
+msgstr "Aygıt Bilgilerini Aç/Kapat"
 
 #: resources/ui/window.blp:148
 msgid "Main Menu"
-msgstr ""
+msgstr "Ana Menü"
 
 #: resources/ui/window.blp:178
 msgid "Loading..."
@@ -1657,7 +1592,7 @@ msgstr "Yükleniyor..."
 
 #: resources/ui/window.blp:192
 msgid "Performance"
-msgstr "Performans"
+msgstr "Başarım"
 
 #: resources/ui/window.blp:204 src/apps_page/mod.rs:79
 msgid "Apps"
@@ -1673,35 +1608,34 @@ msgstr "_Tercihler"
 
 #: resources/ui/window.blp:242
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "_Klavye Kısayolları"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "Sistem _Hakkında"
 
 #: resources/ui/window.blp:256
-#, fuzzy
 msgid "_About Mission Center"
 msgstr "Görev Merkezi _Hakkında"
 
 #: src/apps_page/mod.rs:259
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
-msgstr[0] "{} Hizmet Çalışıyor"
-msgstr[1] "{} Hizmet Çalışıyor"
+msgstr[0] "{} Running App"
+msgstr[1] "{} Ugygulama Çalışıyor"
 
 #: src/apps_page/mod.rs:269
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Running Process"
 msgid_plural "{} Running Processes"
-msgstr[0] "{} Hizmet Çalışıyor"
-msgstr[1] "{} Hizmet Çalışıyor"
+msgstr[0] "{} Süreç Çalışıyor"
+msgstr[1] "{} Süreç Çalışıyor"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:95
 #, rust-format
 msgid "{} ago"
-msgstr ""
+msgstr "{} önce"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:98
 #: src/performance_page/cpu.rs:321 src/performance_page/cpu.rs:332
@@ -1719,71 +1653,68 @@ msgstr "Bilinmiyor"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:130
 msgid "Pre-Fail"
-msgstr ""
+msgstr "Ön-Başarısız"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:131
 msgid "Old-Age"
-msgstr ""
+msgstr "Çok Eski"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:134
 msgid "Online"
-msgstr ""
+msgstr "Devrede"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:135
 msgid "Offline"
-msgstr ""
+msgstr "Çevrim Dışı"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:142
 msgid "FAILING"
-msgstr ""
+msgstr "BAŞARISIZ"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:147
 msgid "Failed in the past"
-msgstr ""
+msgstr "Geçmişte başarısız"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
-msgstr ""
+msgstr "Tamam"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
-msgstr ""
+msgstr "Yüzde Kullanım"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:205
-#, fuzzy
 msgid "Available Spare"
-msgstr "Kullanılabilir"
+msgstr "Kullanılabilir Yedek"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
-msgstr ""
+msgstr "Yedek Eşik"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:221
-#, fuzzy
 msgid "Total Data Read"
-msgstr "Toplam Alınan"
+msgstr "Toplam Veri Okuma"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:229
 msgid "Total Data Written"
-msgstr ""
+msgstr "Toplam Veri Yazma"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:240
 msgid "Warning Temp Time"
-msgstr ""
+msgstr "Uyarı Sıcaklık Süresi"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:248
 msgid "Critical Temp Time"
-msgstr ""
+msgstr "Uyarı Sıcaklık Süresi"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:256
 #: src/performance_page/widgets/smart_data_dialog.rs:313
 msgid "Control Busy Time"
-msgstr ""
+msgstr "Meşgul Denetim Süresi"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:264
-#, fuzzy
 msgid "Warning Temperature"
-msgstr "Geçerli Sıcaklık"
+msgstr "Uyarı Sıcaklığı"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:266
 #: src/performance_page/widgets/smart_data_dialog.rs:274
@@ -1794,82 +1725,81 @@ msgid "{} °C"
 msgstr "{} °C"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:272
-#, fuzzy
 msgid "Critical Temperature"
-msgstr "Geçerli Sıcaklık"
+msgstr "Kritik sıcaklık %.2f°C"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:279
 msgid "Temps"
-msgstr ""
+msgstr "Sıcaklıklar"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:281
 msgid "Unsafe Shutdowns"
-msgstr ""
+msgstr "Güvensiz Kapatmalar"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:289
 msgid "Media Errors"
-msgstr ""
+msgstr "Ortam Hataları"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:297
 msgid "Number Error Log Entries"
-msgstr ""
+msgstr "Sayı Hata Günlüğü Girişleri"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:305
 msgid "Power Cycles"
-msgstr ""
+msgstr "Güç Döngüleri"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:249
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "In use ({})\n"
 "\n"
 "Memory used by the operating system and running applications"
 msgstr ""
-"Kullanımda ({}B)\n"
+"Kullanımda ({})\n"
 "\n"
 "İşletim sistemi ve çalışan uygulamalar tarafından kullanılan bellek"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:279
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Modified ({})\n"
 "\n"
 "Memory whose contents must be written to disk before it can be used by "
 "another process"
 msgstr ""
-"Değiştirilmiş ({}B)\n"
+"Değiştirilmiş ({})\n"
 "\n"
 "Başka bir işlem tarafından kullanılmadan önce içeriğinin diske yazılması "
 "gereken bellek"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:303
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Standby ({})\n"
 "\n"
 "Memory that contains cached data and code that is not actively in use"
 msgstr ""
-"Beklemede ({}B)\n"
+"Beklemede ({})\n"
 "\n"
 "Önbelleğe alınmış verileri ve aktif olarak kullanılmayan kodu içeren bellek"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:316
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Free ({})\n"
 "\n"
 "Memory that is not currently in use, and that will be repurposed first when "
 "the operating system, drivers, or applications need more memory"
 msgstr ""
-"Boş ({}B)\n"
+"Boş ({})\n"
 "\n"
-"Kullanımda olmayan ve işletim sistemi, sürücüler veya uygulamalar daha fazla "
-"belleğe ihtiyaç duyduğunda ilk olarak yeniden kullanılacak bellek"
+"Kullanımda olmayan ve işletim sistemi, sürücüler ya da uygulamalar daha "
+"fazla belleğe ihtiyaç duyduğunda ilk olarak yeniden kullanılacak bellek"
 
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} sectors"
-msgstr "{} saniye{}"
+msgstr "{} sektör"
 
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
@@ -1911,9 +1841,8 @@ msgid "eMMC"
 msgstr "eMMC"
 
 #: src/performance_page/disk.rs:247 src/performance_page/mod.rs:1126
-#, fuzzy
 msgid "SD"
-msgstr "SSD"
+msgstr "SD"
 
 #: src/performance_page/disk.rs:248 src/performance_page/mod.rs:1127
 msgid "iSCSI"
@@ -1925,12 +1854,11 @@ msgstr "Optik"
 
 #: src/performance_page/disk.rs:250 src/performance_page/mod.rs:1129
 msgid "Floppy"
-msgstr ""
+msgstr "Disket"
 
 #: src/performance_page/disk.rs:251 src/performance_page/mod.rs:1130
-#, fuzzy
 msgid "Thumb Drive"
-msgstr "Sürücü"
+msgstr "USB Bellek"
 
 #: src/performance_page/disk.rs:355
 #, rust-format
@@ -1960,9 +1888,8 @@ msgid "{}%"
 msgstr "{}%"
 
 #: src/performance_page/gpu.rs:285
-#, fuzzy
 msgid "Video encode/decode"
-msgstr "Video kodla"
+msgstr "Video kodlama/kod çözme"
 
 #: src/performance_page/gpu.rs:356 src/performance_page/mod.rs:1395
 #: src/performance_page/mod.rs:2157
@@ -1971,43 +1898,42 @@ msgid "GPU {}"
 msgstr "Ekran Kartı {}"
 
 #: src/performance_page/gpu.rs:570
-#, fuzzy
 msgid "Total Memory"
-msgstr "Bellek"
+msgstr "Toplam Bellek"
 
 #: src/performance_page/gpu.rs:599
 msgid "Dedicated and shared memory usage over "
-msgstr ""
+msgstr "Özel ve paylaşımlı bellek kullanımı "
 
 #: src/performance_page/gpu.rs:645
 msgid "Total Shared Memory"
-msgstr ""
+msgstr "Toplam Paylaşımlı Bellek"
 
 #: src/performance_page/memory.rs:376
 #, rust-format
 msgid "{} of {}"
-msgstr ""
+msgstr "{} / {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
 msgstr "Ek bellek bilgileri alınamadı"
 
 #: src/performance_page/mod.rs:1136
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} ({})"
-msgstr "{} {}{}B"
+msgstr "{} {} ({})"
 
 #: src/performance_page/mod.rs:2097 src/performance_page/mod.rs:2098
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}: {}"
-msgstr "{}: {} {}{}"
+msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Hizmetler"
-msgstr[1] "Hizmetler"
+msgstr[0] "{} Toplam Hizmet"
+msgstr[1] "{} Total Services"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -2025,56 +1951,51 @@ msgid "Stopped"
 msgstr "Durdu"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "Tümünü Devre Dışı Bırak"
+msgstr "Devre dışı"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "Geçerli süzgeçle uyuşan hizmet yok"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "Süzgeç uygulanmadı"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} Hizmet Çalışıyor"
-msgstr[1] "{} Hizmet Çalışıyor"
+msgstr[0] "{} {} Hizmet"
+msgstr[1] "{} {} Services"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Hizmetler"
+msgstr "Kullanıcı Hizmetleri"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Hizmetler"
+msgstr "Sistem Hizmetleri"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
-msgstr ""
+msgstr "Gerçeklenmemiş"
 
 #: src/process_tree/row_model.rs:263
 msgid "Section Header"
-msgstr ""
+msgstr "Bölüm Başlığı"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Hizmetler"
+msgstr "Hizmet"
 
 #: src/process_tree/row_model.rs:265
-#, fuzzy
 msgid "App"
-msgstr "Uygulamalar"
+msgstr "Uygulama"
 
 #: src/process_tree/service_details_dialog.rs:203
 msgid "Copy logs to clipboard"
-msgstr ""
+msgstr "Günlükleri panoya kopyala"
 
 #: src/application.rs:409
 msgid "translator-credits"
@@ -2084,49 +2005,49 @@ msgstr "Sabri Ünal <yakushabb@gmail.com>"
 #, rust-format
 msgid "{} year"
 msgid_plural "{} years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} yıl"
+msgstr[1] "{} yıl"
 
 #: src/main.rs:107
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} month"
 msgid_plural "{} months"
-msgstr[0] "{} dakika{} "
-msgstr[1] "{} dakika{} "
+msgstr[0] "{} ay"
+msgstr[1] "{} ay"
 
 #: src/main.rs:111
 #, rust-format
 msgid "{} day"
 msgid_plural "{} days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} gün"
+msgstr[1] "{} gün"
 
 #: src/main.rs:115
 #, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} saat"
+msgstr[1] "{} saat"
 
 #: src/main.rs:119 src/main.rs:184
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
-msgstr[0] "{} dakika{} "
-msgstr[1] "{} dakika{} "
+msgstr[0] "{} dakika"
+msgstr[1] "{} dakika"
 
 #: src/main.rs:123 src/main.rs:182
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
-msgstr[0] "{} saniye{}"
-msgstr[1] "{} saniye{}"
+msgstr[0] "{} saniye"
+msgstr[1] "{} saniye"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}, {} and {}"
-msgstr "{}: {} {}{}"
+msgstr "{}, {} ve {}"
 
 #. Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days
 #. Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours
@@ -2134,11 +2055,11 @@ msgstr "{}: {} {}{}"
 #: src/main.rs:162 src/main.rs:165 src/main.rs:168
 #, rust-format
 msgid "{} and {}"
-msgstr ""
+msgstr "{} ve {}"
 
 #: src/main.rs:174
 msgid "Less than a minute"
-msgstr ""
+msgstr "Bir dakikadan daha az"
 
 #: src/main.rs:404
 msgid "_Quit"

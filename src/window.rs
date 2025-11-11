@@ -123,34 +123,35 @@ fn special_shortcuts(
             let _ = WidgetExt::activate_action(&*imp.apps_page, "apps-page.collapse-all", None);
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(&*imp.services_page, "win.selected-svc-start", None);
+            let _ =
+                WidgetExt::activate_action(&*imp.services_page, "services-page.collapse-all", None);
             return true;
         }
 
         false
     }
 
+    fn services_start(window: &MissionCenterWindow) -> bool {
+        let imp = window.imp();
+
+        let result = window.services_page_active();
+        if result {
+            let _ = imp
+                .services_page
+                .activate_table_view_action("service.start");
+        }
+        result
+    }
+
     fn ctrl_e(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(
-                &*imp.apps_page.imp().process_action_bar,
-                "apps-page.stop",
-                None,
-            );
+            let _ = imp.apps_page.activate_table_view_action("process.stop");
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(
-                &*imp.services_page.imp().process_action_bar,
-                "apps-page.stop",
-                None,
-            );
-            let _ = WidgetExt::activate_action(
-                &*imp.services_page.imp().service_action_bar,
-                "services-page.selected-svc-stop",
-                None,
-            );
+            let _ = imp.services_page.activate_table_view_action("process.stop");
+            let _ = imp.services_page.activate_table_view_action("service.stop");
             return true;
         }
 
@@ -161,23 +162,15 @@ fn special_shortcuts(
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(
-                &*imp.apps_page.imp().process_action_bar,
-                "apps-page.force-stop",
-                None,
-            );
+            let _ = imp
+                .apps_page
+                .activate_table_view_action("process.force-stop");
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(
-                &*imp.services_page.imp().process_action_bar,
-                "apps-page.force-stop",
-                None,
-            );
-            let _ = WidgetExt::activate_action(
-                &*imp.services_page.imp().service_action_bar,
-                "services-page.selected-svc-stop",
-                None,
-            );
+            let _ = imp
+                .services_page
+                .activate_table_view_action("process.force-stop");
+            let _ = imp.services_page.activate_table_view_action("service.stop");
             return true;
         }
 
@@ -188,23 +181,15 @@ fn special_shortcuts(
         let imp = window.imp();
 
         if window.apps_page_active() {
-            let _ = WidgetExt::activate_action(
-                &*imp.apps_page.imp().process_action_bar,
-                "apps-page.details",
-                None,
-            );
+            let _ = imp.apps_page.activate_table_view_action("process.details");
             return true;
         } else if window.services_page_active() {
-            let _ = WidgetExt::activate_action(
-                &*imp.services_page.imp().process_action_bar,
-                "apps-page.details",
-                None,
-            );
-            let _ = WidgetExt::activate_action(
-                &*imp.services_page.imp().service_action_bar,
-                "services-page.details",
-                None,
-            );
+            let _ = imp
+                .services_page
+                .activate_table_view_action("process.details");
+            let _ = imp
+                .services_page
+                .activate_table_view_action("service.details");
             return true;
         }
 
@@ -216,8 +201,9 @@ fn special_shortcuts(
 
         let result = window.services_page_active();
         if result {
-            let _ =
-                WidgetExt::activate_action(&*imp.services_page, "win.selected-svc-restart", None);
+            let _ = imp
+                .services_page
+                .activate_table_view_action("service.restart");
         }
         result
     }
@@ -256,6 +242,8 @@ fn special_shortcuts(
         ctrl_shortcuts.insert(gdk::Key::x, force_stop);
         ctrl_shortcuts.insert(gdk::Key::I, ctrl_i);
         ctrl_shortcuts.insert(gdk::Key::i, ctrl_i);
+        ctrl_shortcuts.insert(gdk::Key::S, services_start);
+        ctrl_shortcuts.insert(gdk::Key::s, services_start);
         ctrl_shortcuts.insert(gdk::Key::R, services_restart);
         ctrl_shortcuts.insert(gdk::Key::r, services_restart);
         shortcuts.insert(gdk::ModifierType::CONTROL_MASK, ctrl_shortcuts);
@@ -1133,7 +1121,7 @@ impl MissionCenterWindow {
         result &= this.performance_page.update_readings(readings);
         result &= this.apps_page.update_readings(readings);
 
-        if !readings.services.is_empty() {
+        if !readings.system_services.is_empty() || !readings.user_services.is_empty() {
             this.services_stack_page.set_visible(true);
             result &= this.services_page.update_readings(readings);
         } else {

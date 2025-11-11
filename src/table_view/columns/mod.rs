@@ -1,4 +1,4 @@
-/* process_tree/columns/mod.rs
+/* table_view/columns/mod.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -22,7 +22,7 @@ use gtk::prelude::*;
 use std::cmp::Ordering;
 
 use crate::i18n::i18n;
-use crate::process_tree::row_model::RowModel;
+use crate::table_view::row_model::RowModel;
 
 pub use cpu::label_formatter as cpu_label_formatter;
 pub use cpu::list_item_factory as cpu_list_item_factory;
@@ -73,7 +73,7 @@ macro_rules! label_cell_factory {
     ($property: literal, $skip_content: pat, $setter: expr) => {{
         use gtk::prelude::*;
 
-        use crate::process_tree::row_model::{ContentType, RowModel};
+        use crate::table_view::row_model::{ContentType, RowModel};
 
         let factory = gtk::SignalListItemFactory::new();
 
@@ -211,7 +211,7 @@ pub fn adjust_view_header_alignment(column_view_titlebar: Option<gtk::Widget>) {
         }
 
         container.set_hexpand(true);
-        container.set_width_request(70);
+        container.set_width_request(75);
         label.set_halign(gtk::Align::End);
         label.set_justify(gtk::Justification::Right);
 

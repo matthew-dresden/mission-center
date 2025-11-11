@@ -1,4 +1,4 @@
-/* process_tree/columns/name.rs
+/* table_view/columns/name.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -22,8 +22,8 @@ use std::cmp::Ordering;
 
 use adw::prelude::*;
 
-use crate::process_tree::columns::{compare_column_entries_by, sort_order, NameCell};
-use crate::process_tree::row_model::RowModel;
+use crate::table_view::columns::{compare_column_entries_by, sort_order, NameCell};
+use crate::table_view::row_model::RowModel;
 use crate::widgets::ListCell;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
@@ -36,7 +36,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
 
         let name_cell = NameCell::new();
 
-        let list_cell = ListCell::new("apps-page.show-context-menu");
+        let list_cell = ListCell::new("column-view.show-context-menu");
         list_cell.set_is_tree_view(true);
         list_cell.set_child(Some(&name_cell));
 
@@ -47,6 +47,7 @@ pub fn list_item_factory() -> gtk::SignalListItemFactory {
         expander.set_indent_for_icon(true);
         expander.set_indent_for_depth(true);
         expander.set_halign(gtk::Align::Start);
+        expander.set_width_request(218);
 
         list_item.set_child(Some(&expander));
 

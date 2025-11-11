@@ -1,4 +1,4 @@
-/* process_tree/column_view_frame.rs
+/* table_view/mod.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -22,33 +22,81 @@ use std::cell::RefCell;
 use std::cell::{Cell, OnceCell};
 use std::fmt::Write;
 
+use adw::prelude::*;
 use arrayvec::ArrayString;
-
+use gtk::glib::translate::from_glib_full;
+use gtk::glib::{g_critical, gobject_ffi, Object, ParamSpec, Properties, Value};
+use gtk::glib::{g_warning, VariantTy, WeakRef};
+use gtk::{gdk, gio, glib, subclass::prelude::*};
 use textdistance::{Algorithm, Levenshtein};
 
-use adw::glib::{g_critical, ParamSpec, Properties, Value};
-use adw::prelude::*;
-use gtk::glib::{g_warning, VariantTy, WeakRef};
-use gtk::{gio, glib, subclass::prelude::*, ToggleButton};
-
 use crate::i18n::i18n;
-use crate::process_tree::columns::*;
-use crate::process_tree::process_action_bar::ProcessActionBar;
-use crate::process_tree::row_model::RowModelBuilder;
-use crate::process_tree::row_model::{ContentType, RowModel};
-use crate::process_tree::service_action_bar::ServiceActionBar;
-use crate::process_tree::settings::configure_column_frame;
 use crate::{app, settings, DataType};
 
-pub(crate) mod imp {
+use columns::*;
+pub use models::*;
+pub use process_action_bar::ProcessActionBar;
+pub use process_details_dialog::ProcessDetailsDialog;
+pub use row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
+pub use service_action_bar::ServiceActionBar;
+pub use service_details_dialog::ServiceDetailsDialog;
+
+pub mod columns;
+mod models;
+mod process_action_bar;
+mod process_details_dialog;
+mod row_model;
+mod service_action_bar;
+mod service_details_dialog;
+mod settings;
+
+#[derive(Copy, Clone, Default)]
+pub enum SettingsNamespace {
+    #[default]
+    AppsPage,
+    ServicesPage,
+}
+
+impl SettingsNamespace {
+    pub fn key_to_string(&self) -> &'static str {
+        match self {
+            SettingsNamespace::AppsPage => "apps-page",
+            SettingsNamespace::ServicesPage => "services-page",
+        }
+    }
+
+    #[inline]
+    pub fn format_value(&self, value: &SettingsValues) -> String {
+        format!("{}-{}", self.key_to_string(), value.key_to_string())
+    }
+}
+
+// this only has settings that exist in all namespaces
+#[derive(Copy, Clone, Default)]
+pub enum SettingsValues {
+    #[default]
+    SortingColumnName,
+    SortingOrder,
+    ColumnOrder,
+}
+
+impl SettingsValues {
+    pub fn key_to_string(&self) -> &'static str {
+        match self {
+            SettingsValues::SortingColumnName => "sorting-column-name",
+            SettingsValues::SortingOrder => "sorting-order",
+            SettingsValues::ColumnOrder => "column-order",
+        }
+    }
+}
+
+mod imp {
     use super::*;
 
     #[derive(Properties, gtk::CompositeTemplate)]
-    #[properties(wrapper_type = super::ColumnViewFrame)]
-    #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/process_column_view/column_view_frame.ui"
-    )]
-    pub struct ColumnViewFrame {
+    #[properties(wrapper_type = super::TableView)]
+    #[template(resource = "/io/missioncenter/MissionCenter/ui/table_view/table_view.ui")]
+    pub struct TableView {
         #[template_child]
         pub column_view: TemplateChild<gtk::ColumnView>,
         #[template_child]
@@ -69,23 +117,32 @@ pub(crate) mod imp {
         pub gpu_usage_column: TemplateChild<gtk::ColumnViewColumn>,
         #[template_child]
         pub gpu_memory_column: TemplateChild<gtk::ColumnViewColumn>,
+        #[template_child]
+        pub context_menu: TemplateChild<gtk::PopoverMenu>,
+        #[template_child]
+        pub app_menu_model: TemplateChild<gio::MenuModel>,
+        #[template_child]
+        pub service_menu_model: TemplateChild<gio::MenuModel>,
 
+        #[property(get, set)]
+        pub show_column_separators: Cell<bool>,
+        #[property(get)]
         pub selected_item: RefCell<RowModel>,
+        #[property(get)]
+        pub selected_item_running: Cell<bool>,
+        #[property(get)]
+        pub selected_item_enabled: Cell<bool>,
+
         pub row_sorter: OnceCell<gtk::TreeListRowSorter>,
 
         pub use_merged_stats: Cell<bool>,
 
-        #[property(get, set)]
-        pub show_column_separators: Cell<bool>,
+        pub settings_namespace: Cell<SettingsNamespace>,
 
-        pub action_show_context_menu: Cell<gio::SimpleAction>,
-
-        pub action_group: Cell<gio::SimpleActionGroup>,
-
-        pub settings_namespace: Cell<ColumnViewSettingsNamespaces>,
+        service_state_connections: RefCell<[Option<glib::SignalHandlerId>; 2]>,
     }
 
-    impl Default for ColumnViewFrame {
+    impl Default for TableView {
         fn default() -> Self {
             Self {
                 column_view: Default::default(),
@@ -98,30 +155,30 @@ pub(crate) mod imp {
                 network_usage_column: Default::default(),
                 gpu_usage_column: Default::default(),
                 gpu_memory_column: Default::default(),
+                context_menu: Default::default(),
+                app_menu_model: Default::default(),
+                service_menu_model: Default::default(),
 
+                show_column_separators: Cell::new(false),
                 selected_item: RefCell::new(RowModelBuilder::new().build()),
+                selected_item_running: Cell::new(false),
+                selected_item_enabled: Cell::new(false),
+
                 row_sorter: OnceCell::new(),
 
                 use_merged_stats: Cell::new(false),
 
-                show_column_separators: Cell::new(false),
-
-                action_show_context_menu: Cell::new(gio::SimpleAction::new(
-                    "show-context-menu",
-                    Some(VariantTy::TUPLE),
-                )),
-
-                action_group: Cell::new(Default::default()),
-
                 settings_namespace: Cell::new(Default::default()),
+
+                service_state_connections: RefCell::new([const { None }; 2]),
             }
         }
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ColumnViewFrame {
-        const NAME: &'static str = "ColumnViewFrame";
-        type Type = super::ColumnViewFrame;
+    impl ObjectSubclass for TableView {
+        const NAME: &'static str = "TableView";
+        type Type = super::TableView;
         type ParentType = gtk::Box;
 
         fn class_init(klass: &mut Self::Class) {
@@ -133,7 +190,7 @@ pub(crate) mod imp {
         }
     }
 
-    impl ObjectImpl for ColumnViewFrame {
+    impl ObjectImpl for TableView {
         fn properties() -> &'static [ParamSpec] {
             Self::derived_properties()
         }
@@ -192,41 +249,85 @@ pub(crate) mod imp {
             self.gpu_memory_column
                 .set_sorter(Some(&gpu_memory_sorter(&self.column_view)));
 
-            let column_view_title = self.column_view.first_child();
-            adjust_view_header_alignment(column_view_title);
+            let action_group = gio::SimpleActionGroup::new();
 
-            self.action_group()
-                .add_action(self.action_show_context_menu());
+            let action_show_context_menu =
+                gio::SimpleAction::new("show-context-menu", Some(VariantTy::TUPLE));
+            action_show_context_menu.connect_activate({
+                let this = self.obj().downgrade();
+                move |_action, entry| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+
+                    let Some(model) = imp.column_view.model() else {
+                        g_critical!(
+                            "MissionCenter::ProcessActionBar",
+                            "Failed to get model for `show-context-menu` action"
+                        );
+                        return;
+                    };
+
+                    let Some((id, anchor_widget, x, y)) =
+                        entry.and_then(|s| s.get::<(String, u64, f64, f64)>())
+                    else {
+                        g_critical!(
+                            "MissionCenter::TableView",
+                            "Failed to get service name and button from show-context-menu action"
+                        );
+                        return;
+                    };
+
+                    if select_item(&model, &id) {
+                        let anchor_widget = upgrade_weak_ptr(anchor_widget as _);
+                        let context_menu = &imp.context_menu;
+
+                        match imp.selected_item.borrow().content_type() {
+                            ContentType::Process | ContentType::App => {
+                                context_menu.set_menu_model(Some(&imp.app_menu_model.get()))
+                            }
+                            ContentType::Service => {
+                                context_menu.set_menu_model(Some(&imp.service_menu_model.get()))
+                            }
+                            _ => {
+                                return;
+                            }
+                        }
+
+                        let anchor = calculate_anchor_point(&this, &anchor_widget, x, y);
+                        context_menu.set_pointing_to(Some(&anchor));
+                        context_menu.popup();
+                    }
+                }
+            });
+
+            action_group.add_action(&action_show_context_menu);
             self.obj()
-                .insert_action_group("column-view", Some(self.action_group()));
+                .insert_action_group("column-view", Some(&action_group));
         }
     }
 
-    impl WidgetImpl for ColumnViewFrame {
+    impl WidgetImpl for TableView {
         fn realize(&self) {
             self.parent_realize();
+
+            let column_view_title = self.column_view.first_child();
+            adjust_view_header_alignment(column_view_title);
         }
     }
 
-    impl BoxImpl for ColumnViewFrame {}
+    impl BoxImpl for TableView {}
 
-    impl ColumnViewFrame {
-        pub fn action_show_context_menu(&self) -> &gio::SimpleAction {
-            unsafe { &*self.action_show_context_menu.as_ptr() }
-        }
-
-        pub fn action_group(&self) -> &gio::SimpleActionGroup {
-            unsafe { &*self.action_group.as_ptr() }
-        }
-
+    impl TableView {
         pub fn setup<const TOGGLE_COUNT: usize>(
             &self,
-            settings_namespace: ColumnViewSettingsNamespaces,
+            settings_namespace: SettingsNamespace,
             section_item_1: &RowModel,
             section_item_2: &RowModel,
             process_action_bar: Option<&ProcessActionBar>,
             service_action_bar: Option<&ServiceActionBar>,
-            service_toggle_group: Option<[WeakRef<ToggleButton>; TOGGLE_COUNT]>,
+            service_toggle_group: Option<[WeakRef<gtk::ToggleButton>; TOGGLE_COUNT]>,
         ) {
             self.settings_namespace.set(settings_namespace);
 
@@ -239,8 +340,7 @@ pub(crate) mod imp {
             let tree_model = Self::create_tree_model(model);
             let filter_list_model = self.configure_filter(tree_model, service_toggle_group);
             let (sort_list_model, row_sorter) = self.setup_filter_model(filter_list_model);
-            let selection_model =
-                self.setup_selection_model(sort_list_model, process_action_bar, service_action_bar);
+            let selection_model = self.setup_selection_model(sort_list_model);
             self.column_view.set_model(Some(&selection_model));
 
             let _ = self.row_sorter.set(row_sorter);
@@ -248,20 +348,14 @@ pub(crate) mod imp {
             selection_model.set_selected(0);
 
             if let Some(process_action_bar) = process_action_bar {
-                process_action_bar.imp().configure(self);
-                process_action_bar
-                    .imp()
-                    .handle_changed_selection(&self.selected_item.borrow());
+                process_action_bar.set_column_view(&self.obj());
             }
 
             if let Some(service_action_bar) = service_action_bar {
-                service_action_bar.imp().configure(self);
-                service_action_bar
-                    .imp()
-                    .handle_changed_selection(&self.selected_item.borrow());
+                service_action_bar.set_column_view(&self.obj());
             }
 
-            configure_column_frame(self);
+            settings::configure(&self.obj());
         }
 
         fn create_tree_model(model: impl IsA<gio::ListModel>) -> gtk::TreeListModel {
@@ -276,7 +370,7 @@ pub(crate) mod imp {
         fn configure_filter<const TOGGLE_COUNT: usize>(
             &self,
             tree_list_model: impl IsA<gio::ListModel>,
-            group: Option<[WeakRef<ToggleButton>; TOGGLE_COUNT]>,
+            group: Option<[WeakRef<gtk::ToggleButton>; TOGGLE_COUNT]>,
         ) -> gtk::FilterListModel {
             let Some(window) = app!().window() else {
                 g_critical!(
@@ -384,7 +478,7 @@ pub(crate) mod imp {
                                     }
                                     _ => {
                                         g_warning!(
-                                            "MissionCenter::Services",
+                                            "MissionCenter::TableView",
                                             "Unknown toggle button: {}",
                                             name
                                         );
@@ -433,10 +527,9 @@ pub(crate) mod imp {
         ) -> (gtk::SortListModel, gtk::TreeListRowSorter) {
             let column_view_sorter = self.column_view.sorter();
 
-            let sorting_settings_key =
-                self.format_settings_key(&ColumnViewSettingsValues::SortingColumnName);
+            let sorting_settings_key = self.format_settings_key(&SettingsValues::SortingColumnName);
             let sorting_order_settings_key =
-                self.format_settings_key(&ColumnViewSettingsValues::SortingOrder);
+                self.format_settings_key(&SettingsValues::SortingOrder);
 
             if let Some(column_view_sorter) = column_view_sorter.as_ref() {
                 column_view_sorter.connect_changed({
@@ -480,17 +573,11 @@ pub(crate) mod imp {
         fn setup_selection_model(
             &self,
             sort_list_model: impl IsA<gio::ListModel>,
-            process_action_bar: Option<&ProcessActionBar>,
-            service_action_bar: Option<&ServiceActionBar>,
         ) -> gtk::SingleSelection {
             let selection_model = gtk::SingleSelection::new(Some(sort_list_model));
             selection_model.set_autoselect(true);
 
             let this = self.obj().downgrade();
-
-            // Create weak references upfront to avoid temporary value issues
-            let process_action_bar_weak = process_action_bar.map(|it| it.downgrade());
-            let service_action_bar_weak = service_action_bar.map(|it| it.downgrade());
 
             selection_model.connect_selected_item_notify({
                 move |model| {
@@ -509,23 +596,56 @@ pub(crate) mod imp {
                         return;
                     };
 
-                    if let Some(process_action_bar) =
-                        process_action_bar_weak.as_ref().and_then(|it| it.upgrade())
                     {
-                        process_action_bar
-                            .imp()
-                            .handle_changed_selection(&row_model);
-                    }
+                        let mut service_state_connections =
+                            imp.service_state_connections.borrow_mut();
 
-                    if let Some(service_action_bar) =
-                        service_action_bar_weak.as_ref().and_then(|it| it.upgrade())
-                    {
-                        service_action_bar
-                            .imp()
-                            .handle_changed_selection(&row_model);
+                        for conn in &mut *service_state_connections {
+                            if let Some(conn) = conn.take() {
+                                imp.selected_item.borrow().disconnect(conn);
+                            }
+                        }
+
+                        if row_model.content_type() == ContentType::Service {
+                            service_state_connections[0] =
+                                Some(row_model.connect_service_running_notify({
+                                    let this = this.downgrade();
+                                    move |row_model| {
+                                        let Some(this) = this.upgrade() else {
+                                            return;
+                                        };
+
+                                        let imp = this.imp();
+                                        imp.selected_item_running.set(row_model.service_running());
+                                        this.notify_selected_item_running();
+                                    }
+                                }));
+                            service_state_connections[1] =
+                                Some(row_model.connect_service_enabled_notify({
+                                    let this = this.downgrade();
+                                    move |row_model| {
+                                        let Some(this) = this.upgrade() else {
+                                            return;
+                                        };
+
+                                        let imp = this.imp();
+                                        imp.selected_item_enabled.set(row_model.service_enabled());
+                                        this.notify_selected_item_enabled();
+                                    }
+                                }));
+
+                            imp.selected_item_running.set(row_model.service_running());
+                            imp.selected_item_enabled.set(row_model.service_enabled());
+                        } else {
+                            imp.selected_item_running.set(false);
+                            imp.selected_item_enabled.set(false);
+                        }
                     }
 
                     imp.selected_item.replace(row_model);
+                    this.notify_selected_item();
+                    this.notify_selected_item_running();
+                    this.notify_selected_item_enabled();
                 }
             });
 
@@ -624,7 +744,7 @@ pub(crate) mod imp {
 
             let settings = settings!();
 
-            let order_key = &self.format_settings_key(&ColumnViewSettingsValues::ColumnOrder);
+            let order_key = &self.format_settings_key(&SettingsValues::ColumnOrder);
 
             if settings.boolean("apps-page-remember-column-order") {
                 let columns = column_view.columns();
@@ -694,54 +814,99 @@ pub(crate) mod imp {
         }
 
         #[inline]
-        pub fn format_settings_key(&self, key: &ColumnViewSettingsValues) -> String {
+        pub fn format_settings_key(&self, key: &SettingsValues) -> String {
             self.settings_namespace.get().format_value(key)
         }
     }
 }
 
 glib::wrapper! {
-    pub struct ColumnViewFrame(ObjectSubclass<imp::ColumnViewFrame>)
+    pub struct TableView(ObjectSubclass<imp::TableView>)
         @extends gtk::Box, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
-#[derive(Copy, Clone, Default)]
-pub enum ColumnViewSettingsNamespaces {
-    #[default]
-    AppsPage,
-    ServicesPage,
-}
+impl TableView {
+    pub fn set_use_merged_stats(&self, use_merged: bool) {
+        self.imp().use_merged_stats.set(use_merged);
+    }
 
-impl ColumnViewSettingsNamespaces {
-    pub fn key_to_string(&self) -> &'static str {
-        match self {
-            ColumnViewSettingsNamespaces::AppsPage => "apps-page",
-            ColumnViewSettingsNamespaces::ServicesPage => "services-page",
-        }
+    pub fn column_view(&self) -> &gtk::ColumnView {
+        &self.imp().column_view
     }
 
     #[inline]
-    pub fn format_value(&self, value: &ColumnViewSettingsValues) -> String {
-        format!("{}-{}", self.key_to_string(), value.key_to_string())
+    pub fn format_settings_key(&self, key: &SettingsValues) -> String {
+        self.imp().format_settings_key(key)
     }
 }
 
-// this only has settings that exist in all namespaces
-#[derive(Copy, Clone, Default)]
-pub enum ColumnViewSettingsValues {
-    #[default]
-    SortingColumnName,
-    SortingOrder,
-    ColumnOrder,
+fn upgrade_weak_ptr(ptr: usize) -> Option<gtk::Widget> {
+    let obj = unsafe { gobject_ffi::g_weak_ref_get(ptr as *mut _) };
+    if obj.is_null() {
+        return None;
+    }
+    let obj: Object = unsafe { from_glib_full(obj) };
+    obj.downcast::<gtk::Widget>().ok()
 }
 
-impl ColumnViewSettingsValues {
-    pub fn key_to_string(&self) -> &'static str {
-        match self {
-            ColumnViewSettingsValues::SortingColumnName => "sorting-column-name",
-            ColumnViewSettingsValues::SortingOrder => "sorting-order",
-            ColumnViewSettingsValues::ColumnOrder => "column-order",
+fn calculate_anchor_point(
+    menu_parent: &impl IsA<gtk::Widget>,
+    anchor_widget: &Option<gtk::Widget>,
+    x: f64,
+    y: f64,
+) -> gdk::Rectangle {
+    let Some(anchor_widget) = anchor_widget else {
+        g_warning!(
+            "MissionCenter::TableView",
+            "Failed to get anchor widget, popup will display in an arbitrary location"
+        );
+        return gdk::Rectangle::new(0, 0, 0, 0);
+    };
+
+    if x > 0. && y > 0. {
+        match anchor_widget.compute_point(menu_parent, &gtk::graphene::Point::new(x as _, y as _)) {
+            Some(p) => gdk::Rectangle::new(p.x().round() as i32, p.y().round() as i32, 1, 1),
+            None => {
+                g_critical!(
+                    "MissionCenter::TableView",
+                    "Failed to compute_point, context menu will not be anchored to mouse position"
+                );
+                gdk::Rectangle::new(x.round() as i32, y.round() as i32, 1, 1)
+            }
+        }
+    } else {
+        if let Some(bounds) = anchor_widget.compute_bounds(menu_parent) {
+            gdk::Rectangle::new(
+                bounds.x() as i32,
+                bounds.y() as i32,
+                bounds.width() as i32,
+                bounds.height() as i32,
+            )
+        } else {
+            g_warning!(
+                "MissionCenter::TableView",
+                "Failed to get bounds for menu button, popup will display in an arbitrary location"
+            );
+            gdk::Rectangle::new(0, 0, 0, 0)
         }
     }
+}
+
+fn select_item(model: &gtk::SelectionModel, id: &str) -> bool {
+    for i in 0..model.n_items() {
+        if let Some(item) = model
+            .item(i)
+            .and_then(|i| i.downcast::<gtk::TreeListRow>().ok())
+            .and_then(|row| row.item())
+            .and_then(|obj| obj.downcast::<RowModel>().ok())
+        {
+            if item.content_type() != ContentType::SectionHeader && item.id() == id {
+                model.select_item(i, false);
+                return true;
+            }
+        }
+    }
+
+    false
 }

@@ -26,16 +26,15 @@ use adw::prelude::*;
 use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
 
-use magpie_types::services::Service;
-
 use crate::i18n::{i18n, ni18n_f};
-use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
-use crate::process_tree::models;
-use crate::process_tree::process_action_bar::ProcessActionBar;
-use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
-use crate::process_tree::service_action_bar::ServiceActionBar;
+use crate::table_view::{
+    update_services, ContentType, ProcessActionBar, RowModel, RowModelBuilder, SectionType,
+    ServiceActionBar, SettingsNamespace, TableView,
+};
 
-pub(crate) mod imp {
+pub mod actions;
+
+mod imp {
     use super::*;
 
     #[derive(Properties, gtk::CompositeTemplate)]
@@ -60,7 +59,7 @@ pub(crate) mod imp {
         pub toggle_disabled: TemplateChild<gtk::ToggleButton>,
 
         #[template_child]
-        pub column_view: TemplateChild<ColumnViewFrame>,
+        pub table_view: TemplateChild<TableView>,
 
         #[template_child]
         pub process_action_bar: TemplateChild<ProcessActionBar>,
@@ -80,7 +79,7 @@ pub(crate) mod imp {
     }
 
     impl ServicesPage {
-        pub(crate) fn update_headers(&self) {
+        pub fn update_headers(&self) {
             let mut fmt_buffer = arrayvec::ArrayString::<12>::new();
 
             let total = self.total_services.get();
@@ -168,7 +167,7 @@ pub(crate) mod imp {
                 toggle_stopped: Default::default(),
                 toggle_disabled: Default::default(),
 
-                column_view: Default::default(),
+                table_view: Default::default(),
 
                 process_action_bar: Default::default(),
                 service_action_bar: Default::default(),
@@ -296,7 +295,7 @@ pub(crate) mod imp {
                     let imp = this.imp();
 
                     let Some(selection_model) = imp
-                        .column_view
+                        .table_view
                         .imp()
                         .column_view
                         .model()
@@ -357,6 +356,27 @@ pub(crate) mod imp {
 
             self.obj()
                 .insert_action_group("services-page", Some(&actions));
+
+            let service_actions = gio::SimpleActionGroup::new();
+            service_actions.add_action(&actions::action_start(&self.table_view));
+            service_actions.add_action(&actions::action_stop(&self.table_view));
+            service_actions.add_action(&actions::action_restart(&self.table_view));
+            service_actions.add_action(&actions::action_details(&self.table_view));
+            self.obj()
+                .insert_action_group("service", Some(&service_actions));
+
+            let process_actions = gio::SimpleActionGroup::new();
+            process_actions.add_action(&actions::apps::action_stop(&self.table_view));
+            process_actions.add_action(&actions::apps::action_force_stop(&self.table_view));
+            process_actions.add_action(&actions::apps::action_suspend(&self.table_view));
+            process_actions.add_action(&actions::apps::action_continue(&self.table_view));
+            process_actions.add_action(&actions::apps::action_hangup(&self.table_view));
+            process_actions.add_action(&actions::apps::action_interrupt(&self.table_view));
+            process_actions.add_action(&actions::apps::action_user_one(&self.table_view));
+            process_actions.add_action(&actions::apps::action_user_two(&self.table_view));
+            process_actions.add_action(&actions::apps::action_details(&self.table_view));
+            self.obj()
+                .insert_action_group("process", Some(&process_actions));
         }
     }
 
@@ -388,20 +408,13 @@ impl ServicesPage {
 
         // Set up the models here since we need access to the main application window
         // which is not yet available in the constructor.
-        imp.column_view.imp().setup(
-            ColumnViewSettingsNamespaces::ServicesPage,
+        imp.table_view.imp().setup(
+            SettingsNamespace::ServicesPage,
             &imp.user_section,
             &imp.system_section,
             Some(&imp.process_action_bar),
             Some(&imp.service_action_bar),
             Some(toggle_group),
-        );
-
-        imp.user_section.children().append(
-            &RowModelBuilder::new()
-                .content_type(ContentType::SectionHeader)
-                .name(&i18n("Not Implemented"))
-                .build(),
         );
 
         self.update_common(readings);
@@ -412,41 +425,28 @@ impl ServicesPage {
     fn update_common(&self, readings: &mut crate::magpie_client::Readings) {
         let imp = self.imp();
 
-        models::update_services(
+        update_services(
             &readings.running_processes,
-            &readings.services,
-            &imp.system_section.children(),
-            &HashMap::new(),
-            "application-x-executable-symbolic",
-            imp.column_view.imp().use_merged_stats.get(),
-            SectionType::SecondSection,
-        );
-
-        self.update_service_counts(&readings.services);
-        models::update_services(
-            &readings.running_processes,
-            &readings.services,
+            &readings.user_services,
             &imp.user_section.children(),
             &HashMap::new(),
             "application-x-executable-symbolic",
-            imp.column_view.imp().use_merged_stats.get(),
+            imp.table_view.imp().use_merged_stats.get(),
             SectionType::FirstSection,
         );
 
-        self.update_service_counts(&readings.services);
+        update_services(
+            &readings.running_processes,
+            &readings.system_services,
+            &imp.system_section.children(),
+            &HashMap::new(),
+            "application-x-executable-symbolic",
+            imp.table_view.imp().use_merged_stats.get(),
+            SectionType::SecondSection,
+        );
 
-        let selected_item = &imp.column_view.imp().selected_item.borrow();
-
-        imp.process_action_bar
-            .imp()
-            .handle_changed_selection(selected_item);
-        imp.service_action_bar
-            .imp()
-            .handle_changed_selection(selected_item);
-    }
-
-    fn update_service_counts(&self, services: &HashMap<String, Service>) {
-        let services = services.values().collect::<Vec<_>>();
+        let mut services = readings.user_services.values().collect::<Vec<_>>();
+        services.extend(readings.system_services.values());
 
         let total_services = services.len();
         let mut disabled_services = 0;
@@ -465,8 +465,6 @@ impl ServicesPage {
             }
         }
 
-        let imp = self.imp();
-
         imp.total_services.set(total_services as u32);
         imp.running_services.set(running_services);
         imp.stopped_services.set(stopped_services);
@@ -481,12 +479,12 @@ impl ServicesPage {
 
         self.update_common(readings);
 
-        if let Some(row_sorter) = imp.column_view.imp().row_sorter.get() {
+        if let Some(row_sorter) = imp.table_view.imp().row_sorter.get() {
             row_sorter.changed(gtk::SorterChange::Different)
         }
 
         if readings.network_stats_error.is_some() {
-            imp.column_view
+            imp.table_view
                 .get()
                 .imp()
                 .network_usage_column
@@ -504,5 +502,9 @@ impl ServicesPage {
     #[inline]
     pub fn expand(&self) {
         self.imp().expand();
+    }
+
+    pub fn activate_table_view_action(&self, name: &str) -> Result<(), glib::error::BoolError> {
+        WidgetExt::activate_action(&*self.imp().table_view, name, None)
     }
 }

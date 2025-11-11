@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-05-27 09:02+0000\n"
+"PO-Revision-Date: 2025-10-20 04:51+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/fi/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -42,12 +42,12 @@ msgid "Monitor system resource usage"
 msgstr "Tarkkaile järjestelmän resurssien käyttöä"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:18
-#, fuzzy
 msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
 msgstr ""
-"Tarkkaile suorittimen, muistin, levyn, verkon ja näytönohjaimen käyttöä"
+"Tarkkaile suorittimen, muistin, levyn, verkon ja näytönohjaimen käyttöä, ja "
+"tarkastele tilastojakaumaa sovelluskohtaisesti"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 msgid "Features:"
@@ -775,7 +775,7 @@ msgstr "Aseman kunto"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
-msgstr ""
+msgstr "SMART-testin tila"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
@@ -1069,9 +1069,8 @@ msgid "Show Fan Information"
 msgstr "Näytä tuuletintiedot"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "Palvelusivu"
+msgstr "Sovellus- ja palvelusivut"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1213,35 +1212,32 @@ msgid "Use Base 2 for Network Interfaces"
 msgstr "Käytä kaksikantaa verkkoliitännöille"
 
 #: resources/ui/services_page/page.blp:84
-#, fuzzy
 msgid "Collapse all expanded services"
-msgstr "Supista kaikki sovellukset ja prosessit"
+msgstr "Supista kaikki laajennetut palvelut"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "{} prosessi käynnissä"
+msgstr "Suodata käynnissä olevia prosesseja"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Virtuaalisia suorittimia:"
+msgstr "Suodata epäonnistuneet prosessit"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Suodata pysäytetyt prosessit"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Suodata käytöstä poistetut prosessit"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "Poista kaikki suodattimet"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "Poista suodattimet"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
@@ -1267,24 +1263,21 @@ msgid "Global"
 msgstr "Yleiset"
 
 #: resources/ui/keyboard_shortcuts.blp:21
-#, fuzzy
 msgid "Open Menu"
-msgstr "Päävalikko"
+msgstr "Avaa valikko"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Sulje ikkuna"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Asetukset"
+msgstr "Avaa asetukset"
 
 #: resources/ui/keyboard_shortcuts.blp:41
-#, fuzzy
 msgid "Show Keyboard Shortcuts"
-msgstr "Pikanäppäimet"
+msgstr "Näytä pikanäppäimet"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1409,7 +1402,7 @@ msgstr "Tiedot"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "Lähetä signaali"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
@@ -1445,7 +1438,7 @@ msgstr ""
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "Sovellus-ID"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1532,59 +1525,53 @@ msgstr "Ryhmä"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Tiedoston sijainti"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "Lokit"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Järjestelmälevy:"
+msgstr "Järjestelmän tiedot"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Näytä laitteen tiedot"
+msgstr "Käyttöjärjestelmän tiedot"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Vulkan-versio:"
+msgstr "Versio"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "Paketinhallinta"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Paketinhallinnan versio"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Näytä tuuletintiedot"
+msgstr "Ytimen tiedot"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Ytimen julkaisu"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Näytä laitteen tiedot"
+msgstr "Työpöytäympäristön tiedot"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Ikkunointijärjestelmä"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Virtuaalikone:"
+msgstr "Virtuaalipääte"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1644,7 +1631,7 @@ msgstr "_Pikanäppäimet"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "_Tietoja - Järjestelmä"
 
 #: resources/ui/window.blp:256
 msgid "_About Mission Center"
@@ -1986,47 +1973,43 @@ msgid "Stopped"
 msgstr "Pysäytetty"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "Poista kaikki käytöstä"
+msgstr "Poistettu käytöstä"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "Yksikään palvelu ei vastaa nykyisiä suodattimia"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "Ei suodattimia käytössä"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} palvelua käynnissä"
-msgstr[1] "{} palvelua käynnissä"
+msgstr[0] "{} {} palvelu"
+msgstr[1] "{} {} palvelua"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Palvelut"
+msgstr "Käyttäjäpalvelut"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Pysäytä palvelu"
+msgstr "Järjestelmäpalvelut"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
-msgstr ""
+msgstr "Ei toteutettu"
 
 #: src/process_tree/row_model.rs:263
 msgid "Section Header"
 msgstr "Osio-otsake"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Palvelut"
+msgstr "Palvelu"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"

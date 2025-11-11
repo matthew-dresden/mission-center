@@ -5,7 +5,6 @@ gnome = import('gnome')
 blueprints = custom_target('blueprints',
   input: files(
     'ui/apps_page/page.blp',
-    'ui/apps_page/details_dialog.blp',
 
     'ui/performance_page/cpu.blp',
     'ui/performance_page/cpu_details.blp',
@@ -33,11 +32,11 @@ blueprints = custom_target('blueprints',
 
     'ui/services_page/page.blp',
 
-    'ui/process_column_view/column_view_frame.blp',
-    'ui/process_column_view/process_action_bar.blp',
-    'ui/process_column_view/process_details_dialog.blp',
-    'ui/process_column_view/service_action_bar.blp',
-    'ui/process_column_view/service_details_dialog.blp',
+    'ui/table_view/table_view.blp',
+    'ui/table_view/process_action_bar.blp',
+    'ui/table_view/process_details_dialog.blp',
+    'ui/table_view/service_action_bar.blp',
+    'ui/table_view/service_details_dialog.blp',
 
     'ui/widgets/theme_selector.blp',
 

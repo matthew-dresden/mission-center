@@ -1,4 +1,4 @@
-/* process_tree/process_details_dialog.rs
+/* table_view/process_details_dialog.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -25,15 +25,15 @@ use adw::PreferencesRow;
 use gtk::glib::{self};
 use gtk::prelude::{StaticTypeExt, WidgetExt};
 
-use crate::process_tree::columns::*;
-use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::table_view::columns::*;
+use crate::table_view::row_model::{ContentType, RowModel};
 
 mod imp {
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]
     #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/process_column_view/process_details_dialog.ui"
+        resource = "/io/missioncenter/MissionCenter/ui/table_view/process_details_dialog.ui"
     )]
     pub struct ProcessDetailsDialog {
         #[template_child]

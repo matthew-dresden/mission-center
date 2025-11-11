@@ -392,7 +392,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/gtk4.html
 # -------------------------------------------------------------
-GTK_VER=4.20.1
+GTK_VER=4.20.2
 GTK_VER_MM=$(echo $GTK_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/gtk/$GTK_VER_MM/gtk-$GTK_VER.tar.xz
@@ -458,7 +458,7 @@ cd $OUT_PATH
 
 # https://www.linuxfromscratch.org/blfs/view/stable/x/libadwaita.html
 # -------------------------------------------------------------------
-LIBADW_VER=1.8.0
+LIBADW_VER=1.8.1
 LIBADW_VER_MM=$(echo $LIBADW_VER | cut -f1-2 -d'.')
 # -------------------------------------------------------------------
 curl -LO https://download.gnome.org/sources/libadwaita/$LIBADW_VER_MM/libadwaita-$LIBADW_VER.tar.xz
@@ -482,11 +482,11 @@ cd $OUT_PATH
 
 # Blueprint Compiler
 # -------------------------------------------------------------------
-BP_CMP_VER=v0.18.0
+BP_CMP_VER=0.18.0
 # -------------------------------------------------------------------
-curl -LO https://gitlab.gnome.org/jwestman/blueprint-compiler/-/archive/$BP_CMP_VER/blueprint-compiler-$BP_CMP_VER.tar.bz2
-tar xvf blueprint-compiler-*.tar.bz2 && rm blueprint-compiler-*.tar.bz2
-cd blueprint-compiler-*
+curl -L https://github.com/GNOME/blueprint-compiler/archive/refs/tags/$BP_CMP_VER.tar.gz --output blueprint-compiler-$BP_CMP_VER.tar.gz
+tar xvf blueprint-compiler-*.tar.gz && rm blueprint-compiler-*.tar.gz
+cd blueprint-compiler-$BP_CMP_VER
 mkdir build && cd build
 meson setup ..          \
     --prefix=/usr                      \
@@ -494,10 +494,6 @@ meson setup ..          \
     --buildtype=release
 ninja && ninja install
 cd ../../ && rm -rf blueprint-compiler-*
-# Patch for compatibility with Python 3.8
-#sed -i '1s/^/from __future__ import annotations\n/' /usr/lib/python3/dist-packages/blueprintcompiler/gir.py
-#sed -i '1s/^/from __future__ import annotations\n/' /usr/lib/python3/dist-packages/blueprintcompiler/ast_utils.py
-#sed -i '1s/^/from __future__ import annotations\n/' /usr/lib/python3/dist-packages/blueprintcompiler/decompiler.py
 cd $OUT_PATH
 
 # LLVM tooling

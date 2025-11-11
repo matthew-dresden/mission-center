@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-07-24 22:09+0000\n"
+"PO-Revision-Date: 2025-10-02 13:02+0000\n"
 "Last-Translator: jonnysemon <jonnysemon@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/ar/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -245,26 +245,23 @@ msgstr "اسم العمود الذي يتم من خلاله فرز عرض صفح
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:140
 msgid "The sorting direction of the Apps page view"
-msgstr "اتجاه الترتيب لعرض صفحة التطبيقات"
+msgstr "اتجاه فرز عرض صفحة التطبيقات"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:145
 msgid "The order of columns in the Apps page view"
 msgstr "ترتيب الأعمدة في عرض صفحة التطبيقات"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
-msgstr "اسم العمود الذي يتم من خلاله فرز عرض صفحة التطبيقات"
+msgstr "اسم العمود الذي يتم من خلاله فرز عرض صفحة الخدمات"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "اتجاه الترتيب لعرض صفحة التطبيقات"
+msgstr "اتجاه فرز عرض صفحة الخدمات"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "ترتيب الأعمدة في عرض صفحة التطبيقات"
+msgstr "ترتيب الأعمدة في عرض صفحة الخدمات"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -909,15 +906,15 @@ msgstr "قرص النظام:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "الرقم التسلسلي:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "معدّل الدوران"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -992,9 +989,8 @@ msgid "Update Interval"
 msgstr "فترة التحديث"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "لا ثانية"
+msgstr "في ثوانٍ"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1057,9 +1053,8 @@ msgid "Show Fan Information"
 msgstr "أظهر معلومات المروحة"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "صفحة الخدمات"
+msgstr "التطبيقات وصفحات الخدمات"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1070,9 +1065,8 @@ msgid "Remember Sorting"
 msgstr "تذكر الفرز"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
-msgstr "احتفظ بفرز التطبيقات والعمليات حسب العمود، حتى بعد إعادة تشغيل التطبيق"
+msgstr "احتفظ بفرز التطبيقات حسب العمود، حتى بعد إعادة تشغيل التطبيق"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
@@ -1087,10 +1081,8 @@ msgid "Scale CPU Usage to Core Count"
 msgstr "حجّم استخدام المعالج ليتناسب مع عدد الأنوية"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
-"أظهر استخدام المعالج للتطبيقات والعمليات بما يتناسب مع عدد الأنوية المتاحة"
+msgstr "أظهر استخدام المعالج بما يتناسب مع عدد الأنوية المتاحة"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1197,35 +1189,32 @@ msgid "Use Base 2 for Network Interfaces"
 msgstr "استخدم الأساس 2 لواجهات الشبكة"
 
 #: resources/ui/services_page/page.blp:84
-#, fuzzy
 msgid "Collapse all expanded services"
-msgstr "اطوِ جميع التطبيقات والعمليات"
+msgstr "اطوِ جميع الخدمات الموسعة"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "لا عملية تعمل"
+msgstr "تصفية العمليات قيد التشغيل"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "المعالجات الافتراضية:"
+msgstr "تصفية العمليات الفاشلة"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "تصفية العمليات المتوقفة"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "تصفية العمليات المعطّلة"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "أزل كل التصفيات"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "أزل التصفيات"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
@@ -1251,24 +1240,21 @@ msgid "Global"
 msgstr "عمومي"
 
 #: resources/ui/keyboard_shortcuts.blp:21
-#, fuzzy
 msgid "Open Menu"
-msgstr "القائمة الرئيسية"
+msgstr "افتح القائمة"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "أغلق النافذة"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "التف_ضيلات"
+msgstr "افتح التفضيلات"
 
 #: resources/ui/keyboard_shortcuts.blp:41
-#, fuzzy
 msgid "Show Keyboard Shortcuts"
-msgstr "اختصارات لوحة المفاتيح"
+msgstr "أظهر اختصارات لوحة المفاتيح"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1392,43 +1378,43 @@ msgstr "التفاصيل"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "أرسل إشارة"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "علّق (STOP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "تابع (CONT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "افصل (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "قاطِع (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "أنهِ (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "اقتل (KILL)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "مستخدم 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "مستخدم 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "معرّف التطبيق"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1515,59 +1501,53 @@ msgstr "المجموعة"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "موقع الملف"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "السجلّ"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "قرص النظام:"
+msgstr "معلومات النظام"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "انسخ معلومات الجهاز"
+msgstr "معلومات نظام التشغيل"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "إصدار Vulkan:"
+msgstr "الإصدار"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "مدير الحزم"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "إصدار مدير الحزم"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "أظهر معلومات المروحة"
+msgstr "معلومات النواة"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "إصدار النواة"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "انسخ معلومات الجهاز"
+msgstr "معلومات بيئة سطح المكتب"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "نظام النوافذ"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "آلة افتراضية:"
+msgstr "طرفية افتراضية"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1627,7 +1607,7 @@ msgstr "اخت_صارات لوحة المفاتيح"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "_عن النظام"
 
 #: resources/ui/window.blp:256
 msgid "_About Mission Center"
@@ -1951,15 +1931,15 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "ابدأ الخدمة"
-msgstr[1] "ابدأ الخدمة"
-msgstr[2] "ابدأ الخدمة"
-msgstr[3] "ابدأ الخدمة"
-msgstr[4] "ابدأ الخدمة"
-msgstr[5] "ابدأ الخدمة"
+msgstr[0] "{} خدمة إجمالية"
+msgstr[1] "{} خدمة إجمالية"
+msgstr[2] "{} خدمة إجمالية"
+msgstr[3] "{} خدمات إجمالية"
+msgstr[4] "{} خدمات إجمالية"
+msgstr[5] "{} خدمة إجمالية"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1977,51 +1957,47 @@ msgid "Stopped"
 msgstr "توقفت"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "عطّل الكل"
+msgstr "مُعطّل"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "لا توجد خدمات مطابقة للتصفيات الحالية"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "لم يتم تطبيق أي تصفيات"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} خدمات تعمل"
-msgstr[1] "{} خدمات تعمل"
-msgstr[2] "{} خدمات تعمل"
-msgstr[3] "{} خدمات تعمل"
-msgstr[4] "{} خدمات تعمل"
-msgstr[5] "{} خدمات تعمل"
+msgstr[0] "{} {} خدمة"
+msgstr[1] "{} {} خدمة"
+msgstr[2] "{} {} خدمة"
+msgstr[3] "{} {} خدمات"
+msgstr[4] "{} {} خدمات"
+msgstr[5] "{} {} خدمة"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "الخدمات"
+msgstr "خدمات المستخدمين"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "أوقف الخدمة"
+msgstr "خدمات النظام"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
-msgstr ""
+msgstr "غير مطبق"
 
 #: src/process_tree/row_model.rs:263
 msgid "Section Header"
 msgstr "عنوان القسم"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "الخدمات"
+msgstr "خدمة"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"
