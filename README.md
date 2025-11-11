@@ -41,8 +41,8 @@ themes).
 
 ## Installing
 
-[AppImage (x86_64)](https://gitlab.com/mission-center-devs/mission-center/-/jobs/10144675634/artifacts/raw/MissionCenter_v1.0.2-x86_64.AppImage)  
-[AppImage (ARM64)](https://gitlab.com/mission-center-devs/mission-center/-/jobs/10144675636/artifacts/raw/MissionCenter_v1.0.2-aarch64.AppImage)  
+[AppImage (x86_64)](https://gitlab.com/mission-center-devs/mission-center/-/jobs/12045090460/artifacts/raw/MissionCenter_v1.1.0-x86_64.AppImage)  
+[AppImage (ARM64)](https://gitlab.com/mission-center-devs/mission-center/-/jobs/12045090469/artifacts/raw/MissionCenter_v1.1.0-aarch64.AppImage)  
 [Flatpak](https://flathub.org/apps/io.missioncenter.MissionCenter)  
 [Snap](https://snapcraft.io/mission-center)
 
