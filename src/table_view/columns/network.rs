@@ -1,4 +1,4 @@
-/* apps_page/columns/gpu.rs
+/* table_view/columns/network.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -20,14 +20,14 @@
 
 use std::cmp::Ordering;
 
+use gtk::glib;
 use gtk::prelude::*;
 
-pub use super::cpu_label_formatter as label_formatter;
 use super::{compare_column_entries_by, sort_order, LabelCell};
-use crate::label_cell_factory;
+use crate::{label_cell_factory, DataType};
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    label_cell_factory!("gpu-usage", label_formatter)
+    label_cell_factory!("network-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
@@ -38,11 +38,18 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
         };
 
         compare_column_entries_by(lhs, rhs, sort_order(&column_view), |lhs, rhs| {
-            let lhs = lhs.gpu_usage();
-            let rhs = rhs.gpu_usage();
+            let lhs = lhs.network_usage();
+            let rhs = rhs.network_usage();
 
             lhs.partial_cmp(&rhs).unwrap_or(Ordering::Equal)
         })
         .into()
     })
+}
+
+pub fn label_formatter(label: &LabelCell, value: glib::Value) {
+    let network_usage: f32 = value.get().unwrap();
+    label.set_label(
+        crate::to_human_readable_nice(network_usage, &DataType::NetworkBytesPerSecond).as_str(),
+    );
 }

@@ -1,6 +1,6 @@
-/* ui/services_page/details_dialog.blp
+/* ui/table_view/service_details_dialog.blp
  *
- * Copyright 2024 Romeo Calota
+ * Copyright 2025 Mission Center Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $DetailsDialog: Adw.Dialog {
+template $ServiceDetailsDialog: Adw.Dialog {
+  width-request: 360;
+
   Adw.ToolbarView {
     [top]
     Adw.HeaderBar {
@@ -71,7 +73,7 @@ template $DetailsDialog: Adw.Dialog {
                 homogeneous: true;
 
                 Button start {
-                  action-name: "win.selected-svc-start";
+                  action-name: "service.start";
                   tooltip-text: _("Start service");
 
                   child: Box {
@@ -86,7 +88,7 @@ template $DetailsDialog: Adw.Dialog {
                 }
 
                 Button stop {
-                  action-name: "win.selected-svc-stop";
+                  action-name: "service.stop";
                   tooltip-text: _("Stop service");
 
                   child: Box {
@@ -102,7 +104,7 @@ template $DetailsDialog: Adw.Dialog {
               }
 
               Button restart {
-                action-name: "win.selected-svc-restart";
+                action-name: "service.restart";
                 tooltip-text: _("Restart service");
 
                 child: Box {
@@ -312,6 +314,36 @@ template $DetailsDialog: Adw.Dialog {
                   halign: end;
 
                   label: _("N/A");
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+
+                  label: _("File Location");
+                }
+
+                Label file_location {
+                  styles [
+                    "dim-label"
+                  ]
+
+                  ellipsize: middle;
+
+                  hexpand: true;
+                  halign: end;
                 }
               };
             }

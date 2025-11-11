@@ -34,260 +34,195 @@ template $ServicesPage : Box {
 
     child: Box {
       orientation: vertical;
+      spacing: 10;
 
       Box top_legend {
-        margin-bottom: 20;
+        hexpand: true;
 
         Box {
-          valign: center;
+          orientation: vertical;
           spacing: 5;
+          hexpand: true;
+          halign: start;
+          valign: center;
 
-          Adw.ToggleGroup service_legend {
-            orientation: horizontal;
-            homogeneous: true;
+          Label h1 {
+            styles [
+              "title-1",
+            ]
 
-            Adw.Toggle total_service_box {
-              enabled: true;
-            }
+            ellipsize: end;
 
-            Adw.Toggle running_service_box {
-              icon-name: "service-running";
-            }
-
-            Adw.Toggle failed_service_box {
-              icon-name: "service-failed";
-            }
-
-            Adw.Toggle stopped_service_box {
-              icon-name: "service-stopped";
-            }
-
-            Adw.Toggle disabled_service_box {
-              icon-name: "service-disabled";
-            }
+            halign: start;
           }
 
-          Box {
-            hexpand: true;
+          Label h2 {
+            styles [
+              "faint-text",
+            ]
+
+            ellipsize: end;
+
+            halign: start;
+            visible: bind template.collapsed inverted;
           }
         }
 
         Box {
-          valign: center;
-          spacing: 5;
+          orientation: vertical;
+          spacing: 12;
+          halign: end;
 
           Box {
-            styles [
-              "linked"
-            ]
+            halign: end;
+            spacing: 5;
 
-            Button start {
-              action-name: "win.selected-svc-start";
-              tooltip-text: _("Start the selected service");
+            Button {
+              margin-end: 5;
 
-              child: Box {
-                spacing: 5;
-
-                halign: center;
-
-                Image {
-                  icon-name: "media-playback-start-symbolic";
-                }
-
-                Label start_label {
-                  label: _("Start");
-                }
-              };
-            }
-
-            Button stop {
-              action-name: "win.selected-svc-stop";
-              tooltip-text: _("Stop the selected service");
+              action-name: "services-page.collapse-all";
+              tooltip-text: _("Collapse all expanded services");
 
               child: Box {
                 spacing: 5;
 
-                halign: center;
-
                 Image {
-                  icon-name: "media-playback-stop-symbolic";
+                  icon-name: "list-collapse-symbolic";
                 }
 
-                Label stop_label {
-                  label: _("Stop");
+                Label {
+                  label: _("Collapse All");
+                  visible: bind template.collapsed inverted;
                 }
               };
             }
+
+            $ProcessActionBar process_action_bar {
+              visible: false;
+            }
+
+            $ServiceActionBar service_action_bar {
+              visible: true;
+            }
           }
 
-          Button restart {
-            action-name: "win.selected-svc-restart";
-            tooltip-text: _("Restart the selected service");
+          Box {
+            spacing: 5;
+            halign: end;
 
-            child: Box {
-              spacing: 5;
+            Box {
+              styles [
+                "linked"
+              ]
 
-              halign: center;
+              halign: end;
+              homogeneous: true;
 
-              Image {
-                icon-name: "media-playlist-repeat-symbolic";
+              ToggleButton toggle_running {
+                name: "toggle_running";
+                tooltip-text: _("Filter running processes");
+
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
+
+                  Image {
+                    icon-name: "service-running";
+                  }
+
+                  Label {
+                    label: "Running";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
               }
 
-              Label restart_label {
-                label: _("Restart");
+              ToggleButton toggle_failed {
+                name: "toggle_failed";
+                tooltip-text: _("Filter failed processes");
+
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
+
+                  Image {
+                    icon-name: "service-failed";
+                  }
+
+                  Label {
+                    label: "Failed";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
               }
-            };
-          }
 
-          Button status {
-            action-name: "services-page.details";
-            tooltip-text: _("Show details of the selected service");
+              ToggleButton toggle_stopped {
+                name: "toggle_stopped";
+                tooltip-text: _("Filter stopped processes");
 
-            child: Box {
-              spacing: 5;
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
 
-              halign: center;
+                  Image {
+                    icon-name: "service-stopped";
+                  }
 
-              Image {
-                icon-name: "details-symbolic";
+                  Label {
+                    label: "Stopped";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
               }
 
-              Label details_label {
-                label: _("Details");
+              ToggleButton toggle_disabled {
+                name: "toggle_disabled";
+                tooltip-text: _("Filter disabled processes");
+
+                child: Box {
+                  hexpand: true;
+                  halign: center;
+                  spacing: 5;
+
+                  Image {
+                    icon-name: "service-disabled";
+                  }
+
+                  Label {
+                    label: "Disabled";
+                    visible: bind template.collapsed inverted;
+                  }
+                };
               }
-            };
+            }
+
+            Button {
+              action-name: "services-page.remove-filters";
+              tooltip-text: _("Remove all filters");
+
+              child: Box {
+                spacing: 5;
+
+                Image {
+                  icon-name: "edit-clear-all-symbolic";
+                }
+
+                Label {
+                  label: _("Remove Filters");
+                  visible: bind template.collapsed inverted;
+                }
+              };
+            }
           }
         }
       }
 
-      Frame {
-        child: ScrolledWindow {
-          hexpand: true;
-          vexpand: true;
-
-          ColumnView column_view {
-            styles [
-              "rich-list"
-            ]
-
-            reorderable: false;
-            show-row-separators: false;
-            show-column-separators: false;
-
-            ColumnViewColumn name_column {
-              title: _("Name");
-
-              fixed-width: 400;
-              resizable: true;
-
-              factory: BuilderListItemFactory {
-                template ListItem {
-                  child: $ListCell {
-                    item-id: bind (template.item as <$ServicesListItem>).name;
-                    action-name: "services-page.show-context-menu";
-
-                    child: Box {
-                      margin-start: 10;
-                      margin-end: 10;
-                      margin-top: 7;
-                      margin-bottom: 7;
-
-                      spacing: 15;
-
-                      Image {
-                        halign: start;
-                        valign: center;
-
-                        icon-name: bind (template.item as <$ServicesListItem>).icon-name;
-                      }
-
-                      Label {
-                        halign: start;
-                        valign: center;
-
-                        label: bind (template.item as <$ServicesListItem>).name;
-                      }
-                    };
-                  };
-                }
-              };
-            }
-
-            ColumnViewColumn pid_column {
-              title: _("PID");
-
-              resizable: true;
-
-              factory: BuilderListItemFactory {
-                template ListItem {
-                  child: Label name {
-                    halign: end;
-                    valign: center;
-
-                    label: bind (template.item as <$ServicesListItem>).pid;
-                  };
-                }
-              };
-            }
-
-            ColumnViewColumn description_column {
-              title: _("Description");
-
-              expand: true;
-              resizable: true;
-
-              factory: BuilderListItemFactory {
-                template ListItem {
-                  child: Label {
-                    styles [
-                      "faint-text",
-                    ]
-
-                    margin-end: 10;
-
-                    halign: start;
-                    valign: center;
-
-                    ellipsize: middle;
-
-                    label: bind (template.item as <$ServicesListItem>).description;
-                  };
-                }
-              };
-            }
-          }
-        };
+      $TableView table_view {
+          margin-top: 10;
       }
     };
-  }
-
-  PopoverMenu context_menu {
-    menu-model: context_menu_model;
-  }
-}
-
-menu context_menu_model {
-  section {
-    item {
-      label: _("Start");
-      action: "win.selected-svc-start";
-    }
-
-    item {
-      label: _("Stop");
-      action: "win.selected-svc-stop";
-    }
-
-    item {
-      label: _("Restart");
-      action: "win.selected-svc-restart";
-    }
-  }
-
-  section {
-    item {
-      label: _("Details");
-      action: "services-page.details";
-    }
   }
 }

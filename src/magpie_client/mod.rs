@@ -36,6 +36,7 @@ pub use client::{
     App, Client, Connection, Cpu, Disk, DiskKind, ErrorEjectFailed, Fan, Gpu, Memory, MemoryDevice,
     Process, Service, SmartData,
 };
+use magpie_types::about::About;
 use magpie_types::processes::processes_response::process_map::NetworkStatsError;
 
 macro_rules! cmd_flatpak_host {
@@ -92,20 +93,22 @@ enum Message {
     HangupProcesses(Vec<Pid>),
     ContinueProcesses(Vec<Pid>),
     SuspendProcesses(Vec<Pid>),
-    GetServiceLogs(String, Option<NonZeroU32>),
-    StartService(String),
-    StopService(String),
-    RestartService(String),
-    EnableService(String),
-    DisableService(String),
+    GetServiceLogs(u64, Option<NonZeroU32>),
+    StartService(u64),
+    StopService(u64),
+    RestartService(u64),
+    EnableService(u64),
+    DisableService(u64),
     EjectDisk(String),
     SmartData(String),
+    AboutSystem,
 }
 
 enum Response {
     String(String),
     EjectResult(Result<(), ErrorEjectFailed>),
     SmartData(Option<SmartData>),
+    AboutResult(About),
 }
 
 #[derive(Debug)]
@@ -123,7 +126,8 @@ pub struct Readings {
 
     pub network_stats_error: Option<NetworkStatsError>,
 
-    pub services: HashMap<String, Service>,
+    pub user_services: HashMap<u64, Service>,
+    pub system_services: HashMap<u64, Service>,
 }
 
 impl Readings {
@@ -141,7 +145,8 @@ impl Readings {
             running_processes: HashMap::new(),
             network_stats_error: None,
 
-            services: HashMap::new(),
+            user_services: HashMap::new(),
+            system_services: HashMap::new(),
         }
     }
 }
@@ -377,7 +382,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn service_logs(&self, service_id: String, pid: Option<NonZeroU32>) -> String {
+    pub fn service_logs(&self, service_id: u64, pid: Option<NonZeroU32>) -> String {
         let sid = service_id.clone();
         match self.sender.send(Message::GetServiceLogs(service_id, pid)) {
             Err(e) => {
@@ -412,7 +417,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn start_service(&self, service_id: String) {
+    pub fn start_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::StartService(service_id)) {
             Err(e) => {
@@ -425,7 +430,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn stop_service(&self, service_id: String) {
+    pub fn stop_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::StopService(service_id)) {
             Err(e) => {
@@ -438,7 +443,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn restart_service(&self, service_id: String) {
+    pub fn restart_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::RestartService(service_id)) {
             Err(e) => {
@@ -451,7 +456,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn enable_service(&self, service_id: String) {
+    pub fn enable_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::EnableService(service_id)) {
             Err(e) => {
@@ -464,7 +469,7 @@ impl MagpieClient {
         }
     }
 
-    pub fn disable_service(&self, service_id: String) {
+    pub fn disable_service(&self, service_id: u64) {
         let sid = service_id.clone();
         match self.sender.send(Message::DisableService(service_id)) {
             Err(e) => {
@@ -541,6 +546,38 @@ impl MagpieClient {
                     "Error receiving SataSmartResult response. Wrong type"
                 );
                 None
+            }
+        }
+    }
+
+    pub fn about_system(&self) -> About {
+        match self.sender.send(Message::AboutSystem) {
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::SysInfo",
+                    "Error sending AboutResult to gatherer: {e}",
+                );
+
+                return About::default();
+            }
+            _ => {}
+        }
+
+        match self.receiver.recv() {
+            Ok(Response::AboutResult(ar)) => ar,
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::SysInfo",
+                    "Error receiving AboutResult response: {e}",
+                );
+                About::default()
+            }
+            _ => {
+                g_critical!(
+                    "MissionCenter::SysInfo",
+                    "Error receiving AboutResult response. Wrong type"
+                );
+                About::default()
             }
         }
     }
@@ -630,6 +667,15 @@ impl MagpieClient {
                         );
                     }
                 }
+                Message::AboutSystem => {
+                    if let Err(e) = tx.send(Response::AboutResult(magpie.about())) {
+                        g_critical!(
+                            "MissionCenter::SysInfo",
+                            "Error sending AboutResult response: {}",
+                            e
+                        );
+                    }
+                }
             },
             Err(_) => {}
         }
@@ -658,7 +704,8 @@ impl MagpieClient {
             mem_devices: magpie.memory_devices(),
             fans: magpie.fans_info(),
             network_connections: magpie.network_connections(),
-            services: magpie.services(),
+            user_services: magpie.user_services(),
+            system_services: magpie.system_services(),
         };
 
         readings
@@ -680,7 +727,8 @@ impl MagpieClient {
                 running_apps: std::mem::take(&mut readings.running_apps),
                 running_processes: std::mem::take(&mut readings.running_processes),
                 network_stats_error: std::mem::take(&mut readings.network_stats_error),
-                services: std::mem::take(&mut readings.services),
+                user_services: std::mem::take(&mut readings.user_services),
+                system_services: std::mem::take(&mut readings.system_services),
             };
 
             move || {
@@ -778,10 +826,18 @@ impl MagpieClient {
             );
 
             let timer = std::time::Instant::now();
-            readings.services = magpie.services();
+            readings.user_services = magpie.user_services();
             g_debug!(
                 "MissionCenter::Perf",
-                "Services load took: {:?}",
+                "User services load took: {:?}",
+                timer.elapsed()
+            );
+
+            let timer = std::time::Instant::now();
+            readings.system_services = magpie.system_services();
+            g_debug!(
+                "MissionCenter::Perf",
+                "System services load took: {:?}",
                 timer.elapsed()
             );
 
@@ -808,7 +864,8 @@ impl MagpieClient {
                     running_apps: std::mem::take(&mut readings.running_apps),
                     running_processes: std::mem::take(&mut readings.running_processes),
                     network_stats_error: std::mem::take(&mut readings.network_stats_error),
-                    services: std::mem::take(&mut readings.services),
+                    user_services: std::mem::take(&mut readings.user_services),
+                    system_services: std::mem::take(&mut readings.system_services),
                 };
 
                 move || {

@@ -164,7 +164,7 @@ mod imp {
 glib::wrapper! {
     pub struct ThemeSelector(ObjectSubclass<imp::ThemeSelector>)
         @extends gtk::Box, gtk::Widget,
-        @implements gtk::Buildable;
+        @implements gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl ThemeSelector {

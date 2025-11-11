@@ -18,634 +18,199 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
+use std::collections::HashMap;
+use std::fmt::Write;
 
-use adw::prelude::AdwDialogExt;
-use gtk::{
-    gdk, gio,
-    glib::{
-        self, g_critical, g_warning, gobject_ffi, translate::from_glib_full, Object, VariantTy,
-        WeakRef,
-    },
-    prelude::*,
-    subclass::prelude::*,
-    INVALID_LIST_POSITION,
+use adw::prelude::*;
+use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
+use gtk::{gio, glib, subclass::prelude::*};
+
+use crate::i18n::{i18n, ni18n_f};
+use crate::table_view::{
+    update_services, ContentType, ProcessActionBar, RowModel, RowModelBuilder, SectionType,
+    ServiceActionBar, SettingsNamespace, TableView,
 };
 
-use details_dialog::DetailsDialog;
-use services_list_item::{ServicesListItem, ServicesListItemBuilder};
-
-use crate::{
-    app,
-    i18n::*,
-    magpie_client::{MagpieClient, Readings},
-};
-
-mod details_dialog;
-mod services_list_item;
+pub mod actions;
 
 mod imp {
     use super::*;
-    use adw::gio::ListStore;
-    use gtk::Orientation::{Horizontal, Vertical};
 
-    pub struct Actions {
-        pub start: gio::SimpleAction,
-        pub stop: gio::SimpleAction,
-        pub restart: gio::SimpleAction,
-    }
-
-    fn find_selected_item(
-        this: WeakRef<crate::services_page::ServicesPage>,
-    ) -> Option<(crate::services_page::ServicesPage, ServicesListItem)> {
-        let this_obj = match this.upgrade() {
-            Some(this) => this,
-            None => {
-                g_critical!(
-                    "MissionCenter::ServicesPage",
-                    "Failed to get ServicesPage instance for action"
-                );
-                return None;
-            }
-        };
-        let this = this_obj.imp();
-
-        let selected_item = match this
-            .column_view
-            .model()
-            .and_then(|m| m.downcast_ref::<gtk::SingleSelection>().cloned())
-            .and_then(|s| s.selected_item())
-            .and_then(|i| i.downcast_ref::<ServicesListItem>().cloned())
-        {
-            Some(item) => item,
-            None => {
-                g_critical!(
-                    "MissionCenter::ServicesPage",
-                    "Failed to find selected item"
-                );
-                return None;
-            }
-        };
-
-        Some((this_obj, selected_item))
-    }
-
-    #[derive(gtk::CompositeTemplate)]
+    #[derive(Properties, gtk::CompositeTemplate)]
+    #[properties(wrapper_type = super::ServicesPage)]
     #[template(resource = "/io/missioncenter/MissionCenter/ui/services_page/page.ui")]
     pub struct ServicesPage {
-        #[template_child]
-        pub column_view: TemplateChild<gtk::ColumnView>,
-        #[template_child]
-        pub top_legend: TemplateChild<gtk::Box>,
-        #[template_child]
-        pub service_legend: TemplateChild<adw::ToggleGroup>,
-        #[template_child]
-        pub total_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub running_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub failed_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub stopped_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub disabled_service_box: TemplateChild<adw::Toggle>,
-        #[template_child]
-        pub start: TemplateChild<gtk::Button>,
-        #[template_child]
-        start_label: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub stop: TemplateChild<gtk::Button>,
-        #[template_child]
-        stop_label: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub restart: TemplateChild<gtk::Button>,
-        #[template_child]
-        restart_label: TemplateChild<gtk::Label>,
-        #[template_child]
-        details_label: TemplateChild<gtk::Label>,
-        #[template_child]
-        name_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        description_column: TemplateChild<gtk::ColumnViewColumn>,
-        #[template_child]
-        context_menu: TemplateChild<gtk::PopoverMenu>,
+        #[property(get, set)]
+        collapsed: RefCell<bool>,
 
-        pub model: gio::ListStore,
-        pub actions: Cell<Actions>,
+        #[template_child]
+        pub h1: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub h2: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        pub toggle_running: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub toggle_failed: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub toggle_stopped: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub toggle_disabled: TemplateChild<gtk::ToggleButton>,
+
+        #[template_child]
+        pub table_view: TemplateChild<TableView>,
+
+        #[template_child]
+        pub process_action_bar: TemplateChild<ProcessActionBar>,
+        #[template_child]
+        pub service_action_bar: TemplateChild<ServiceActionBar>,
+
+        pub user_section: RowModel,
+        pub system_section: RowModel,
+
+        pub use_merged_stats: Cell<bool>,
+
+        pub total_services: Cell<u32>,
+        pub running_services: Cell<u32>,
+        pub failed_services: Cell<u32>,
+        pub stopped_services: Cell<u32>,
+        pub disabled_services: Cell<u32>,
+    }
+
+    impl ServicesPage {
+        pub fn update_headers(&self) {
+            let mut fmt_buffer = arrayvec::ArrayString::<12>::new();
+
+            let total = self.total_services.get();
+            let running = self.running_services.get();
+            let stopped = self.stopped_services.get();
+            let failed = self.failed_services.get();
+            let disabled = self.disabled_services.get();
+
+            fmt_buffer.clear();
+            let _ = write!(fmt_buffer, "{}", total);
+            self.h1.set_label(&ni18n_f(
+                "{} Total Service",
+                "{} Total Services",
+                total,
+                &[fmt_buffer.as_str()],
+            ));
+
+            let mut types = String::with_capacity(50);
+            let mut any_active = false;
+            let mut filtered = 0;
+            if self.toggle_running.is_active() {
+                any_active = true;
+                filtered += running;
+                types.push_str(&i18n("Running"));
+            }
+
+            if self.toggle_failed.is_active() {
+                any_active = true;
+                filtered += failed;
+                if !types.is_empty() {
+                    types.push_str(", ");
+                }
+                types.push_str(&i18n("Failed"));
+            }
+
+            if self.toggle_stopped.is_active() {
+                any_active = true;
+                filtered += stopped;
+                if !types.is_empty() {
+                    types.push_str(", ");
+                }
+                types.push_str(&i18n("Stopped"));
+            }
+
+            if self.toggle_disabled.is_active() {
+                any_active = true;
+                filtered += disabled;
+                if !types.is_empty() {
+                    types.push_str(", ");
+                }
+                types.push_str(&i18n("Disabled"));
+            }
+
+            if filtered == 0 {
+                if any_active {
+                    self.h2
+                        .set_label(&i18n("No services match the current filters"));
+                } else {
+                    self.h2.set_label(&i18n("No filters applied"));
+                }
+            } else {
+                fmt_buffer.clear();
+                let _ = write!(fmt_buffer, "{}", filtered);
+                // TRANSLATORS: {0} is a number, {1} is a comma-separated list of service states, i.e. "Running", "Failed", "Stopped", "Disabled"
+                self.h2.set_label(&ni18n_f(
+                    "{} {} Service",
+                    "{} {} Services",
+                    filtered,
+                    &[fmt_buffer.as_str(), &types],
+                ));
+            }
+        }
     }
 
     impl Default for ServicesPage {
         fn default() -> Self {
             Self {
-                column_view: TemplateChild::default(),
-                top_legend: Default::default(),
-                service_legend: Default::default(),
-                total_service_box: Default::default(),
-                running_service_box: Default::default(),
-                failed_service_box: Default::default(),
-                stopped_service_box: Default::default(),
-                disabled_service_box: Default::default(),
-                start: TemplateChild::default(),
-                start_label: TemplateChild::default(),
-                stop: TemplateChild::default(),
-                stop_label: TemplateChild::default(),
-                restart: TemplateChild::default(),
-                restart_label: TemplateChild::default(),
-                details_label: TemplateChild::default(),
-                name_column: TemplateChild::default(),
-                description_column: TemplateChild::default(),
-                context_menu: TemplateChild::default(),
+                collapsed: RefCell::new(false),
 
-                model: gio::ListStore::new::<ServicesListItem>(),
-                actions: Cell::new(Actions {
-                    start: gio::SimpleAction::new("selected-svc-start", None),
-                    stop: gio::SimpleAction::new("selected-svc-stop", None),
-                    restart: gio::SimpleAction::new("selected-svc-restart", None),
-                }),
+                h1: Default::default(),
+                h2: Default::default(),
+
+                toggle_running: Default::default(),
+                toggle_failed: Default::default(),
+                toggle_stopped: Default::default(),
+                toggle_disabled: Default::default(),
+
+                table_view: Default::default(),
+
+                process_action_bar: Default::default(),
+                service_action_bar: Default::default(),
+
+                user_section: RowModelBuilder::new()
+                    .name(&i18n("User Services"))
+                    .content_type(ContentType::SectionHeader)
+                    .section_type(SectionType::FirstSection)
+                    .build(),
+                system_section: RowModelBuilder::new()
+                    .name(&i18n("System Services"))
+                    .content_type(ContentType::SectionHeader)
+                    .section_type(SectionType::SecondSection)
+                    .build(),
+
+                use_merged_stats: Cell::new(false),
+
+                total_services: Cell::new(0),
+                running_services: Cell::new(0),
+                failed_services: Cell::new(0),
+                stopped_services: Cell::new(0),
+                disabled_services: Cell::new(0),
             }
-        }
-    }
-
-    impl ServicesPage {
-        pub fn actions(&self) -> &Actions {
-            unsafe { &*self.actions.as_ptr() }
         }
     }
 
     impl ServicesPage {
         pub fn collapse(&self) {
-            if let None = std::env::var_os("SNAP_CONTEXT") {
-                self.start_label.set_visible(false);
-                self.stop_label.set_visible(false);
-                self.restart_label.set_visible(false);
-            }
-            self.details_label.set_visible(false);
+            self.process_action_bar.imp().collapse();
+            self.service_action_bar.imp().collapse();
 
-            self.service_legend.set_margin_bottom(10);
-            self.top_legend.set_orientation(Vertical);
+            self.obj().set_collapsed(true);
 
-            self.update_section_labels();
-
-            self.name_column.set_fixed_width(1);
-            self.name_column.set_expand(true);
-            self.name_column.set_resizable(false);
-            self.description_column.set_visible(false);
+            self.update_headers();
         }
 
         pub fn expand(&self) {
-            if let None = std::env::var_os("SNAP_CONTEXT") {
-                self.start_label.set_visible(true);
-                self.stop_label.set_visible(true);
-                self.restart_label.set_visible(true);
-            }
-            self.details_label.set_visible(true);
+            self.process_action_bar.imp().expand();
+            self.service_action_bar.imp().expand();
 
-            self.service_legend.set_margin_bottom(0);
-            self.top_legend.set_orientation(Horizontal);
+            self.obj().set_collapsed(false);
 
-            self.update_section_labels();
-
-            self.name_column.set_fixed_width(400);
-            self.name_column.set_expand(false);
-            self.name_column.set_resizable(true);
-            self.description_column.set_visible(true);
-        }
-
-        fn configure_actions(&self) {
-            let this = self.obj();
-            let this = this.as_ref();
-
-            let actions = gio::SimpleActionGroup::new();
-            this.insert_action_group("services-page", Some(&actions));
-
-            let action = gio::SimpleAction::new("show-context-menu", Some(VariantTy::TUPLE));
-            action.connect_activate({
-                let this = this.downgrade();
-                move |_action, service| {
-                    let this = match this.upgrade() {
-                        Some(this) => this,
-                        None => {
-                            g_critical!(
-                                "MissionCenter::ServicesPage",
-                                "Failed to get ServicesPage instance from show-context-menu action"
-                            );
-                            return;
-                        }
-                    };
-                    let this = this.imp();
-
-                    let (name, anchor) = match service.and_then(|s| s.get::<(String, u64, f64, f64)>()) {
-                        Some((name, ptr, x, y)) => {
-                            // We just get a pointer to a weak reference to the object
-                            // Do the necessary checks and downcast the object to a Widget
-                            let anchor_widget = unsafe {
-                                let ptr = gobject_ffi::g_weak_ref_get(ptr as usize as *mut _);
-                                if ptr.is_null() {
-                                    return;
-                                } else {
-                                    let obj: Object = from_glib_full(ptr);
-                                    match obj.downcast::<gtk::Widget>() {
-                                        Ok(w) => w,
-                                        Err(_) => {
-                                            g_critical!(
-                                                    "MissionCenter::ServicesPage",
-                                                    "Failed to downcast object to GtkWidget"
-                                                );
-                                            return;
-                                        }
-                                    }
-                                }
-                            };
-
-                            let anchor = if x > 0. && y > 0. {
-                                this.context_menu.set_has_arrow(false);
-
-                                match anchor_widget.compute_point(
-                                    &*this.obj(),
-                                    &gtk::graphene::Point::new(x as _, y as _),
-                                ) {
-                                    None => {
-                                        g_critical!(
-                                            "MissionCenter::ServicesPage",
-                                            "Failed to compute_point, context menu will not be anchored to mouse position"
-                                        );
-                                        gdk::Rectangle::new(
-                                            x.round() as i32,
-                                            y.round() as i32,
-                                            1,
-                                            1,
-                                        )
-                                    }
-                                    Some(p) => {
-                                        gdk::Rectangle::new(
-                                            p.x().round() as i32,
-                                            p.y().round() as i32,
-                                            1,
-                                            1,
-                                        )
-                                    }
-                                }
-                            } else {
-                                this.context_menu.set_has_arrow(true);
-
-                                if let Some(bounds) = anchor_widget.compute_bounds(&*this.obj()) {
-                                    gdk::Rectangle::new(
-                                        bounds.x() as i32,
-                                        bounds.y() as i32,
-                                        bounds.width() as i32,
-                                        bounds.height() as i32,
-                                    )
-                                } else {
-                                    g_warning!(
-                                        "MissionCenter::ServicesPage",
-                                        "Failed to get bounds for menu button, popup will display in an arbitrary location"
-                                    );
-                                    gdk::Rectangle::new(0, 0, 0, 0)
-                                }
-                            };
-
-                            (name, anchor)
-                        }
-
-                        None => {
-                            g_critical!(
-                                "MissionCenter::ServicesPage",
-                                "Failed to get service name and button from show-context-menu action"
-                            );
-                            return;
-                        }
-                    };
-
-                    let model = match this.column_view.model().as_ref().cloned() {
-                        Some(model) => model,
-                        None => {
-                            g_critical!(
-                                "MissionCenter::ServicesPage",
-                                "Failed to get model for `show-context-menu` action"
-                            );
-                            return;
-                        }
-                    };
-
-                    let list_item_pos = {
-                        let mut pos = None;
-                        for i in 0..model.n_items() {
-                            if let Some(item) =
-                                model
-                                    .item(i)
-                                    .and_then(|i| i.downcast_ref::<ServicesListItem>().cloned())
-                            {
-                                if item.name() == name {
-                                    pos = Some(i);
-                                    break;
-                                }
-                            }
-                        }
-
-                        if let Some(pos) = pos {
-                            pos
-                        } else {
-                            g_critical!(
-                                "MissionCenter::ServicesPage",
-                                "Failed to get ServicesListItem named {} from model",
-                                name
-                            );
-                            return;
-                        }
-                    };
-
-                    model.select_item(list_item_pos, false);
-                    this.context_menu.set_pointing_to(Some(&anchor));
-                    this.context_menu.popup();
-                }
-            });
-            actions.add_action(&action);
-
-            let action = gio::SimpleAction::new("details", None);
-            action.connect_activate({
-                let this = this.downgrade();
-                move |_action, _| {
-                    match find_selected_item(this.clone()) {
-                        Some((this, item)) => {
-                            let dialog = DetailsDialog::new(item);
-                            dialog.present(Some(&this));
-                        }
-                        None => {
-                            g_critical!(
-                                "MissionCenter::ServicesPage",
-                                "Failed to get selected item for action"
-                            );
-                            return;
-                        }
-                    };
-                }
-            });
-            actions.add_action(&action);
-        }
-
-        pub fn set_up_filter_model(&self, model: gio::ListModel) -> gtk::FilterListModel {
-            let window = match app!().window() {
-                Some(window) => window,
-                None => {
-                    g_critical!(
-                        "MissionCenter::ServicesPage",
-                        "Failed to get MissionCenterWindow instance"
-                    );
-                    return gtk::FilterListModel::new(
-                        Some(model),
-                        Some(gtk::CustomFilter::new(|_| true)),
-                    );
-                }
-            };
-
-            let filter = gtk::CustomFilter::new({
-                let this = self.obj().downgrade();
-                let window = window.downgrade();
-                move |obj| {
-                    let list_item = match obj.downcast_ref::<ServicesListItem>() {
-                        None => return false,
-                        Some(li) => li,
-                    };
-
-                    let searched = || {
-                        use textdistance::{Algorithm, Levenshtein};
-
-                        let window = match window.upgrade() {
-                            None => return true,
-                            Some(w) => w,
-                        };
-                        let window = window.imp();
-
-                        if !window.search_button.is_active() {
-                            return true;
-                        }
-
-                        if window.header_search_entry.text().is_empty() {
-                            return true;
-                        }
-
-                        let entry_name = list_item.name().to_lowercase();
-                        let pid = list_item.pid().to_string();
-                        let search_query = window.header_search_entry.text().to_lowercase();
-
-                        if entry_name.contains(&search_query)
-                            || (!pid.is_empty() && pid.contains(&search_query))
-                        {
-                            return true;
-                        }
-
-                        if search_query.contains(&entry_name)
-                            || (!pid.is_empty() && search_query.contains(&pid))
-                        {
-                            return true;
-                        }
-
-                        let str_distance = Levenshtein::default()
-                            .for_str(&entry_name, &search_query)
-                            .ndist();
-                        if str_distance <= 0.6 {
-                            return true;
-                        }
-
-                        false
-                    };
-
-                    let type_filter = || {
-                        let Some(this) = this.upgrade() else {
-                            return true;
-                        };
-
-                        let this = this.imp();
-
-                        match this.service_legend.active() {
-                            0 => true,
-                            1 => list_item.running(),
-                            2 => list_item.failed(),
-                            3 => list_item.enabled() && !list_item.failed() && !list_item.running(),
-                            4 => {
-                                !list_item.running() && !list_item.failed() && !list_item.enabled()
-                            }
-                            _ => true,
-                        }
-                    };
-
-                    searched() && type_filter()
-                }
-            });
-
-            window.imp().header_search_entry.connect_search_changed({
-                let filter = filter.downgrade();
-                let window = window.downgrade();
-                move |_| {
-                    if let Some(window) = window.upgrade() {
-                        if !window.services_page_active() {
-                            return;
-                        }
-
-                        if let Some(filter) = filter.upgrade() {
-                            filter.changed(gtk::FilterChange::Different);
-                        }
-                    }
-                }
-            });
-
-            self.service_legend.connect_active_notify({
-                let filter = filter.downgrade();
-                move |_| {
-                    if let Some(filter) = filter.upgrade() {
-                        filter.changed(gtk::FilterChange::Different);
-                    }
-                }
-            });
-
-            gtk::FilterListModel::new(Some(model), Some(filter))
-        }
-
-        pub fn update_model(&self, readings: &mut Readings) {
-            let model = &self.model;
-
-            let mut to_remove = Vec::new();
-            for i in 0..model.n_items() {
-                let item = model.item(i).unwrap();
-                if let Some(item) = item.downcast_ref::<ServicesListItem>() {
-                    if let Some(service) = readings.services.remove(item.name().as_str()) {
-                        item.set_description(
-                            service
-                                .description
-                                .as_ref()
-                                .map(|s| s.as_str())
-                                .unwrap_or_default(),
-                        );
-                        item.set_enabled(service.enabled);
-                        item.set_running(service.running);
-                        item.set_failed(service.failed);
-                        if let Some(pid) = service.pid {
-                            item.set_pid(pid.to_string());
-                        } else {
-                            item.set_pid("".to_string());
-                        }
-                        if let Some(user) = &service.user {
-                            item.set_user(user.as_ref());
-                        } else {
-                            item.set_user("");
-                        }
-                        if let Some(group) = &service.group {
-                            item.set_group(group.as_ref());
-                        } else {
-                            item.set_group("");
-                        }
-                    } else {
-                        to_remove.push(i);
-                    }
-                }
-            }
-
-            for i in to_remove.iter().rev() {
-                model.remove(*i);
-            }
-
-            for (_, service) in &readings.services {
-                let mut model_item_builder = ServicesListItemBuilder::new()
-                    .name(&service.id)
-                    .description(
-                        service
-                            .description
-                            .as_ref()
-                            .map(|s| s.as_str())
-                            .unwrap_or_default(),
-                    )
-                    .enabled(service.enabled)
-                    .running(service.running)
-                    .failed(service.failed)
-                    .pid(service.pid);
-                if let Some(user) = &service.user {
-                    model_item_builder = model_item_builder.user(user);
-                }
-                if let Some(group) = &service.group {
-                    model_item_builder = model_item_builder.group(group);
-                }
-
-                model.append(&model_item_builder.build());
-            }
-
-            self.update_section_labels();
-
-            if let Some(selection_model) = self
-                .column_view
-                .model()
-                .and_then(|m| m.downcast_ref::<gtk::SingleSelection>().cloned())
-            {
-                let selected = selection_model.selected();
-                if selected != INVALID_LIST_POSITION {
-                    let selected_item = selection_model
-                        .selected_item()
-                        .and_then(|i| i.downcast_ref::<ServicesListItem>().cloned());
-
-                    if selected_item.map(|it| it.running()).unwrap_or(false) {
-                        self.actions().stop.set_enabled(true);
-                        self.actions().start.set_enabled(false);
-                        self.actions().restart.set_enabled(true);
-                    } else {
-                        self.actions().stop.set_enabled(false);
-                        self.actions().start.set_enabled(true);
-                        self.actions().restart.set_enabled(false);
-                    }
-                }
-            }
-        }
-
-        fn update_section_labels(&self) {
-            let model = &self.model;
-            let total_services = model.n_items();
-            let mut disabled_services = 0;
-            let mut running_services = 0;
-            let mut stopped_services = 0;
-            let mut failed_services = 0;
-            for i in 0..total_services {
-                let item = model.item(i).unwrap();
-                if let Some(item) = item.downcast_ref::<ServicesListItem>() {
-                    if item.running() {
-                        running_services += 1;
-                    } else if item.failed() {
-                        failed_services += 1;
-                    } else if item.enabled() {
-                        stopped_services += 1;
-                    } else {
-                        disabled_services += 1;
-                    }
-                }
-            }
-
-            let total_string = total_services.to_string();
-            let running_string = running_services.to_string();
-            let stopped_string = stopped_services.to_string();
-            let failed_string = failed_services.to_string();
-            let disabled_string = disabled_services.to_string();
-
-            let (total_string, running_string, stopped_string, failed_string, disabled_string) =
-                if self.top_legend.orientation() == Horizontal {
-                    (
-                        i18n_f("{} Total", &[&total_string]),
-                        i18n_f("{} Running", &[&running_string]),
-                        i18n_f("{} Stopped", &[&stopped_string]),
-                        i18n_f("{} Failed", &[&failed_string]),
-                        i18n_f("{} Disabled", &[&disabled_string]),
-                    )
-                } else {
-                    (
-                        total_string,
-                        running_string,
-                        stopped_string,
-                        failed_string,
-                        disabled_string,
-                    )
-                };
-
-            self.total_service_box.set_label(Some(&total_string));
-            self.running_service_box.set_label(Some(&running_string));
-            self.stopped_service_box.set_label(Some(&stopped_string));
-            self.failed_service_box.set_label(Some(&failed_string));
-            self.disabled_service_box.set_label(Some(&disabled_string));
+            self.update_headers();
         }
     }
 
@@ -656,8 +221,7 @@ mod imp {
         type ParentType = gtk::Box;
 
         fn class_init(klass: &mut Self::Class) {
-            ServicesListItem::ensure_type();
-            DetailsDialog::ensure_type();
+            RowModel::ensure_type();
 
             klass.bind_template();
         }
@@ -668,136 +232,157 @@ mod imp {
     }
 
     impl ObjectImpl for ServicesPage {
+        fn properties() -> &'static [ParamSpec] {
+            Self::derived_properties()
+        }
+
+        fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            self.derived_set_property(id, value, pspec)
+        }
+
+        fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
+            self.derived_property(id, pspec)
+        }
+
         fn constructed(&self) {
             self.parent_constructed();
 
-            if let Some(_) = std::env::var_os("SNAP_CONTEXT") {
-                self.start.set_visible(false);
-                self.stop.set_visible(false);
-                self.restart.set_visible(false);
+            let update_headers = |this: &WeakRef<super::ServicesPage>| {
+                let Some(this) = this.upgrade() else {
+                    return;
+                };
+                this.imp().update_headers();
+            };
 
-                let menu = gio::Menu::new();
-                menu.append(Some(&i18n("Details")), Some("services-page.details"));
-
-                self.context_menu
-                    .set_menu_model(Some(&gio::MenuModel::from(menu)));
-            }
-
-            self.configure_actions();
-
-            if let Some(header) = self.column_view.first_child() {
-                // Add 10px padding to the left of the first column header to align it with the content
-                if let Some(first_column) = header
-                    .first_child()
-                    .and_then(|w| w.first_child())
-                    .and_then(|w| w.first_child())
-                {
-                    first_column.set_margin_start(10);
+            self.toggle_running.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
                 }
-            }
+            });
+
+            self.toggle_failed.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
+                }
+            });
+
+            self.toggle_stopped.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
+                }
+            });
+
+            self.toggle_disabled.connect_toggled({
+                let this = self.obj().downgrade();
+                move |_| {
+                    update_headers(&this);
+                }
+            });
+
+            let actions = gio::SimpleActionGroup::new();
+
+            let action_collapse_all = gio::SimpleAction::new("collapse-all", None);
+            actions.add_action(&action_collapse_all);
+            action_collapse_all.connect_activate({
+                let this = self.obj().downgrade();
+                move |_action, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+
+                    let Some(selection_model) = imp
+                        .table_view
+                        .imp()
+                        .column_view
+                        .model()
+                        .and_then(|model| model.downcast::<gtk::SingleSelection>().ok())
+                    else {
+                        g_critical!(
+                            "MissionCenter::AppsPage",
+                            "Failed to get model for `collapse-all` action"
+                        );
+                        return;
+                    };
+
+                    let mut count = 0;
+                    for i in 0..selection_model.n_items() {
+                        let Some(row) = selection_model
+                            .item(i)
+                            .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
+                        else {
+                            return;
+                        };
+
+                        let Some(row_model) =
+                            row.item().and_then(|item| item.downcast::<RowModel>().ok())
+                        else {
+                            continue;
+                        };
+
+                        if row_model.content_type() != ContentType::SectionHeader {
+                            continue;
+                        }
+
+                        row.set_expanded(false);
+                        count += 1;
+
+                        if count >= 2 {
+                            break;
+                        }
+                    }
+                }
+            });
+
+            let action_remove_filters = gio::SimpleAction::new("remove-filters", None);
+            actions.add_action(&action_remove_filters);
+            action_remove_filters.connect_activate({
+                let this = self.obj().downgrade();
+                move |_action, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+
+                    imp.toggle_running.set_active(false);
+                    imp.toggle_failed.set_active(false);
+                    imp.toggle_stopped.set_active(false);
+                    imp.toggle_disabled.set_active(false);
+                }
+            });
+
+            self.obj()
+                .insert_action_group("services-page", Some(&actions));
+
+            let service_actions = gio::SimpleActionGroup::new();
+            service_actions.add_action(&actions::action_start(&self.table_view));
+            service_actions.add_action(&actions::action_stop(&self.table_view));
+            service_actions.add_action(&actions::action_restart(&self.table_view));
+            service_actions.add_action(&actions::action_details(&self.table_view));
+            self.obj()
+                .insert_action_group("service", Some(&service_actions));
+
+            let process_actions = gio::SimpleActionGroup::new();
+            process_actions.add_action(&actions::apps::action_stop(&self.table_view));
+            process_actions.add_action(&actions::apps::action_force_stop(&self.table_view));
+            process_actions.add_action(&actions::apps::action_suspend(&self.table_view));
+            process_actions.add_action(&actions::apps::action_continue(&self.table_view));
+            process_actions.add_action(&actions::apps::action_hangup(&self.table_view));
+            process_actions.add_action(&actions::apps::action_interrupt(&self.table_view));
+            process_actions.add_action(&actions::apps::action_user_one(&self.table_view));
+            process_actions.add_action(&actions::apps::action_user_two(&self.table_view));
+            process_actions.add_action(&actions::apps::action_details(&self.table_view));
+            self.obj()
+                .insert_action_group("process", Some(&process_actions));
         }
     }
 
     impl WidgetImpl for ServicesPage {
         fn realize(&self) {
             self.parent_realize();
-
-            fn make_magpie_request(
-                this: WeakRef<super::ServicesPage>,
-                request: fn(&MagpieClient, &str),
-            ) {
-                let app = app!();
-
-                let (_, selected_item) = match find_selected_item(this) {
-                    Some((this, item)) => (this, item),
-                    None => {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get selected item for action"
-                        );
-                        return;
-                    }
-                };
-
-                match app.sys_info() {
-                    Ok(sys_info) => {
-                        request(&sys_info, &selected_item.name());
-                    }
-                    Err(e) => {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get sys_info from MissionCenterApplication: {}",
-                            e
-                        );
-                    }
-                };
-            }
-
-            if let Some(window) = app!().window() {
-                let svc_start_action = window
-                    .lookup_action("selected-svc-start")
-                    .and_then(|a| a.downcast::<gio::SimpleAction>().ok())
-                    .unwrap_or_else(|| {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get `selected-svc-start` action from MissionCenterWindow"
-                        );
-                        gio::SimpleAction::new("selected-svc-start", None)
-                    });
-                let svc_stop_action = window
-                    .lookup_action("selected-svc-stop")
-                    .and_then(|a| a.downcast::<gio::SimpleAction>().ok())
-                    .unwrap_or_else(|| {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get `selected-svc-stop` action from MissionCenterWindow"
-                        );
-                        gio::SimpleAction::new("selected-svc-stop", None)
-                    });
-                let svc_restart_action = window
-                    .lookup_action("selected-svc-restart")
-                    .and_then(|a| a.downcast::<gio::SimpleAction>().ok())
-                    .unwrap_or_else(|| {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get `selected-svc-restart` action from MissionCenterWindow"
-                        );
-                        gio::SimpleAction::new("selected-svc-restart", None)
-                    });
-
-                svc_start_action.connect_activate({
-                    let this = self.obj().downgrade();
-                    move |_action, _| {
-                        make_magpie_request(this.clone(), |sys_info, service_name| {
-                            sys_info.start_service(service_name.to_owned());
-                        });
-                    }
-                });
-
-                svc_stop_action.connect_activate({
-                    let this = self.obj().downgrade();
-                    move |_action, _| {
-                        make_magpie_request(this.clone(), |sys_info, service_name| {
-                            sys_info.stop_service(service_name.to_owned());
-                        });
-                    }
-                });
-
-                svc_restart_action.connect_activate({
-                    let this = self.obj().downgrade();
-                    move |_action, _| {
-                        make_magpie_request(this.clone(), |sys_info, service_name| {
-                            sys_info.restart_service(service_name.to_owned());
-                        });
-                    }
-                });
-
-                self.actions.set(Actions {
-                    start: svc_start_action,
-                    stop: svc_stop_action,
-                    restart: svc_restart_action,
-                })
-            }
         }
     }
 
@@ -807,53 +392,104 @@ mod imp {
 glib::wrapper! {
     pub struct ServicesPage(ObjectSubclass<imp::ServicesPage>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl ServicesPage {
-    pub fn set_initial_readings(&self, _readings: &mut Readings) -> bool {
-        let this = self.imp();
+    pub fn set_initial_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
+        let imp = self.imp();
 
-        let filter_model = this.set_up_filter_model(this.model.clone().into());
-        let selection_model = gtk::SingleSelection::new(Some(filter_model));
-        selection_model.connect_selected_notify({
-            let this = this.obj().downgrade();
-            move |model| {
-                let selected = match model
-                    .selected_item()
-                    .and_then(|i| i.downcast_ref::<ServicesListItem>().cloned())
-                {
-                    Some(list_item) => list_item,
-                    None => {
-                        return;
-                    }
-                };
+        let toggle_group = [
+            imp.toggle_running.downgrade(),
+            imp.toggle_failed.downgrade(),
+            imp.toggle_stopped.downgrade(),
+            imp.toggle_disabled.downgrade(),
+        ];
 
-                let this = match this.upgrade() {
-                    Some(this) => this,
-                    None => {
-                        g_critical!(
-                            "MissionCenter::ServicesPage",
-                            "Failed to get ServicesPage instance in `selected_notify` signal"
-                        );
-                        return;
-                    }
-                };
-                let this = this.imp();
+        // Set up the models here since we need access to the main application window
+        // which is not yet available in the constructor.
+        imp.table_view.imp().setup(
+            SettingsNamespace::ServicesPage,
+            &imp.user_section,
+            &imp.system_section,
+            Some(&imp.process_action_bar),
+            Some(&imp.service_action_bar),
+            Some(toggle_group),
+        );
 
-                if selected.running() {
-                    this.actions().stop.set_enabled(true);
-                    this.actions().start.set_enabled(false);
-                    this.actions().restart.set_enabled(true);
-                } else {
-                    this.actions().stop.set_enabled(false);
-                    this.actions().start.set_enabled(true);
-                    this.actions().restart.set_enabled(false);
-                }
+        self.update_common(readings);
+
+        true
+    }
+
+    fn update_common(&self, readings: &mut crate::magpie_client::Readings) {
+        let imp = self.imp();
+
+        update_services(
+            &readings.running_processes,
+            &readings.user_services,
+            &imp.user_section.children(),
+            &HashMap::new(),
+            "application-x-executable-symbolic",
+            imp.table_view.imp().use_merged_stats.get(),
+            SectionType::FirstSection,
+        );
+
+        update_services(
+            &readings.running_processes,
+            &readings.system_services,
+            &imp.system_section.children(),
+            &HashMap::new(),
+            "application-x-executable-symbolic",
+            imp.table_view.imp().use_merged_stats.get(),
+            SectionType::SecondSection,
+        );
+
+        let mut services = readings.user_services.values().collect::<Vec<_>>();
+        services.extend(readings.system_services.values());
+
+        let total_services = services.len();
+        let mut disabled_services = 0;
+        let mut running_services = 0;
+        let mut stopped_services = 0;
+        let mut failed_services = 0;
+        for service in services {
+            if service.running {
+                running_services += 1;
+            } else if service.failed {
+                failed_services += 1;
+            } else if service.enabled {
+                stopped_services += 1;
+            } else {
+                disabled_services += 1;
             }
-        });
+        }
 
-        self.imp().column_view.set_model(Some(&selection_model));
+        imp.total_services.set(total_services as u32);
+        imp.running_services.set(running_services);
+        imp.stopped_services.set(stopped_services);
+        imp.failed_services.set(failed_services);
+        imp.disabled_services.set(disabled_services);
+
+        imp.update_headers();
+    }
+
+    pub fn update_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
+        let imp = self.imp();
+
+        self.update_common(readings);
+
+        if let Some(row_sorter) = imp.table_view.imp().row_sorter.get() {
+            row_sorter.changed(gtk::SorterChange::Different)
+        }
+
+        if readings.network_stats_error.is_some() {
+            imp.table_view
+                .get()
+                .imp()
+                .network_usage_column
+                .set_visible(false);
+        }
 
         true
     }
@@ -868,9 +504,7 @@ impl ServicesPage {
         self.imp().expand();
     }
 
-    pub fn update_readings(&self, readings: &mut Readings) -> bool {
-        self.imp().update_model(readings);
-
-        true
+    pub fn activate_table_view_action(&self, name: &str) -> Result<(), glib::error::BoolError> {
+        WidgetExt::activate_action(&*self.imp().table_view, name, None)
     }
 }

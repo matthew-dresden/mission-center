@@ -64,4 +64,3 @@ export PATH="/snap/bin:$PATH"
 export SNAP_ARCH="$(arch)"
 
 cd $SRC_PATH && snapcraft
-mv -v mission-center*.snap mission-center_$(arch).snap

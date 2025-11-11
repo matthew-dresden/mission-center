@@ -1,4 +1,4 @@
-/* services_page/details_dialog.rs
+/* table_view/service_details_dialog.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -18,24 +18,28 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::cell::{Cell, OnceCell};
+use std::cell::{Cell, OnceCell, RefCell};
 use std::num::NonZeroU32;
 
+use adw::gio;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, g_warning, ParamSpec, Properties, SignalHandlerId, Value};
 
+use crate::services_page::actions;
+use crate::table_view::row_model::RowModel;
+use crate::table_view::TableView;
 use crate::{app, i18n::*};
-
-use super::services_list_item::ServicesListItem;
 
 mod imp {
     use super::*;
 
     #[derive(Properties)]
-    #[properties(wrapper_type = super::DetailsDialog)]
+    #[properties(wrapper_type = super::ServiceDetailsDialog)]
     #[derive(gtk::CompositeTemplate)]
-    #[template(resource = "/io/missioncenter/MissionCenter/ui/services_page/details_dialog.ui")]
-    pub struct DetailsDialog {
+    #[template(
+        resource = "/io/missioncenter/MissionCenter/ui/table_view/service_details_dialog.ui"
+    )]
+    pub struct ServiceDetailsDialog {
         #[template_child]
         group_state: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
@@ -59,6 +63,8 @@ mod imp {
         label_user: TemplateChild<gtk::Label>,
         #[template_child]
         label_group: TemplateChild<gtk::Label>,
+        #[template_child]
+        file_location: TemplateChild<gtk::Label>,
 
         #[template_child]
         logs_overlay: TemplateChild<gtk::Overlay>,
@@ -67,10 +73,12 @@ mod imp {
         #[template_child]
         logs_buffer: TemplateChild<gtk::TextBuffer>,
 
-        pub list_item: OnceCell<ServicesListItem>,
+        pub list_item: OnceCell<RowModel>,
 
         #[property(get, set)]
         pub enabled: Cell<bool>,
+        #[property(get, construct_only)]
+        pub column_view: RefCell<TableView>,
 
         copy_logs_button: gtk::Button,
 
@@ -79,7 +87,7 @@ mod imp {
         list_item_enabled_user_change: Cell<bool>,
     }
 
-    impl Default for DetailsDialog {
+    impl Default for ServiceDetailsDialog {
         fn default() -> Self {
             Self {
                 group_state: TemplateChild::default(),
@@ -95,6 +103,7 @@ mod imp {
                 label_user: TemplateChild::default(),
                 label_group: TemplateChild::default(),
 
+                file_location: TemplateChild::default(),
                 logs_overlay: TemplateChild::default(),
                 logs_expander: TemplateChild::default(),
                 logs_buffer: TemplateChild::default(),
@@ -102,6 +111,7 @@ mod imp {
                 list_item: OnceCell::new(),
 
                 enabled: Cell::new(false),
+                column_view: RefCell::new(glib::Object::builder().build()),
 
                 copy_logs_button: gtk::Button::new(),
 
@@ -112,16 +122,16 @@ mod imp {
         }
     }
 
-    impl DetailsDialog {
-        fn list_item(&self) -> ServicesListItem {
+    impl ServiceDetailsDialog {
+        fn list_item(&self) -> RowModel {
             unsafe { self.list_item.get().unwrap_unchecked().clone() }
         }
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for DetailsDialog {
-        const NAME: &'static str = "DetailsDialog";
-        type Type = super::DetailsDialog;
+    impl ObjectSubclass for ServiceDetailsDialog {
+        const NAME: &'static str = "ServiceDetailsDialog";
+        type Type = super::ServiceDetailsDialog;
         type ParentType = adw::Dialog;
 
         fn class_init(klass: &mut Self::Class) {
@@ -133,7 +143,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DetailsDialog {
+    impl ObjectImpl for ServiceDetailsDialog {
         fn properties() -> &'static [ParamSpec] {
             Self::derived_properties()
         }
@@ -170,15 +180,15 @@ mod imp {
                         match app!().sys_info().and_then(move |sys_info| {
                             match this.switch_enabled.is_active() {
                                 // Emitted after the switch is toggled
-                                true => sys_info.enable_service(list_item.name().to_string()),
-                                false => sys_info.disable_service(list_item.name().to_string()),
+                                true => sys_info.enable_service(list_item.service_id()),
+                                false => sys_info.disable_service(list_item.service_id()),
                             }
 
                             Ok(())
                         }) {
                             Err(e) => {
                                 g_warning!(
-                                    "MissionCenter::DetailsDialog",
+                                    "MissionCenter::ServiceDetailsDialog",
                                     "Failed to get `sys_info`: {}",
                                     e
                                 );
@@ -213,10 +223,20 @@ mod imp {
             });
 
             self.logs_overlay.add_overlay(&self.copy_logs_button);
+
+            let column_view = self.column_view.borrow();
+            let column_view = &*column_view;
+
+            let service_actions = gio::SimpleActionGroup::new();
+            service_actions.add_action(&actions::action_start(column_view));
+            service_actions.add_action(&actions::action_stop(column_view));
+            service_actions.add_action(&actions::action_restart(column_view));
+            self.obj()
+                .insert_action_group("service", Some(&service_actions));
         }
     }
 
-    impl WidgetImpl for DetailsDialog {
+    impl WidgetImpl for ServiceDetailsDialog {
         fn realize(&self) {
             self.parent_realize();
 
@@ -231,21 +251,21 @@ mod imp {
 
             self.label_name.set_text(&list_item.name());
             self.label_description.set_text(&list_item.description());
-            let running = if list_item.running() {
+            let running = if list_item.service_running() {
                 i18n("Running")
-            } else if list_item.failed() {
+            } else if list_item.service_failed() {
                 i18n("Failed")
             } else {
                 i18n("Stopped")
             };
             self.label_running.set_text(&running);
-            self.switch_enabled.set_active(list_item.enabled());
+            self.switch_enabled.set_active(list_item.service_enabled());
 
             let mut group_empty = true;
             let pid = list_item.pid();
-            if !pid.is_empty() {
+            if pid > 0 {
                 group_empty = false;
-                self.label_pid.set_text(&list_item.pid());
+                self.label_pid.set_text(&list_item.pid().to_string());
             } else {
                 self.label_pid.set_text(&i18n("N/A"));
             }
@@ -266,6 +286,14 @@ mod imp {
                 self.label_group.set_text(&i18n("N/A"));
             }
 
+            let location = list_item.file_path();
+            if !location.is_empty() {
+                group_empty = false;
+                self.file_location.set_text(&list_item.file_path());
+            } else {
+                self.file_location.set_text(&i18n("Unknown"));
+            }
+
             if group_empty {
                 self.group_process.set_visible(false);
             } else {
@@ -273,10 +301,7 @@ mod imp {
             }
 
             let logs = app!().sys_info().and_then(|sys_info| {
-                Ok(sys_info.service_logs(
-                    list_item.name().to_string(),
-                    NonZeroU32::new(pid.parse::<u32>().unwrap_or(0)),
-                ))
+                Ok(sys_info.service_logs(list_item.service_id(), NonZeroU32::new(pid)))
             });
 
             match logs {
@@ -288,21 +313,21 @@ mod imp {
                 }
                 Err(e) => {
                     g_warning!(
-                        "MissionCenter::DetailsDialog",
+                        "MissionCenter::ServiceDetailsDialog",
                         "Failed to get `sys_info`: {}",
                         e
                     );
                 }
             }
 
-            let notify = list_item.connect_running_notify({
+            let notify = list_item.connect_service_running_notify({
                 let this = self.obj().downgrade();
                 move |li| {
                     if let Some(this) = this.upgrade() {
                         let this = this.imp();
-                        let text = if li.running() {
+                        let text = if li.service_running() {
                             i18n("Running")
-                        } else if li.failed() {
+                        } else if li.service_failed() {
                             i18n("Failed")
                         } else {
                             i18n("Stopped")
@@ -313,15 +338,16 @@ mod imp {
             });
             self.list_item_running_notify.set(from_signal_id(notify));
 
-            let notify = list_item.connect_enabled_notify({
+            let notify = list_item.connect_service_running_notify({
                 let this = self.obj().downgrade();
                 move |li| {
                     if let Some(this) = this.upgrade() {
                         let this = this.imp();
 
-                        if li.enabled() != this.switch_enabled.is_active() {
+                        if li.service_enabled() != this.switch_enabled.is_active() {
                             this.list_item_enabled_user_change.set(false);
-                            this.switch_enabled.set_active(this.list_item().enabled());
+                            this.switch_enabled
+                                .set_active(this.list_item().service_enabled());
                         }
                     }
                 }
@@ -330,7 +356,7 @@ mod imp {
         }
     }
 
-    impl AdwDialogImpl for DetailsDialog {
+    impl AdwDialogImpl for ServiceDetailsDialog {
         fn closed(&self) {
             let list_item = self.list_item();
             list_item.disconnect(to_signal_id(self.list_item_running_notify.get()));
@@ -340,17 +366,18 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct DetailsDialog(ObjectSubclass<imp::DetailsDialog>)
+    pub struct ServiceDetailsDialog(ObjectSubclass<imp::ServiceDetailsDialog>)
         @extends adw::Dialog, gtk::Widget,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl DetailsDialog {
-    pub fn new(list_item: ServicesListItem) -> Self {
+impl ServiceDetailsDialog {
+    pub fn new(column_view: &TableView) -> Self {
         let this: Self = glib::Object::builder()
             .property("follows-content-size", true)
+            .property("column-view", Some(column_view))
             .build();
-        let _ = this.imp().list_item.set(list_item);
+        let _ = this.imp().list_item.set(column_view.selected_item());
 
         this
     }

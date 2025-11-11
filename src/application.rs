@@ -20,12 +20,14 @@
 
 use std::cell::{BorrowError, Cell, Ref, RefCell};
 
+use adw::glib::g_warning;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{
     gio,
     glib::{self, g_critical, property::PropertySet},
 };
 
+use crate::about_system_dialog::AboutSystemDialog;
 use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
 
 pub const INTERVAL_STEP: f64 = 0.05;
@@ -50,6 +52,7 @@ macro_rules! settings {
 
 mod imp {
     use super::*;
+    use crate::setup_readable_settings_cache;
 
     pub struct MissionCenterApplication {
         pub settings: Cell<Option<gio::Settings>>,
@@ -104,6 +107,8 @@ mod imp {
                 let sys_info = crate::magpie_client::MagpieClient::new();
 
                 let window = crate::MissionCenterWindow::new(&*application, &settings, &sys_info);
+
+                setup_readable_settings_cache(&settings);
 
                 window.connect_default_height_notify({
                     move |window| {
@@ -319,6 +324,9 @@ impl MissionCenterApplication {
         let about_action = gio::ActionEntry::builder("about")
             .activate(move |app: &Self, _, _| app.show_about())
             .build();
+        let about_system_action = gio::ActionEntry::builder("system-about")
+            .activate(move |app: &Self, _, _| app.show_system_about())
+            .build();
         let keyboard_shortcuts_action = gio::ActionEntry::builder("keyboard-shortcuts")
             .activate(move |app: &Self, _, _| app.show_keyboard_shortcuts())
             .build();
@@ -327,6 +335,7 @@ impl MissionCenterApplication {
             quit_action,
             preferences_action,
             about_action,
+            about_system_action,
             keyboard_shortcuts_action,
         ]);
 
@@ -355,10 +364,32 @@ impl MissionCenterApplication {
         let builder =
             gtk::Builder::from_resource("/io/missioncenter/MissionCenter/ui/keyboard_shortcuts.ui");
         let dialog = builder
-            .object::<adw::PreferencesDialog>("keyboard_shortcuts")
+            .object::<adw::ShortcutsDialog>("keyboard_shortcuts")
             .expect("Failed to get shortcuts window");
 
         dialog.present(Some(&app_window));
+    }
+
+    fn show_system_about(&self) {
+        let app = app!();
+        let Ok(magpie) = app.sys_info() else {
+            g_warning!("MissionCenter::Disk", "Failed to get magpie client");
+            return;
+        };
+
+        let about = magpie.about_system();
+
+        let dialog = AboutSystemDialog::new(about);
+
+        let Some(window) = self.window() else {
+            g_critical!(
+                "MissionCenter::Application",
+                "No active window, when trying to show about dialog"
+            );
+            return;
+        };
+
+        dialog.present(Some(&window));
     }
 
     fn show_about(&self) {
@@ -378,45 +409,56 @@ impl MissionCenterApplication {
             .translator_credits(i18n("translator-credits"))
             .version(VERSION)
             .issue_url("https://gitlab.com/mission-center-devs/mission-center/-/issues")
-            .copyright("© 2024-2025 Mission Center Developers")
+            .copyright("© 2023-2025 Mission Center Developers")
             .license_type(gtk::License::Gpl30)
             .website("https://missioncenter.io")
             .release_notes(r#"<p>Noteworthy changes:</p>
 <ul>
-    <li>Refactor SMART dialog design</li>
+<li>Overhaul Services Page to include viewing child processes, user services, filtering on status, and a more efficient backend</li>
+<li>Add an About System dialog that can be accessed from the context menu</li>
 </ul>
 <p>Minor features:</p>
 <ul>
-    <li>Show an error when the app cannot read SMART data</li>
-    <li>Show total number of available RAM slots</li>
-    <li>Try to show drive SMART status more accuratly</li>
-    <li>Show maximum PCIe speed if availble and differs from the current one</li>
-    <li>Add extra keyboard shortcuts for controlling services and apps in their respective pages</li>
+<li>Update to GNOME 49 Platform</li>
+<li>Show CPU power Draw</li>
+<li>Add ability to send various OS signals to processes</li>
 </ul>
 <p>Bug fixes:</p>
 <ul>
-    <li>Fix CPU name for LoongArch</li>
-    <li>Fix application failing to open because of missing settings key</li>
-    <li>Fix incorrect Formatted value for disks</li>
-    <li>Change memory default base to 2</li>
-    <li>Update and fix translations templates</li>
-    <li>Try to use the fan name as the summary, if available, and fall back to temperature name, if not</li>
-    <li>Fix application name in the About window</li>
-    <li>Keep order of unit toggles in the Preferences window consistent</li>
+<li>Ignore SMART temps of 0 Kelvin</li>
+<li>Improve fans configuration</li>
+<li>Reduce label formatter overhead</li>
+<li>For GPUs, fix reading of max_link_{width,speed} and make reading current values more robust</li>
+<li>Fix MemoryCompositionWidget tooltip offset</li>
+<li>Reduce CPU usage when fetching and updating data</li>
 </ul>
 <p>Translation updates</p>
 <ul>
-    <li>Basque by Ibai Oihanguren Sala</li>
-    <li>Bulgarian by Venelin Stoykov</li>
-    <li>Chinese (Simplified Han script) by flywater</li>
-    <li>Chinese (Traditional Han script) by Taijuin Lee, Angel Sherry</li>
-    <li>Czech by Pavel Borecki</li>
-    <li>Estonian by Indrek Haav</li>
-    <li>German by Philipp Kiemle, ItsGamerik</li>
-    <li>Indonesian by ilhamfauzan</li>
-    <li>Irish by Aindriú Mac Giolla Eoin</li>
-    <li>Romanian by Romeo Calota</li>
-    <li>Spanish by Jack Nolddor</li>
+<li>Arabic by jonnysemon</li>
+<li>Basque by Ibai Oihanguren Sala</li>
+<li>Belarusian by Yahor, teacond</li>
+<li>Chinese (Simplified Han script) by flywater</li>
+<li>Czech by Fjuro, erindesu, orangesunny, pavelbo</li>
+<li>Dutch by philip.goto, Klinton_</li>
+<li>Estonian by IndrekHaav</li>
+<li>Finnish by artnay</li>
+<li>French by Norbert V</li>
+<li>Galician by Espasant3</li>
+<li>German by Gian Veronese, Real Tehreal, dbstf</li>
+<li>Hebrew by yarons</li>
+<li>Hungarian by therealmate, KAMI911</li>
+<li>Italian by FrecceNere, Kryotek, amivaleo</li>
+<li>Irish by aindriu80</li>
+<li>Japanese by shryt0206, rainy_sunset</li>
+<li>Norwegian Bokmål by Telaneo</li>
+<li>Polish by keloH, Real_Microwave, Cool guy</li>
+<li>Portuguese by Raphael Campos, SantosSi</li>
+<li>Portuguese (Brazil) by Raphael Campos, danick8989, flyrio</li>
+<li>Russian by teacond</li>
+<li>Spanish by nolddor, BrYellow, maxdesigna7x</li>
+<li>Tamil by tace16</li>
+<li>Turkish by yigitalcks, yakushabb</li>
+<li>Ukrainian by Ethermidate</li>
 </ul>"#)
             .build();
 

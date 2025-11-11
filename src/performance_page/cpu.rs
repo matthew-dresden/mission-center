@@ -365,10 +365,8 @@ mod imp {
                 }
             }
 
-            let settings = settings!();
-
             let l1_cache_size = if let Some(size) = static_cpu_info.l1_combined_cache_bytes {
-                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes, &settings)
+                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes)
             } else {
                 i18n("N/A")
             };
@@ -377,7 +375,7 @@ mod imp {
             }
 
             let l2_cache_size = if let Some(size) = static_cpu_info.l2_cache_bytes {
-                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes, &settings)
+                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes)
             } else {
                 i18n("N/A")
             };
@@ -386,7 +384,7 @@ mod imp {
             }
 
             let l3_cache_size = if let Some(size) = static_cpu_info.l3_cache_bytes {
-                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes, &settings)
+                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes)
             } else {
                 i18n("N/A")
             };
@@ -395,7 +393,7 @@ mod imp {
             }
 
             let _ = if let Some(size) = static_cpu_info.l4_cache_bytes {
-                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes, &settings)
+                crate::to_human_readable_nice(size as f32, &DataType::MemoryBytes)
             } else {
                 i18n("N/A")
             };
@@ -443,13 +441,11 @@ mod imp {
                 ));
             }
 
-            let settings = settings!();
             if let Some(power_draw) = this.power_draw.get() {
                 if let Some(power_draw_num) = dynamic_cpu_info.power_draw_w {
                     power_draw.set_text(&crate::to_human_readable_nice(
                         power_draw_num,
                         &DataType::Watts,
-                        &settings,
                     ))
                 } else {
                     if let Some(power_row) = this.power_row.get() {
@@ -961,7 +957,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePageCpu(ObjectSubclass<imp::PerformancePageCpu>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PageExt for PerformancePageCpu {

@@ -349,7 +349,6 @@ mod imp {
             gpu: &Gpu,
             index: Option<usize>,
         ) -> bool {
-            let settings = &settings!();
             let this = this.imp();
 
             if let Some(index) = index {
@@ -360,10 +359,10 @@ mod imp {
             }
 
             this.update_utilization(gpu);
-            this.update_clock_speed(gpu, settings);
-            this.update_power_draw(gpu, settings);
-            this.update_memory_info(gpu, settings);
-            this.update_memory_speed(gpu, settings);
+            this.update_clock_speed(gpu);
+            this.update_power_draw(gpu);
+            this.update_memory_info(gpu);
+            this.update_memory_speed(gpu);
             this.update_video_encode_decode(gpu);
             this.update_temperature(gpu);
             this.update_pcie(gpu);
@@ -448,7 +447,7 @@ mod imp {
                 .set_text(&format!("{}%", overall_usage));
         }
 
-        fn update_clock_speed(&self, gpu: &Gpu, settings: &gio::Settings) {
+        fn update_clock_speed(&self, gpu: &Gpu) {
             let mut clock_speed_available = false;
 
             if let Some(max_clock_speed) = gpu.max_clock_speed_mhz {
@@ -460,7 +459,6 @@ mod imp {
                 let max_label = crate::to_human_readable_nice(
                     max_clock_speed as f32 * 1_000_000.,
                     &DataType::Hertz,
-                    settings,
                 );
                 self.infobar_content.clock_speed_max().set_text(&max_label);
             } else {
@@ -476,7 +474,6 @@ mod imp {
                 let clock_label = crate::to_human_readable_nice(
                     clock_speed as f32 * 1_000_000.,
                     &DataType::Hertz,
-                    settings,
                 );
 
                 self.infobar_content
@@ -488,7 +485,7 @@ mod imp {
                 .set_clock_speed_available(clock_speed_available);
         }
 
-        fn update_power_draw(&self, gpu: &Gpu, settings: &gio::Settings) {
+        fn update_power_draw(&self, gpu: &Gpu) {
             let mut power_draw_available = false;
 
             if let Some(power_limit) = gpu.max_power_draw_watts {
@@ -497,8 +494,7 @@ mod imp {
                     .set_visible(true);
                 self.infobar_content.power_draw_max().set_visible(true);
 
-                let power_limit =
-                    crate::to_human_readable_nice(power_limit, &DataType::Watts, settings);
+                let power_limit = crate::to_human_readable_nice(power_limit, &DataType::Watts);
                 self.infobar_content.power_draw_max().set_text(&power_limit);
             } else {
                 self.infobar_content
@@ -510,8 +506,7 @@ mod imp {
             if let Some(power_draw) = gpu.power_draw_watts {
                 power_draw_available = true;
 
-                let power_draw =
-                    crate::to_human_readable_nice(power_draw, &DataType::Watts, settings);
+                let power_draw = crate::to_human_readable_nice(power_draw, &DataType::Watts);
                 self.infobar_content
                     .power_draw_current()
                     .set_text(&power_draw);
@@ -521,22 +516,18 @@ mod imp {
                 .set_power_draw_available(power_draw_available);
         }
 
-        fn update_memory_info(&self, gpu: &Gpu, settings: &gio::Settings) {
+        fn update_memory_info(&self, gpu: &Gpu) {
             fn update_dedicated_memory(
                 this: &PerformancePageGpu,
                 gpu: &Gpu,
-                settings: &gio::Settings,
                 has_memory_info: &mut bool,
             ) -> Option<String> {
                 let mut total_memory_str_res = None;
 
                 if let Some(total_memory) = gpu.total_memory {
                     let total_memory = total_memory as f32;
-                    let total_memory_str = crate::to_human_readable_nice(
-                        total_memory,
-                        &DataType::MemoryBytes,
-                        settings,
-                    );
+                    let total_memory_str =
+                        crate::to_human_readable_nice(total_memory, &DataType::MemoryBytes);
 
                     this.usage_graph_memory
                         .set_scaling(GraphWidget::no_scaling());
@@ -566,7 +557,6 @@ mod imp {
                     let used_memory = crate::to_human_readable_nice(
                         gpu.used_memory.unwrap_or(0) as f32,
                         &DataType::MemoryBytes,
-                        settings,
                     );
                     this.infobar_content
                         .memory_usage_current()
@@ -587,15 +577,14 @@ mod imp {
             fn update_shared_memory(
                 this: &PerformancePageGpu,
                 gpu: &Gpu,
-                settings: &gio::Settings,
                 total_memory_str: Option<&str>,
                 has_memory_info: &mut bool,
             ) {
+                let mut scaling_factor = 1.0;
                 if let Some(total_shared_memory) = gpu.total_shared_memory {
                     let total_gtt = crate::to_human_readable_nice(
                         total_shared_memory as f32,
                         &DataType::MemoryBytes,
-                        settings,
                     );
 
                     this.usage_graph_memory.set_dashed(1, true);
@@ -612,8 +601,7 @@ mod imp {
                         this.usage_graph_memory
                             .set_scaling(GraphWidget::no_scaling());
                         let current_max = this.usage_graph_memory.value_range_max();
-                        this.usage_graph_memory
-                            .set_value_range_max(current_max.max(total_shared_memory as f32));
+                        scaling_factor = current_max / total_shared_memory as f32;
                     } else {
                         this.total_memory.set_text(&total_gtt);
 
@@ -632,6 +620,9 @@ mod imp {
                 if let Some(used_shared_memory) = gpu.used_shared_memory {
                     *has_memory_info = true;
 
+                    this.usage_graph_memory
+                        .add_data_point(1, used_shared_memory as f32 * scaling_factor);
+
                     this.infobar_content.set_used_shared_memory_valid(true);
                     this.infobar_content
                         .shared_memory_usage_title()
@@ -640,7 +631,6 @@ mod imp {
                     let used_shared_mem_str = crate::to_human_readable_nice(
                         used_shared_memory as f32,
                         &DataType::MemoryBytes,
-                        settings,
                     );
 
                     this.infobar_content
@@ -659,13 +649,11 @@ mod imp {
 
             let mut has_memory_info = false;
 
-            let total_memory_str =
-                update_dedicated_memory(self, gpu, settings, &mut has_memory_info);
+            let total_memory_str = update_dedicated_memory(self, gpu, &mut has_memory_info);
 
             update_shared_memory(
                 self,
                 gpu,
-                settings,
                 total_memory_str.as_ref().map(String::as_str),
                 &mut has_memory_info,
             );
@@ -680,7 +668,7 @@ mod imp {
             self.memory_graph.set_visible(has_memory_info);
         }
 
-        fn update_memory_speed(&self, gpu: &Gpu, settings: &gio::Settings) {
+        fn update_memory_speed(&self, gpu: &Gpu) {
             let mut memory_speed_available = false;
 
             if let Some(max_memory_speed) = gpu.max_memory_speed_mhz {
@@ -692,7 +680,6 @@ mod imp {
                 let ms_max = crate::to_human_readable_nice(
                     max_memory_speed as f32 * 1_000_000.,
                     &DataType::Hertz,
-                    settings,
                 );
                 self.infobar_content.memory_speed_max().set_text(&ms_max);
             } else {
@@ -708,7 +695,6 @@ mod imp {
                 let memory_speed = crate::to_human_readable_nice(
                     memory_speed as f32 * 1_000_000.,
                     &DataType::Hertz,
-                    settings,
                 );
                 self.infobar_content
                     .memory_speed_current()
@@ -847,7 +833,7 @@ mod imp {
 glib::wrapper! {
     pub struct PerformancePageGpu(ObjectSubclass<imp::PerformancePageGpu>)
         @extends gtk::Box, gtk::Widget,
-        @implements gio::ActionGroup, gio::ActionMap;
+        @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
 
 impl PageExt for PerformancePageGpu {

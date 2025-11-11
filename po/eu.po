@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-21 06:25+0000\n"
-"PO-Revision-Date: 2025-09-04 16:01+0000\n"
+"POT-Creation-Date: 2025-10-01 14:52+0300\n"
+"PO-Revision-Date: 2025-10-10 03:59+0000\n"
 "Last-Translator: Ibai Oihanguren Sala <ibaios@disroot.org>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/eu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.1-rc\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -169,7 +169,6 @@ msgid "If light or dark interface style should be used"
 msgstr "Interfazean estilo argia edo iluna erabili behar den"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:58
-#: data/io.missioncenter.MissionCenter.gschema.xml:135
 msgid "DEPRECATED! NO LONGER IN USE!"
 msgstr "ZAHARKITUA! EZ DA GEHIAGO ERABILTZEN!"
 
@@ -244,7 +243,6 @@ msgid "Column order is persisted across app restarts"
 msgstr "Zutabeen ordena aplikazioa berrabiaraztean ere mantenduko dira"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:125
-#: resources/ui/preferences/page.blp:120
 msgid ""
 "Show CPU usage for Apps and Processes scaled to the number of available cores"
 msgstr ""
@@ -255,173 +253,207 @@ msgstr ""
 msgid "Show a separator between each column in the Apps view"
 msgstr "Erakutsi bereizleak Aplikazioak ikuspegiko zutabeen artean"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:140
+#: data/io.missioncenter.MissionCenter.gschema.xml:135
 msgid "The column name by which the Apps page view is sorted"
-msgstr "Aplikazioen orriko ikuspegia ordenatzeko erabiliko den zutabearen izena"
+msgstr ""
+"Aplikazioen orriko ikuspegia ordenatzeko erabiliko den zutabearen izena"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:145
+#: data/io.missioncenter.MissionCenter.gschema.xml:140
 msgid "The sorting direction of the Apps page view"
 msgstr "Aplikazioen orriko ikuspegia ordenatzeko noranzkoa"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:150
+#: data/io.missioncenter.MissionCenter.gschema.xml:145
 msgid "The order of columns in the Apps page view"
 msgstr "Aplikazioen orriko ikuspegiko zutabeen ordena"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:157
+#: data/io.missioncenter.MissionCenter.gschema.xml:150
+#, fuzzy
+msgid "The column name by which the Services page view is sorted"
+msgstr ""
+"Aplikazioen orriko ikuspegia ordenatzeko erabiliko den zutabearen izena"
+
+#: data/io.missioncenter.MissionCenter.gschema.xml:155
+#, fuzzy
+msgid "The sorting direction of the Services page view"
+msgstr "Aplikazioen orriko ikuspegia ordenatzeko noranzkoa"
+
+#: data/io.missioncenter.MissionCenter.gschema.xml:160
+#, fuzzy
+msgid "The order of columns in the Services page view"
+msgstr "Aplikazioen orriko ikuspegiko zutabeen ordena"
+
+#: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
 msgstr "Zer grafiko erakutsiko den PUZaren errendimendu orrian"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:162
+#: data/io.missioncenter.MissionCenter.gschema.xml:171
 msgid "Show kernel times in the CPU graphs"
 msgstr "Erakutsi nukleoaren denborak PUZaren grafikoetan"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:167
+#: data/io.missioncenter.MissionCenter.gschema.xml:176
 msgid "Which page is shown on application startup, in the performance tab"
 msgstr "Zer orri erakutsiko den aplikazioa abiaraztean, errendimendu fitxan"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:173
+#: data/io.missioncenter.MissionCenter.gschema.xml:182
 msgid "Should performance graphs be smooth or jagged"
 msgstr "Errendimendu grafikoak leunak edo koskadunak izan behar diren"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:178
+#: data/io.missioncenter.MissionCenter.gschema.xml:187
 msgid "Should graphs be animated"
 msgstr "Grafikoak animatu behar diren edo ez"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:183
+#: data/io.missioncenter.MissionCenter.gschema.xml:192
 #: resources/ui/preferences/page.blp:65
 msgid "Show CPU information by default"
 msgstr "Erakutsi PUZaren informazioa defektuz"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:188
+#: data/io.missioncenter.MissionCenter.gschema.xml:197
 #: resources/ui/preferences/page.blp:71
 msgid "Show memory information by default"
 msgstr "Erakutsi memoriaren informazioa defektuz"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:193
+#: data/io.missioncenter.MissionCenter.gschema.xml:202
 #: resources/ui/preferences/page.blp:77
 msgid "Show disk information by default"
 msgstr "Erakutsi diskoaren informazioa defektuz"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:198
+#: data/io.missioncenter.MissionCenter.gschema.xml:207
 #: resources/ui/preferences/page.blp:83
 msgid "Show network information by default"
 msgstr "Erakutsi sarearen informazioa defektuz"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:203
+#: data/io.missioncenter.MissionCenter.gschema.xml:212
 #: resources/ui/preferences/page.blp:89
 msgid "Show GPU information by default"
 msgstr "Erakutsi GPUaren informazioa defektuz"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:208
+#: data/io.missioncenter.MissionCenter.gschema.xml:217
 #: resources/ui/preferences/page.blp:95
 msgid "Show fan information by default"
 msgstr "Erakutsi haizagailuaren informazioa defektuz"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:213
+#: data/io.missioncenter.MissionCenter.gschema.xml:222
 msgid "Show the mem composition widget"
 msgstr "Erakutsi memoriaren konposaketa widgeta"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:218
+#: data/io.missioncenter.MissionCenter.gschema.xml:227
 msgid "Show the swap graph"
 msgstr "Erakutsi trukatze-espazioaren grafikoa"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:223
+#: data/io.missioncenter.MissionCenter.gschema.xml:232
 msgid "Show the gpu encode-decode graph"
 msgstr "Erakutsi GPUaren kodetze/deskodetze grafikoa"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:228
+#: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
 msgstr "Aplikazioaren alboko barrako sarreren ordena"
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:233
+#: data/io.missioncenter.MissionCenter.gschema.xml:242
 msgid "Graphs that should be hidden in the application sidebar"
 msgstr "Aplikazioaren alboko barratik ezkutatu beharreko grafikoak"
 
 #: resources/ui/apps_page/details_dialog.blp:76
-#: resources/ui/apps_page/page.blp:180 resources/ui/services_page/page.blp:209
+#: resources/ui/process_column_view/column_view_frame.blp:48
+#: resources/ui/process_column_view/process_details_dialog.blp:76
 msgid "PID"
 msgstr "PIDa"
 
 #: resources/ui/apps_page/details_dialog.blp:87
 #: resources/ui/apps_page/details_dialog.blp:115
-#: resources/ui/services_page/details_dialog.blp:250
-#: resources/ui/services_page/details_dialog.blp:282
-#: resources/ui/services_page/details_dialog.blp:314
-#: src/services_page/details_dialog.rs:250
-#: src/services_page/details_dialog.rs:258
-#: src/services_page/details_dialog.rs:266
-#: src/performance_page/widgets/smart_sata_dialog_row.rs:100
-#: src/performance_page/widgets/smart_data_dialog.rs:202
-#: src/performance_page/widgets/smart_data_dialog.rs:210
-#: src/performance_page/widgets/smart_data_dialog.rs:218
-#: src/performance_page/widgets/smart_data_dialog.rs:230
-#: src/performance_page/widgets/smart_data_dialog.rs:242
-#: src/performance_page/widgets/smart_data_dialog.rs:250
-#: src/performance_page/widgets/smart_data_dialog.rs:258
-#: src/performance_page/widgets/smart_data_dialog.rs:266
-#: src/performance_page/widgets/smart_data_dialog.rs:274
-#: src/performance_page/widgets/smart_data_dialog.rs:282
-#: src/performance_page/widgets/smart_data_dialog.rs:291
-#: src/performance_page/widgets/smart_data_dialog.rs:299
-#: src/performance_page/widgets/smart_data_dialog.rs:307
-#: src/performance_page/widgets/smart_data_dialog.rs:315
-#: src/performance_page/widgets/smart_data_dialog.rs:323
-#: src/performance_page/cpu.rs:368 src/performance_page/cpu.rs:377
-#: src/performance_page/cpu.rs:386 src/performance_page/cpu.rs:395
-#: src/performance_page/network.rs:470 src/performance_page/network.rs:478
+#: resources/ui/process_column_view/process_details_dialog.blp:95
+#: resources/ui/process_column_view/process_details_dialog.blp:123
+#: resources/ui/process_column_view/service_details_dialog.blp:250
+#: resources/ui/process_column_view/service_details_dialog.blp:282
+#: resources/ui/process_column_view/service_details_dialog.blp:314
+#: src/performance_page/widgets/smart_data_dialog.rs:201
+#: src/performance_page/widgets/smart_data_dialog.rs:209
+#: src/performance_page/widgets/smart_data_dialog.rs:217
+#: src/performance_page/widgets/smart_data_dialog.rs:225
+#: src/performance_page/widgets/smart_data_dialog.rs:236
+#: src/performance_page/widgets/smart_data_dialog.rs:244
+#: src/performance_page/widgets/smart_data_dialog.rs:252
+#: src/performance_page/widgets/smart_data_dialog.rs:260
+#: src/performance_page/widgets/smart_data_dialog.rs:268
+#: src/performance_page/widgets/smart_data_dialog.rs:276
+#: src/performance_page/widgets/smart_data_dialog.rs:285
+#: src/performance_page/widgets/smart_data_dialog.rs:293
+#: src/performance_page/widgets/smart_data_dialog.rs:301
+#: src/performance_page/widgets/smart_data_dialog.rs:309
+#: src/performance_page/widgets/smart_data_dialog.rs:317
+#: src/performance_page/widgets/smart_sata_dialog_row.rs:102
+#: src/performance_page/cpu.rs:371 src/performance_page/cpu.rs:380
+#: src/performance_page/cpu.rs:389 src/performance_page/cpu.rs:398
+#: src/performance_page/network.rs:457 src/performance_page/network.rs:465
+#: src/process_tree/service_details_dialog.rs:254
+#: src/process_tree/service_details_dialog.rs:262
+#: src/process_tree/service_details_dialog.rs:270
 msgid "N/A"
 msgstr "E/A"
 
 #: resources/ui/apps_page/details_dialog.blp:104
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:205
+#: resources/ui/process_column_view/process_details_dialog.blp:112
 msgid "Type"
 msgstr "Mota"
 
 #: resources/ui/apps_page/details_dialog.blp:132
+#: resources/ui/process_column_view/process_details_dialog.blp:140
 msgid "Command Line"
 msgstr "Komando lerroa"
 
 #: resources/ui/apps_page/details_dialog.blp:154
+#: resources/ui/process_column_view/process_details_dialog.blp:162
 msgid "Resource Usage"
 msgstr "Baliabideen erabilera"
 
 #: resources/ui/apps_page/details_dialog.blp:168
-#: resources/ui/apps_page/page.blp:186 resources/ui/performance_page/cpu.blp:45
-#: src/apps_page/columns/mod.rs:244 src/performance_page/mod.rs:979
+#: resources/ui/performance_page/cpu.blp:45
+#: resources/ui/process_column_view/column_view_frame.blp:54
+#: resources/ui/process_column_view/process_details_dialog.blp:176
+#: src/performance_page/mod.rs:980 src/process_tree/column_view_frame.rs:539
 msgid "CPU"
 msgstr "PUZa"
 
 #: resources/ui/apps_page/details_dialog.blp:193
-#: resources/ui/apps_page/page.blp:192
-#: resources/ui/performance_page/memory.blp:41 src/apps_page/columns/mod.rs:265
-#: src/performance_page/mod.rs:1043
+#: resources/ui/performance_page/memory.blp:41
+#: resources/ui/process_column_view/column_view_frame.blp:60
+#: resources/ui/process_column_view/process_details_dialog.blp:201
+#: src/performance_page/mod.rs:1044 src/process_tree/column_view_frame.rs:560
 msgid "Memory"
 msgstr "Memoria"
 
 #: resources/ui/apps_page/details_dialog.blp:218
+#: resources/ui/process_column_view/process_details_dialog.blp:226
 msgid "Shared Memory"
 msgstr "Memoria partekatua"
 
 #: resources/ui/apps_page/details_dialog.blp:243
+#: resources/ui/process_column_view/process_details_dialog.blp:251
 msgid "Drives"
 msgstr "Unitateak"
 
 #: resources/ui/apps_page/details_dialog.blp:268
-#: resources/ui/apps_page/page.blp:210 src/apps_page/columns/mod.rs:284
-#: src/apps_page/columns/mod.rs:294
+#: resources/ui/process_column_view/column_view_frame.blp:78
+#: resources/ui/process_column_view/process_details_dialog.blp:276
+#: src/process_tree/column_view_frame.rs:579
+#: src/process_tree/column_view_frame.rs:588
 msgid "Network"
 msgstr "Sarea"
 
 #: resources/ui/apps_page/details_dialog.blp:293
-#: resources/ui/apps_page/page.blp:216 src/apps_page/columns/mod.rs:300
-#: src/apps_page/columns/mod.rs:317 src/performance_page/mod.rs:1396
-#: src/performance_page/mod.rs:2166 src/performance_page/gpu.rs:355
+#: resources/ui/process_column_view/column_view_frame.blp:84
+#: resources/ui/process_column_view/process_details_dialog.blp:301
+#: src/performance_page/gpu.rs:358 src/performance_page/mod.rs:1397
+#: src/performance_page/mod.rs:2159 src/process_tree/column_view_frame.rs:594
+#: src/process_tree/column_view_frame.rs:611
 msgid "GPU"
 msgstr "GPUa"
 
 #: resources/ui/apps_page/details_dialog.blp:318
-#: resources/ui/apps_page/page.blp:222 src/apps_page/columns/mod.rs:304
-#: src/apps_page/columns/mod.rs:323
+#: resources/ui/process_column_view/column_view_frame.blp:90
+#: resources/ui/process_column_view/process_details_dialog.blp:326
+#: src/process_tree/column_view_frame.rs:598
+#: src/process_tree/column_view_frame.rs:617
 msgid "GPU Memory"
 msgstr "GPU memoria"
 
@@ -429,230 +461,10 @@ msgstr "GPU memoria"
 msgid "Collapse all apps and processes"
 msgstr "Tolestu aplikazio eta prozesu guztiak"
 
-#: resources/ui/apps_page/page.blp:87 resources/ui/keyboard_shortcuts.blp:87
+#: resources/ui/apps_page/page.blp:87 resources/ui/services_page/page.blp:94
+#: resources/ui/keyboard_shortcuts.blp:112
 msgid "Collapse All"
 msgstr "Tolestu dena"
-
-#: resources/ui/apps_page/page.blp:99
-msgid "Stop the selected app"
-msgstr "Gelditu hautatutako aplikazioa"
-
-#: resources/ui/apps_page/page.blp:111 resources/ui/apps_page/page.blp:239
-#: resources/ui/services_page/page.blp:109
-#: resources/ui/services_page/page.blp:269
-msgid "Stop"
-msgstr "Gelditu"
-
-#: resources/ui/apps_page/page.blp:118
-msgid "Force stop the selected app"
-msgstr "Behartu hautatutako aplikazioa gelditzera"
-
-#: resources/ui/apps_page/page.blp:130 resources/ui/apps_page/page.blp:244
-msgid "Force Stop"
-msgstr "Behartu gelditzera"
-
-#: resources/ui/apps_page/page.blp:138
-msgid "Show details of the selected app"
-msgstr "Erakutsi hautatutako aplikazioaren xehetasunak"
-
-#: resources/ui/apps_page/page.blp:150 resources/ui/apps_page/page.blp:251
-#: resources/ui/services_page/page.blp:148
-#: resources/ui/services_page/page.blp:281 src/services_page/mod.rs:592
-msgid "Details"
-msgstr "Xehetasunak"
-
-#. The `Name` column should be default aligned
-#. The column that contains the context menu button should be default aligned
-#: resources/ui/apps_page/page.blp:173
-#: resources/ui/services_page/details_dialog.blp:134
-#: resources/ui/services_page/page.blp:170 src/apps_page/columns/mod.rs:212
-msgid "Name"
-msgstr "Izena"
-
-#: resources/ui/apps_page/page.blp:198
-msgid ""
-"Shared\n"
-"Memory"
-msgstr ""
-"Memoria\n"
-"partekatua"
-
-#: resources/ui/apps_page/page.blp:204 src/apps_page/columns/mod.rs:270
-#: src/apps_page/columns/mod.rs:278 src/performance_page/mod.rs:1130
-msgid "Drive"
-msgstr "Unitatea"
-
-#: resources/ui/services_page/details_dialog.blp:33
-msgid "Service Details"
-msgstr "Zerbitzuaren xehetasunak"
-
-#: resources/ui/services_page/details_dialog.blp:57
-msgid "State"
-msgstr "Egoera"
-
-#: resources/ui/services_page/details_dialog.blp:58
-msgid "The current state of the service"
-msgstr "Zerbitzuaren uneko egoera"
-
-#: resources/ui/services_page/details_dialog.blp:75
-msgid "Start service"
-msgstr "Abiarazi zerbitzua"
-
-#: resources/ui/services_page/details_dialog.blp:90
-msgid "Stop service"
-msgstr "Gelditu zerbitzua"
-
-#: resources/ui/services_page/details_dialog.blp:106
-msgid "Restart service"
-msgstr "Berrabiarazi zerbitzua"
-
-#: resources/ui/services_page/details_dialog.blp:164
-#: resources/ui/services_page/page.blp:226
-msgid "Description"
-msgstr "Deskribapena"
-
-#: resources/ui/services_page/details_dialog.blp:194
-msgid "Status"
-msgstr "Egoera"
-
-#: resources/ui/services_page/details_dialog.blp:213
-msgid "Enabled"
-msgstr "Gaituta"
-
-#: resources/ui/services_page/details_dialog.blp:220
-#: src/apps_page/row_model.rs:213
-msgid "Process"
-msgstr "Prozesua"
-
-#: resources/ui/services_page/details_dialog.blp:221
-msgid "Process and user information"
-msgstr "Prozesuaren eta erabiltzailearen informazioa"
-
-#: resources/ui/services_page/details_dialog.blp:237
-msgid "Process ID"
-msgstr "Prozesuaren IDa"
-
-#: resources/ui/services_page/details_dialog.blp:269
-msgid "User"
-msgstr "Erabiltzailea"
-
-#: resources/ui/services_page/details_dialog.blp:301
-msgid "Group"
-msgstr "Taldea"
-
-#: resources/ui/services_page/details_dialog.blp:326
-msgid "Logs"
-msgstr "Erregistroak"
-
-#: resources/ui/services_page/page.blp:78
-msgid "Start the selected service"
-msgstr "Abiarazi hautatutako zerbitzua"
-
-#: resources/ui/services_page/page.blp:90
-#: resources/ui/services_page/page.blp:264
-msgid "Start"
-msgstr "Abiarazi"
-
-#: resources/ui/services_page/page.blp:97
-msgid "Stop the selected service"
-msgstr "Gelditu hautatutako zerbitzua"
-
-#: resources/ui/services_page/page.blp:117
-msgid "Restart the selected service"
-msgstr "Berrabiarazi hautatutako zerbitzua"
-
-#: resources/ui/services_page/page.blp:129
-#: resources/ui/services_page/page.blp:274
-msgid "Restart"
-msgstr "Berrabiarazi"
-
-#: resources/ui/services_page/page.blp:136
-msgid "Show details of the selected service"
-msgstr "Erakutsi hautatutako zerbitzuaren xehetasunak"
-
-#: resources/ui/widgets/theme_selector.blp:18
-#: resources/ui/widgets/theme_selector.blp:21
-msgid "Follow system style"
-msgstr "Jarraitu sistemaren estiloari"
-
-#: resources/ui/widgets/theme_selector.blp:35
-#: resources/ui/widgets/theme_selector.blp:38
-msgid "Light style"
-msgstr "Estilo argia"
-
-#: resources/ui/widgets/theme_selector.blp:53
-#: resources/ui/widgets/theme_selector.blp:56
-msgid "Dark style"
-msgstr "Estilo iluna"
-
-#: resources/ui/performance_page/cpu_details.blp:46
-#: resources/ui/performance_page/gpu_details.blp:51
-msgid "Utilization"
-msgstr "Erabilera"
-
-#: resources/ui/performance_page/cpu_details.blp:68
-msgid "Speed"
-msgstr "Abiadura"
-
-#: resources/ui/performance_page/cpu_details.blp:95
-msgid "Processes"
-msgstr "Prozesuak"
-
-#: resources/ui/performance_page/cpu_details.blp:117
-msgid "Threads"
-msgstr "Hariak"
-
-#: resources/ui/performance_page/cpu_details.blp:139
-msgid "Handles"
-msgstr "Identifikatzaileak"
-
-#: resources/ui/performance_page/cpu_details.blp:162
-msgid "Up time"
-msgstr "Denbora martxan"
-
-#: resources/ui/performance_page/cpu_details.blp:185
-msgid "Base Speed:"
-msgstr "Oinarriko abiadura:"
-
-#: resources/ui/performance_page/cpu_details.blp:199
-msgid "Sockets:"
-msgstr "Socketak:"
-
-#: resources/ui/performance_page/cpu_details.blp:213
-msgid "Virtual processors:"
-msgstr "Prozesadore birtualak:"
-
-#: resources/ui/performance_page/cpu_details.blp:227
-msgid "Virtualization:"
-msgstr "Birtualizazioa:"
-
-#: resources/ui/performance_page/cpu_details.blp:241
-msgid "Virtual machine:"
-msgstr "Makina birtuala:"
-
-#: resources/ui/performance_page/cpu_details.blp:255
-msgid "L1 cache:"
-msgstr "L1 cachea:"
-
-#: resources/ui/performance_page/cpu_details.blp:269
-msgid "L2 cache:"
-msgstr "L2 cachea:"
-
-#: resources/ui/performance_page/cpu_details.blp:283
-msgid "L3 cache:"
-msgstr "L3 cachea:"
-
-#: resources/ui/performance_page/cpu_details.blp:297
-msgid "Cpufreq driver:"
-msgstr "Cpufreq kontrolatzailea:"
-
-#: resources/ui/performance_page/cpu_details.blp:311
-msgid "Cpufreq governor:"
-msgstr "Cpufreq gobernadorea:"
-
-#: resources/ui/performance_page/cpu_details.blp:325
-msgid "Power preference:"
-msgstr "Energia hobespenak:"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
@@ -661,238 +473,6 @@ msgstr "Huts egin du egoztean"
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
 msgstr "Hil"
-
-#: resources/ui/performance_page/gpu_details.blp:80
-msgid "Clock Speed"
-msgstr "Ordulariaren abiadura"
-
-#: resources/ui/performance_page/gpu_details.blp:132
-msgid "Power Draw"
-msgstr "Energia kontsumoa"
-
-#: resources/ui/performance_page/gpu_details.blp:200
-#: src/performance_page/gpu.rs:557
-msgid "Memory Usage"
-msgstr "Memoriaren erabilera"
-
-#: resources/ui/performance_page/gpu_details.blp:274
-#: src/performance_page/gpu.rs:634
-msgid "Shared Memory Usage"
-msgstr "Memoria partekatuaren erabilera"
-
-#: resources/ui/performance_page/gpu_details.blp:332
-msgid "Memory Speed"
-msgstr "Memoriaren abiadura"
-
-#: resources/ui/performance_page/gpu_details.blp:407
-msgid "Video encode"
-msgstr "Bideo kodetzea"
-
-#: resources/ui/performance_page/gpu_details.blp:453
-msgid "Video decode"
-msgstr "Bideo deskodetzea"
-
-#: resources/ui/performance_page/gpu_details.blp:483
-msgid "Temperature"
-msgstr "Tenperatura"
-
-#: resources/ui/performance_page/gpu_details.blp:514
-msgid "OpenGL version:"
-msgstr "OpenGL bertsioa:"
-
-#: resources/ui/performance_page/gpu_details.blp:530
-msgid "Vulkan version:"
-msgstr "Vulkan bertsioa:"
-
-#: resources/ui/performance_page/gpu_details.blp:548
-msgid "PCI Express speed:"
-msgstr "PCI Express abiadura:"
-
-#: resources/ui/performance_page/gpu_details.blp:566
-msgid "Max PCI Express speed:"
-msgstr "Gehienezko PCI Express abiadura:"
-
-#: resources/ui/performance_page/gpu_details.blp:582
-msgid "PCI bus address:"
-msgstr "PCI bus helbidea:"
-
-#: resources/ui/performance_page/memory.blp:76
-#: resources/ui/performance_page/gpu.blp:162
-msgid "Memory usage over "
-msgstr "Memoriaren erabilera denbora-tarte honetan: "
-
-#: resources/ui/performance_page/memory.blp:121
-msgid "Swap usage over "
-msgstr "Trukatze-espazioaren erabilera denbora-tarte honetan: "
-
-#: resources/ui/performance_page/memory.blp:172
-msgid "Memory composition"
-msgstr "Memoriaren konposaketa"
-
-#: resources/ui/performance_page/memory.blp:196
-msgid "Show Memory Composition"
-msgstr "Erakutsi memoriaren konposaketa"
-
-#: resources/ui/performance_page/memory.blp:200
-msgid "Show Swap Usage"
-msgstr "Erakutsi trukatze-espazioaren erabilera"
-
-#: resources/ui/performance_page/memory.blp:207
-#: resources/ui/performance_page/gpu.blp:215
-#: resources/ui/performance_page/cpu.blp:127
-#: resources/ui/performance_page/fan.blp:158
-#: resources/ui/performance_page/network.blp:105
-#: resources/ui/performance_page/disk.blp:182
-msgid "Graph _Summary View"
-msgstr "Grafikoaren _laburpen ikuspegia"
-
-#: resources/ui/performance_page/memory.blp:212
-#: resources/ui/performance_page/gpu.blp:220
-#: resources/ui/performance_page/cpu.blp:132
-#: resources/ui/performance_page/fan.blp:163
-#: resources/ui/performance_page/network.blp:110
-#: resources/ui/performance_page/disk.blp:187
-msgid "_View"
-msgstr "_Ikuspegia"
-
-#: resources/ui/performance_page/memory.blp:215
-#: resources/ui/performance_page/gpu.blp:223
-#: resources/ui/performance_page/cpu.blp:135
-#: resources/ui/performance_page/fan.blp:166
-#: resources/ui/performance_page/network.blp:113
-#: resources/ui/performance_page/disk.blp:190
-msgid "CP_U"
-msgstr "P_UZa"
-
-#: resources/ui/performance_page/memory.blp:220
-#: resources/ui/performance_page/gpu.blp:228
-#: resources/ui/performance_page/cpu.blp:140
-#: resources/ui/performance_page/fan.blp:171
-#: resources/ui/performance_page/network.blp:118
-#: resources/ui/performance_page/disk.blp:195
-msgid "_Memory"
-msgstr "_Memoria"
-
-#: resources/ui/performance_page/memory.blp:225
-#: resources/ui/performance_page/gpu.blp:233
-#: resources/ui/performance_page/cpu.blp:145
-#: resources/ui/performance_page/fan.blp:176
-#: resources/ui/performance_page/network.blp:123
-#: resources/ui/performance_page/disk.blp:200
-msgid "_Drive"
-msgstr "_Unitatea"
-
-#: resources/ui/performance_page/memory.blp:230
-#: resources/ui/performance_page/gpu.blp:238
-#: resources/ui/performance_page/cpu.blp:150
-#: resources/ui/performance_page/fan.blp:181
-#: resources/ui/performance_page/network.blp:128
-#: resources/ui/performance_page/disk.blp:205
-msgid "_Network"
-msgstr "_Sarea"
-
-#: resources/ui/performance_page/memory.blp:235
-#: resources/ui/performance_page/gpu.blp:243
-#: resources/ui/performance_page/cpu.blp:155
-#: resources/ui/performance_page/fan.blp:186
-#: resources/ui/performance_page/network.blp:133
-#: resources/ui/performance_page/disk.blp:210
-msgid "_GPU"
-msgstr "_GPUa"
-
-#: resources/ui/performance_page/memory.blp:240
-#: resources/ui/performance_page/gpu.blp:248
-#: resources/ui/performance_page/cpu.blp:160
-#: resources/ui/performance_page/fan.blp:191
-#: resources/ui/performance_page/network.blp:138
-#: resources/ui/performance_page/disk.blp:215
-msgid "_Fan"
-msgstr "_Haizagailua"
-
-#: resources/ui/performance_page/memory.blp:248
-#: resources/ui/performance_page/gpu.blp:256
-#: resources/ui/performance_page/cpu.blp:168
-#: resources/ui/performance_page/fan.blp:199
-#: resources/ui/performance_page/network.blp:151
-#: resources/ui/performance_page/disk.blp:223
-msgid "_Copy"
-msgstr "_Kopiatu"
-
-#: resources/ui/performance_page/disk_details.blp:63
-msgid "Read speed"
-msgstr "Irakurtze-abiadura"
-
-#: resources/ui/performance_page/disk_details.blp:101
-msgid "Write speed"
-msgstr "Idazte-abiadura"
-
-#: resources/ui/performance_page/disk_details.blp:130
-msgid "Total Read"
-msgstr "Irakurrita guztira"
-
-#: resources/ui/performance_page/disk_details.blp:159
-msgid "Total Written"
-msgstr "Idatzita guztira"
-
-#: resources/ui/performance_page/disk_details.blp:188
-msgid "Active time"
-msgstr "Denbora aktiboa"
-
-#: resources/ui/performance_page/disk_details.blp:217
-msgid "Avg. response time"
-msgstr "Batez besteko erantzute denbora"
-
-#: resources/ui/performance_page/disk_details.blp:242
-msgid "Capacity:"
-msgstr "Edukiera:"
-
-#: resources/ui/performance_page/disk_details.blp:256
-msgid "Formatted:"
-msgstr "Formateatuta:"
-
-#: resources/ui/performance_page/disk_details.blp:270
-msgid "System disk:"
-msgstr "Sistemako diskoa:"
-
-#: resources/ui/performance_page/disk_details.blp:284
-#: resources/ui/performance_page/memory_details.blp:288
-msgid "Type:"
-msgstr "Mota:"
-
-#: resources/ui/performance_page/gpu.blp:72
-#: resources/ui/performance_page/cpu.blp:63
-msgid "Utilization over "
-msgstr "Erabilera denbora-tarte honetan: "
-
-#: resources/ui/performance_page/gpu.blp:86
-#: resources/ui/performance_page/gpu.blp:135
-#: resources/ui/performance_page/cpu.blp:78
-msgid "100%"
-msgstr "% 100"
-
-#: resources/ui/performance_page/gpu.blp:119
-msgid "Video encode/decode utilization over "
-msgstr "Bideo kodetze/deskodetze erabilera denbora-tarte honetan: "
-
-#: resources/ui/performance_page/gpu.blp:208
-msgid "Show Encode/Decode Usage"
-msgstr "Erakutsi kodetze/deskodetze erabilera"
-
-#: resources/ui/performance_page/cpu.blp:106
-msgid "Change G_raph To"
-msgstr "Aldatu g_rafikoa hona"
-
-#: resources/ui/performance_page/cpu.blp:109
-msgid "Overall U_tilization"
-msgstr "_Erabilera orokorra"
-
-#: resources/ui/performance_page/cpu.blp:114
-msgid "Logical _Processors"
-msgstr "_Prozesadore logikoak"
-
-#: resources/ui/performance_page/cpu.blp:120
-msgid "Show Kernel Times"
-msgstr "Erakutsi nukleoaren denborak"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:31
 msgid "In Use:"
@@ -910,6 +490,139 @@ msgstr "Zain:"
 msgid "Free:"
 msgstr "Erabilgarri:"
 
+#: resources/ui/performance_page/cpu.blp:63
+#: resources/ui/performance_page/gpu.blp:72
+msgid "Utilization over "
+msgstr "Erabilera denbora-tarte honetan: "
+
+#: resources/ui/performance_page/cpu.blp:78
+#: resources/ui/performance_page/gpu.blp:86
+#: resources/ui/performance_page/gpu.blp:135
+msgid "100%"
+msgstr "% 100"
+
+#: resources/ui/performance_page/cpu.blp:106
+msgid "Change G_raph To"
+msgstr "Aldatu g_rafikoa hona"
+
+#: resources/ui/performance_page/cpu.blp:109
+msgid "Overall U_tilization"
+msgstr "_Erabilera orokorra"
+
+#: resources/ui/performance_page/cpu.blp:114
+msgid "Logical _Processors"
+msgstr "_Prozesadore logikoak"
+
+#: resources/ui/performance_page/cpu.blp:120
+msgid "Show Kernel Times"
+msgstr "Erakutsi nukleoaren denborak"
+
+#: resources/ui/performance_page/cpu.blp:127
+#: resources/ui/performance_page/disk.blp:182
+#: resources/ui/performance_page/fan.blp:158
+#: resources/ui/performance_page/gpu.blp:215
+#: resources/ui/performance_page/memory.blp:207
+#: resources/ui/performance_page/network.blp:105
+msgid "Graph _Summary View"
+msgstr "Grafikoaren _laburpen ikuspegia"
+
+#: resources/ui/performance_page/cpu.blp:132
+#: resources/ui/performance_page/disk.blp:187
+#: resources/ui/performance_page/fan.blp:163
+#: resources/ui/performance_page/gpu.blp:220
+#: resources/ui/performance_page/memory.blp:212
+#: resources/ui/performance_page/network.blp:110
+msgid "_View"
+msgstr "_Ikuspegia"
+
+#: resources/ui/performance_page/cpu.blp:135
+#: resources/ui/performance_page/disk.blp:190
+#: resources/ui/performance_page/fan.blp:166
+#: resources/ui/performance_page/gpu.blp:223
+#: resources/ui/performance_page/memory.blp:215
+#: resources/ui/performance_page/network.blp:113
+msgid "CP_U"
+msgstr "P_UZa"
+
+#: resources/ui/performance_page/cpu.blp:140
+#: resources/ui/performance_page/disk.blp:195
+#: resources/ui/performance_page/fan.blp:171
+#: resources/ui/performance_page/gpu.blp:228
+#: resources/ui/performance_page/memory.blp:220
+#: resources/ui/performance_page/network.blp:118
+msgid "_Memory"
+msgstr "_Memoria"
+
+#: resources/ui/performance_page/cpu.blp:145
+#: resources/ui/performance_page/disk.blp:200
+#: resources/ui/performance_page/fan.blp:176
+#: resources/ui/performance_page/gpu.blp:233
+#: resources/ui/performance_page/memory.blp:225
+#: resources/ui/performance_page/network.blp:123
+msgid "_Drive"
+msgstr "_Unitatea"
+
+#: resources/ui/performance_page/cpu.blp:150
+#: resources/ui/performance_page/disk.blp:205
+#: resources/ui/performance_page/fan.blp:181
+#: resources/ui/performance_page/gpu.blp:238
+#: resources/ui/performance_page/memory.blp:230
+#: resources/ui/performance_page/network.blp:128
+msgid "_Network"
+msgstr "_Sarea"
+
+#: resources/ui/performance_page/cpu.blp:155
+#: resources/ui/performance_page/disk.blp:210
+#: resources/ui/performance_page/fan.blp:186
+#: resources/ui/performance_page/gpu.blp:243
+#: resources/ui/performance_page/memory.blp:235
+#: resources/ui/performance_page/network.blp:133
+msgid "_GPU"
+msgstr "_GPUa"
+
+#: resources/ui/performance_page/cpu.blp:160
+#: resources/ui/performance_page/disk.blp:215
+#: resources/ui/performance_page/fan.blp:191
+#: resources/ui/performance_page/gpu.blp:248
+#: resources/ui/performance_page/memory.blp:240
+#: resources/ui/performance_page/network.blp:138
+msgid "_Fan"
+msgstr "_Haizagailua"
+
+#: resources/ui/performance_page/cpu.blp:168
+#: resources/ui/performance_page/disk.blp:223
+#: resources/ui/performance_page/fan.blp:199
+#: resources/ui/performance_page/gpu.blp:256
+#: resources/ui/performance_page/memory.blp:248
+#: resources/ui/performance_page/network.blp:151
+msgid "_Copy"
+msgstr "_Kopiatu"
+
+#: resources/ui/performance_page/disk.blp:66
+msgid "Show SMART Data"
+msgstr "Erakutsi SMART datuak"
+
+#: resources/ui/performance_page/disk.blp:77
+msgid "Eject Disk"
+msgstr "Egotzi diskoa"
+
+#: resources/ui/performance_page/disk.blp:99
+msgid "Active time over "
+msgstr "Denbora aktiboa denbora-tarte honetan: "
+
+#: resources/ui/performance_page/disk.blp:140
+#: resources/ui/performance_page/network.blp:61
+msgid "Throughput over "
+msgstr "Errendimendua denbora-tarte honetan: "
+
+#: resources/ui/performance_page/fan.blp:61
+msgid "Fan speed over "
+msgstr "Haizagailuaren abiadura denbora-tarte honetan: "
+
+#: resources/ui/performance_page/fan.blp:112
+msgid "Temperature over "
+msgstr "Tenperatura denbora-tarte honetan: "
+
 #: resources/ui/performance_page/fan_details.blp:59
 msgid "Fan Speed"
 msgstr "Haizagailuaren abiadura"
@@ -922,13 +635,131 @@ msgstr "PWM ehunekoa"
 msgid "Current Temperature"
 msgstr "Uneko tenperatura"
 
-#: resources/ui/performance_page/fan.blp:61
-msgid "Fan speed over "
-msgstr "Haizagailuaren abiadura denbora-tarte honetan: "
+#: resources/ui/performance_page/gpu.blp:119
+msgid "Video encode/decode utilization over "
+msgstr "Bideo kodetze/deskodetze erabilera denbora-tarte honetan: "
 
-#: resources/ui/performance_page/fan.blp:112
-msgid "Temperature over "
-msgstr "Tenperatura denbora-tarte honetan: "
+#: resources/ui/performance_page/gpu.blp:162
+#: resources/ui/performance_page/memory.blp:76
+msgid "Memory usage over "
+msgstr "Memoriaren erabilera denbora-tarte honetan: "
+
+#: resources/ui/performance_page/gpu.blp:208
+msgid "Show Encode/Decode Usage"
+msgstr "Erakutsi kodetze/deskodetze erabilera"
+
+#: resources/ui/performance_page/memory.blp:121
+msgid "Swap usage over "
+msgstr "Trukatze-espazioaren erabilera denbora-tarte honetan: "
+
+#: resources/ui/performance_page/memory.blp:172
+msgid "Memory composition"
+msgstr "Memoriaren konposaketa"
+
+#: resources/ui/performance_page/memory.blp:196
+msgid "Show Memory Composition"
+msgstr "Erakutsi memoriaren konposaketa"
+
+#: resources/ui/performance_page/memory.blp:200
+msgid "Show Swap Usage"
+msgstr "Erakutsi trukatze-espazioaren erabilera"
+
+#: resources/ui/performance_page/memory_details.blp:58
+msgid "In use"
+msgstr "Erabiltzen"
+
+#: resources/ui/performance_page/memory_details.blp:87
+msgid "Available"
+msgstr "Erabilgarri"
+
+#: resources/ui/performance_page/memory_details.blp:129
+msgid "Committed"
+msgstr "Konprometituta"
+
+#: resources/ui/performance_page/memory_details.blp:159
+msgid "Cached"
+msgstr "Cacheratuta"
+
+#: resources/ui/performance_page/memory_details.blp:190
+msgid "Swap used"
+msgstr "Erabilitako truk.-espazioa"
+
+#: resources/ui/performance_page/memory_details.blp:221
+msgid "Swap available"
+msgstr "Truk.-espazio erabilgarria"
+
+#: resources/ui/performance_page/memory_details.blp:246
+msgid "Speed:"
+msgstr "Abiadura:"
+
+#: resources/ui/performance_page/memory_details.blp:260
+msgid "Slots used:"
+msgstr "Erabilitako artekak:"
+
+#: resources/ui/performance_page/memory_details.blp:274
+msgid "Form factor:"
+msgstr "Forma faktorea:"
+
+#: resources/ui/performance_page/memory_details.blp:288
+#: resources/ui/performance_page/disk_details.blp:284
+msgid "Type:"
+msgstr "Mota:"
+
+#: resources/ui/performance_page/network.blp:144
+msgid "Network Se_ttings"
+msgstr "Sareko e_zarpenak"
+
+#: resources/ui/performance_page/network_details.blp:63
+msgid "Receive"
+msgstr "Jasotzen"
+
+#: resources/ui/performance_page/network_details.blp:101
+msgid "Send"
+msgstr "Bidaltzen"
+
+#: resources/ui/performance_page/network_details.blp:130
+msgid "Total Received"
+msgstr "Jasota guztira"
+
+#: resources/ui/performance_page/network_details.blp:159
+msgid "Total Sent"
+msgstr "Bidalitakoak guztira"
+
+#: resources/ui/performance_page/network_details.blp:184
+msgid "Interface name:"
+msgstr "Interfazearen izena:"
+
+#: resources/ui/performance_page/network_details.blp:198
+msgid "Connection type:"
+msgstr "Konexio mota:"
+
+#: resources/ui/performance_page/network_details.blp:213
+msgid "SSID:"
+msgstr "SSIDa:"
+
+#: resources/ui/performance_page/network_details.blp:228
+msgid "Signal strength:"
+msgstr "Seinale sendotasuna:"
+
+#: resources/ui/performance_page/network_details.blp:243
+msgid "Maximum Bitrate:"
+msgstr "Bit tasa maximoa:"
+
+#: resources/ui/performance_page/network_details.blp:258
+msgid "Frequency:"
+msgstr "Maiztasuna:"
+
+#: resources/ui/performance_page/network_details.blp:272
+msgid "Hardware address:"
+msgstr "Hardware helbidea:"
+
+#: resources/ui/performance_page/network_details.blp:401
+msgid "IPv4 address:"
+msgstr "IPv4 helbidea:"
+
+#: resources/ui/performance_page/network_details.blp:427
+msgid "IPv6 address:"
+msgstr "IPv6 helbidea:"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
@@ -984,6 +815,66 @@ msgstr "Eguneratzeak"
 msgid "Assessment"
 msgstr "Ebaluazioa"
 
+#: resources/ui/performance_page/gpu_details.blp:51
+#: resources/ui/performance_page/cpu_details.blp:46
+msgid "Utilization"
+msgstr "Erabilera"
+
+#: resources/ui/performance_page/gpu_details.blp:80
+msgid "Clock Speed"
+msgstr "Ordulariaren abiadura"
+
+#: resources/ui/performance_page/gpu_details.blp:132
+#: resources/ui/performance_page/cpu_details.blp:91
+msgid "Power Draw"
+msgstr "Energia kontsumoa"
+
+#: resources/ui/performance_page/gpu_details.blp:200
+#: src/performance_page/gpu.rs:552
+msgid "Memory Usage"
+msgstr "Memoriaren erabilera"
+
+#: resources/ui/performance_page/gpu_details.blp:274
+#: src/performance_page/gpu.rs:629
+msgid "Shared Memory Usage"
+msgstr "Memoria partekatuaren erabilera"
+
+#: resources/ui/performance_page/gpu_details.blp:332
+msgid "Memory Speed"
+msgstr "Memoriaren abiadura"
+
+#: resources/ui/performance_page/gpu_details.blp:407
+msgid "Video encode"
+msgstr "Bideo kodetzea"
+
+#: resources/ui/performance_page/gpu_details.blp:453
+msgid "Video decode"
+msgstr "Bideo deskodetzea"
+
+#: resources/ui/performance_page/gpu_details.blp:483
+msgid "Temperature"
+msgstr "Tenperatura"
+
+#: resources/ui/performance_page/gpu_details.blp:514
+msgid "OpenGL version:"
+msgstr "OpenGL bertsioa:"
+
+#: resources/ui/performance_page/gpu_details.blp:530
+msgid "Vulkan version:"
+msgstr "Vulkan bertsioa:"
+
+#: resources/ui/performance_page/gpu_details.blp:548
+msgid "PCI Express speed:"
+msgstr "PCI Express abiadura:"
+
+#: resources/ui/performance_page/gpu_details.blp:566
+msgid "Max PCI Express speed:"
+msgstr "Gehienezko PCI Express abiadura:"
+
+#: resources/ui/performance_page/gpu_details.blp:582
+msgid "PCI bus address:"
+msgstr "PCI bus helbidea:"
+
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
 msgid "Failed To Get SMART Data"
 msgstr "Huts egin du SMART datuak eskuratzean"
@@ -996,114 +887,117 @@ msgstr ""
 "Arazo bat egon da SMART datuak eskuratzean. Exekutatu komando lerrotik "
 "informazio gehiago eskuratzeko."
 
-#: resources/ui/performance_page/network.blp:61
-#: resources/ui/performance_page/disk.blp:140
-msgid "Throughput over "
-msgstr "Errendimendua denbora-tarte honetan: "
+#: resources/ui/performance_page/disk_details.blp:63
+msgid "Read speed"
+msgstr "Irakurtze-abiadura"
 
-#: resources/ui/performance_page/network.blp:144
-msgid "Network Se_ttings"
-msgstr "Sareko e_zarpenak"
+#: resources/ui/performance_page/disk_details.blp:101
+msgid "Write speed"
+msgstr "Idazte-abiadura"
 
-#: resources/ui/performance_page/disk.blp:66
-msgid "Show SMART Data"
-msgstr "Erakutsi SMART datuak"
+#: resources/ui/performance_page/disk_details.blp:130
+msgid "Total Read"
+msgstr "Irakurrita guztira"
 
-#: resources/ui/performance_page/disk.blp:77
-msgid "Eject Disk"
-msgstr "Egotzi diskoa"
+#: resources/ui/performance_page/disk_details.blp:159
+msgid "Total Written"
+msgstr "Idatzita guztira"
 
-#: resources/ui/performance_page/disk.blp:99
-msgid "Active time over "
-msgstr "Denbora aktiboa denbora-tarte honetan: "
+#: resources/ui/performance_page/disk_details.blp:188
+msgid "Active time"
+msgstr "Denbora aktiboa"
 
-#: resources/ui/performance_page/network_details.blp:63
-msgid "Receive"
-msgstr "Jasotzen"
+#: resources/ui/performance_page/disk_details.blp:217
+msgid "Avg. response time"
+msgstr "Batez besteko erantzute denbora"
 
-#: resources/ui/performance_page/network_details.blp:101
-msgid "Send"
-msgstr "Bidaltzen"
+#: resources/ui/performance_page/disk_details.blp:242
+msgid "Capacity:"
+msgstr "Edukiera:"
 
-#: resources/ui/performance_page/network_details.blp:130
-msgid "Total Received"
-msgstr "Jasota guztira"
+#: resources/ui/performance_page/disk_details.blp:256
+msgid "Formatted:"
+msgstr "Formateatuta:"
 
-#: resources/ui/performance_page/network_details.blp:159
-msgid "Total Sent"
-msgstr "Bidalitakoak guztira"
+#: resources/ui/performance_page/disk_details.blp:270
+msgid "System disk:"
+msgstr "Sistemako diskoa:"
 
-#: resources/ui/performance_page/network_details.blp:184
-msgid "Interface name:"
-msgstr "Interfazearen izena:"
+#: resources/ui/performance_page/disk_details.blp:300
+msgid "WWN:"
+msgstr "WWN:"
 
-#: resources/ui/performance_page/network_details.blp:198
-msgid "Connection type:"
-msgstr "Konexio mota:"
+#: resources/ui/performance_page/disk_details.blp:316
+msgid "Serial:"
+msgstr "Serie-zenbakia:"
 
-#: resources/ui/performance_page/network_details.blp:213
-msgid "SSID:"
-msgstr "SSIDa:"
+#: resources/ui/performance_page/disk_details.blp:332
+msgid "Rotation Rate"
+msgstr ""
 
-#: resources/ui/performance_page/network_details.blp:228
-msgid "Signal strength:"
-msgstr "Seinale sendotasuna:"
+#: resources/ui/performance_page/cpu_details.blp:68
+msgid "Speed"
+msgstr "Abiadura"
 
-#: resources/ui/performance_page/network_details.blp:243
-msgid "Maximum Bitrate:"
-msgstr "Bit tasa maximoa:"
+#: resources/ui/performance_page/cpu_details.blp:117 src/apps_page/mod.rs:84
+msgid "Processes"
+msgstr "Prozesuak"
 
-#: resources/ui/performance_page/network_details.blp:258
-msgid "Frequency:"
-msgstr "Maiztasuna:"
+#: resources/ui/performance_page/cpu_details.blp:139
+msgid "Threads"
+msgstr "Hariak"
 
-#: resources/ui/performance_page/network_details.blp:272
-msgid "Hardware address:"
-msgstr "Hardware helbidea:"
+#: resources/ui/performance_page/cpu_details.blp:161
+msgid "Handles"
+msgstr "Identifikatzaileak"
 
-#: resources/ui/performance_page/network_details.blp:401
-msgid "IPv4 address:"
-msgstr "IPv4 helbidea:"
+#: resources/ui/performance_page/cpu_details.blp:184
+msgid "Up time"
+msgstr "Denbora martxan"
 
-#: resources/ui/performance_page/network_details.blp:427
-msgid "IPv6 address:"
-msgstr "IPv6 helbidea:"
+#: resources/ui/performance_page/cpu_details.blp:207
+msgid "Base Speed:"
+msgstr "Oinarriko abiadura:"
 
-#: resources/ui/performance_page/memory_details.blp:58
-msgid "In use"
-msgstr "Erabiltzen"
+#: resources/ui/performance_page/cpu_details.blp:221
+msgid "Sockets:"
+msgstr "Socketak:"
 
-#: resources/ui/performance_page/memory_details.blp:87
-msgid "Available"
-msgstr "Erabilgarri"
+#: resources/ui/performance_page/cpu_details.blp:235
+msgid "Virtual processors:"
+msgstr "Prozesadore birtualak:"
 
-#: resources/ui/performance_page/memory_details.blp:129
-msgid "Committed"
-msgstr "Konprometituta"
+#: resources/ui/performance_page/cpu_details.blp:249
+msgid "Virtualization:"
+msgstr "Birtualizazioa:"
 
-#: resources/ui/performance_page/memory_details.blp:159
-msgid "Cached"
-msgstr "Cacheratuta"
+#: resources/ui/performance_page/cpu_details.blp:263
+msgid "Virtual machine:"
+msgstr "Makina birtuala:"
 
-#: resources/ui/performance_page/memory_details.blp:190
-msgid "Swap used"
-msgstr "Erabilitako truk.-espazioa"
+#: resources/ui/performance_page/cpu_details.blp:277
+msgid "L1 cache:"
+msgstr "L1 cachea:"
 
-#: resources/ui/performance_page/memory_details.blp:221
-msgid "Swap available"
-msgstr "Truk.-espazio erabilgarria"
+#: resources/ui/performance_page/cpu_details.blp:291
+msgid "L2 cache:"
+msgstr "L2 cachea:"
 
-#: resources/ui/performance_page/memory_details.blp:246
-msgid "Speed:"
-msgstr "Abiadura:"
+#: resources/ui/performance_page/cpu_details.blp:305
+msgid "L3 cache:"
+msgstr "L3 cachea:"
 
-#: resources/ui/performance_page/memory_details.blp:260
-msgid "Slots used:"
-msgstr "Erabilitako artekak:"
+#: resources/ui/performance_page/cpu_details.blp:319
+msgid "Cpufreq driver:"
+msgstr "Cpufreq kontrolatzailea:"
 
-#: resources/ui/performance_page/memory_details.blp:274
-msgid "Form factor:"
-msgstr "Forma faktorea:"
+#: resources/ui/performance_page/cpu_details.blp:333
+msgid "Cpufreq governor:"
+msgstr "Cpufreq gobernadorea:"
+
+#: resources/ui/performance_page/cpu_details.blp:347
+msgid "Power preference:"
+msgstr "Energia hobespenak:"
 
 #: resources/ui/preferences/page.blp:6
 msgid "General"
@@ -1113,11 +1007,16 @@ msgstr "Orokorra"
 msgid "Update Interval"
 msgstr "Eguneratze-tartea"
 
+#: resources/ui/preferences/page.blp:10
+#, fuzzy
+msgid "In seconds"
+msgstr "{} segundo{}"
+
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
 msgstr "Grafikoetako datu-puntuak"
 
-#: resources/ui/preferences/page.blp:46 resources/ui/keyboard_shortcuts.blp:43
+#: resources/ui/preferences/page.blp:46 resources/ui/keyboard_shortcuts.blp:68
 msgid "Performance Page"
 msgstr "Errendimenduaren orria"
 
@@ -1175,8 +1074,9 @@ msgid "Show Fan Information"
 msgstr "Erakutsi haizagailuaren informazioa"
 
 #: resources/ui/preferences/page.blp:101
-msgid "App Page"
-msgstr "Aplikazioen orria"
+#, fuzzy
+msgid "App &amp; Service Pages"
+msgstr "Zerbitzuen orria"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1187,7 +1087,8 @@ msgid "Remember Sorting"
 msgstr "Gogoratu ordenatze irizpideak"
 
 #: resources/ui/preferences/page.blp:110
-msgid "Persist app and process sorting by column, across app restarts"
+#, fuzzy
+msgid "Persist sorting by column across app restarts"
 msgstr ""
 "Gogoratu aplikazio eta prozesuen ordenatze irizpideak aplikazioa "
 "berrabiarazten denean"
@@ -1205,6 +1106,13 @@ msgstr ""
 #: resources/ui/preferences/page.blp:119
 msgid "Scale CPU Usage to Core Count"
 msgstr "Eskalatu PUZaren erabilera nukleo kopurura"
+
+#: resources/ui/preferences/page.blp:120
+#, fuzzy
+msgid "Show CPU usage scaled to the number of available cores"
+msgstr ""
+"Erakutsi aplikazio eta prozesuek erabilitako PUZa nukleo erabilgarri "
+"kopurura eskalatuta"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1310,6 +1218,52 @@ msgstr "Erabili 10 oinarria sareko interfazeentzat"
 msgid "Use Base 2 for Network Interfaces"
 msgstr "Erabili 2 oinarria sareko interfazeentzat"
 
+#: resources/ui/services_page/page.blp:84
+#, fuzzy
+msgid "Collapse all expanded services"
+msgstr "Tolestu aplikazio eta prozesu guztiak"
+
+#: resources/ui/services_page/page.blp:123
+#, fuzzy
+msgid "Filter running processes"
+msgstr "Zerbitzu {} martxan"
+
+#: resources/ui/services_page/page.blp:143
+#, fuzzy
+msgid "Filter failed processes"
+msgstr "Prozesadore birtualak:"
+
+#: resources/ui/services_page/page.blp:163
+msgid "Filter stopped processes"
+msgstr ""
+
+#: resources/ui/services_page/page.blp:183
+msgid "Filter disabled processes"
+msgstr ""
+
+#: resources/ui/services_page/page.blp:204
+msgid "Remove all filters"
+msgstr "Kendu iragazki guztiak"
+
+#: resources/ui/services_page/page.blp:214
+msgid "Remove Filters"
+msgstr "Kendu iragazkiak"
+
+#: resources/ui/widgets/theme_selector.blp:18
+#: resources/ui/widgets/theme_selector.blp:21
+msgid "Follow system style"
+msgstr "Jarraitu sistemaren estiloari"
+
+#: resources/ui/widgets/theme_selector.blp:35
+#: resources/ui/widgets/theme_selector.blp:38
+msgid "Light style"
+msgstr "Estilo argia"
+
+#: resources/ui/widgets/theme_selector.blp:53
+#: resources/ui/widgets/theme_selector.blp:56
+msgid "Dark style"
+msgstr "Estilo iluna"
+
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
 msgstr "Lasterbideak"
@@ -1319,70 +1273,323 @@ msgid "Global"
 msgstr "Orokorra"
 
 #: resources/ui/keyboard_shortcuts.blp:21
+#, fuzzy
+msgid "Open Menu"
+msgstr "Menu nagusia"
+
+#: resources/ui/keyboard_shortcuts.blp:26
+#: resources/ui/keyboard_shortcuts.blp:31
+msgid "Close Window"
+msgstr "Itxi leihoa"
+
+#: resources/ui/keyboard_shortcuts.blp:36
+#, fuzzy
+msgid "Open Preferences"
+msgstr "_Hobespenak"
+
+#: resources/ui/keyboard_shortcuts.blp:41
+#, fuzzy
+msgid "Show Keyboard Shortcuts"
+msgstr "Lasterbideak"
+
+#: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
 msgstr "Erakutsi errendimenduaren orria"
 
-#: resources/ui/keyboard_shortcuts.blp:26
+#: resources/ui/keyboard_shortcuts.blp:51
 msgid "Show Apps Page"
 msgstr "Erakutsi aplikazioen orria"
 
-#: resources/ui/keyboard_shortcuts.blp:31
+#: resources/ui/keyboard_shortcuts.blp:56
 msgid "Show Services Page"
 msgstr "Erakutsi zerbitzuen orria"
 
-#: resources/ui/keyboard_shortcuts.blp:36 resources/ui/window.blp:95
+#: resources/ui/keyboard_shortcuts.blp:61 resources/ui/window.blp:95
 msgid "Toggle Sidebar"
 msgstr "Erakutsi/ezkutatu alboko barra"
 
-#: resources/ui/keyboard_shortcuts.blp:54
+#: resources/ui/keyboard_shortcuts.blp:79
 msgid "Copy Device Information"
 msgstr "Kopiatu gailuaren informazioa"
 
-#: resources/ui/keyboard_shortcuts.blp:59
+#: resources/ui/keyboard_shortcuts.blp:84
 msgid "Toggle Summary Mode"
 msgstr "Gaitu/ezgaitu laburpen modua"
 
-#: resources/ui/keyboard_shortcuts.blp:64
+#: resources/ui/keyboard_shortcuts.blp:89
 msgid "Select a Device"
 msgstr "Hautatu gailua"
 
-#: resources/ui/keyboard_shortcuts.blp:71
+#: resources/ui/keyboard_shortcuts.blp:96
 msgid "Apps Page"
 msgstr "Aplikazioen orria"
 
-#: resources/ui/keyboard_shortcuts.blp:82
-#: resources/ui/keyboard_shortcuts.blp:120 resources/ui/window.blp:143
+#: resources/ui/keyboard_shortcuts.blp:107
+#: resources/ui/keyboard_shortcuts.blp:145 resources/ui/window.blp:143
 msgid "Search"
 msgstr "Bilatu"
 
-#: resources/ui/keyboard_shortcuts.blp:92
+#: resources/ui/keyboard_shortcuts.blp:117
 msgid "Stop App or Process"
 msgstr "Gelditu aplikazioa edo prozesua"
 
-#: resources/ui/keyboard_shortcuts.blp:97
+#: resources/ui/keyboard_shortcuts.blp:122
 msgid "Force Stop App or Process"
 msgstr "Behartu aplikazioa edo prozesua gelditzera"
 
-#: resources/ui/keyboard_shortcuts.blp:102
-#: resources/ui/keyboard_shortcuts.blp:140
+#: resources/ui/keyboard_shortcuts.blp:127
+#: resources/ui/keyboard_shortcuts.blp:165
 msgid "Show Details Dialog"
 msgstr "Erakutsi xehetasunen leihoa"
 
-#: resources/ui/keyboard_shortcuts.blp:109
+#: resources/ui/keyboard_shortcuts.blp:134
 msgid "Services Page"
 msgstr "Zerbitzuen orria"
 
-#: resources/ui/keyboard_shortcuts.blp:125
+#: resources/ui/keyboard_shortcuts.blp:150
 msgid "Start Service"
 msgstr "Abiarazi zerbitzua"
 
-#: resources/ui/keyboard_shortcuts.blp:130
+#: resources/ui/keyboard_shortcuts.blp:155
 msgid "Stop Service"
 msgstr "Gelditu zerbitzua"
 
-#: resources/ui/keyboard_shortcuts.blp:135
+#: resources/ui/keyboard_shortcuts.blp:160
 msgid "Restart Service"
 msgstr "Berrabiarazi zerbitzua"
+
+#. The `Name` column should be default aligned
+#. The column that contains the context menu button should be default aligned
+#: resources/ui/process_column_view/column_view_frame.blp:41
+#: resources/ui/process_column_view/service_details_dialog.blp:134
+#: resources/ui/about_system_dialog.blp:80
+#: resources/ui/about_system_dialog.blp:260 src/process_tree/columns/mod.rs:208
+msgid "Name"
+msgstr "Izena"
+
+#: resources/ui/process_column_view/column_view_frame.blp:66
+msgid ""
+"Shared\n"
+"Memory"
+msgstr ""
+"Memoria\n"
+"partekatua"
+
+#: resources/ui/process_column_view/column_view_frame.blp:72
+#: src/performance_page/mod.rs:1131 src/process_tree/column_view_frame.rs:565
+#: src/process_tree/column_view_frame.rs:573
+msgid "Drive"
+msgstr "Unitatea"
+
+#: resources/ui/process_column_view/process_action_bar.blp:34
+msgid "Stop the selected app"
+msgstr "Gelditu hautatutako aplikazioa"
+
+#: resources/ui/process_column_view/process_action_bar.blp:46
+#: resources/ui/process_column_view/process_action_bar.blp:98
+#: resources/ui/process_column_view/service_action_bar.blp:66
+#: resources/ui/process_column_view/service_action_bar.blp:123
+msgid "Stop"
+msgstr "Gelditu"
+
+#: resources/ui/process_column_view/process_action_bar.blp:53
+msgid "Force stop the selected app"
+msgstr "Behartu hautatutako aplikazioa gelditzera"
+
+#: resources/ui/process_column_view/process_action_bar.blp:65
+#: resources/ui/process_column_view/process_action_bar.blp:103
+msgid "Force Stop"
+msgstr "Behartu gelditzera"
+
+#: resources/ui/process_column_view/process_action_bar.blp:73
+msgid "Show details of the selected app"
+msgstr "Erakutsi hautatutako aplikazioaren xehetasunak"
+
+#: resources/ui/process_column_view/process_action_bar.blp:85
+#: resources/ui/process_column_view/process_action_bar.blp:154
+#: resources/ui/process_column_view/service_action_bar.blp:105
+#: resources/ui/process_column_view/service_action_bar.blp:135
+msgid "Details"
+msgstr "Xehetasunak"
+
+#: resources/ui/process_column_view/process_action_bar.blp:108
+msgid "Send Signal"
+msgstr "Bidali seinalea"
+
+#: resources/ui/process_column_view/process_action_bar.blp:111
+msgid "Suspend (STOP)"
+msgstr "Eseki (STOP)"
+
+#: resources/ui/process_column_view/process_action_bar.blp:116
+msgid "Continue (CONT)"
+msgstr "Jarraitu (CONT)"
+
+#: resources/ui/process_column_view/process_action_bar.blp:121
+msgid "Hangup (HUP)"
+msgstr ""
+
+#: resources/ui/process_column_view/process_action_bar.blp:126
+msgid "Interrupt (INT)"
+msgstr "Eten (INT)"
+
+#: resources/ui/process_column_view/process_action_bar.blp:131
+msgid "Terminate (TERM)"
+msgstr "Bukatu (TERM)"
+
+#: resources/ui/process_column_view/process_action_bar.blp:136
+msgid "Kill (KILL)"
+msgstr "Hil (KILL)"
+
+#: resources/ui/process_column_view/process_action_bar.blp:141
+msgid "User 1 (USR1)"
+msgstr "1. erabiltzailea (USR1)"
+
+#: resources/ui/process_column_view/process_action_bar.blp:146
+msgid "User 2 (USR2)"
+msgstr "2. erabiltzailea (USR2)"
+
+#: resources/ui/process_column_view/process_details_dialog.blp:84
+msgid "App ID"
+msgstr "Aplikazioaren IDa"
+
+#: resources/ui/process_column_view/service_action_bar.blp:35
+msgid "Start the selected service"
+msgstr "Abiarazi hautatutako zerbitzua"
+
+#: resources/ui/process_column_view/service_action_bar.blp:47
+#: resources/ui/process_column_view/service_action_bar.blp:118
+msgid "Start"
+msgstr "Abiarazi"
+
+#: resources/ui/process_column_view/service_action_bar.blp:54
+msgid "Stop the selected service"
+msgstr "Gelditu hautatutako zerbitzua"
+
+#: resources/ui/process_column_view/service_action_bar.blp:74
+msgid "Restart the selected service"
+msgstr "Berrabiarazi hautatutako zerbitzua"
+
+#: resources/ui/process_column_view/service_action_bar.blp:86
+#: resources/ui/process_column_view/service_action_bar.blp:128
+msgid "Restart"
+msgstr "Berrabiarazi"
+
+#: resources/ui/process_column_view/service_action_bar.blp:93
+msgid "Show details of the selected service"
+msgstr "Erakutsi hautatutako zerbitzuaren xehetasunak"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:33
+msgid "Service Details"
+msgstr "Zerbitzuaren xehetasunak"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:57
+msgid "State"
+msgstr "Egoera"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:58
+msgid "The current state of the service"
+msgstr "Zerbitzuaren uneko egoera"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:75
+msgid "Start service"
+msgstr "Abiarazi zerbitzua"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:90
+msgid "Stop service"
+msgstr "Gelditu zerbitzua"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:106
+msgid "Restart service"
+msgstr "Berrabiarazi zerbitzua"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:164
+msgid "Description"
+msgstr "Deskribapena"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:194
+msgid "Status"
+msgstr "Egoera"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:213
+msgid "Enabled"
+msgstr "Gaituta"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:220
+#: src/process_tree/row_model.rs:266
+msgid "Process"
+msgstr "Prozesua"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:221
+msgid "Process and user information"
+msgstr "Prozesuaren eta erabiltzailearen informazioa"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:237
+msgid "Process ID"
+msgstr "Prozesuaren IDa"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:269
+msgid "User"
+msgstr "Erabiltzailea"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:301
+msgid "Group"
+msgstr "Taldea"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:333
+msgid "File Location"
+msgstr "Fitxategiaren kokalekua"
+
+#: resources/ui/process_column_view/service_details_dialog.blp:356
+msgid "Logs"
+msgstr "Erregistroak"
+
+#: resources/ui/about_system_dialog.blp:36
+#, fuzzy
+msgid "System Info"
+msgstr "Sistemako diskoa:"
+
+#: resources/ui/about_system_dialog.blp:65
+#, fuzzy
+msgid "Operating System Information"
+msgstr "Kopiatu gailuaren informazioa"
+
+#: resources/ui/about_system_dialog.blp:108
+#: resources/ui/about_system_dialog.blp:226
+#: resources/ui/about_system_dialog.blp:288
+#, fuzzy
+msgid "Version"
+msgstr "Vulkan bertsioa:"
+
+#: resources/ui/about_system_dialog.blp:136
+msgid "Package Manager"
+msgstr "Pakete-kudeatzailea"
+
+#: resources/ui/about_system_dialog.blp:164
+msgid "Package Manager Version"
+msgstr "Pakete-kudeatzailearen bertsioa"
+
+#: resources/ui/about_system_dialog.blp:183
+#, fuzzy
+msgid "Kernel Information"
+msgstr "Erakutsi haizagailuaren informazioa"
+
+#: resources/ui/about_system_dialog.blp:198
+msgid "Kernel Release"
+msgstr ""
+
+#: resources/ui/about_system_dialog.blp:245
+#, fuzzy
+msgid "Desktop Environment Information"
+msgstr "Kopiatu gailuaren informazioa"
+
+#: resources/ui/about_system_dialog.blp:316
+msgid "Windowing System"
+msgstr "Leiho-sistema"
+
+#: resources/ui/about_system_dialog.blp:344
+#, fuzzy
+msgid "Virtual Terminal"
+msgstr "Makina birtuala:"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1424,7 +1631,7 @@ msgstr "Kargatzen..."
 msgid "Performance"
 msgstr "Errendimendua"
 
-#: resources/ui/window.blp:204
+#: resources/ui/window.blp:204 src/apps_page/mod.rs:79
 msgid "Apps"
 msgstr "Aplikazioak"
 
@@ -1440,141 +1647,44 @@ msgstr "_Hobespenak"
 msgid "_Keyboard Shortcuts"
 msgstr "_Laster-teklak"
 
-#: resources/ui/window.blp:247
+#: resources/ui/window.blp:249
+msgid "_About System"
+msgstr "_Sistemari buruz"
+
+#: resources/ui/window.blp:256
 msgid "_About Mission Center"
 msgstr "Mission Centerri _buruz"
 
-#: src/apps_page/row_model.rs:211
-msgid "Section Header"
-msgstr "Atalaren goiburua"
-
-#: src/apps_page/row_model.rs:212
-msgid "App"
-msgstr "Aplikazioa"
-
-#: src/apps_page/mod.rs:303 src/apps_page/mod.rs:372
+#: src/apps_page/mod.rs:259
+#, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
 msgstr[0] "Aplikazio {} martxan"
 msgstr[1] "{} aplikazio martxan"
 
-#: src/apps_page/mod.rs:313 src/apps_page/mod.rs:382
+#: src/apps_page/mod.rs:269
+#, rust-format
 msgid "{} Running Process"
 msgid_plural "{} Running Processes"
 msgstr[0] "Zerbitzu {} martxan"
 msgstr[1] "{} zerbitzu martxan"
 
-#: src/services_page/details_dialog.rs:199
-msgid "Copy logs to clipboard"
-msgstr "Kopiatu erregistroak arbelera"
-
-#: src/services_page/details_dialog.rs:235
-#: src/services_page/details_dialog.rs:304
-msgid "Running"
-msgstr "Martxan"
-
-#: src/services_page/details_dialog.rs:237
-#: src/services_page/details_dialog.rs:306
-msgid "Failed"
-msgstr "Huts eginda"
-
-#: src/services_page/details_dialog.rs:239
-#: src/services_page/details_dialog.rs:308
-msgid "Stopped"
-msgstr "Geldituta"
-
-#: src/services_page/mod.rs:530
-msgid "{} Running Services"
-msgstr "{} zerbitzu martxan"
-
-#: src/services_page/mod.rs:535
-msgid "{} failed services out of a total of {}"
-msgstr "{} zerbitzuk huts egin dute, guztirako {} zerbitzuetatik"
-
-#: src/performance_page/widgets/smart_sata_dialog_row.rs:102
-msgid "{} sectors"
-msgstr "{} sektore"
-
-#: src/performance_page/widgets/smart_sata_dialog_row.rs:104
-#: src/performance_page/widgets/smart_data_dialog.rs:272
-#: src/performance_page/widgets/smart_data_dialog.rs:280
-#: src/performance_page/fan.rs:296
-msgid "{} °C"
-msgstr "{} °C"
-
-#: src/performance_page/widgets/eject_failure_dialog.rs:164
-msgid "Close"
-msgstr "Itxi"
-
-#: src/performance_page/widgets/eject_failure_dialog.rs:165
-msgid "Retry"
-msgstr "Saiatu berriz"
-
-#: src/performance_page/widgets/eject_failure_dialog.rs:166
-msgid "Kill All"
-msgstr "Hil guztiak"
-
-#: src/performance_page/widgets/mem_composition_widget.rs:253
-msgid ""
-"In use ({})\n"
-"\n"
-"Memory used by the operating system and running applications"
-msgstr ""
-"Erabiltzen ({})\n"
-"\n"
-"Sistema eragileak eta martxan dauden aplikazioek erabilitako memoria"
-
-#: src/performance_page/widgets/mem_composition_widget.rs:284
-msgid ""
-"Modified ({})\n"
-"\n"
-"Memory whose contents must be written to disk before it can be used by "
-"another process"
-msgstr ""
-"Aldatuta ({})\n"
-"\n"
-"Beste prozesu batek erabili aurretik bere edukia diskoan idatzi beharra "
-"dagoen memoria"
-
-#: src/performance_page/widgets/mem_composition_widget.rs:309
-msgid ""
-"Standby ({})\n"
-"\n"
-"Memory that contains cached data and code that is not actively in use"
-msgstr ""
-"Zain ({})\n"
-"\n"
-"Une honetan aktiboki erabiltzen ari ez diren datu eta kode cacheratuak "
-"dituen memoria"
-
-#: src/performance_page/widgets/mem_composition_widget.rs:322
-msgid ""
-"Free ({})\n"
-"\n"
-"Memory that is not currently in use, and that will be repurposed first when "
-"the operating system, drivers, or applications need more memory"
-msgstr ""
-"Erabilgarri ({})\n"
-"\n"
-"Une honetan erabiltzen ari ez den memoria; sistema eragileak, "
-"kontrolatzaileek edo aplikazioek memoria gehiago behar dutenean erabiliko "
-"dena"
-
 #: src/performance_page/widgets/smart_data_dialog.rs:95
+#, rust-format
 msgid "{} ago"
 msgstr "duela {}"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:98
-#: src/performance_page/disk.rs:238 src/performance_page/disk.rs:259
-#: src/performance_page/disk.rs:269 src/performance_page/disk.rs:297
-#: src/performance_page/disk.rs:456 src/performance_page/cpu.rs:316
-#: src/performance_page/cpu.rs:327 src/performance_page/cpu.rs:351
-#: src/performance_page/cpu.rs:359 src/performance_page/memory.rs:561
-#: src/performance_page/memory.rs:792 src/performance_page/mod.rs:1391
-#: src/performance_page/mod.rs:1401 src/performance_page/gpu.rs:247
-#: src/performance_page/gpu.rs:303 src/performance_page/network.rs:262
-#: src/performance_page/network.rs:367 src/performance_page/network.rs:395
-#: src/performance_page/network.rs:495 src/performance_page/network.rs:531
+#: src/performance_page/cpu.rs:321 src/performance_page/cpu.rs:332
+#: src/performance_page/cpu.rs:356 src/performance_page/cpu.rs:364
+#: src/performance_page/disk.rs:211 src/performance_page/disk.rs:228
+#: src/performance_page/disk.rs:255 src/performance_page/disk.rs:375
+#: src/performance_page/gpu.rs:247 src/performance_page/gpu.rs:303
+#: src/performance_page/memory.rs:533 src/performance_page/memory.rs:764
+#: src/performance_page/mod.rs:1392 src/performance_page/mod.rs:1402
+#: src/performance_page/network.rs:262 src/performance_page/network.rs:365
+#: src/performance_page/network.rs:393 src/performance_page/network.rs:482
+#: src/performance_page/network.rs:518
 msgid "Unknown"
 msgstr "Ezezaguna"
 
@@ -1606,251 +1716,417 @@ msgstr "Iraganean huts egin du"
 msgid "Ok"
 msgstr ""
 
-#: src/performance_page/widgets/smart_data_dialog.rs:198
+#: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
 msgstr "Erabilera ehunekoa"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:206
+#: src/performance_page/widgets/smart_data_dialog.rs:205
 #, fuzzy
 msgid "Available Spare"
 msgstr "Erabilgarri"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:214
+#: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
 msgstr ""
 
-#: src/performance_page/widgets/smart_data_dialog.rs:222
+#: src/performance_page/widgets/smart_data_dialog.rs:221
 msgid "Total Data Read"
 msgstr "Irakurritako datuak guztira"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:234
+#: src/performance_page/widgets/smart_data_dialog.rs:229
 msgid "Total Data Written"
 msgstr "Idatzitako datuak guztira"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:246
+#: src/performance_page/widgets/smart_data_dialog.rs:240
 msgid "Warning Temp Time"
 msgstr "Tenperatura abisuaren ordua"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:254
+#: src/performance_page/widgets/smart_data_dialog.rs:248
 msgid "Critical Temp Time"
 msgstr "Tenperatura kritikoaren ordua"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:262
-#: src/performance_page/widgets/smart_data_dialog.rs:319
+#: src/performance_page/widgets/smart_data_dialog.rs:256
+#: src/performance_page/widgets/smart_data_dialog.rs:313
 msgid "Control Busy Time"
 msgstr ""
 
-#: src/performance_page/widgets/smart_data_dialog.rs:270
+#: src/performance_page/widgets/smart_data_dialog.rs:264
 msgid "Warning Temperature"
 msgstr "Tenperaturaren abisua"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:278
+#: src/performance_page/widgets/smart_data_dialog.rs:266
+#: src/performance_page/widgets/smart_data_dialog.rs:274
+#: src/performance_page/widgets/smart_sata_dialog_row.rs:106
+#: src/performance_page/fan.rs:296
+#, rust-format
+msgid "{} °C"
+msgstr "{} °C"
+
+#: src/performance_page/widgets/smart_data_dialog.rs:272
 msgid "Critical Temperature"
 msgstr "Tenperatura kritikoa"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:285
+#: src/performance_page/widgets/smart_data_dialog.rs:279
 msgid "Temps"
 msgstr "Tenperaturak"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:287
+#: src/performance_page/widgets/smart_data_dialog.rs:281
 msgid "Unsafe Shutdowns"
 msgstr "Itzaltze ez seguruak"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:295
+#: src/performance_page/widgets/smart_data_dialog.rs:289
 msgid "Media Errors"
 msgstr "Euskarri erroreak"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:303
+#: src/performance_page/widgets/smart_data_dialog.rs:297
 msgid "Number Error Log Entries"
 msgstr "Zenbaki-erroreen erregistroko sarrerak"
 
-#: src/performance_page/widgets/smart_data_dialog.rs:311
+#: src/performance_page/widgets/smart_data_dialog.rs:305
 msgid "Power Cycles"
 msgstr "Potentzia zikloak"
 
-#: src/performance_page/disk.rs:228
-msgid "Disk {} ({})"
-msgstr "Diskoa {} ({})"
+#: src/performance_page/widgets/mem_composition_widget.rs:249
+#, rust-format
+msgid ""
+"In use ({})\n"
+"\n"
+"Memory used by the operating system and running applications"
+msgstr ""
+"Erabiltzen ({})\n"
+"\n"
+"Sistema eragileak eta martxan dauden aplikazioek erabilitako memoria"
 
-#: src/performance_page/disk.rs:232 src/performance_page/disk.rs:388
-msgid "Drive ({})"
-msgstr "Unitatea ({})"
+#: src/performance_page/widgets/mem_composition_widget.rs:279
+#, rust-format
+msgid ""
+"Modified ({})\n"
+"\n"
+"Memory whose contents must be written to disk before it can be used by "
+"another process"
+msgstr ""
+"Aldatuta ({})\n"
+"\n"
+"Beste prozesu batek erabili aurretik bere edukia diskoan idatzi beharra "
+"dagoen memoria"
 
-#: src/performance_page/disk.rs:274 src/performance_page/cpu.rs:346
-msgid "Yes"
-msgstr "Bai"
+#: src/performance_page/widgets/mem_composition_widget.rs:303
+#, rust-format
+msgid ""
+"Standby ({})\n"
+"\n"
+"Memory that contains cached data and code that is not actively in use"
+msgstr ""
+"Zain ({})\n"
+"\n"
+"Une honetan aktiboki erabiltzen ari ez diren datu eta kode cacheratuak "
+"dituen memoria"
 
-#: src/performance_page/disk.rs:276 src/performance_page/cpu.rs:348
-msgid "No"
-msgstr "Ez"
+#: src/performance_page/widgets/mem_composition_widget.rs:316
+#, rust-format
+msgid ""
+"Free ({})\n"
+"\n"
+"Memory that is not currently in use, and that will be repurposed first when "
+"the operating system, drivers, or applications need more memory"
+msgstr ""
+"Erabilgarri ({})\n"
+"\n"
+"Une honetan erabiltzen ari ez den memoria; sistema eragileak, "
+"kontrolatzaileek edo aplikazioek memoria gehiago behar dutenean erabiliko "
+"dena"
 
-#: src/performance_page/disk.rs:285 src/performance_page/mod.rs:1121
-msgid "HDD"
-msgstr "HDD"
+#: src/performance_page/widgets/smart_sata_dialog_row.rs:104
+#, rust-format
+msgid "{} sectors"
+msgstr "{} sektore"
 
-#: src/performance_page/disk.rs:286 src/performance_page/mod.rs:1122
-msgid "SSD"
-msgstr "SSD"
-
-#: src/performance_page/disk.rs:287 src/performance_page/mod.rs:1123
-msgid "NVMe"
-msgstr "NVMe"
-
-#: src/performance_page/disk.rs:288 src/performance_page/mod.rs:1124
-msgid "eMMC"
-msgstr "eMMC"
-
-#: src/performance_page/disk.rs:289 src/performance_page/mod.rs:1125
-msgid "SD"
-msgstr "SD"
-
-#: src/performance_page/disk.rs:290 src/performance_page/mod.rs:1126
-msgid "iSCSI"
-msgstr "iSCSI"
-
-#: src/performance_page/disk.rs:291 src/performance_page/mod.rs:1127
-msgid "Optical"
-msgstr "Optikoa"
-
-#: src/performance_page/disk.rs:292 src/performance_page/mod.rs:1128
-msgid "Floppy"
-msgstr "Disketea"
-
-#: src/performance_page/disk.rs:293 src/performance_page/mod.rs:1129
-msgid "Thumb Drive"
-msgstr "UBS unitatea"
-
-#: src/performance_page/disk.rs:384
-msgid "Drive {} ({})"
-msgstr "Unitatea {} ({})"
-
-#: src/performance_page/fan.rs:274 src/performance_page/mod.rs:1504
-#: src/performance_page/mod.rs:2243
-msgid "Fan {}"
-msgstr "Haizagailua {}"
-
-#: src/performance_page/fan.rs:276 src/performance_page/mod.rs:1506
-#: src/performance_page/mod.rs:2245
-msgid "Fan"
-msgstr "Haizagailua"
-
-#: src/performance_page/fan.rs:280 src/performance_page/fan.rs:315
-msgid "{} RPM"
-msgstr "{} RPM"
-
-#: src/performance_page/fan.rs:285
-msgid "{}%"
-msgstr "% {}"
-
-#: src/performance_page/fan.rs:337 src/performance_page/cpu.rs:339
+#: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
 msgid "Unsupported"
 msgstr "Sostengu gabea"
 
-#: src/performance_page/memory.rs:378
-msgid "{} of {}"
-msgstr "{} / {}"
+#: src/performance_page/cpu.rs:351 src/performance_page/disk.rs:232
+msgid "Yes"
+msgstr "Bai"
 
-#: src/performance_page/memory.rs:400
-msgid "Getting additional memory information failed"
-msgstr "Huts egin du memoriaren informazio gehigarria eskuratzean"
+#: src/performance_page/cpu.rs:353 src/performance_page/disk.rs:234
+msgid "No"
+msgstr "Ez"
 
-#: src/performance_page/mod.rs:1135
-msgid "{} {} ({})"
-msgstr "{} {} ({})"
+#: src/performance_page/disk.rs:201
+#, rust-format
+msgid "Disk {} ({})"
+msgstr "Diskoa {} ({})"
 
-#: src/performance_page/mod.rs:1394 src/performance_page/mod.rs:2164
-#: src/performance_page/gpu.rs:353
-msgid "GPU {}"
-msgstr "GPUa {}"
+#: src/performance_page/disk.rs:205 src/performance_page/disk.rs:359
+#, rust-format
+msgid "Drive ({})"
+msgstr "Unitatea ({})"
 
-#: src/performance_page/mod.rs:2104 src/performance_page/mod.rs:2105
-msgid "{}: {}"
-msgstr "{}: {}"
+#: src/performance_page/disk.rs:243 src/performance_page/mod.rs:1122
+msgid "HDD"
+msgstr "HDD"
+
+#: src/performance_page/disk.rs:244 src/performance_page/mod.rs:1123
+msgid "SSD"
+msgstr "SSD"
+
+#: src/performance_page/disk.rs:245 src/performance_page/mod.rs:1124
+msgid "NVMe"
+msgstr "NVMe"
+
+#: src/performance_page/disk.rs:246 src/performance_page/mod.rs:1125
+msgid "eMMC"
+msgstr "eMMC"
+
+#: src/performance_page/disk.rs:247 src/performance_page/mod.rs:1126
+msgid "SD"
+msgstr "SD"
+
+#: src/performance_page/disk.rs:248 src/performance_page/mod.rs:1127
+msgid "iSCSI"
+msgstr "iSCSI"
+
+#: src/performance_page/disk.rs:249 src/performance_page/mod.rs:1128
+msgid "Optical"
+msgstr "Optikoa"
+
+#: src/performance_page/disk.rs:250 src/performance_page/mod.rs:1129
+msgid "Floppy"
+msgstr "Disketea"
+
+#: src/performance_page/disk.rs:251 src/performance_page/mod.rs:1130
+msgid "Thumb Drive"
+msgstr "UBS unitatea"
+
+#: src/performance_page/disk.rs:355
+#, rust-format
+msgid "Drive {} ({})"
+msgstr "Unitatea {} ({})"
+
+#: src/performance_page/disk.rs:385 src/performance_page/fan.rs:280
+#: src/performance_page/fan.rs:315
+#, rust-format
+msgid "{} RPM"
+msgstr "{} RPM"
+
+#: src/performance_page/fan.rs:274 src/performance_page/mod.rs:1505
+#: src/performance_page/mod.rs:2236
+#, rust-format
+msgid "Fan {}"
+msgstr "Haizagailua {}"
+
+#: src/performance_page/fan.rs:276 src/performance_page/mod.rs:1507
+#: src/performance_page/mod.rs:2238
+msgid "Fan"
+msgstr "Haizagailua"
+
+#: src/performance_page/fan.rs:285
+#, rust-format
+msgid "{}%"
+msgstr "% {}"
 
 #: src/performance_page/gpu.rs:285
 msgid "Video encode/decode"
 msgstr "Bideo kodetzea/deskodetzea"
 
-#: src/performance_page/gpu.rs:576
+#: src/performance_page/gpu.rs:356 src/performance_page/mod.rs:1395
+#: src/performance_page/mod.rs:2157
+#, rust-format
+msgid "GPU {}"
+msgstr "GPUa {}"
+
+#: src/performance_page/gpu.rs:570
 msgid "Total Memory"
 msgstr "Memoria guztira"
 
-#: src/performance_page/gpu.rs:606
+#: src/performance_page/gpu.rs:599
 msgid "Dedicated and shared memory usage over "
 msgstr "Memoria dedikatua eta partekatua denbora-tarte honetan: "
 
-#: src/performance_page/gpu.rs:651
+#: src/performance_page/gpu.rs:645
 msgid "Total Shared Memory"
 msgstr "Memoria partekatua guztira"
 
-#: src/main.rs:99
+#: src/performance_page/memory.rs:376
+#, rust-format
+msgid "{} of {}"
+msgstr "{} / {}"
+
+#: src/performance_page/memory.rs:398
+msgid "Getting additional memory information failed"
+msgstr "Huts egin du memoriaren informazio gehigarria eskuratzean"
+
+#: src/performance_page/mod.rs:1136
+#, rust-format
+msgid "{} {} ({})"
+msgstr "{} {} ({})"
+
+#: src/performance_page/mod.rs:2097 src/performance_page/mod.rs:2098
+#, rust-format
+msgid "{}: {}"
+msgstr "{}: {}"
+
+#: src/services_page/mod.rs:95
+#, fuzzy, rust-format
+msgid "{} Total Service"
+msgid_plural "{} Total Services"
+msgstr[0] "Abiarazi zerbitzua"
+msgstr[1] "Abiarazi zerbitzua"
+
+#: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
+#: src/process_tree/service_details_dialog.rs:314
+msgid "Running"
+msgstr "Martxan"
+
+#: src/services_page/mod.rs:116 src/process_tree/service_details_dialog.rs:241
+#: src/process_tree/service_details_dialog.rs:316
+msgid "Failed"
+msgstr "Huts eginda"
+
+#: src/services_page/mod.rs:125 src/process_tree/service_details_dialog.rs:243
+#: src/process_tree/service_details_dialog.rs:318
+msgid "Stopped"
+msgstr "Geldituta"
+
+#: src/services_page/mod.rs:134
+#, fuzzy
+msgid "Disabled"
+msgstr "Ezgaitu guztiak"
+
+#: src/services_page/mod.rs:140
+msgid "No services match the current filters"
+msgstr ""
+
+#: src/services_page/mod.rs:142
+msgid "No filters applied"
+msgstr "Ez da iragazkirik aplikatu"
+
+#: src/services_page/mod.rs:149
+#, fuzzy, rust-format
+msgid "{} {} Service"
+msgid_plural "{} {} Services"
+msgstr[0] "{} zerbitzu martxan"
+msgstr[1] "{} zerbitzu martxan"
+
+#: src/services_page/mod.rs:177
+#, fuzzy
+msgid "User Services"
+msgstr "Zerbitzuak"
+
+#: src/services_page/mod.rs:182
+#, fuzzy
+msgid "System Services"
+msgstr "Gelditu zerbitzua"
+
+#: src/services_page/mod.rs:403
+msgid "Not Implemented"
+msgstr ""
+
+#: src/process_tree/row_model.rs:263
+msgid "Section Header"
+msgstr "Atalaren goiburua"
+
+#: src/process_tree/row_model.rs:264
+#, fuzzy
+msgid "Service"
+msgstr "Zerbitzuak"
+
+#: src/process_tree/row_model.rs:265
+msgid "App"
+msgstr "Aplikazioa"
+
+#: src/process_tree/service_details_dialog.rs:203
+msgid "Copy logs to clipboard"
+msgstr "Kopiatu erregistroak arbelera"
+
+#: src/application.rs:409
+msgid "translator-credits"
+msgstr "Ibai Oihanguren Sala"
+
+#: src/main.rs:103
+#, rust-format
 msgid "{} year"
 msgid_plural "{} years"
 msgstr[0] "urte {}"
 msgstr[1] "{} urte"
 
-#: src/main.rs:103
+#: src/main.rs:107
+#, rust-format
 msgid "{} month"
 msgid_plural "{} months"
 msgstr[0] "hilabete {}"
 msgstr[1] "{} hilabete"
 
-#: src/main.rs:107
+#: src/main.rs:111
+#, rust-format
 msgid "{} day"
 msgid_plural "{} days"
 msgstr[0] "egun {}"
 msgstr[1] "{} egun"
 
-#: src/main.rs:111
+#: src/main.rs:115
+#, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
 msgstr[0] "ordu {}"
 msgstr[1] "{} ordu"
 
-#: src/main.rs:115 src/main.rs:180
+#: src/main.rs:119 src/main.rs:184
+#, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
 msgstr[0] "minutu {}"
 msgstr[1] "{} minutu"
 
-#: src/main.rs:119 src/main.rs:178
+#: src/main.rs:123 src/main.rs:182
+#, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
 msgstr[0] "segundo {}"
 msgstr[1] "{} segundo"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
-#: src/main.rs:155
+#: src/main.rs:159
+#, rust-format
 msgid "{}, {} and {}"
 msgstr "{}, {} eta {}"
 
 #. Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days
 #. Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours
 #. Translators: Used for durations less than one day but greater than one hour. First %s is number of hours, second %s is minutes
-#: src/main.rs:158 src/main.rs:161 src/main.rs:164
+#: src/main.rs:162 src/main.rs:165 src/main.rs:168
+#, rust-format
 msgid "{} and {}"
 msgstr "{} eta {}"
 
-#: src/main.rs:170
+#: src/main.rs:174
 msgid "Less than a minute"
 msgstr "minutu bat baino gutxiago"
 
-#: src/main.rs:316
+#: src/main.rs:404
 msgid "_Quit"
 msgstr "_Irten"
 
-#: src/application.rs:398
-msgid "translator-credits"
-msgstr "Ibai Oihanguren Sala"
+#~ msgid "App Page"
+#~ msgstr "Aplikazioen orria"
+
+#~ msgid "{} failed services out of a total of {}"
+#~ msgstr "{} zerbitzuk huts egin dute, guztirako {} zerbitzuetatik"
+
+#~ msgid "Close"
+#~ msgstr "Itxi"
+
+#~ msgid "Retry"
+#~ msgstr "Saiatu berriz"
+
+#~ msgid "Kill All"
+#~ msgstr "Hil guztiak"
 
 #, fuzzy
 #~ msgid "{} minutes"
 #~ msgstr "{} minutu{} "
-
-#, fuzzy
-#~ msgid "{} seconds"
-#~ msgstr "{} segundo{}"
 
 #~ msgid "{} second{}"
 #~ msgstr "{} segundo{}"
