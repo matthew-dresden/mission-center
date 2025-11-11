@@ -1,4 +1,4 @@
-/* process_tree/columns/gpu.rs
+/* table_view/columns/gpu.rs
  *
  * Copyright 2025 Mission Center Developers
  *

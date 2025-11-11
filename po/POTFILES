@@ -34,11 +34,11 @@ resources/ui/widgets/theme_selector.blp
 
 resources/ui/keyboard_shortcuts.blp
 
-resources/ui/process_column_view/column_view_frame.blp
-resources/ui/process_column_view/process_action_bar.blp
-resources/ui/process_column_view/process_details_dialog.blp
-resources/ui/process_column_view/service_action_bar.blp
-resources/ui/process_column_view/service_details_dialog.blp
+resources/ui/table_view/table_view.blp
+resources/ui/table_view/process_action_bar.blp
+resources/ui/table_view/process_details_dialog.blp
+resources/ui/table_view/service_action_bar.blp
+resources/ui/table_view/service_details_dialog.blp
 
 resources/ui/about_system_dialog.blp
 resources/ui/window.blp
@@ -79,29 +79,26 @@ src/widgets/theme_selector.rs
 
 src/services_page/mod.rs
 
-src/process_tree/columns/cpu.rs
-src/process_tree/columns/gpu.rs
-src/process_tree/columns/gpu_memory.rs
-src/process_tree/columns/label_cell.rs
-src/process_tree/columns/mod.rs
-src/process_tree/columns/name.rs
-src/process_tree/columns/pid.rs
-src/process_tree/columns/shared_memory.rs
-src/process_tree/columns/drive.rs
-src/process_tree/columns/memory.rs
-src/process_tree/columns/network.rs
-src/process_tree/columns/name_cell.rs
-src/process_tree/mod.rs
-src/process_tree/models/mod.rs
-src/process_tree/models/processes.rs
-src/process_tree/process_details_dialog.rs
-src/process_tree/util.rs
-src/process_tree/column_view_frame.rs
-src/process_tree/process_action_bar.rs
-src/process_tree/row_model.rs
-src/process_tree/service_action_bar.rs
-src/process_tree/service_details_dialog.rs
-src/process_tree/settings.rs
+src/table_view/columns/cpu.rs
+src/table_view/columns/drive.rs
+src/table_view/columns/gpu.rs
+src/table_view/columns/gpu_memory.rs
+src/table_view/columns/label_cell.rs
+src/table_view/columns/memory.rs
+src/table_view/columns/mod.rs
+src/table_view/columns/name.rs
+src/table_view/columns/name_cell.rs
+src/table_view/columns/network.rs
+src/table_view/columns/pid.rs
+src/table_view/columns/shared_memory.rs
+src/table_view/mod.rs
+src/table_view/models.rs
+src/table_view/process_action_bar.rs
+src/table_view/process_details_dialog.rs
+src/table_view/row_model.rs
+src/table_view/service_action_bar.rs
+src/table_view/service_details_dialog.rs
+src/table_view/settings.rs
 
 src/window.rs
 src/about_system_dialog.rs

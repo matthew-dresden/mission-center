@@ -1,4 +1,4 @@
-/* process_tree/process_action_bar.rs
+/* table_view/process_action_bar.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -18,8 +18,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use crate::process_tree::column_view_frame::ColumnViewFrame;
-use crate::process_tree::row_model::ContentType;
+use crate::table_view::row_model::ContentType;
+use crate::table_view::TableView;
 use adw::prelude::*;
 use gtk::{gio, glib, subclass::prelude::*};
 
@@ -27,9 +27,7 @@ mod imp {
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]
-    #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/process_column_view/process_action_bar.ui"
-    )]
+    #[template(resource = "/io/missioncenter/MissionCenter/ui/table_view/process_action_bar.ui")]
     pub struct ProcessActionBar {
         #[template_child]
         pub stop_label: TemplateChild<gtk::Label>,
@@ -100,8 +98,8 @@ glib::wrapper! {
 }
 
 impl ProcessActionBar {
-    pub fn set_column_view(&self, column_view: &ColumnViewFrame) {
-        let handle_selection_change = |this: &Self, column_view: ColumnViewFrame| {
+    pub fn set_column_view(&self, column_view: &TableView) {
+        let handle_selection_change = |this: &Self, column_view: TableView| {
             let selected_item = column_view.selected_item();
             match selected_item.content_type() {
                 ContentType::Process | ContentType::App => {

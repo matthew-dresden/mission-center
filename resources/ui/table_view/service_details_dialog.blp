@@ -1,4 +1,4 @@
-/* ui/process_column_view/process_details_dialog.blp
+/* ui/table_view/service_details_dialog.blp
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -21,23 +21,18 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $ProcessDetailsDialog: Adw.Dialog {
+template $ServiceDetailsDialog: Adw.Dialog {
   width-request: 360;
 
   Adw.ToolbarView {
     [top]
     Adw.HeaderBar {
-      title-widget: Box {
-        spacing: 10;
+      title-widget: Label {
+        styles [
+          "heading"
+        ]
 
-        Image icon {
-        }
-
-        Label title {
-          styles [
-            "heading"
-          ]
-        }
+        label: _("Service Details");
       };
     }
 
@@ -58,9 +53,72 @@ template $ProcessDetailsDialog: Adw.Dialog {
           orientation: vertical;
           spacing: 32;
 
-          Adw.PreferencesGroup {
+          Adw.PreferencesGroup group_state {
             hexpand: true;
 
+            title: _("State");
+            description: _("The current state of the service");
+
+            header-suffix: Box {
+              margin-start: 24;
+              spacing: 5;
+
+              valign: end;
+
+              Box box_buttons {
+                styles [
+                  "linked"
+                ]
+
+                homogeneous: true;
+
+                Button start {
+                  action-name: "service.start";
+                  tooltip-text: _("Start service");
+
+                  child: Box {
+                    spacing: 5;
+
+                    halign: center;
+
+                    Image {
+                      icon-name: "media-playback-start-symbolic";
+                    }
+                  };
+                }
+
+                Button stop {
+                  action-name: "service.stop";
+                  tooltip-text: _("Stop service");
+
+                  child: Box {
+                    spacing: 5;
+
+                    halign: center;
+
+                    Image {
+                      icon-name: "media-playback-stop-symbolic";
+                    }
+                  };
+                }
+              }
+
+              Button restart {
+                action-name: "service.restart";
+                tooltip-text: _("Restart service");
+
+                child: Box {
+                  spacing: 5;
+
+                  halign: center;
+
+                  Image {
+                    icon-name: "media-playlist-repeat-symbolic";
+                  }
+                };
+              }
+            };
+
             Adw.PreferencesRow {
               activatable: false;
 
@@ -68,30 +126,129 @@ template $ProcessDetailsDialog: Adw.Dialog {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
+
                 spacing: 12;
 
-                Label pid_label {
+                Label {
                   hexpand: true;
                   halign: start;
-                  label: _("PID");
+
+                  label: _("Name");
                 }
 
-                Label app_id_label {
-                  visible: false;
-
-                  hexpand: true;
-                  halign: start;
-                  label: _("App ID");
-                }
-
-                Label id_value {
+                Label label_name {
                   styles [
-                    "dim-label",
+                    "dim-label"
                   ]
 
                   ellipsize: middle;
+
                   hexpand: true;
                   halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+
+                  label: _("Description");
+                }
+
+                Label label_description {
+                  styles [
+                    "dim-label"
+                  ]
+
+                  ellipsize: middle;
+
+                  hexpand: true;
+                  halign: end;
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+
+                  label: _("Status");
+                }
+
+                Label label_running {
+                  styles [
+                    "dim-label"
+                  ]
+
+                  ellipsize: middle;
+
+                  hexpand: true;
+                  halign: end;
+
+                  label: "";
+                }
+              };
+            }
+
+            Adw.SwitchRow switch_enabled {
+              title: _("Enabled");
+            }
+          }
+
+          Adw.PreferencesGroup group_process {
+            hexpand: true;
+
+            title: _("Process");
+            description: _("Process and user information");
+
+            Adw.PreferencesRow {
+              activatable: false;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+
+                  label: _("Process ID");
+                }
+
+                Label label_pid {
+                  styles [
+                    "dim-label"
+                  ]
+
+                  ellipsize: middle;
+
+                  hexpand: true;
+                  halign: end;
+
                   label: _("N/A");
                 }
               };
@@ -104,235 +261,125 @@ template $ProcessDetailsDialog: Adw.Dialog {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
+
                 spacing: 12;
 
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("Type");
+
+                  label: _("User");
                 }
 
-                Label kind {
+                Label label_user {
                   styles [
-                    "dim-label",
+                    "dim-label"
                   ]
 
                   ellipsize: middle;
+
                   hexpand: true;
                   halign: end;
+
                   label: _("N/A");
                 }
               };
             }
 
-            Adw.PreferencesRow command_line_row {
+            Adw.PreferencesRow {
               activatable: false;
 
               child: Box {
                 height-request: 50;
                 margin-start: 12;
                 margin-end: 12;
+
                 spacing: 12;
 
                 Label {
                   hexpand: true;
                   halign: start;
-                  label: _("Command Line");
+
+                  label: _("Group");
                 }
 
-                Label command_line {
+                Label label_group {
                   styles [
-                    "dim-label",
+                    "dim-label"
                   ]
+
+                  ellipsize: middle;
 
                   hexpand: true;
                   halign: end;
 
-                  wrap: true;
-                  wrap-mode: char;
-                  natural-wrap-mode: none;
+                  label: _("N/A");
+                }
+              };
+            }
+
+            Adw.PreferencesRow {
+              activatable: false;
+
+              child: Box {
+                height-request: 50;
+                margin-start: 12;
+                margin-end: 12;
+
+                spacing: 12;
+
+                Label {
+                  hexpand: true;
+                  halign: start;
+
+                  label: _("File Location");
+                }
+
+                Label file_location {
+                  styles [
+                    "dim-label"
+                  ]
+
+                  ellipsize: middle;
+
+                  hexpand: true;
+                  halign: end;
                 }
               };
             }
           }
 
-          Adw.PreferencesGroup {
-            hexpand: true;
+          Expander logs_expander {
+            label-widget: Label {
+              styles [
+                "heading"
+              ]
 
-            title: _("Resource Usage");
+              label: _("Logs");
+            };
 
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-                  label: _("CPU");
-                }
-
-                $LabelCell cpu {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  hexpand: true;
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-                  label: _("Memory");
-                }
-
-                $LabelCell memory {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  hexpand: true;
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-                  label: _("Shared Memory");
-                }
-
-                $LabelCell shared_memory {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  halign: end;
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-                  label: _("Drives");
-                }
-
-                $LabelCell drives {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  hexpand: true;
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-              Label {
-                hexpand: true;
-                halign: start;
-                label: _("Network");
-              }
-
-              $LabelCell network {
+            Overlay logs_overlay {
+              child: TextView {
                 styles [
-                  "dim-label",
+                  "card",
                 ]
 
                 hexpand: true;
-              }
-            };
-          }
+                vexpand: true;
 
-          Adw.PreferencesRow {
-            activatable: false;
+                margin-top: 12;
 
-            child: Box {
-              height-request: 50;
-              margin-start: 12;
-              margin-end: 12;
-              spacing: 12;
+                top-margin: 12;
+                bottom-margin: 12;
+                left-margin: 12;
+                right-margin: 12;
 
-              Label {
-                hexpand: true;
-                halign: start;
-                label: _("GPU");
-              }
+                monospace: true;
+                editable: false;
+                wrap-mode: word;
 
-                $LabelCell gpu {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  hexpand: true;
-                }
-              };
-            }
-
-            Adw.PreferencesRow {
-              activatable: false;
-
-              child: Box {
-                height-request: 50;
-                margin-start: 12;
-                margin-end: 12;
-                spacing: 12;
-
-                Label {
-                  hexpand: true;
-                  halign: start;
-                  label: _("GPU Memory");
-                }
-
-                $LabelCell gpu_memory {
-                  styles [
-                    "dim-label",
-                  ]
-
-                  hexpand: true;
-                }
+                buffer: TextBuffer logs_buffer {
+                };
               };
             }
           }
@@ -341,4 +388,3 @@ template $ProcessDetailsDialog: Adw.Dialog {
     }
   }
 }
-

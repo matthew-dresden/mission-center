@@ -1,4 +1,4 @@
-/* process_tree/service_details_dialog.rs
+/* table_view/service_details_dialog.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -25,9 +25,9 @@ use adw::gio;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, g_warning, ParamSpec, Properties, SignalHandlerId, Value};
 
-use crate::process_tree::column_view_frame::ColumnViewFrame;
-use crate::process_tree::row_model::RowModel;
 use crate::services_page::actions;
+use crate::table_view::row_model::RowModel;
+use crate::table_view::TableView;
 use crate::{app, i18n::*};
 
 mod imp {
@@ -37,7 +37,7 @@ mod imp {
     #[properties(wrapper_type = super::ServiceDetailsDialog)]
     #[derive(gtk::CompositeTemplate)]
     #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/process_column_view/service_details_dialog.ui"
+        resource = "/io/missioncenter/MissionCenter/ui/table_view/service_details_dialog.ui"
     )]
     pub struct ServiceDetailsDialog {
         #[template_child]
@@ -78,7 +78,7 @@ mod imp {
         #[property(get, set)]
         pub enabled: Cell<bool>,
         #[property(get, construct_only)]
-        pub column_view: RefCell<ColumnViewFrame>,
+        pub column_view: RefCell<TableView>,
 
         copy_logs_button: gtk::Button,
 
@@ -180,8 +180,8 @@ mod imp {
                         match app!().sys_info().and_then(move |sys_info| {
                             match this.switch_enabled.is_active() {
                                 // Emitted after the switch is toggled
-                                true => sys_info.enable_service(list_item.name().to_string()),
-                                false => sys_info.disable_service(list_item.name().to_string()),
+                                true => sys_info.enable_service(list_item.service_id()),
+                                false => sys_info.disable_service(list_item.service_id()),
                             }
 
                             Ok(())
@@ -290,9 +290,8 @@ mod imp {
             if !location.is_empty() {
                 group_empty = false;
                 self.file_location.set_text(&list_item.file_path());
-                self.file_location.set_visible(true);
             } else {
-                self.file_location.set_visible(false);
+                self.file_location.set_text(&i18n("Unknown"));
             }
 
             if group_empty {
@@ -302,7 +301,7 @@ mod imp {
             }
 
             let logs = app!().sys_info().and_then(|sys_info| {
-                Ok(sys_info.service_logs(list_item.name().to_string(), NonZeroU32::new(pid)))
+                Ok(sys_info.service_logs(list_item.service_id(), NonZeroU32::new(pid)))
             });
 
             match logs {
@@ -373,7 +372,7 @@ glib::wrapper! {
 }
 
 impl ServiceDetailsDialog {
-    pub fn new(column_view: &ColumnViewFrame) -> Self {
+    pub fn new(column_view: &TableView) -> Self {
         let this: Self = glib::Object::builder()
             .property("follows-content-size", true)
             .property("column-view", Some(column_view))

@@ -1,4 +1,4 @@
-/* ui/process_column_view/service_action_bar.blp
+/* ui/table_view/process_action_bar.blp
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -20,8 +20,7 @@
 
 using Gtk 4.0;
 
-template $ServiceActionBar: Box {
-  valign: center;
+template $ProcessActionBar: Box {
   spacing: 5;
 
   Box {
@@ -29,28 +28,9 @@ template $ServiceActionBar: Box {
       "linked"
     ]
 
-    Button service_start {
-      action-name: "service.start";
-      tooltip-text: _("Start the selected service");
-
-      child: Box {
-        spacing: 5;
-
-        halign: center;
-
-        Image {
-          icon-name: "media-playback-start-symbolic";
-        }
-
-        Label service_start_label {
-          label: _("Start");
-        }
-      };
-    }
-
-    Button service_stop {
-      action-name: "service.stop";
-      tooltip-text: _("Stop the selected service");
+    Button {
+      action-name: "process.stop";
+      tooltip-text: _("Stop the selected app");
 
       child: Box {
         spacing: 5;
@@ -61,35 +41,35 @@ template $ServiceActionBar: Box {
           icon-name: "media-playback-stop-symbolic";
         }
 
-        Label service_stop_label {
+        Label stop_label {
           label: _("Stop");
+        }
+      };
+    }
+
+    Button {
+      action-name: "process.force-stop";
+      tooltip-text: _("Force stop the selected app");
+
+      child: Box {
+        spacing: 5;
+
+        halign: center;
+
+        Image {
+          icon-name: "cross-small-circle-filled-symbolic";
+        }
+
+        Label force_stop_label{
+          label: _("Force Stop");
         }
       };
     }
   }
 
-  Button service_restart {
-    action-name: "service.restart";
-    tooltip-text: _("Restart the selected service");
-
-    child: Box {
-      spacing: 5;
-
-      halign: center;
-
-      Image {
-        icon-name: "media-playlist-repeat-symbolic";
-      }
-
-      Label service_restart_label {
-        label: _("Restart");
-      }
-    };
-  }
-
-  Button service_status {
-    action-name: "service.details";
-    tooltip-text: _("Show details of the selected service");
+  Button {
+    action-name: "process.details";
+    tooltip-text: _("Show details of the selected app");
 
     child: Box {
       spacing: 5;
@@ -100,10 +80,9 @@ template $ServiceActionBar: Box {
         icon-name: "details-symbolic";
       }
 
-      Label service_details_label {
+      Label details_label {
         label: _("Details");
       }
     };
   }
 }
-

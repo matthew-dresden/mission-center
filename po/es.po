@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-09-12 12:01+0000\n"
-"Last-Translator: DefYellow <br-yellow09@proton.me>\n"
+"PO-Revision-Date: 2025-11-05 18:51+0000\n"
+"Last-Translator: Randy <maxdesigna7x@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/es/>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -886,6 +886,8 @@ msgid ""
 "There was a problem fetching SMART data. Try running from the command line "
 "to get more information."
 msgstr ""
+"Se produjo un problema al obtener los datos SMART. Intente ejecutar el "
+"comando desde la línea de comandos para obtener más información."
 
 #: resources/ui/performance_page/disk_details.blp:63
 msgid "Read speed"
@@ -925,15 +927,15 @@ msgstr "Disco del sistema:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Serial:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Tasa de rotación"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1233,19 +1235,19 @@ msgstr "Procesadores virtuales:"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Filtrar procesos detenidos"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Filtrar procesos desactivados"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "Quitar todos los filtros"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "Quitar filtros"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
@@ -1278,7 +1280,7 @@ msgstr "Menú principal"
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Cerrar ventana"
 
 #: resources/ui/keyboard_shortcuts.blp:36
 #, fuzzy
@@ -1412,11 +1414,11 @@ msgstr "Detalles"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "Enviar señal"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "Suspender (DETENIDO)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"

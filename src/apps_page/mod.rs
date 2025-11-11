@@ -29,10 +29,10 @@ use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::i18n::{i18n, ni18n_f};
 use crate::magpie_client::App;
-use crate::process_tree::column_view_frame::{ColumnViewFrame, ColumnViewSettingsNamespaces};
-use crate::process_tree::models::{update_apps, update_children};
-use crate::process_tree::process_action_bar::ProcessActionBar;
-use crate::process_tree::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
+use crate::table_view::{
+    update_apps, update_processes, ContentType, ProcessActionBar, RowModel, RowModelBuilder,
+    SectionType, SettingsNamespace, TableView,
+};
 
 pub mod actions;
 
@@ -50,7 +50,7 @@ mod imp {
         #[template_child]
         pub collapse_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub column_view: TemplateChild<ColumnViewFrame>,
+        pub table_view: TemplateChild<TableView>,
         #[template_child]
         pub process_action_bar: TemplateChild<ProcessActionBar>,
 
@@ -72,7 +72,7 @@ mod imp {
                 h1: TemplateChild::default(),
                 h2: TemplateChild::default(),
                 collapse_label: TemplateChild::default(),
-                column_view: TemplateChild::default(),
+                table_view: TemplateChild::default(),
                 process_action_bar: TemplateChild::default(),
 
                 apps_section: RowModelBuilder::new()
@@ -148,7 +148,7 @@ mod imp {
                     let imp = this.imp();
 
                     let Some(selection_model) = imp
-                        .column_view
+                        .table_view
                         .imp()
                         .column_view
                         .model()
@@ -195,15 +195,15 @@ mod imp {
                 .insert_action_group("apps-page", Some(&page_actions));
 
             let process_actions = gio::SimpleActionGroup::new();
-            process_actions.add_action(&actions::action_stop(&self.column_view));
-            process_actions.add_action(&actions::action_force_stop(&self.column_view));
-            process_actions.add_action(&actions::action_suspend(&self.column_view));
-            process_actions.add_action(&actions::action_continue(&self.column_view));
-            process_actions.add_action(&actions::action_hangup(&self.column_view));
-            process_actions.add_action(&actions::action_interrupt(&self.column_view));
-            process_actions.add_action(&actions::action_user_one(&self.column_view));
-            process_actions.add_action(&actions::action_user_two(&self.column_view));
-            process_actions.add_action(&actions::action_details(&self.column_view));
+            process_actions.add_action(&actions::action_stop(&self.table_view));
+            process_actions.add_action(&actions::action_force_stop(&self.table_view));
+            process_actions.add_action(&actions::action_suspend(&self.table_view));
+            process_actions.add_action(&actions::action_continue(&self.table_view));
+            process_actions.add_action(&actions::action_hangup(&self.table_view));
+            process_actions.add_action(&actions::action_interrupt(&self.table_view));
+            process_actions.add_action(&actions::action_user_one(&self.table_view));
+            process_actions.add_action(&actions::action_user_two(&self.table_view));
+            process_actions.add_action(&actions::action_details(&self.table_view));
             self.obj()
                 .insert_action_group("process", Some(&process_actions));
         }
@@ -228,8 +228,8 @@ impl AppsPage {
     pub fn set_initial_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
         let imp = self.imp();
 
-        imp.column_view.imp().setup(
-            ColumnViewSettingsNamespaces::AppsPage,
+        imp.table_view.imp().setup(
+            SettingsNamespace::AppsPage,
             &imp.apps_section,
             &imp.processes_section,
             Some(&imp.process_action_bar),
@@ -247,12 +247,12 @@ impl AppsPage {
 
         self.update_common(readings);
 
-        if let Some(row_sorter) = imp.column_view.imp().row_sorter.get() {
+        if let Some(row_sorter) = imp.table_view.imp().row_sorter.get() {
             row_sorter.changed(gtk::SorterChange::Different)
         }
 
         if readings.network_stats_error.is_some() {
-            imp.column_view
+            imp.table_view
                 .get()
                 .imp()
                 .network_usage_column
@@ -285,18 +285,18 @@ impl AppsPage {
             &[buffer.as_str()],
         ));
 
-        imp.column_view.imp().update_column_titles(readings);
+        imp.table_view.imp().update_column_titles(readings);
 
         let mut process_model_map = HashMap::new();
         let root_process = readings.running_processes.keys().min().unwrap_or(&1);
         if let Some(init) = readings.running_processes.get(root_process) {
-            update_children(
+            update_processes(
                 &readings.running_processes,
                 init.children.clone().drain(..).collect(),
                 &imp.processes_section.children(),
                 &imp.app_icons.borrow(),
                 "application-x-executable-symbolic",
-                imp.column_view.imp().use_merged_stats.get(),
+                imp.table_view.imp().use_merged_stats.get(),
                 SectionType::SecondSection,
                 None,
                 &mut process_model_map,
@@ -330,5 +330,9 @@ impl AppsPage {
 
     pub fn running_apps(&self) -> HashMap<String, App> {
         self.imp().running_apps.borrow().clone()
+    }
+
+    pub fn activate_table_view_action(&self, name: &str) -> Result<(), glib::error::BoolError> {
+        WidgetExt::activate_action(&*self.imp().table_view, name, None)
     }
 }

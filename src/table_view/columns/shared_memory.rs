@@ -1,4 +1,4 @@
-/* process_tree/columns/pid.rs
+/* table_view/columns/shared_memory.rs
  *
  * Copyright 2025 Mission Center Developers
  *
@@ -20,18 +20,14 @@
 
 use std::cmp::Ordering;
 
-use gtk::glib;
 use gtk::prelude::*;
 
+pub use super::memory_label_formatter as label_formatter;
 use super::{compare_column_entries_by, sort_order, LabelCell};
 use crate::label_cell_factory;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    label_cell_factory!(
-        "pid",
-        ContentType::SectionHeader | ContentType::Service | ContentType::App,
-        label_formatter
-    )
+    label_cell_factory!("shared-memory-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
@@ -42,13 +38,11 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
         };
 
         compare_column_entries_by(lhs, rhs, sort_order(&column_view), |lhs, rhs| {
-            lhs.pid().cmp(&rhs.pid())
+            let lhs = lhs.shared_memory_usage();
+            let rhs = rhs.shared_memory_usage();
+
+            lhs.cmp(&rhs)
         })
         .into()
     })
-}
-
-pub fn label_formatter(label: &LabelCell, value: glib::Value) {
-    let pid: u32 = value.get().unwrap();
-    label.set_label(&pid.to_string());
 }

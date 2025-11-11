@@ -229,8 +229,8 @@
       "sources": [
         {
           "type": "archive",
-          "url": "https://gitlab.gnome.org/jwestman/blueprint-compiler/-/archive/v0.18.0/blueprint-compiler-v0.18.0.tar.bz2",
-          "sha256": "c98cc7257177e0e29a604689679a2512922a1f742ee5f28f188b2a13fe17e5e7"
+          "url": "https://github.com/GNOME/blueprint-compiler/archive/refs/tags/0.18.0.tar.gz",
+          "sha256": "51aa472ecd7bd4b32b8baa7ae6768b19810793d4a2a1aba39c5b31b0170cb258"
         }
       ],
       "cleanup": [
@@ -362,7 +362,7 @@
                   "sources": [
                     {
                       "type": "archive",
-                      "url": "https://libarchive.org/downloads/libarchive-3.6.2.tar.xz",
+                      "url": "https://github.com/libarchive/libarchive/releases/download/v3.6.2/libarchive-3.6.2.tar.xz",
                       "sha256": "9e2c1b80d5fbe59b61308fdfab6c79b5021d7ff4ff2489fb12daf0a96a83551d"
                     }
                   ],

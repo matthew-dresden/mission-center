@@ -21,14 +21,14 @@
 use adw::prelude::*;
 use gtk::gio;
 
-use crate::process_tree::column_view_frame::ColumnViewFrame;
-use crate::process_tree::process_details_dialog::ProcessDetailsDialog;
-use crate::process_tree::row_model::{ContentType, RowModel};
+use crate::table_view::ProcessDetailsDialog;
+use crate::table_view::TableView;
+use crate::table_view::{ContentType, RowModel};
 
 macro_rules! new_action {
     ($name: literal, $column_view: expr, $magpie_function: ident) => {{
         use gtk::prelude::*;
-        use $crate::process_tree::row_model::ContentType;
+        use $crate::table_view::ContentType;
 
         let action = gio::SimpleAction::new($name, None);
 
@@ -84,39 +84,39 @@ macro_rules! new_action {
     }};
 }
 
-pub fn action_stop(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_stop(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("stop", column_view_frame, terminate_processes)
 }
 
-pub fn action_force_stop(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_force_stop(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("force-stop", column_view_frame, kill_processes)
 }
 
-pub fn action_suspend(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_suspend(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("suspend", column_view_frame, suspend_processes)
 }
 
-pub fn action_continue(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_continue(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("continue", column_view_frame, continue_processes)
 }
 
-pub fn action_hangup(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_hangup(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("hangup", column_view_frame, hangup_processes)
 }
 
-pub fn action_interrupt(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_interrupt(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("interrupt", column_view_frame, interrupt_processes)
 }
 
-pub fn action_user_one(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_user_one(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("user-one", column_view_frame, user_signal_one_processes)
 }
 
-pub fn action_user_two(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_user_two(column_view_frame: &TableView) -> gio::SimpleAction {
     new_action!("user-two", column_view_frame, user_signal_two_processes)
 }
 
-pub fn action_details(column_view_frame: &ColumnViewFrame) -> gio::SimpleAction {
+pub fn action_details(column_view_frame: &TableView) -> gio::SimpleAction {
     let action = gio::SimpleAction::new("details", None);
 
     let selected_item = column_view_frame.selected_item();
