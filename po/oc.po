@@ -8,19 +8,21 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-03 08:59+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-11-14 16:51+0000\n"
+"Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
+"Language-Team: Occitan <https://hosted.weblate.org/projects/mission-center/"
+"mission-center/oc/>\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
 msgid "Mission Center"
-msgstr ""
+msgstr "Centre de mission"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:9
 msgid ""
@@ -30,21 +32,24 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:6
 msgid "Mission Center Developers"
-msgstr ""
+msgstr "Desvolopaires de Centre de mission"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:17
 msgid "Monitor system resource usage"
-msgstr ""
+msgstr "Susvelhar l'utilizacion de las ressorsas del sistèma"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
 msgstr ""
+"Susvelhatz l'utilizacion del processor, memòria, disc, ret e GPU, "
+"acompanhada d'un detalh d'aquestas estatisticas per aplicacion e per "
+"processús"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:20
 msgid "Features:"
-msgstr ""
+msgstr "Foncionalitats :"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:22
 msgid "Monitor overall or per-thread CPU usage"
@@ -109,7 +114,7 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:41
 msgid "Written in Rust"
-msgstr ""
+msgstr "Escrich en Rust"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:43
 msgid "Limitations (there is ongoing work to overcome all of these):"
@@ -138,7 +143,7 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:51
 msgid "Interface Style"
-msgstr ""
+msgstr "Estil de l'interfàcia :"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:52
 msgid "If light or dark interface style should be used"
@@ -319,15 +324,15 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
-msgstr ""
+msgstr "Tuar"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:31
 msgid "In Use:"
-msgstr ""
+msgstr "En usatge :"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:36
 msgid "Modified:"
-msgstr ""
+msgstr "Modifica :"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:41
 msgid "Standby:"
@@ -387,7 +392,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:213
 #: resources/ui/performance_page/network.blp:111
 msgid "_View"
-msgstr ""
+msgstr "_Afichatge"
 
 #: resources/ui/performance_page/cpu.blp:136
 #: resources/ui/performance_page/disk.blp:191
@@ -414,7 +419,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:226
 #: resources/ui/performance_page/network.blp:124
 msgid "_Drive"
-msgstr ""
+msgstr "_Disc"
 
 #: resources/ui/performance_page/cpu.blp:151
 #: resources/ui/performance_page/disk.blp:206
@@ -423,7 +428,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:231
 #: resources/ui/performance_page/network.blp:129
 msgid "_Network"
-msgstr ""
+msgstr "_Ret"
 
 #: resources/ui/performance_page/cpu.blp:156
 #: resources/ui/performance_page/disk.blp:211
