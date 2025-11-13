@@ -223,7 +223,7 @@ mod imp {
 
             let cap = disk.capacity_bytes;
             this.infobar_content.capacity().set_text(&if cap > 0 {
-                crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes)
+                crate::to_human_readable_nice(cap as f32, &DataType::DriveBytes)
             } else {
                 i18n("Unknown")
             });
@@ -249,6 +249,7 @@ mod imp {
                             DiskKind::Optical => i18n("Optical"),
                             DiskKind::Floppy => i18n("Floppy"),
                             DiskKind::ThumbDrive => i18n("Thumb Drive"),
+                            DiskKind::Network => i18n("Network"),
                         };
                         disk_type_str
                     } else {
@@ -348,6 +349,11 @@ mod imp {
                 this.infobar_content.set_wwn_visible(false);
             }
 
+            if disk.kind == Some(DiskKind::Network.into()) {
+                this.infobar_content.active_time().set_visible(false);
+                this.infobar_content.avg_response_time().set_visible(false);
+            }
+
             true
         }
 
@@ -378,7 +384,7 @@ mod imp {
             this.infobar_content
                 .formatted()
                 .set_text(&if let Some(cap) = cap {
-                    crate::to_human_readable_nice(cap as f32, &DataType::MemoryBytes)
+                    crate::to_human_readable_nice(cap as f32, &DataType::DriveBytes)
                 } else {
                     i18n("Unknown")
                 });

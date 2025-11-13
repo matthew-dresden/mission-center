@@ -1128,6 +1128,7 @@ mod imp {
                 Some(DiskKind::Optical) => i18n("Optical"),
                 Some(DiskKind::Floppy) => i18n("Floppy"),
                 Some(DiskKind::ThumbDrive) => i18n("Thumb Drive"),
+                Some(DiskKind::Network) => i18n("Network"),
                 None => i18n("Drive"),
             };
 
@@ -1810,7 +1811,8 @@ mod imp {
                     Pages::Disk(ref mut disks_pages) => {
                         for disk_page_name in disks_pages.keys() {
                             if !readings.disks_info.iter().any(|disk| {
-                                disk.capacity_bytes > 0
+                                (disk.capacity_bytes > 0
+                                    || disk.kind == Some(DiskKind::Network.into()))
                                     && &Self::disk_page_name(disk.id.as_ref()) == disk_page_name
                             }) {
                                 pages_to_destroy.push(disk_page_name.clone());
@@ -2026,7 +2028,10 @@ mod imp {
                         }
 
                         for new_device_index in new_devices {
-                            if readings.disks_info[new_device_index].capacity_bytes == 0 {
+                            if readings.disks_info[new_device_index].capacity_bytes == 0
+                                && readings.disks_info[new_device_index].kind
+                                    != Some(DiskKind::Network.into())
+                            {
                                 continue;
                             }
                             let (disk_id, page) = this.imp().create_disk_page(
