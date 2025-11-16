@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-10-20 04:51+0000\n"
+"PO-Revision-Date: 2025-11-17 13:51+0000\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -1622,8 +1622,8 @@ msgstr "Görev Merkezi _Hakkında"
 #, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
-msgstr[0] "{} Running App"
-msgstr[1] "{} Ugygulama Çalışıyor"
+msgstr[0] "{} Uygulama Çalışıyor"
+msgstr[1] "{} Uygulama Çalışıyor"
 
 #: src/apps_page/mod.rs:269
 #, rust-format
@@ -1705,7 +1705,7 @@ msgstr "Uyarı Sıcaklık Süresi"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:248
 msgid "Critical Temp Time"
-msgstr "Uyarı Sıcaklık Süresi"
+msgstr "Kritik Sıcaklık Süresi"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:256
 #: src/performance_page/widgets/smart_data_dialog.rs:313
@@ -1933,7 +1933,7 @@ msgstr "{}: {}"
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
 msgstr[0] "{} Toplam Hizmet"
-msgstr[1] "{} Total Services"
+msgstr[1] "{} Toplam Hizmet"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1967,7 +1967,7 @@ msgstr "Süzgeç uygulanmadı"
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
 msgstr[0] "{} {} Hizmet"
-msgstr[1] "{} {} Services"
+msgstr[1] "{} {} Hizmet"
 
 #: src/services_page/mod.rs:177
 msgid "User Services"
