@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-03 08:59+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-11-17 13:51+0000\n"
+"Last-Translator: ButterflyOfFire <boffire@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Kabyle <https://hosted.weblate.org/projects/mission-center/"
+"mission-center/kab/>\n"
 "Language: kab\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -507,7 +509,7 @@ msgstr ""
 #: resources/ui/table_view/process_details_dialog.blp:201
 #: src/performance_page/mod.rs:1044 src/table_view/mod.rs:680
 msgid "Memory"
-msgstr ""
+msgstr "Takatut"
 
 #: resources/ui/performance_page/memory.blp:122
 msgid "Swap usage over "
@@ -531,7 +533,7 @@ msgstr ""
 
 #: resources/ui/performance_page/memory_details.blp:88
 msgid "Available"
-msgstr ""
+msgstr "I yellan"
 
 #: resources/ui/performance_page/memory_details.blp:131
 msgid "Committed"
@@ -551,7 +553,7 @@ msgstr ""
 
 #: resources/ui/performance_page/memory_details.blp:253
 msgid "Speed:"
-msgstr ""
+msgstr "Arured:"
 
 #: resources/ui/performance_page/memory_details.blp:270
 msgid "Slots used:"
@@ -564,7 +566,7 @@ msgstr ""
 #: resources/ui/performance_page/memory_details.blp:304
 #: resources/ui/performance_page/disk_details.blp:301
 msgid "Type:"
-msgstr ""
+msgstr "Tawsit:"
 
 #: resources/ui/performance_page/network.blp:145
 msgid "Network Se_ttings"
@@ -596,7 +598,7 @@ msgstr ""
 
 #: resources/ui/performance_page/network_details.blp:226
 msgid "SSID:"
-msgstr ""
+msgstr "SSID:"
 
 #: resources/ui/performance_page/network_details.blp:245
 msgid "Signal strength:"
@@ -650,11 +652,11 @@ msgstr ""
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
 msgid "Value"
-msgstr ""
+msgstr "Azal"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
 msgid "Normalized"
@@ -801,7 +803,7 @@ msgstr ""
 
 #: resources/ui/performance_page/cpu_details.blp:69
 msgid "Speed"
-msgstr ""
+msgstr "Arured"
 
 #: resources/ui/performance_page/cpu_details.blp:120 src/apps_page/mod.rs:84
 msgid "Processes"
@@ -865,7 +867,7 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:6
 msgid "General"
-msgstr ""
+msgstr "Amatu"
 
 #: resources/ui/preferences/page.blp:9
 msgid "Update Interval"
@@ -1210,12 +1212,12 @@ msgstr ""
 #: resources/ui/about_system_dialog.blp:80
 #: resources/ui/about_system_dialog.blp:260 src/table_view/columns/mod.rs:208
 msgid "Name"
-msgstr ""
+msgstr "Isem"
 
 #: resources/ui/table_view/table_view.blp:47
 #: resources/ui/table_view/process_details_dialog.blp:76
 msgid "PID"
-msgstr ""
+msgstr "PID"
 
 #: resources/ui/table_view/table_view.blp:65
 msgid ""
@@ -1226,13 +1228,13 @@ msgstr ""
 #: resources/ui/table_view/table_view.blp:71 src/performance_page/mod.rs:1131
 #: src/table_view/mod.rs:685 src/table_view/mod.rs:693
 msgid "Drive"
-msgstr ""
+msgstr "Aḍebsi"
 
 #: resources/ui/table_view/table_view.blp:77
 #: resources/ui/table_view/process_details_dialog.blp:276
 #: src/table_view/mod.rs:699 src/table_view/mod.rs:708
 msgid "Network"
-msgstr ""
+msgstr "Aẓeṭṭa"
 
 #: resources/ui/table_view/table_view.blp:83
 #: resources/ui/table_view/process_details_dialog.blp:301
@@ -1240,7 +1242,7 @@ msgstr ""
 #: src/performance_page/mod.rs:2159 src/table_view/mod.rs:714
 #: src/table_view/mod.rs:731
 msgid "GPU"
-msgstr ""
+msgstr "GPU"
 
 #: resources/ui/table_view/table_view.blp:89
 #: resources/ui/table_view/process_details_dialog.blp:326
@@ -1253,7 +1255,7 @@ msgstr ""
 #: resources/ui/table_view/process_action_bar.blp:45
 #: resources/ui/table_view/service_action_bar.blp:65
 msgid "Stop"
-msgstr ""
+msgstr "Seḥbes"
 
 #: resources/ui/table_view/table_view.blp:108
 #: resources/ui/table_view/process_action_bar.blp:64
@@ -1301,17 +1303,17 @@ msgstr ""
 #: resources/ui/table_view/process_action_bar.blp:84
 #: resources/ui/table_view/service_action_bar.blp:104
 msgid "Details"
-msgstr ""
+msgstr "Talqayt"
 
 #: resources/ui/table_view/table_view.blp:168
 #: resources/ui/table_view/service_action_bar.blp:46
 msgid "Start"
-msgstr ""
+msgstr "Sekker"
 
 #: resources/ui/table_view/table_view.blp:178
 #: resources/ui/table_view/service_action_bar.blp:85
 msgid "Restart"
-msgstr ""
+msgstr "Ales asekker"
 
 #: resources/ui/table_view/process_action_bar.blp:33
 msgid "Stop the selected app"
