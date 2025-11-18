@@ -29,8 +29,8 @@ use std::time::Duration;
 
 use gtk::glib::{g_critical, g_debug, g_warning, idle_add_once};
 
-use crate::app;
 use crate::application::{BASE_INTERVAL, INTERVAL_STEP};
+use crate::{app, show_error_dialog_and_exit};
 
 pub use client::{
     App, Client, Connection, Cpu, Disk, DiskKind, ErrorEjectFailed, Fan, Gpu, Memory, MemoryDevice,
@@ -111,7 +111,7 @@ enum Response {
     AboutResult(About),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Readings {
     pub cpu: Cpu,
     pub mem_info: Memory,
@@ -715,25 +715,100 @@ impl MagpieClient {
             .network_connections
             .sort_unstable_by(|n1, n2| n1.id.cmp(&n2.id));
 
-        idle_add_once({
-            let initial_readings = Readings {
-                cpu: readings.cpu.clone(),
-                mem_info: readings.mem_info.clone(),
-                mem_devices: std::mem::take(&mut readings.mem_devices),
-                disks_info: std::mem::take(&mut readings.disks_info),
-                fans: std::mem::take(&mut readings.fans),
-                network_connections: std::mem::take(&mut readings.network_connections),
-                gpus: std::mem::take(&mut readings.gpus),
-                running_apps: std::mem::take(&mut readings.running_apps),
-                running_processes: std::mem::take(&mut readings.running_processes),
-                network_stats_error: std::mem::take(&mut readings.network_stats_error),
-                user_services: std::mem::take(&mut readings.user_services),
-                system_services: std::mem::take(&mut readings.system_services),
-            };
+        let initial_readings = Readings {
+            cpu: readings.cpu.clone(),
+            mem_info: readings.mem_info.clone(),
+            mem_devices: std::mem::take(&mut readings.mem_devices),
+            disks_info: std::mem::take(&mut readings.disks_info),
+            fans: std::mem::take(&mut readings.fans),
+            network_connections: std::mem::take(&mut readings.network_connections),
+            gpus: std::mem::take(&mut readings.gpus),
+            running_apps: std::mem::take(&mut readings.running_apps),
+            running_processes: std::mem::take(&mut readings.running_processes),
+            network_stats_error: std::mem::take(&mut readings.network_stats_error),
+            user_services: std::mem::take(&mut readings.user_services),
+            system_services: std::mem::take(&mut readings.system_services),
+        };
 
+        idle_add_once({
+            let readings = initial_readings.clone();
             move || {
-                app!().set_initial_readings(initial_readings);
-                app!().setup_animations();
+                let Some(window) = app!().window() else {
+                    g_critical!(
+                        "MissionCenter::SysInfo",
+                        "Unable to set initial Performance page readings, main window is not available",
+                    );
+                    show_error_dialog_and_exit("Unable to set initial Performance page readings, main window is not available");
+                };
+
+                let ok = window.performance_page().set_initial_readings(&readings);
+                if !ok {
+                    g_critical!(
+                        "MissionCenter",
+                        "Failed to set initial readings for Performance page"
+                    );
+                }
+            }
+        });
+
+        idle_add_once({
+            let mut readings = initial_readings.clone();
+            move || {
+                let Some(window) = app!().window() else {
+                    g_critical!(
+                        "MissionCenter::SysInfo",
+                        "Unable to set initial Apps page readings, main window is not available",
+                    );
+                    show_error_dialog_and_exit(
+                        "Unable to set initial Apps page readings, main window is not available",
+                    );
+                };
+
+                let ok = window.apps_page().set_initial_readings(&mut readings);
+                if !ok {
+                    g_critical!(
+                        "MissionCenter",
+                        "Failed to set initial readings for Apps page"
+                    );
+                }
+            }
+        });
+
+        idle_add_once({
+            let mut readings = initial_readings.clone();
+            move || {
+                let Some(window) = app!().window() else {
+                    g_critical!(
+                        "MissionCenter::SysInfo",
+                        "Unable to set initial Services page readings, main window is not available",
+                    );
+                    show_error_dialog_and_exit("Unable to set initial Services page readings, main window is not available");
+                };
+
+                let ok = window.services_page().set_initial_readings(&mut readings);
+                if !ok {
+                    g_critical!(
+                        "MissionCenter",
+                        "Failed to set initial readings for Services page"
+                    );
+                }
+            }
+        });
+
+        idle_add_once({
+            move || {
+                let Some(window) = app!().window() else {
+                    g_critical!(
+                        "MissionCenter::SysInfo",
+                        "Unable to show main content, main window is not available",
+                    );
+                    show_error_dialog_and_exit(
+                        "Unable to set initial main content, main window is not available",
+                    );
+                };
+
+                window.setup_animations();
+                window.show_main_content();
             }
         });
 
@@ -869,20 +944,31 @@ impl MagpieClient {
                 };
 
                 move || {
-                    let app = app!();
                     let now = std::time::Instant::now();
                     let timer = std::time::Instant::now();
-                    if !app.refresh_readings(&mut new_readings) {
+
+                    let Some(window) = app!().window() else {
+                        g_critical!(
+                            "MissionCenter::SysInfo",
+                            "Unable to refresh readings, main window is not available",
+                        );
+                        return;
+                    };
+
+                    if window.update_readings(&mut new_readings) {
                         g_critical!(
                             "MissionCenter::SysInfo",
                             "Readings were not completely refreshed, stale readings will be displayed"
                         );
+                        return;
                     }
+
                     g_debug!(
                         "MissionCenter::Perf",
                         "UI refresh took: {:?}",
                         timer.elapsed()
                     );
+
                     g_debug!(
                         "MissionCenter::SysInfo",
                         "Refreshed readings in {:?}",

@@ -24,8 +24,10 @@ use std::sync::OnceLock;
 use std::time::Duration;
 
 use adw::{prelude::*, subclass::prelude::*};
-use glib::{g_critical, idle_add_local_once, ParamSpec, Propagation, Properties, Value};
-use gtk::glib::ControlFlow;
+use glib::{
+    g_critical, idle_add_local_once, BindingFlags, ControlFlow, ParamSpec, Propagation, Properties,
+    Value,
+};
 use gtk::{gdk, gio, glib};
 
 use crate::widgets::ListCell;
@@ -740,11 +742,22 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
+            let this = self.obj();
+            this.add_css_class("mission-center-window");
+
+            self.performance_page
+                .add_css_class("mission-center-performance-page");
+
+            self.apps_page.add_css_class("mission-center-apps-page");
+
+            self.services_page
+                .add_css_class("mission-center-services-page");
+
             self.configure_actions();
             self.configure_theme_selection();
 
             idle_add_local_once({
-                let this = self.obj().downgrade();
+                let this = this.downgrade();
                 move || {
                     if let Some(this) = this.upgrade() {
                         let this = this.imp();
@@ -1049,47 +1062,19 @@ impl MissionCenterWindow {
         });
     }
 
-    pub fn set_initial_readings(&self, mut readings: Readings) {
-        use gtk::glib::*;
+    pub fn performance_page(&self) -> crate::performance_page::PerformancePage {
+        self.imp().performance_page.clone()
+    }
 
-        self.add_css_class("mission-center-window");
+    pub fn apps_page(&self) -> crate::apps_page::AppsPage {
+        self.imp().apps_page.clone()
+    }
 
-        let ok = self.imp().performance_page.set_initial_readings(&readings);
-        if !ok {
-            g_critical!(
-                "MissionCenter",
-                "Failed to set initial readings for performance page"
-            );
-        }
+    pub fn services_page(&self) -> crate::services_page::ServicesPage {
+        self.imp().services_page.clone()
+    }
 
-        self.imp()
-            .performance_page
-            .add_css_class("mission-center-performance-page");
-
-        let ok = self.imp().apps_page.set_initial_readings(&mut readings);
-        if !ok {
-            g_critical!(
-                "MissionCenter",
-                "Failed to set initial readings for apps page"
-            );
-        }
-
-        self.imp()
-            .apps_page
-            .add_css_class("mission-center-apps-page");
-
-        let ok = self.imp().services_page.set_initial_readings(&mut readings);
-        if !ok {
-            g_critical!(
-                "MissionCenter",
-                "Failed to set initial readings for services page"
-            );
-        }
-
-        self.imp()
-            .services_page
-            .add_css_class("mission-center-services-page");
-
+    pub fn show_main_content(&self) {
         self.imp().loading_box.set_visible(false);
         self.imp().header_bar.set_visible(true);
         self.imp().stack.set_visible(true);

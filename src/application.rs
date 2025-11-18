@@ -28,7 +28,8 @@ use gtk::{
 };
 
 use crate::about_system_dialog::AboutSystemDialog;
-use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
+use crate::setup_readable_settings_cache;
+use crate::{config::VERSION, i18n::i18n};
 
 pub const INTERVAL_STEP: f64 = 0.05;
 pub const BASE_INTERVAL: f64 = 1f64;
@@ -52,7 +53,6 @@ macro_rules! settings {
 
 mod imp {
     use super::*;
-    use crate::setup_readable_settings_cache;
 
     pub struct MissionCenterApplication {
         pub settings: Cell<Option<gio::Settings>>,
@@ -234,62 +234,6 @@ impl MissionCenterApplication {
         );
 
         this
-    }
-
-    pub fn set_initial_readings(&self, readings: Readings) {
-        use gtk::glib::*;
-
-        let Some(window) = self.window() else {
-            g_critical!(
-                "MissionCenter::Application",
-                "No active window, when trying to refresh data"
-            );
-            return;
-        };
-
-        window.set_initial_readings(readings)
-    }
-
-    pub fn setup_animations(&self) {
-        use gtk::glib::*;
-
-        let Some(window) = self.window() else {
-            g_critical!(
-                "MissionCenter::Application",
-                "No active window, when trying to refresh data"
-            );
-            return;
-        };
-
-        window.setup_animations()
-    }
-
-    pub fn refresh_readings(&self, readings: &mut Readings) -> bool {
-        use gtk::glib::*;
-
-        let Some(window) = self.window() else {
-            g_critical!(
-                "MissionCenter::Application",
-                "No active window, when trying to refresh data"
-            );
-            return false;
-        };
-
-        window.update_readings(readings)
-    }
-
-    pub fn refresh_animations(&self) -> bool {
-        use gtk::glib::*;
-
-        let Some(window) = self.window() else {
-            g_critical!(
-                "MissionCenter::Application",
-                "No active window, when trying to refresh data"
-            );
-            return false;
-        };
-
-        window.update_animations()
     }
 
     pub fn settings(&self) -> gio::Settings {
