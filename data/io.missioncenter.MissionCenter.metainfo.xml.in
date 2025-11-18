@@ -112,8 +112,11 @@
     <launchable type="desktop-id">io.missioncenter.MissionCenter.desktop</launchable>
 
     <releases>
+        <release version="1.1.1" date="2025-11-22">
+        </release>
+
         <release version="1.1.0" date="2025-11-11">
-            <description translate="no">
+1            <description translate="no">
                 <p>Noteworthy changes:</p>
                 <ul>
                     <li>Overhaul Services Page to include viewing child processes, user services, filtering on status, and a more efficient backend</li>
@@ -164,6 +167,7 @@
                 </ul>
             </description>
         </release>
+
         <release version="1.0.2" date="2025-05-25">
             <description translate="no">
                 <ul>
