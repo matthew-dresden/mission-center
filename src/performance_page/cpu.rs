@@ -60,6 +60,8 @@ mod imp {
 
         pub utilization: OnceCell<gtk::Label>,
         pub speed: OnceCell<gtk::Label>,
+        pub speed_label: OnceCell<gtk::Label>,
+        pub speed_indicator: OnceCell<gtk::Label>,
         pub power_draw: OnceCell<gtk::Label>,
         pub processes: OnceCell<gtk::Label>,
         pub threads: OnceCell<gtk::Label>,
@@ -98,6 +100,8 @@ mod imp {
 
                 utilization: Default::default(),
                 speed: Default::default(),
+                speed_label: Default::default(),
+                speed_indicator: Default::default(),
                 power_draw: Default::default(),
                 processes: Default::default(),
                 threads: Default::default(),
@@ -435,10 +439,51 @@ mod imp {
             }
 
             if let Some(speed) = this.speed.get() {
-                speed.set_text(&format!(
-                    "{:.2} GHz",
-                    dynamic_cpu_info.current_frequency_mhz as f32 / 1000.
-                ));
+                // Check if we're using BogoMIPS instead of real frequency
+                let is_bogomips = dynamic_cpu_info
+                    .frequency_driver
+                    .as_ref()
+                    .map(|d| d.as_str() == "bogomips")
+                    .unwrap_or(false);
+
+                let tooltip_text = i18n_f(
+                    "Real CPU frequency data is unavailable (common in VMs, containers, or cloud instances). Displaying BogoMIPS value as a fallback. BogoMIPS is a delay loop calibration metric, not a true frequency measurement.",
+                    &[]
+                );
+
+                if is_bogomips {
+                    // Display raw BogoMIPS value with tooltip explanation
+                    speed.set_text(&format!(
+                        "{:.2} BogoMIPS",
+                        dynamic_cpu_info.current_frequency_mhz as f32
+                    ));
+                    speed.set_tooltip_text(Some(&tooltip_text));
+
+                    // Show the "(?)" indicator and set tooltips on label and indicator
+                    if let Some(indicator) = this.speed_indicator.get() {
+                        indicator.set_visible(true);
+                        indicator.set_tooltip_text(Some(&tooltip_text));
+                    }
+                    if let Some(label) = this.speed_label.get() {
+                        label.set_tooltip_text(Some(&tooltip_text));
+                    }
+                } else {
+                    // Display frequency in GHz
+                    speed.set_text(&format!(
+                        "{:.2} GHz",
+                        dynamic_cpu_info.current_frequency_mhz as f32 / 1000.
+                    ));
+                    speed.set_tooltip_text(None);
+
+                    // Hide the "(?)" indicator and clear tooltips
+                    if let Some(indicator) = this.speed_indicator.get() {
+                        indicator.set_visible(false);
+                        indicator.set_tooltip_text(None);
+                    }
+                    if let Some(label) = this.speed_label.get() {
+                        label.set_tooltip_text(None);
+                    }
+                }
             }
 
             if let Some(power_draw) = this.power_draw.get() {
@@ -843,6 +888,16 @@ mod imp {
                 sidebar_content_builder
                     .object::<gtk::Label>("speed")
                     .expect("Could not find `speed` object in details pane"),
+            );
+            let _ = self.speed_label.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("speed_label")
+                    .expect("Could not find `speed_label` object in details pane"),
+            );
+            let _ = self.speed_indicator.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("speed_indicator")
+                    .expect("Could not find `speed_indicator` object in details pane"),
             );
             let _ = self.power_draw.set(
                 sidebar_content_builder
