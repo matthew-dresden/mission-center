@@ -22,37 +22,11 @@ use std::cell::{Cell, RefCell};
 use std::time::Duration;
 
 use gdk::pango::EllipsizeMode;
-use glib::{g_critical, g_debug, FileError};
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
+use crate::apply_icon_to_image;
 use crate::table_view::row_model::{ContentType, RowModel};
 use crate::widgets::ListCell;
-
-mod icon_cache {
-    use super::*;
-
-    use std::collections::HashMap;
-
-    use gdk::gdk_pixbuf::Pixbuf;
-
-    thread_local! {
-        static CACHE: RefCell<HashMap<String, Pixbuf>> = RefCell::new(HashMap::new());
-    }
-
-    pub fn get(name: &str) -> Option<Pixbuf> {
-        CACHE.with(|cache| {
-            let cache = cache.borrow();
-            cache.get(name).cloned()
-        })
-    }
-
-    pub fn set(name: glib::GString, pixbuf: Pixbuf) {
-        CACHE.with(|cache| {
-            let mut cache = cache.borrow_mut();
-            cache.insert(name.into(), pixbuf);
-        })
-    }
-}
 
 mod imp {
     use super::*;
@@ -108,18 +82,19 @@ mod imp {
             self.sig_id.set(Some(sig_id));
             list_cell.set_item_id(model.id());
 
-            let sig_icon = model.connect_icon_notify({
+            let sig_icon = model.connect_icon_changed_notify({
                 let this = this.clone();
                 move |model| {
                     let Some(this) = this.upgrade() else {
                         return;
                     };
                     let this = this.imp();
-                    this.set_icon(model.icon());
+                    apply_icon_to_image(&this.icon, model.imp().neo_icon(), 64);
                 }
             });
             self.sig_icon.set(Some(sig_icon));
-            self.set_icon(model.icon());
+
+            apply_icon_to_image(&self.icon, model.imp().neo_icon(), 64);
 
             let sig_name = model.connect_name_notify({
                 let this = this.clone();
@@ -184,43 +159,6 @@ mod imp {
 
             if let Some(sig_id) = self.sig_children_changed.take() {
                 model.children().disconnect(sig_id);
-            }
-        }
-
-        #[allow(deprecated)]
-        fn set_icon(&self, icon_name: glib::GString) {
-            if let Some(pixbuf) = icon_cache::get(icon_name.as_str()) {
-                self.icon.set_from_pixbuf(Some(&pixbuf));
-                return;
-            }
-
-            let icon_path = std::path::Path::new(icon_name.as_str());
-            match gdk::gdk_pixbuf::Pixbuf::from_file(&icon_path) {
-                Ok(pixbuf) => {
-                    self.icon.set_from_pixbuf(Some(&pixbuf));
-                    icon_cache::set(icon_name, pixbuf);
-                    return;
-                }
-                Err(e) => {
-                    if !e.matches(FileError::Noent) {
-                        if let Some(_) = std::env::var_os("SNAP_CONTEXT") {
-                            g_debug!("MissionCenter::ProcessTree", "Failed to load icon: {}. This is unfortunate but expected in a Snap context.", e);
-                        } else {
-                            g_critical!("MissionCenter::ProcessTree", "Failed to load icon: {}", e);
-                        }
-                        self.icon.set_icon_name(Some("application-x-executable"));
-                        return;
-                    }
-                }
-            }
-
-            let display = gdk::Display::default().unwrap();
-            let icon_theme = gtk::IconTheme::for_display(&display);
-
-            if icon_theme.has_icon(&icon_name) {
-                self.icon.set_icon_name(Some(&icon_name));
-            } else {
-                self.icon.set_icon_name(Some("application-x-executable"));
             }
         }
 

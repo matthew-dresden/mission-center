@@ -23,6 +23,7 @@ use std::collections::{HashMap, HashSet};
 use gtk::gio;
 use gtk::glib::g_critical;
 use gtk::prelude::*;
+use gtk::subclass::prelude::ObjectSubclassIsExt;
 
 use magpie_types::apps::icon::Icon;
 use magpie_types::apps::App;
@@ -35,7 +36,7 @@ pub fn update_apps(
     app_map: &HashMap<String, App>,
     process_map: &HashMap<u32, Process>,
     process_model_map: &HashMap<u32, RowModel>,
-    app_icons: &mut HashMap<u32, String>,
+    app_icons: &mut HashMap<u32, Icon>,
     list: &gio::ListStore,
 ) {
     app_icons.clear();
@@ -82,8 +83,8 @@ pub fn update_processes(
     process_map: &HashMap<u32, Process>,
     pids: HashSet<u32>,
     list: &gio::ListStore,
-    app_icons: &HashMap<u32, String>,
-    icon: &str,
+    app_icons: &HashMap<u32, Icon>,
+    icon: &Icon,
     use_merged_stats: bool,
     section_type: SectionType,
     parent_service: Option<&Service>,
@@ -193,8 +194,8 @@ pub fn update_services(
     process_map: &HashMap<u32, Process>,
     services: &HashMap<u64, Service>,
     list: &gio::ListStore,
-    app_icons: &HashMap<u32, String>,
-    icon: &str,
+    app_icons: &HashMap<u32, Icon>,
+    icon: &Icon,
     use_merged_stats: bool,
     section_type: SectionType,
 ) {
@@ -254,7 +255,7 @@ fn update_app(
     app: &App,
     process_map: &HashMap<u32, Process>,
     process_model_map: &HashMap<u32, RowModel>,
-    app_icons: &mut HashMap<u32, String>,
+    app_icons: &mut HashMap<u32, Icon>,
     row_model: RowModel,
 ) {
     let primary_processes = primary_processes(app, process_map);
@@ -276,14 +277,11 @@ fn update_app(
     let icon = app
         .icon
         .as_ref()
-        .map(|i| match &i.icon {
-            Some(Icon::Path(p)) => p,
-            Some(Icon::Id(i)) => i,
-            _ => "application-x-executable",
-        })
-        .unwrap_or("application-x-executable");
+        .map(|i| i.icon.clone())
+        .flatten()
+        .unwrap_or(Icon::default());
 
-    row_model.set_icon(icon);
+    row_model.imp().set_icon(icon.clone());
 
     let mut has_died = HashSet::new();
     let mut does_exist = HashSet::new();
@@ -310,7 +308,7 @@ fn update_app(
         .filter_map(|pid| process_map.get(pid))
     {
         usage_stats.merge(&process.merged_usage_stats(&process_map));
-        app_icons.insert(process.pid, icon.to_string());
+        app_icons.insert(process.pid, icon.clone());
 
         if !does_exist.contains(&process.pid) {
             if let Some(process_model) = process_model_map.get(&process.pid) {
@@ -326,8 +324,8 @@ fn update_process(
     process_map: &HashMap<u32, Process>,
     process: &Process,
     row_model: RowModel,
-    app_icons: &HashMap<u32, String>,
-    icon: &str,
+    app_icons: &HashMap<u32, Icon>,
+    icon: &Icon,
     use_merged_stats: bool,
     section_type: SectionType,
     parent_service: Option<&Service>,
@@ -340,12 +338,12 @@ fn update_process(
     };
 
     let icon = if let Some(icon) = app_icons.get(&process.pid) {
-        icon.as_str()
+        icon
     } else {
         icon
     };
 
-    row_model.set_icon(icon);
+    row_model.imp().set_icon(icon.clone());
 
     set_stats(&row_model, usage_stats);
     if let Some(parent_service) = parent_service {
@@ -371,12 +369,12 @@ fn update_service(
     process_map: &HashMap<u32, Process>,
     row_model: &RowModel,
     service: &Service,
-    app_icons: &HashMap<u32, String>,
-    icon: &str,
+    app_icons: &HashMap<u32, Icon>,
+    icon: &Icon,
     use_merged_stats: bool,
 ) {
     set_service(&row_model, service);
-    row_model.set_icon(service_icon(&service));
+    row_model.imp().set_icon(service_icon(&service));
 
     row_model.set_pid(service.pid.clone().unwrap_or_default());
     row_model.set_user(service.user.clone().unwrap_or_default());
@@ -424,8 +422,8 @@ fn set_stats(row_model: &RowModel, usage_stats: &ProcessUsageStats) {
     row_model.set_gpu_memory_usage(usage_stats.gpu_memory_usage);
 }
 
-fn service_icon(service: &Service) -> String {
-    if service.running {
+fn service_icon(service: &Service) -> Icon {
+    Icon::Id(if service.running {
         "service-running".into()
     } else {
         if service.failed {
@@ -435,7 +433,7 @@ fn service_icon(service: &Service) -> String {
         } else {
             "service-disabled".into()
         }
-    }
+    })
 }
 
 fn set_service(row_model: &RowModel, service: &Service) {

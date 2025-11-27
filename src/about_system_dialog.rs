@@ -19,14 +19,14 @@
  */
 
 use adw::subclass::prelude::*;
-use gtk::gdk;
-use gtk::gio;
-use gtk::glib::Bytes;
 use gtk::glib::{self};
 use gtk::prelude::WidgetExt;
 
 use magpie_types::about::about::OsInfo;
 use magpie_types::about::About;
+use magpie_types::apps::icon::Icon;
+
+use crate::apply_icon_to_image;
 
 mod imp {
     use super::*;
@@ -93,30 +93,6 @@ mod imp {
             }
         }
 
-        fn bind_logo(&self, img: &Option<Vec<u8>>) -> bool {
-            let Some(img) = img else {
-                self.logo.set_visible(false);
-                return false;
-            };
-
-            let input_stream = gio::MemoryInputStream::from_bytes(&Bytes::from(img));
-            let Ok(pixbuf) = gdk::gdk_pixbuf::Pixbuf::from_stream_at_scale(
-                &input_stream,
-                128,
-                -1,
-                true,
-                None::<&gio::Cancellable>,
-            ) else {
-                self.logo.set_visible(false);
-                return false;
-            };
-
-            #[allow(deprecated)]
-            self.logo.set_from_pixbuf(Some(&pixbuf));
-
-            true
-        }
-
         fn format_kernel_release_string(os_info: &OsInfo) -> Option<String> {
             match (os_info.os_type.clone(), os_info.kernel_release.clone()) {
                 (Some(kernel), Some(release)) => Some(format!("{kernel} {release}")),
@@ -152,7 +128,16 @@ mod imp {
             let _ = Self::bind_text(&self.desktop_environment_version, &de_info.version);
             let _ = Self::bind_text(&self.windowing_system, &de_info.windowing_system);
             let _ = Self::bind_text(&self.virtual_terminal, &de_info.virtual_terminal);
-            let _ = self.bind_logo(&os_info.logo);
+
+            if os_info
+                .logo
+                .map(|img| apply_icon_to_image(&self.logo, Icon::Data(img), 128))
+                .unwrap_or(false)
+            {
+                self.logo.set_visible(true);
+            } else {
+                self.logo.set_visible(false);
+            }
         }
     }
 
