@@ -277,7 +277,6 @@ fn update_app(
         .icon
         .as_ref()
         .map(|i| match &i.icon {
-            Some(Icon::Path(p)) => p,
             Some(Icon::Id(i)) => i,
             _ => "application-x-executable",
         })

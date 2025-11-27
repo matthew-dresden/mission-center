@@ -59,7 +59,6 @@ mod imp {
             for (appname, (app_obj, blockers)) in parsed_results {
                 let icon = match app_obj.icon.as_ref().and_then(|i| i.icon.as_ref()) {
                     Some(Icon::Id(id)) => id,
-                    Some(Icon::Path(path)) => path,
                     None | Some(Icon::Empty(..)) | Some(Icon::Data(..)) => "",
                 };
 
