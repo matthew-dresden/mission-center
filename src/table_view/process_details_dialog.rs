@@ -115,7 +115,7 @@ mod imp {
                 _ => {} // should never happen
             }
 
-            apply_icon_to_image(&self.icon, model.imp().neo_icon(), 64);
+            apply_icon_to_image(&self.icon, model.imp().neo_icon(), 48);
 
             self.title.set_label(&model.name());
 

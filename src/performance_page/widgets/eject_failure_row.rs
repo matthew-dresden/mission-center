@@ -55,7 +55,7 @@ mod imp {
 
     impl EjectFailureRow {
         pub fn set_icon(&self, icon: Icon) {
-            apply_icon_to_image(&self.icon.get(), icon, 64);
+            apply_icon_to_image(&self.icon.get(), icon, 48);
         }
     }
 

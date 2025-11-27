@@ -20,12 +20,14 @@
 
 use std::cell::{Cell, RefCell};
 
-use crate::i18n::i18n;
 use gtk::{
     gio, glib,
     glib::{prelude::*, subclass::prelude::*, ParamSpec, Properties, Value},
 };
+
 use magpie_types::apps::icon::Icon;
+
+use crate::i18n::i18n;
 
 mod imp {
     use super::*;

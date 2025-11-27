@@ -81,8 +81,6 @@ pub fn apply_icon_to_image(image: &gtk::Image, icon: Icon, width: i32) -> bool {
 
             true
         } else {
-            println!("Theme missing {}", icon_name);
-
             apply_blank(image);
 
             false
