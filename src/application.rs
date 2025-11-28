@@ -462,6 +462,8 @@ impl MissionCenterApplication {
 </ul>"#)
             .build();
 
+        about.add_link("Wiki", "https://gitlab.com/mission-center-devs/mission-center/-/wikis/Home");
+
         about.add_credit_section(
             Some("Standing on the shoulders of giants"),
             &[
