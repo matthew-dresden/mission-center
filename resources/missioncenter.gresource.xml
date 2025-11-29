@@ -39,6 +39,8 @@
 
         <file preprocess="xml-stripblanks">ui/apps_page/page.ui</file>
 
+        <file preprocess="xml-stripblanks">ui/performance_page/battery.ui</file>
+        <file preprocess="xml-stripblanks">ui/performance_page/battery_details.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/cpu.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/cpu_details.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/disk.ui</file>

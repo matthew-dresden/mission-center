@@ -32,6 +32,7 @@ use gtk::{
     glib::{self, g_critical, g_warning},
 };
 
+use magpie_types::battery::Battery;
 use magpie_types::fan::Fan;
 use magpie_types::gpus::Gpu;
 use magpie_types::network::{Connection, ConnectionKind};
@@ -40,6 +41,7 @@ use crate::{i18n::*, magpie_client::DiskKind, settings};
 
 use widgets::{GraphWidget, SidebarDropHint};
 
+mod battery;
 mod cpu;
 mod disk;
 mod disk_details;
@@ -52,6 +54,7 @@ mod summary_graph;
 mod widgets;
 
 type SummaryGraph = summary_graph::SummaryGraph;
+type BatteryPage = battery::PerformancePageBattery;
 type CpuPage = cpu::PerformancePageCpu;
 type DiskPage = disk::PerformancePageDisk;
 type MemoryPage = memory::PerformancePageMemory;
@@ -84,6 +87,8 @@ mod imp {
     const FAN_BASE_COLOR: [u8; 3] = [0x81, 0x3d, 0x9c];
     // GNOME color palette: Red 1
     const GPU_BASE_COLOR: [u8; 3] = [0xf6, 0x61, 0x51];
+    // REEEEEEEED
+    const BATTERY_BASE_COLOR: [u8; 3] = [0xff, 0x00, 0x00];
 
     enum Pages {
         Cpu((SummaryGraph, CpuPage)),
@@ -92,6 +97,7 @@ mod imp {
         Network(HashMap<String, (SummaryGraph, NetworkPage)>),
         Gpu(HashMap<String, (SummaryGraph, GpuPage)>),
         Fan(HashMap<String, (SummaryGraph, FanPage)>),
+        Battery(HashMap<String, (SummaryGraph, BatteryPage)>),
     }
 
     #[derive(Properties)]
@@ -738,6 +744,49 @@ mod imp {
             });
             actions.add_action(&action);
             view_actions.insert("gpu".to_string(), action);
+            let action = gio::SimpleAction::new_stateful("battery", None, &glib::Variant::from(false));
+            action.connect_activate({
+                let this = this.downgrade();
+                move |action, _| {
+                    let this = match this.upgrade() {
+                        Some(this) => this,
+                        None => return,
+                    };
+                    let this = this.imp();
+
+                    let pages = this.pages.take();
+                    for page in &pages {
+                        let battery_pages = match page {
+                            Pages::Battery(battery_pages) => battery_pages,
+                            _ => continue,
+                        };
+
+                        let battery_page = battery_pages.values().next();
+                        if battery_page.is_none() {
+                            continue;
+                        }
+                        let battery_page = battery_page.unwrap();
+
+                        let row = battery_page.0.parent();
+                        if row.is_none() {
+                            continue;
+                        }
+                        let row = row.unwrap();
+
+                        this.sidebar()
+                            .select_row(row.downcast_ref::<gtk::ListBoxRow>());
+
+                        let prev_action = this.current_view_action.replace(action.clone());
+                        prev_action.set_state(&glib::Variant::from(false));
+                        action.set_state(&glib::Variant::from(true));
+
+                        break;
+                    }
+                    this.pages.set(pages);
+                }
+            });
+            actions.add_action(&action);
+            view_actions.insert("fan".to_string(), action);
             let action = gio::SimpleAction::new_stateful("fan", None, &glib::Variant::from(false));
             action.connect_activate({
                 let this = this.downgrade();
@@ -781,6 +830,49 @@ mod imp {
             });
             actions.add_action(&action);
             view_actions.insert("fan".to_string(), action);
+            let action = gio::SimpleAction::new_stateful("battery", None, &glib::Variant::from(false));
+            action.connect_activate({
+                let this = this.downgrade();
+                move |action, _| {
+                    let this = match this.upgrade() {
+                        Some(this) => this,
+                        None => return,
+                    };
+                    let this = this.imp();
+
+                    let pages = this.pages.take();
+                    for page in &pages {
+                        let battery_pages = match page {
+                            Pages::Battery(battery_pages) => battery_pages,
+                            _ => continue,
+                        };
+
+                        let battery_page = battery_pages.values().next();
+                        if battery_page.is_none() {
+                            continue;
+                        }
+                        let battery_page = battery_page.unwrap();
+
+                        let row = battery_page.0.parent();
+                        if row.is_none() {
+                            continue;
+                        }
+                        let row = row.unwrap();
+
+                        this.sidebar()
+                            .select_row(row.downcast_ref::<gtk::ListBoxRow>());
+
+                        let prev_action = this.current_view_action.replace(action.clone());
+                        prev_action.set_state(&glib::Variant::from(false));
+                        action.set_state(&glib::Variant::from(true));
+
+                        break;
+                    }
+                    this.pages.set(pages);
+                }
+            });
+            actions.add_action(&action);
+            view_actions.insert("battery".to_string(), action);
 
             self.context_menu_view_actions.set(view_actions);
 
@@ -1484,6 +1576,7 @@ mod imp {
             pages.push(Pages::Fan(fans));
         }
 
+
         fn fan_page_name(fan_info: &Fan) -> String {
             format!("fan-{}-{}", fan_info.hwmon_index, fan_info.fan_index)
         }
@@ -1568,6 +1661,107 @@ mod imp {
             (page_name, (summary, page))
         }
 
+        fn set_up_battery_pages(
+            &self,
+            pages: &mut Vec<Pages>,
+            readings: &crate::magpie_client::Readings,
+        ) {
+            let mut batteries = HashMap::new();
+            let len = readings.batteries.len();
+            let hide_index = len == 1;
+            for i in 0..len {
+                let mut ret =
+                    self.create_battery_page(readings, if hide_index { None } else { Some(i) }, None);
+                batteries.insert(std::mem::take(&mut ret.0), ret.1);
+            }
+
+            pages.push(Pages::Battery(batteries));
+        }
+
+        fn battery_page_name(battery_info: &Battery) -> String {
+            format!("battery-{}", battery_info.id)
+        }
+
+        pub fn create_battery_page(
+            &self,
+            readings: &crate::magpie_client::Readings,
+            index: Option<usize>,
+            pos_hint: Option<i32>,
+        ) -> (String, (SummaryGraph, BatteryPage)) {
+            let battery_static_info = &readings.batteries[index.unwrap_or(0)];
+
+            let page_name = Self::battery_page_name(battery_static_info);
+
+            let summary = SummaryGraph::new();
+            summary.set_widget_name(&page_name);
+
+            if let Some(index) = index {
+                summary.set_heading(i18n_f("Battery {}", &[&format!("{}", index)]));
+            } else {
+                summary.set_heading(i18n("Battery"));
+            }
+            summary.set_base_color(gdk::RGBA::new(
+                BATTERY_BASE_COLOR[0] as f32 / 255.,
+                BATTERY_BASE_COLOR[1] as f32 / 255.,
+                BATTERY_BASE_COLOR[2] as f32 / 255.,
+                1.,
+            ));
+
+            let settings = settings!();
+
+            summary
+                .graph_widget()
+                .set_scaling(GraphWidget::normalized_scaling());
+            summary.graph_widget().set_only_scale_up(true);
+            summary
+                .graph_widget()
+                .set_data_points(settings.int("performance-page-data-points") as u32);
+            summary
+                .graph_widget()
+                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
+            summary
+                .graph_widget()
+                .set_do_animation(settings.boolean("performance-sliding-graphs"));
+            summary
+                .graph_widget()
+                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
+
+            let page = BatteryPage::new(&page_name, &settings);
+            page.set_base_color(gdk::RGBA::new(
+                BATTERY_BASE_COLOR[0] as f32 / 255.,
+                BATTERY_BASE_COLOR[1] as f32 / 255.,
+                BATTERY_BASE_COLOR[2] as f32 / 255.,
+                1.,
+            ));
+            page.set_static_information(battery_static_info);
+
+            self.configure_page(&page);
+
+            self.page_stack.add_named(&page, Some(&page_name));
+            self.add_to_sidebar(&summary, pos_hint);
+
+            let mut actions = self.context_menu_view_actions.take();
+            match actions.get("battery") {
+                None => {
+                    g_critical!(
+                        "MissionCenter::PerformancePage",
+                        "Failed to wire up battery action for {}, logic bug?",
+                        battery_static_info
+                            .model
+                            .as_ref()
+                            .map(|s| s.as_str())
+                            .unwrap_or("Unknown")
+                    );
+                }
+                Some(action) => {
+                    actions.insert(page_name.clone(), action.clone());
+                }
+            }
+            self.context_menu_view_actions.set(actions);
+
+            (page_name, (summary, page))
+        }
+
         pub fn default_sort_sidebar_entries(&self) {
             fn add_graph_to_sidebar(
                 graph: Option<(SummaryGraph, gtk::DragSource)>,
@@ -1605,6 +1799,7 @@ mod imp {
             let mut net_graphs = Vec::with_capacity(summary_graphs.len());
             let mut gpu_graphs = Vec::with_capacity(summary_graphs.len());
             let mut fan_graphs = Vec::with_capacity(summary_graphs.len());
+            let mut battery_graphs = Vec::with_capacity(summary_graphs.len());
 
             for (graph, drag_source) in &summary_graphs {
                 graph.set_is_enabled(true);
@@ -1621,6 +1816,8 @@ mod imp {
                     gpu_graphs.push((graph.clone(), drag_source.clone()));
                 } else if graph.widget_name().starts_with("fan") {
                     fan_graphs.push((graph.clone(), drag_source.clone()));
+                } else if graph.widget_name().starts_with("battery") {
+                    battery_graphs.push((graph.clone(), drag_source.clone()));
                 }
             }
 
@@ -1631,6 +1828,7 @@ mod imp {
             net_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
             gpu_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
             fan_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
+            battery_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
 
             let sidebar = self.sidebar();
             sidebar.remove_all();
@@ -1642,6 +1840,7 @@ mod imp {
             add_graphs_to_sidebar(net_graphs, &sidebar, &mut index);
             add_graphs_to_sidebar(gpu_graphs, &sidebar, &mut index);
             add_graphs_to_sidebar(fan_graphs, &sidebar, &mut index);
+            add_graphs_to_sidebar(battery_graphs, &sidebar, &mut index);
         }
     }
 
@@ -1659,6 +1858,7 @@ mod imp {
             this.set_up_network_pages(&mut pages, &readings);
             this.set_up_gpu_pages(&mut pages, &readings);
             this.set_up_fan_pages(&mut pages, &readings);
+            this.set_up_battery_pages(&mut pages, &readings);
             this.pages.set(pages);
 
             this.default_sort_sidebar_entries();
@@ -1890,6 +2090,30 @@ mod imp {
                         remove_pages(
                             &pages_to_destroy,
                             fan_pages,
+                            &mut summary_graphs,
+                            &this.sidebar(),
+                            &this.imp().page_stack,
+                        );
+                        pages_to_destroy.clear();
+
+                        this.imp().summary_graphs.set(summary_graphs);
+                    }
+                    Pages::Battery(battery_pages) => {
+                        for battery_page_name in battery_pages.keys() {
+                            if !readings
+                                .batteries
+                                .iter()
+                                .any(|battery| &Self::battery_page_name(&battery) == battery_page_name)
+                            {
+                                pages_to_destroy.push(battery_page_name.clone());
+                            }
+                        }
+
+                        let mut summary_graphs = this.imp().summary_graphs.take();
+
+                        remove_pages(
+                            &pages_to_destroy,
+                            battery_pages,
                             &mut summary_graphs,
                             &this.sidebar(),
                             &this.imp().page_stack,
@@ -2272,6 +2496,69 @@ mod imp {
                             pages.insert(page_name, page);
                         }
                     }
+                    Pages::Battery(pages) => {
+                        let mut last_sidebar_pos = -1;
+                        let mut consecutive_dev_count = 0;
+
+                        let hide_index = readings.batteries.len() == 1;
+
+                        let mut new_devices = Vec::new();
+                        for (index, battery) in readings.batteries.iter().enumerate() {
+                            let index = if hide_index { None } else { Some(index) };
+
+                            if let Some((summary, page)) = pages.get(&Self::battery_page_name(&battery)) {
+                                // Search for a group of existing batteries and try to add new entries at that position
+                                summary
+                                    .parent()
+                                    .and_then(|p| p.downcast_ref::<gtk::ListBoxRow>().cloned())
+                                    .and_then(|row| {
+                                        let sidebar_pos = row.index();
+                                        if sidebar_pos == last_sidebar_pos + 1 {
+                                            consecutive_dev_count += 1;
+                                        } else {
+                                            consecutive_dev_count = 1;
+                                        };
+                                        last_sidebar_pos = sidebar_pos;
+
+                                        Some(())
+                                    });
+
+                                let graph_widget = summary.graph_widget();
+                                graph_widget.set_data_points(data_points);
+                                graph_widget.set_smooth_graphs(smooth);
+                                graph_widget.set_do_animation(sliding);
+                                graph_widget.set_expected_animation_ticks(delay);
+                                graph_widget.add_data_point(0, battery.percentage.unwrap());
+                                if let Some(battery_name) = &battery.model {
+                                    summary.set_info1(battery_name.as_str());
+                                }
+
+                                if let Some(index) = index {
+                                    summary.set_heading(i18n_f("Battery {}", &[&index.to_string()]));
+                                } else {
+                                    summary.set_heading(i18n("Battery"));
+                                }
+
+                                result &= page.update_readings(&battery, index);
+                            } else {
+                                new_devices.push(index);
+                            }
+                        }
+
+                        for index in new_devices {
+                            let (page_name, page) = this.imp().create_battery_page(
+                                readings,
+                                index,
+                                if last_sidebar_pos > -1 && consecutive_dev_count > 1 {
+                                    last_sidebar_pos += 1;
+                                    Some(last_sidebar_pos)
+                                } else {
+                                    None
+                                },
+                            );
+                            pages.insert(page_name, page);
+                        }
+                    }
                 }
             }
 
@@ -2324,6 +2611,14 @@ mod imp {
                         }
                     }
                     Pages::Fan(pages) => {
+                        for (summary, page) in pages.values() {
+                            let graph_widget = summary.graph_widget();
+
+                            result &= graph_widget.update_animation();
+                            result &= page.update_animations();
+                        }
+                    }
+                    Pages::Battery(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 

@@ -33,7 +33,7 @@ use crate::app;
 use crate::application::{BASE_INTERVAL, INTERVAL_STEP};
 
 pub use client::{
-    App, Client, Connection, Cpu, Disk, DiskKind, ErrorEjectFailed, Fan, Gpu, Memory, MemoryDevice,
+    App, Battery, Client, Connection, Cpu, Disk, DiskKind, ErrorEjectFailed, Fan, Gpu, Memory, MemoryDevice,
     Process, Service, SmartData,
 };
 use magpie_types::about::About;
@@ -120,6 +120,7 @@ pub struct Readings {
     pub network_connections: Vec<Connection>,
     pub gpus: HashMap<String, Gpu>,
     pub fans: Vec<Fan>,
+    pub batteries: Vec<Battery>,
 
     pub running_apps: HashMap<String, App>,
     pub running_processes: HashMap<u32, Process>,
@@ -140,6 +141,7 @@ impl Readings {
             network_connections: vec![],
             gpus: HashMap::new(),
             fans: vec![],
+            batteries: vec![],
 
             running_apps: HashMap::new(),
             running_processes: HashMap::new(),
@@ -703,6 +705,7 @@ impl MagpieClient {
             mem_info: magpie.memory(),
             mem_devices: magpie.memory_devices(),
             fans: magpie.fans_info(),
+            batteries: magpie.batteries_info(),
             network_connections: magpie.network_connections(),
             user_services: magpie.user_services(),
             system_services: magpie.system_services(),
@@ -722,6 +725,7 @@ impl MagpieClient {
                 mem_devices: std::mem::take(&mut readings.mem_devices),
                 disks_info: std::mem::take(&mut readings.disks_info),
                 fans: std::mem::take(&mut readings.fans),
+                batteries: std::mem::take(&mut readings.batteries),
                 network_connections: std::mem::take(&mut readings.network_connections),
                 gpus: std::mem::take(&mut readings.gpus),
                 running_apps: std::mem::take(&mut readings.running_apps),
@@ -826,6 +830,14 @@ impl MagpieClient {
             );
 
             let timer = std::time::Instant::now();
+            readings.batteries = magpie.batteries_info();
+            g_debug!(
+                "MissionCenter::Perf",
+                "Fans info load took: {:?}",
+                timer.elapsed()
+            );
+
+            let timer = std::time::Instant::now();
             readings.user_services = magpie.user_services();
             g_debug!(
                 "MissionCenter::Perf",
@@ -859,6 +871,7 @@ impl MagpieClient {
                     mem_devices: readings.mem_devices.clone(),
                     disks_info: std::mem::take(&mut readings.disks_info),
                     fans: std::mem::take(&mut readings.fans),
+                    batteries: std::mem::take(&mut readings.batteries),
                     network_connections: std::mem::take(&mut readings.network_connections),
                     gpus: std::mem::take(&mut readings.gpus),
                     running_apps: std::mem::take(&mut readings.running_apps),
