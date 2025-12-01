@@ -179,9 +179,7 @@ mod imp {
                 None
             });
 
-            if let Some(model) = &battery.model {
-                this.title_battery_name.set_text(&model);
-            }
+            this.title_battery_name.set_text(&battery.model);
 
             true
         }

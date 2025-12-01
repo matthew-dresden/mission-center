@@ -1748,9 +1748,7 @@ mod imp {
                         "Failed to wire up battery action for {}, logic bug?",
                         battery_static_info
                             .model
-                            .as_ref()
-                            .map(|s| s.as_str())
-                            .unwrap_or("Unknown")
+                            .as_str()
                     );
                 }
                 Some(action) => {
@@ -2529,9 +2527,7 @@ mod imp {
                                 graph_widget.set_do_animation(sliding);
                                 graph_widget.set_expected_animation_ticks(delay);
                                 graph_widget.add_data_point(0, battery.percentage.unwrap());
-                                if let Some(battery_name) = &battery.model {
-                                    summary.set_info1(battery_name.as_str());
-                                }
+                                summary.set_info1(battery.model.as_str());
 
                                 if let Some(index) = index {
                                     summary.set_heading(i18n_f("Battery {}", &[&index.to_string()]));
