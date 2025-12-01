@@ -192,7 +192,7 @@ mod imp {
             let this = this.imp();
 
             if let Some(percentage) = this.percentage.get() {
-                percentage.set_text(&i18n_f("{}%", &[&format!("{:.0}", battery.percentage.unwrap() * 100.)]));
+                percentage.set_text(&i18n_f("{}%", &[&format!("{:.0}", battery.percentage * 100.)]));
             }
 
             true

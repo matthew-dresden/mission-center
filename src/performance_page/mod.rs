@@ -2526,7 +2526,7 @@ mod imp {
                                 graph_widget.set_smooth_graphs(smooth);
                                 graph_widget.set_do_animation(sliding);
                                 graph_widget.set_expected_animation_ticks(delay);
-                                graph_widget.add_data_point(0, battery.percentage.unwrap());
+                                graph_widget.add_data_point(0, battery.percentage);
                                 summary.set_info1(battery.model.as_str());
 
                                 if let Some(index) = index {
