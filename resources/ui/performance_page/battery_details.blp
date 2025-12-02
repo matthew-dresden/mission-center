@@ -59,6 +59,7 @@ Grid root {
     }
   }
   Box {
+    visible: bind energy.visible;
     layout {
       column: '1';
       row: '0';
@@ -86,6 +87,7 @@ Grid root {
     }
   }
   Box {
+    visible: bind power.visible;
     layout {
       column: '0';
       row: '1';
@@ -113,6 +115,7 @@ Grid root {
     }
   }
   Box {
+    visible: bind voltage.visible;
     layout {
       column: '1';
       row: '1';
@@ -140,6 +143,7 @@ Grid root {
     }
   }
   Box {
+    visible: bind time_to.visible;
     layout {
       column: '0';
       row: '3';
@@ -175,6 +179,7 @@ Grid root {
     }
   }
   Box {
+    visible: bind state.visible;
     layout {
       column: '1';
       row: '3';
@@ -201,7 +206,9 @@ Grid root {
       selectable: true;
     }
   }
+
   Box {
+    visible: bind charge_cycles.visible;
     layout {
       column: '0';
       row: '4';
