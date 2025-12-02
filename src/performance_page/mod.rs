@@ -1679,7 +1679,7 @@ mod imp {
         }
 
         fn battery_page_name(battery_info: &Battery) -> String {
-            format!("battery-{}", battery_info.id)
+            format!("battery-{}", battery_info.name)
         }
 
         pub fn create_battery_page(

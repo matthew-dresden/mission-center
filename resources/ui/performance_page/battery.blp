@@ -23,7 +23,6 @@ using Gtk 4.0;
 template $PerformancePageBattery: Box {
   orientation: vertical;
   margin-bottom: 10;
-
   WindowHandle {
     child: Box description {
       orientation: vertical;
@@ -41,6 +40,7 @@ template $PerformancePageBattery: Box {
 
           hexpand: true;
           halign: start;
+          label: _("Battery");
         }
 
         Label title_battery_model {
@@ -53,21 +53,14 @@ template $PerformancePageBattery: Box {
           selectable: true;
         }
       }
-    };
-}
-
-      Box energy_rate_box {
-        orientation: vertical;
-        vexpand: true;
-        Box {
-            orientation: horizontal;
+      Box {
         Label {
           styles [
             "caption",
           ]
-          label: _("Energy Rate over ");
-        }
 
+          label: _("Power over ");
+        }
         Label energy_rate_max_duration {
           styles [
             "caption",
@@ -75,16 +68,24 @@ template $PerformancePageBattery: Box {
 
           hexpand: true;
           halign: start;
-          valign: start;
         }
-
         Label energy_rate_max_y {
           styles [
             "caption",
           ]
+
+          label: _("100%");
         }
-        }
-        $GraphWidget energy_rate_graph {
+      }
+    };
+  }
+  Box energy_rate_box {
+    orientation: vertical;
+    spacing: 10;
+    Box speed_box {
+      orientation: vertical;
+
+      $GraphWidget energy_rate_graph {
         vexpand: true;
         hexpand: true;
 
@@ -92,13 +93,14 @@ template $PerformancePageBattery: Box {
         height-request: 50;
 
         base-color: bind template.base-color;
-        data-set-count: 1;
+        data-set-count: 2;
         scroll: true;
 
         scaling: 3;
         only-scale-up: true;
-        }
       }
+    }
+}
 
   PopoverMenu context_menu {
     has-arrow: false;

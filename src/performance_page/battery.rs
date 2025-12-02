@@ -179,7 +179,7 @@ mod imp {
                 None
             });
 
-            this.title_battery_name.set_text(&battery.model);
+            this.title_battery_model.set_text(&battery.model);
 
             true
         }
