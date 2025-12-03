@@ -587,6 +587,8 @@ impl PerformancePageBattery {
 
         this.imp().energy_rate_graph.add_dataset(energy_rate_graph);
 
+        this.imp().energy_rate_graph.fill_dataset(0, 0.);
+
         this.imp().energy_rate_graph.connect_to_settings(settings);
 
         this

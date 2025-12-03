@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use adw::ffi::adw_carousel_indicator_dots_get_carousel;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{
     gdk,
@@ -34,7 +35,6 @@ use gtk::{
     Snapshot,
 };
 use std::cell::Cell;
-
 // pub use imp::DataSetDescriptor;
 
 use super::{DatasetGroup, FillingSettings, ScalingSettings, GRAPH_RADIUS};
@@ -479,6 +479,12 @@ impl GraphWidget {
         Self::apply_followings(&mut data);
 
         this.data_sets.set(data);
+    }
+
+    pub fn fill_dataset(&self, index: usize, fill: f32) {
+        let mut data = self.imp().data_sets.take();
+        data[index].datas[index].fill_data_points(fill);
+        self.imp().data_sets.set(data);
     }
 
     pub fn add_single_data_point(&self, idx: usize, datas: Vec<f32>) {

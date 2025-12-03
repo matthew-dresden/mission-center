@@ -394,6 +394,11 @@ impl Dataset {
         self.used_data = new_points;
     }
 
+    pub fn fill_data_points(&mut self, fill: f32) {
+        self.data.fill(fill);
+        self.data.resize(MAX_POINTS as usize, fill);
+    }
+
     pub fn get_data(&self) -> Vec<f32> {
         self.data
             .iter()
