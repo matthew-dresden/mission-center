@@ -31,6 +31,17 @@ Grid root {
     "layout-grid"
   ]
 
+    Grid {
+      layout {
+        column: '0';
+        row: '0';
+      }
+
+      margin-top: 10;
+
+      row-spacing: 5;
+      column-spacing: 10;
+
   Box {
     layout {
       column: '0';
@@ -145,13 +156,15 @@ Grid root {
   Box {
     visible: bind time_to.visible;
     layout {
-      column: '0';
+      column: '1';
       row: '3';
     }
 
     orientation: vertical;
     spacing: 3;
 
+    Box {
+    orientation: horizontal;
     Label {
       styles [
         "caption",
@@ -168,6 +181,7 @@ Grid root {
 
       halign: start;
     }
+    }
 
     Label time_to {
       styles [
@@ -181,7 +195,7 @@ Grid root {
   Box {
     visible: bind state.visible;
     layout {
-      column: '1';
+      column: '0';
       row: '3';
     }
 
@@ -235,11 +249,11 @@ Grid root {
       selectable: true;
     }
   }
-
+}
     Grid system_info {
       layout {
         column: '0';
-        row: '10';
+        row: '1';
       }
 
       margin-top: 10;
@@ -267,6 +281,7 @@ Grid root {
       }
 
       Label {
+          visible: bind capacity.visible;
         styles [
           "caption",
         ]
@@ -284,6 +299,7 @@ Grid root {
       }
 
       Label {
+          visible: bind energy_empty.visible;
         styles [
           "caption",
         ]
@@ -301,6 +317,7 @@ Grid root {
       }
 
       Label {
+          visible: bind energy_full.visible;
         styles [
           "caption",
         ]
@@ -318,6 +335,7 @@ Grid root {
       }
 
       Label {
+          visible: bind energy_full_design.visible;
         styles [
           "caption",
         ]
@@ -335,6 +353,7 @@ Grid root {
       }
 
       Label {
+          visible: bind voltage_min_design.visible;
         styles [
           "caption",
         ]
@@ -428,7 +447,7 @@ Grid root {
 
         layout {
           column: '1';
-          row: '4';
+          row: '5';
         }
 
         halign: start;

@@ -69,6 +69,20 @@ mod imp {
         pub infobar_content: OnceCell<gtk::Grid>,
 
         pub percentage: OnceCell<gtk::Label>,
+        pub energy: OnceCell<gtk::Label>,
+        pub power: OnceCell<gtk::Label>,
+        pub voltage: OnceCell<gtk::Label>,
+        pub time_to: OnceCell<gtk::Label>,
+        pub time_to_direction: OnceCell<gtk::Label>,
+        pub state: OnceCell<gtk::Label>,
+        pub charge_cycles: OnceCell<gtk::Label>,
+
+        pub technology: OnceCell<gtk::Label>,
+        pub capacity: OnceCell<gtk::Label>,
+        pub energy_empty: OnceCell<gtk::Label>,
+        pub energy_full: OnceCell<gtk::Label>,
+        pub energy_full_design: OnceCell<gtk::Label>,
+        pub voltage_min_design: OnceCell<gtk::Label>,
     }
 
     impl Default for PerformancePageBattery {
@@ -89,6 +103,20 @@ mod imp {
                 infobar_content: Default::default(),
 
                 percentage: Default::default(),
+                energy: Default::default(),
+                power: Default::default(),
+                voltage: Default::default(),
+                time_to: Default::default(),
+                time_to_direction: Default::default(),
+                state: Default::default(),
+                charge_cycles: Default::default(),
+
+                technology: Default::default(),
+                capacity: Default::default(),
+                energy_empty: Default::default(),
+                energy_full: Default::default(),
+                energy_full_design: Default::default(),
+                voltage_min_design: Default::default(),
             }
         }
     }
@@ -181,6 +209,54 @@ mod imp {
 
             this.title_battery_model.set_text(&battery.model);
 
+            if let Some(technology) = this.technology.get() {
+                if let Some(tech) = &battery.technology {
+                    technology.set_text(tech)
+                } else {
+                    technology.set_visible(false)
+                }
+            }
+
+            if let Some(capacity) = this.capacity.get() {
+                if let Some(v) = &battery.capacity {
+                    capacity.set_text(&format!("{:.0}%", v * 100.))
+                } else {
+                    capacity.set_visible(false)
+                }
+            }
+
+            if let Some(energy_empty) = this.energy_empty.get() {
+                if let Some(v) = &battery.energy_empty {
+                    energy_empty.set_text(&format!("{} mWh", v))
+                } else {
+                    energy_empty.set_visible(false)
+                }
+            }
+
+            if let Some(energy_full) = this.energy_full.get() {
+                if let Some(v) = &battery.energy_full {
+                    energy_full.set_text(&format!("{} mWh", v))
+                } else {
+                    energy_full.set_visible(false)
+                }
+            }
+
+            if let Some(energy_full_design) = this.energy_full_design.get() {
+                if let Some(v) = &battery.energy_full_design {
+                    energy_full_design.set_text(&format!("{} mWh", v))
+                } else {
+                    energy_full_design.set_visible(false)
+                }
+            }
+
+            if let Some(voltage_min_design) = this.voltage_min_design.get() {
+                if let Some(v) = &battery.voltage_min_design {
+                    voltage_min_design.set_text(&format!("{:.1} V", v))
+                } else {
+                    voltage_min_design.set_visible(false)
+                }
+            }
+
             true
         }
 
@@ -193,6 +269,62 @@ mod imp {
 
             if let Some(percentage) = this.percentage.get() {
                 percentage.set_text(&i18n_f("{}%", &[&format!("{:.0}", battery.percentage * 100.)]));
+            }
+
+            if let Some(energy) = this.energy.get() {
+                if let Some(v) = &battery.energy {
+                    energy.set_text(&format!("{} mWh", v))
+                } else {
+                    energy.set_visible(false)
+                }
+            }
+
+            if let Some(power) = this.power.get() {
+                if let Some(v) = &battery.power {
+                    power.set_text(&format!("{:.1} W", v))
+                } else {
+                    power.set_visible(false)
+                }
+            }
+
+            if let Some(voltage) = this.voltage.get() {
+                if let Some(v) = &battery.voltage {
+                    voltage.set_text(&format!("{:.1} V", v))
+                } else {
+                    voltage.set_visible(false)
+                }
+            }
+
+            if let Some(time_to) = this.time_to.get() {
+                if let Some(time_to_direction) = this.time_to_direction.get() {
+                    if let Some(v) = &battery.time_to_full {
+                        time_to.set_text(&format!("{}s", v));
+                        time_to_direction.set_text("full");
+                    }
+                    if let Some(v) = &battery.time_to_empty {
+                        time_to.set_text(&format!("{}s", v));
+                        time_to_direction.set_text("empty");
+                    }
+                    else {
+                        time_to.set_visible(false)
+                    }
+                }
+            }
+
+            //if let Some(state) = this.state.get() {
+                //if let Some(v) = &battery.state {
+                    //state.set_text(&format!("{} mWh", v))
+                //} else {
+                    //state.set_visible(false)
+                //}
+            //}
+
+            if let Some(charge_cycles) = this.charge_cycles.get() {
+                if let Some(v) = &battery.charge_cycles {
+                    charge_cycles.set_text(&v.to_string())
+                } else {
+                    charge_cycles.set_visible(false)
+                }
             }
 
             true
@@ -291,6 +423,71 @@ mod imp {
                 sidebar_content_builder
                     .object::<gtk::Label>("percentage")
                     .expect("Could not find `percentage` object in details pane"),
+            );
+            let _ = self.energy.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("energy")
+                    .expect("Could not find `energy` object in details pane"),
+            );
+            let _ = self.power.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("power")
+                    .expect("Could not find `power` object in details pane"),
+            );
+            let _ = self.voltage.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("voltage")
+                    .expect("Could not find `voltage` object in details pane"),
+            );
+            let _ = self.time_to.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("time_to")
+                    .expect("Could not find `time_to` object in details pane"),
+            );
+            let _ = self.time_to_direction.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("time_to_direction")
+                    .expect("Could not find `time_to_direction` object in details pane"),
+            );
+            let _ = self.state.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("state")
+                    .expect("Could not find `state` object in details pane"),
+            );
+            let _ = self.charge_cycles.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("charge_cycles")
+                    .expect("Could not find `charge_cycles` object in details pane"),
+            );
+            let _ = self.technology.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("technology")
+                    .expect("Could not find `technology` object in details pane"),
+            );
+            let _ = self.capacity.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("capacity")
+                    .expect("Could not find `capacity` object in details pane"),
+            );
+            let _ = self.energy_empty.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("energy_empty")
+                    .expect("Could not find `energy_empty` object in details pane"),
+            );
+            let _ = self.energy_full.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("energy_full")
+                    .expect("Could not find `energy_full` object in details pane"),
+            );
+            let _ = self.energy_full_design.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("energy_full_design")
+                    .expect("Could not find `energy_full_design` object in details pane"),
+            );
+            let _ = self.voltage_min_design.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("voltage_min_design")
+                    .expect("Could not find `voltage_min_design` object in details pane"),
             );
         }
     }
