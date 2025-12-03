@@ -25,7 +25,7 @@ use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
-use magpie_types::battery::Battery;
+use magpie_types::battery::{Battery, BatteryState, BatteryType};
 
 use super::widgets::GraphWidget;
 use crate::application::INTERVAL_STEP;
@@ -52,6 +52,8 @@ mod imp {
 
         #[template_child]
         pub energy_rate_max_y: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub energy_rate_min_y: TemplateChild<gtk::Label>,
         #[template_child]
         pub energy_rate_max_duration: TemplateChild<gtk::Label>,
         #[template_child]
@@ -94,6 +96,7 @@ mod imp {
                 title_battery_model: Default::default(),
                 energy_rate_graph: Default::default(),
                 energy_rate_max_y: Default::default(),
+                energy_rate_min_y: Default::default(),
                 energy_rate_max_duration: Default::default(),
                 energy_rate_box: Default::default(),
                 context_menu: Default::default(),
@@ -188,27 +191,6 @@ mod imp {
 
             let this = this.imp();
 
-            this.energy_rate_graph.connect_local("resize", true, move |_| {
-                let this = t.imp();
-
-                {
-                    let width = this.energy_rate_graph.width() as f32;
-                    let height = this.energy_rate_graph.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.energy_rate_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-                }
-
-                None
-            });
-
             this.title_battery_model.set_text(&battery.model);
 
             if let Some(technology) = this.technology.get() {
@@ -259,6 +241,18 @@ mod imp {
                 }
             }
 
+            if let Some(voltage) = this.voltage.get() {
+                voltage.set_visible(battery.voltage.is_some())
+            }
+
+            if let Some(energy) = this.energy.get() {
+                energy.set_visible(battery.energy.is_some());
+            }
+
+            if let Some(charge_cycles) = this.charge_cycles.get() {
+                charge_cycles.set_visible(battery.charge_cycles.is_some())
+            }
+
             true
         }
 
@@ -273,61 +267,78 @@ mod imp {
                 percentage.set_text(&i18n_f("{}%", &[&format!("{:.0}", battery.percentage * 100.)]));
             }
 
+            if let Some(voltage) = this.voltage.get() {
+                if let Some(v) = &battery.voltage {
+                    voltage.set_text(&format!("{:.1} V", v))
+                }
+            }
+
             if let Some(energy) = this.energy.get() {
                 if let Some(v) = &battery.energy {
                     energy.set_text(&format!("{} mWh", v))
-                } else {
-                    energy.set_visible(false)
                 }
             }
 
             if let Some(power) = this.power.get() {
                 if let Some(v) = &battery.power {
+                    power.set_visible(true);
                     power.set_text(&format!("{:.1} W", v))
                 } else {
                     power.set_visible(false)
                 }
             }
 
-            if let Some(voltage) = this.voltage.get() {
-                if let Some(v) = &battery.voltage {
-                    voltage.set_text(&format!("{:.1} V", v))
-                } else {
-                    voltage.set_visible(false)
-                }
-            }
-
             if let Some(time_to) = this.time_to.get() {
                 if let Some(time_to_direction) = this.time_to_direction.get() {
                     if let Some(v) = &battery.time_to_full {
+                        time_to.set_visible(true);
                         time_to.set_text(&format!("{}s", v));
                         time_to_direction.set_text("full");
-                    }
-                    if let Some(v) = &battery.time_to_empty {
+                    } else if let Some(v) = &battery.time_to_empty {
+                        time_to.set_visible(true);
                         time_to.set_text(&format!("{}s", v));
                         time_to_direction.set_text("empty");
-                    }
-                    else {
+                    } else {
                         time_to.set_visible(false)
                     }
                 }
             }
 
-            //if let Some(state) = this.state.get() {
-                //if let Some(v) = &battery.state {
-                    //state.set_text(&format!("{} mWh", v))
-                //} else {
-                    //state.set_visible(false)
-                //}
-            //}
+            if let Some(state) = this.state.get() {
+                if let Some(v) = &battery.state {
+                    state.set_text(batterystate_to_str(v))
+                } else {
+                    state.set_text("Unknown")
+                }
+            }
 
             if let Some(charge_cycles) = this.charge_cycles.get() {
                 if let Some(v) = &battery.charge_cycles {
                     charge_cycles.set_text(&v.to_string())
-                } else {
-                    charge_cycles.set_visible(false)
                 }
             }
+
+            if let Some(v) = &battery.power {
+                if let Some(v2) = &battery.state {
+                    if *v2 == 1 {
+                        this.energy_rate_graph.add_data_point(vec![vec![-1. * (*v)]]);
+                    } else {
+                        this.energy_rate_graph.add_data_point(vec![vec![*v]]);
+                    }
+                } else {
+                    this.energy_rate_graph.add_data_point(vec![vec![*v]]);
+                }
+            }
+
+            this.energy_rate_max_y.set_text(&i18n_f(
+                "{} W",
+                &[&this.energy_rate_graph.get_dataset_max_scale(0).to_string()],
+            ));
+
+            this.energy_rate_min_y.set_text(&i18n_f(
+                "{} W",
+                &[&this.energy_rate_graph.get_dataset_max_scale(0).to_string()],
+            ));
 
             true
         }
@@ -562,8 +573,8 @@ impl PerformancePageBattery {
 
         let mut energy_rate_graph = DatasetGroup::new();
         energy_rate_graph.dataset_settings.scaling_settings = ScalingSettings::StickyUpDown;
-        energy_rate_graph.dataset_settings.high_watermark = 45.;
-        energy_rate_graph.dataset_settings.low_watermark = 35.;
+        energy_rate_graph.dataset_settings.high_watermark = 10.;
+        energy_rate_graph.dataset_settings.low_watermark = -10.;
 
         this.imp().energy_rate_graph.add_dataset(energy_rate_graph);
 
@@ -582,5 +593,51 @@ impl PerformancePageBattery {
 
     pub fn update_animations(&self, new_ticks: f32) -> bool {
         imp::PerformancePageBattery::update_animations(self, new_ticks)
+    }
+}
+
+fn batterystate_to_str(state: &i32) -> &str {
+    match state {
+        1 => "Charging",
+        2 => "Discharging",
+        3 => "Empty",
+        4 => "Fully charged",
+        5 => "Pending charge",
+        6 => "Pending discharge",
+        _ => "",
+    }
+}
+
+fn batterytype_to_str(type_: &i32) -> &str {
+    match type_ {
+        1 => "LinePower",
+        2 => "Battery",
+        3 => "UPS",
+        4 => "Monitor",
+        5 => "Mouse",
+        6 => "Keyboard",
+        7 => "PDA",
+        8 => "Phone",
+        9 => "Media player",
+        10 => "Tablet",
+        11 => "Computer",
+        12 => "Gaming Input",
+        13 => "Pen",
+        14 => "Touchpad",
+        15 => "Modem",
+        16 => "Network",
+        17 => "Headset",
+        18 => "Speakers",
+        19 => "Headphones",
+        20 => "Video",
+        21 => "Other Audio",
+        22 => "Remote Control",
+        23 => "Printer",
+        34 => "Scanner",
+        35 => "Camera",
+        36 => "Wearable",
+        37 => "Toy",
+        38 => "Generic bluetooth",
+        _ => "",
     }
 }

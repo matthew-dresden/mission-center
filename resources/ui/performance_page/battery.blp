@@ -73,15 +73,12 @@ template $PerformancePageBattery: Box {
           styles [
             "caption",
           ]
-
-          label: _("100%");
         }
       }
     };
   }
   Box energy_rate_box {
     orientation: vertical;
-    spacing: 10;
     Box speed_box {
       orientation: vertical;
 
@@ -96,6 +93,16 @@ template $PerformancePageBattery: Box {
         scroll: true;
       }
     }
+    Box {
+        Label energy_rate_min_y {
+          styles [
+            "caption",
+          ]
+          hexpand: true;
+          halign: end;
+        }
+      }
+
 }
 
   PopoverMenu context_menu {
