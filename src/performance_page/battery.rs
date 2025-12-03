@@ -579,7 +579,8 @@ impl PerformancePageBattery {
         });
 
         let mut energy_rate_graph = DatasetGroup::new();
-        energy_rate_graph.dataset_settings.scaling_settings = ScalingSettings::StickyUpDown;
+        energy_rate_graph.dataset_settings.scaling_settings =
+            ScalingSettings::StickyUpDownEqualMagnitude;
         energy_rate_graph.dataset_settings.high_watermark = 10.;
         energy_rate_graph.dataset_settings.low_watermark = -10.;
         energy_rate_graph.dataset_settings.fill = FillingSettings::FillToZero;
