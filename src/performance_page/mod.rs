@@ -1673,24 +1673,13 @@ mod imp {
                 1.,
             ));
 
+
             let settings = settings!();
 
-            summary
-                .graph_widget()
-                .set_scaling(GraphWidget::normalized_scaling());
-            summary.graph_widget().set_only_scale_up(true);
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
+            summary.graph_widget().connect_to_settings(&settings);
+            let mut speed_dataset = DatasetGroup::new();
+
+            summary.graph_widget().add_dataset(speed_dataset);
 
             let page = BatteryPage::new(&page_name, &settings);
             page.set_base_color(gdk::RGBA::new(
@@ -2460,12 +2449,9 @@ mod imp {
                                         Some(())
                                     });
 
+
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.set_data_points(data_points);
-                                graph_widget.set_smooth_graphs(smooth);
-                                graph_widget.set_do_animation(sliding);
-                                graph_widget.set_expected_animation_ticks(delay);
-                                graph_widget.add_data_point(0, battery.percentage);
+                                graph_widget.add_data_point(vec![vec![battery.percentage as f32]]);
                                 summary.set_info1(battery.model.as_str());
 
                                 if let Some(index) = index {
@@ -2557,8 +2543,8 @@ mod imp {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                 }

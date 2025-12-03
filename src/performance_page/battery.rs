@@ -32,6 +32,8 @@ use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::{PageExt, MK_TO_0_C};
 use crate::to_short_human_readable_time;
+use crate::performance_page::widgets::DatasetGroup;
+use crate::performance_page::widgets::ScalingSettings;
 
 mod imp {
     use super::*;
@@ -330,10 +332,10 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageBattery) -> bool {
+        pub fn update_animations(this: &super::PerformancePageBattery, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.energy_rate_graph.update_animation();
+            this.energy_rate_graph.update_animation(new_ticks);
 
             true
         }
@@ -528,8 +530,6 @@ impl PerformancePageBattery {
             settings: &gio::Settings,
         ) {
             let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
             let delay = settings.uint64("app-update-interval-u64");
             let graph_max_duration =
                 (((delay as f64) * INTERVAL_STEP) * (data_points as f64)).round() as u32;
@@ -539,10 +539,6 @@ impl PerformancePageBattery {
             let time_string = &to_short_human_readable_time(graph_max_duration);
 
             this.energy_rate_max_duration.set_text(time_string);
-            this.energy_rate_graph.set_data_points(data_points);
-            this.energy_rate_graph.set_smooth_graphs(smooth);
-            this.energy_rate_graph.set_do_animation(sliding);
-            this.energy_rate_graph.set_expected_animation_ticks(delay as u32);
         }
         update_refresh_rate_sensitive_labels(&this, settings);
 
@@ -564,23 +560,14 @@ impl PerformancePageBattery {
             }
         });
 
-        settings.connect_changed(Some("performance-smooth-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
+        let mut energy_rate_graph = DatasetGroup::new();
+        energy_rate_graph.dataset_settings.scaling_settings = ScalingSettings::StickyUpDown;
+        energy_rate_graph.dataset_settings.high_watermark = 45.;
+        energy_rate_graph.dataset_settings.low_watermark = 35.;
 
-        settings.connect_changed(Some("performance-sliding-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
+        this.imp().energy_rate_graph.add_dataset(energy_rate_graph);
+
+        this.imp().energy_rate_graph.connect_to_settings(settings);
 
         this
     }
@@ -593,7 +580,7 @@ impl PerformancePageBattery {
         imp::PerformancePageBattery::update_readings(self, battery_info, index)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageBattery::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageBattery::update_animations(self, new_ticks)
     }
 }
