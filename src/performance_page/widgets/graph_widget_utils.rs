@@ -371,8 +371,6 @@ impl DatasetGroup {
                                     - self.dataset_settings.low_watermark),
                         );
                     }
-
-                    println!("Points are: {:?}", self.datas[0].data)
                 }
             }
             path_builder.close();
@@ -423,7 +421,7 @@ impl Dataset {
             .iter()
             .take(self.used_data)
             .map(|v| {
-                if !v.is_normal() {
+                if !v.is_normal() && (v == &0. && low_watermark >= 0.) {
                     low_watermark
                 } else {
                     v.clone()
