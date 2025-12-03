@@ -371,6 +371,8 @@ impl DatasetGroup {
                                     - self.dataset_settings.low_watermark),
                         );
                     }
+
+                    println!("Points are: {:?}", self.datas[0].data)
                 }
             }
             path_builder.close();
