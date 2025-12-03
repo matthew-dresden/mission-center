@@ -41,6 +41,7 @@ pub enum ScalingSettings {
     StickyUp,
     StickyDown,
     StickyUpDown,
+    StickyUpDownEqualMagnitude,
     Stacking,
 }
 
@@ -163,6 +164,7 @@ impl DatasetGroup {
             ScalingSettings::StickyUp => {}
             ScalingSettings::StickyDown => {}
             ScalingSettings::StickyUpDown => {}
+            ScalingSettings::StickyUpDownEqualMagnitude => {}
             ScalingSettings::Stacking => {}
             ScalingSettings::Fixed => {}
         }
@@ -234,6 +236,19 @@ impl DatasetGroup {
 
                 if point < self.dataset_settings.low_watermark {
                     self.dataset_settings.low_watermark = point
+                }
+            }
+            ScalingSettings::StickyUpDownEqualMagnitude => {
+                if point > self.dataset_settings.high_watermark {
+                    self.dataset_settings.low_watermark -=
+                        point - self.dataset_settings.high_watermark;
+                    self.dataset_settings.high_watermark = point;
+                }
+
+                if point < self.dataset_settings.low_watermark {
+                    self.dataset_settings.high_watermark +=
+                        self.dataset_settings.low_watermark - point;
+                    self.dataset_settings.low_watermark = point;
                 }
             }
             ScalingSettings::Stacking => {}
