@@ -29,7 +29,7 @@ use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readab
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidget};
+    use crate::performance_page::widgets::{DatasetGroup, FillingSettings, GraphWidget};
     use crate::DataType;
 
     #[derive(Properties)]
@@ -631,11 +631,11 @@ mod imp {
             let this = self.obj().clone();
 
             let mut dataset_a = DatasetGroup::new();
-            dataset_a.dataset_settings.fill = false;
+            dataset_a.dataset_settings.fill = FillingSettings::None;
             dataset_a.dataset_settings.dashed = true;
 
             let mut dataset_b = DatasetGroup::new();
-            dataset_b.dataset_settings.fill = false;
+            dataset_b.dataset_settings.fill = FillingSettings::None;
 
             let dataset_c = DatasetGroup::new();
 

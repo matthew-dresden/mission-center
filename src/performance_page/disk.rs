@@ -36,7 +36,9 @@ use super::PageExt;
 mod imp {
     use super::*;
     use crate::performance_page::disk_details::DiskDetails;
-    use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
+    use crate::performance_page::widgets::{
+        DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
+    };
     use crate::{settings, DataType};
 
     #[derive(Properties)]
@@ -188,7 +190,8 @@ mod imp {
             }
 
             this.disk_transfer_rate_graph.set_dashed(1, true);
-            this.disk_transfer_rate_graph.set_filled(1, false);
+            this.disk_transfer_rate_graph
+                .set_filled(1, FillingSettings::None);
 
             this.infobar_content
                 .legend_read()
@@ -489,7 +492,7 @@ mod imp {
             let mut rx_dataset = DatasetGroup::new();
 
             tx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
-            tx_dataset.dataset_settings.fill = false;
+            tx_dataset.dataset_settings.fill = FillingSettings::None;
             tx_dataset.dataset_settings.dashed = true;
             rx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
 

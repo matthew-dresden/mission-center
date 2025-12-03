@@ -29,7 +29,7 @@ use magpie_types::fan::Fan;
 
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
-use crate::performance_page::widgets::{DatasetGroup, ScalingSettings};
+use crate::performance_page::widgets::{DatasetGroup, FillingSettings, ScalingSettings};
 use crate::performance_page::{PageExt, MK_TO_0_C};
 use crate::to_short_human_readable_time;
 
@@ -488,7 +488,7 @@ impl PerformancePageFan {
         speed_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUp;
         let mut rpm_dataset = DatasetGroup::new();
         rpm_dataset.dataset_settings.dashed = true;
-        rpm_dataset.dataset_settings.fill = false;
+        rpm_dataset.dataset_settings.fill = FillingSettings::None;
         rpm_dataset.dataset_settings.high_watermark = 1.;
 
         this.imp().speed_graph.add_dataset(speed_dataset);

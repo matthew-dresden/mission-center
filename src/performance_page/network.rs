@@ -34,6 +34,7 @@ use crate::{settings, DataType};
 
 mod imp {
     use super::*;
+    use crate::performance_page::widgets::FillingSettings;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageNetwork)]
@@ -310,7 +311,7 @@ mod imp {
 
             this.interface_name.replace(interface_name);
 
-            this.usage_graph.set_filled(0, false);
+            this.usage_graph.set_filled(0, FillingSettings::None);
             this.usage_graph.set_dashed(0, true);
 
             this.max_speed.set(connection.max_speed_bytes_ps);
@@ -563,7 +564,7 @@ mod imp {
             let rx_dataset = DatasetGroup::new();
 
             // scaling will be set by settings
-            tx_dataset.dataset_settings.fill = false;
+            tx_dataset.dataset_settings.fill = FillingSettings::None;
             tx_dataset.dataset_settings.dashed = true;
 
             self.usage_graph.add_dataset(tx_dataset);

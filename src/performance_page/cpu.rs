@@ -32,6 +32,7 @@ use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readab
 
 mod imp {
     use super::*;
+    use crate::performance_page::widgets::FillingSettings;
 
     const GRAPH_SELECTION_OVERALL: i32 = 1;
     const GRAPH_SELECTION_ALL: i32 = 2;
@@ -102,12 +103,12 @@ mod imp {
                 graph_widgets[1].set_dataset_max_scale(0, 100.);
                 graph_widgets[1].set_dataset_scaling(0, ScalingSettings::Fixed);
                 graph_widgets[1].set_visible(true);
-                graph_widgets[1].set_filled(0, false);
+                graph_widgets[1].set_filled(0, FillingSettings::None);
             } else if $new_idx == GRAPH_SELECTION_ALL_THREADS_STACKED {
                 graph_widgets[1].set_dataset_max_scale(0, 100. * (graph_widgets.len() - 2) as f32);
                 graph_widgets[1].set_dataset_scaling(0, ScalingSettings::Stacking);
                 graph_widgets[1].set_visible(true);
-                graph_widgets[1].set_filled(0, true);
+                graph_widgets[1].set_filled(0, FillingSettings::FillToBottom);
             } else {
                 graph_widgets[1].set_visible(false);
             }
@@ -797,7 +798,7 @@ mod imp {
             usage_group.dataset_settings.high_watermark = 100.;
             usage_group.set_datasets(cpu_count);
             let mut kernel_group = DatasetGroup::new();
-            kernel_group.dataset_settings.fill = false;
+            kernel_group.dataset_settings.fill = FillingSettings::None;
             kernel_group.dataset_settings.dashed = true;
             kernel_group.dataset_settings.visible = show_kernel_times;
             kernel_group.dataset_settings.high_watermark = 100.;
@@ -821,7 +822,7 @@ mod imp {
             } else {
                 usage_group.dataset_settings.scaling_settings = ScalingSettings::Fixed;
                 usage_group.dataset_settings.high_watermark = 100.;
-                usage_group.dataset_settings.fill = false;
+                usage_group.dataset_settings.fill = FillingSettings::None;
             }
             usage_group.set_datasets(cpu_count);
 
@@ -843,7 +844,7 @@ mod imp {
                 let mut usage_group = DatasetGroup::new();
                 usage_group.dataset_settings.high_watermark = 100.;
                 let mut kernel_group = DatasetGroup::new();
-                kernel_group.dataset_settings.fill = false;
+                kernel_group.dataset_settings.fill = FillingSettings::None;
                 kernel_group.dataset_settings.dashed = true;
                 kernel_group.dataset_settings.visible = show_kernel_times;
                 kernel_group.dataset_settings.high_watermark = 100.;

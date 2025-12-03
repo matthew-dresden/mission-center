@@ -44,11 +44,20 @@ pub enum ScalingSettings {
     Stacking,
 }
 
+#[derive(Default, Clone, PartialEq)]
+pub enum FillingSettings {
+    #[default]
+    FillToBottom,
+    FillToTop,
+    FillToZero,
+    None,
+}
+
 #[derive(Clone)]
 pub struct DatasetSettings {
     pub dashed: bool,
-    pub fill: bool,
     pub visible: bool,
+    pub fill: FillingSettings,
 
     pub scaling_settings: ScalingSettings,
     pub low_watermark: f32,
@@ -70,7 +79,7 @@ impl DatasetGroup {
         Self {
             dataset_settings: DatasetSettings {
                 dashed: false,
-                fill: true,
+                fill: Default::default(),
                 visible: true,
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
@@ -317,13 +326,43 @@ impl DatasetGroup {
                 }
             }
 
-            path_builder.line_to(last_point.x, height);
-            path_builder.line_to(first_point.x, height);
+            match self.dataset_settings.fill {
+                FillingSettings::FillToBottom | FillingSettings::None => {
+                    path_builder.line_to(last_point.x, height);
+                    path_builder.line_to(first_point.x, height);
+                }
+                FillingSettings::FillToTop => {
+                    path_builder.line_to(last_point.x, 0.);
+                    path_builder.line_to(first_point.x, 0.);
+                }
+                FillingSettings::FillToZero => {
+                    if self.dataset_settings.low_watermark >= 0.
+                        || self.dataset_settings.low_watermark
+                            >= self.dataset_settings.high_watermark
+                    {
+                        path_builder.line_to(last_point.x, height);
+                        path_builder.line_to(first_point.x, height);
+                    } else {
+                        path_builder.line_to(
+                            last_point.x,
+                            height * (self.dataset_settings.high_watermark)
+                                / (self.dataset_settings.high_watermark
+                                    - self.dataset_settings.low_watermark),
+                        );
+                        path_builder.line_to(
+                            first_point.x,
+                            height * (self.dataset_settings.high_watermark)
+                                / (self.dataset_settings.high_watermark
+                                    - self.dataset_settings.low_watermark),
+                        );
+                    }
+                }
+            }
             path_builder.close();
 
             let path = path_builder.to_path();
 
-            if self.dataset_settings.fill
+            if self.dataset_settings.fill != FillingSettings::None
                 && (self.dataset_settings.scaling_settings != ScalingSettings::Stacking
                     || set_index == dataset_points.len() - 1)
             {

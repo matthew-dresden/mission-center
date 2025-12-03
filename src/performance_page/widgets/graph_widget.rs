@@ -37,7 +37,7 @@ use std::cell::Cell;
 
 // pub use imp::DataSetDescriptor;
 
-use super::{DatasetGroup, ScalingSettings, GRAPH_RADIUS};
+use super::{DatasetGroup, FillingSettings, ScalingSettings, GRAPH_RADIUS};
 
 // no faster than 200 Hz. if everything is going according to plan, we expect two animation frames in quick succession at the start of a new cycle and want to prevent rendering twice
 const ANIMATION_LOCKOUT: f32 = 0.005;
@@ -446,7 +446,7 @@ impl GraphWidget {
         self.imp().data_sets.set(data);
     }
 
-    pub fn set_filled(&self, index: usize, filled: bool) {
+    pub fn set_filled(&self, index: usize, filled: FillingSettings) {
         let mut data = self.imp().data_sets.take();
         if index < data.len() {
             data[index].dataset_settings.fill = filled;

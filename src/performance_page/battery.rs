@@ -27,13 +27,13 @@ use gtk::{gio, glib, prelude::*};
 
 use magpie_types::battery::{Battery, BatteryState, BatteryType};
 
-use super::widgets::GraphWidget;
+use super::widgets::{FillingSettings, GraphWidget};
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
-use crate::performance_page::{PageExt, MK_TO_0_C};
-use crate::to_short_human_readable_time;
 use crate::performance_page::widgets::DatasetGroup;
 use crate::performance_page::widgets::ScalingSettings;
+use crate::performance_page::{PageExt, MK_TO_0_C};
+use crate::to_short_human_readable_time;
 
 mod imp {
     use super::*;
@@ -186,7 +186,10 @@ mod imp {
     }
 
     impl PerformancePageBattery {
-        pub fn set_static_information(this: &super::PerformancePageBattery, battery: &Battery) -> bool {
+        pub fn set_static_information(
+            this: &super::PerformancePageBattery,
+            battery: &Battery,
+        ) -> bool {
             let t = this.clone();
 
             let this = this.imp();
@@ -264,7 +267,10 @@ mod imp {
             let this = this.imp();
 
             if let Some(percentage) = this.percentage.get() {
-                percentage.set_text(&i18n_f("{}%", &[&format!("{:.0}", battery.percentage * 100.)]));
+                percentage.set_text(&i18n_f(
+                    "{}%",
+                    &[&format!("{:.0}", battery.percentage * 100.)],
+                ));
             }
 
             if let Some(voltage) = this.voltage.get() {
@@ -321,7 +327,8 @@ mod imp {
             if let Some(v) = &battery.power {
                 if let Some(v2) = &battery.state {
                     if *v2 == 1 {
-                        this.energy_rate_graph.add_data_point(vec![vec![-1. * (*v)]]);
+                        this.energy_rate_graph
+                            .add_data_point(vec![vec![-1. * (*v)]]);
                     } else {
                         this.energy_rate_graph.add_data_point(vec![vec![*v]]);
                     }
@@ -356,30 +363,30 @@ mod imp {
             let unsupported = glib::GString::from(unsupported);
 
             //format!(
-                //r#"Fan
+            //r#"Fan
 
-    //{}
-    //{}
+            //{}
+            //{}
 
-    //Speed:               {}
-    //PWM Percentage:      {}
-    //Current Temperature: {}"#,
-                //self.title_fan_name.text(),
-                //self.title_temp_name.text(),
-                //self.speed
-                    //.get()
-                    //.map(|s| s.text())
-                    //.unwrap_or(unsupported.clone()),
-                //self.pwm
-                    //.get()
-                    //.and_then(|pwm| if !pwm.is_visible() { None } else { Some(pwm) })
-                    //.map(|s| s.text())
-                    //.unwrap_or(unsupported.clone()),
-                //self.temp
-                    //.get()
-                    //.and_then(|temp| if !temp.is_visible() { None } else { Some(temp) })
-                    //.map(|s| s.text())
-                    //.unwrap_or(unsupported)
+            //Speed:               {}
+            //PWM Percentage:      {}
+            //Current Temperature: {}"#,
+            //self.title_fan_name.text(),
+            //self.title_temp_name.text(),
+            //self.speed
+            //.get()
+            //.map(|s| s.text())
+            //.unwrap_or(unsupported.clone()),
+            //self.pwm
+            //.get()
+            //.and_then(|pwm| if !pwm.is_visible() { None } else { Some(pwm) })
+            //.map(|s| s.text())
+            //.unwrap_or(unsupported.clone()),
+            //self.temp
+            //.get()
+            //.and_then(|temp| if !temp.is_visible() { None } else { Some(temp) })
+            //.map(|s| s.text())
+            //.unwrap_or(unsupported)
             //)
             String::new()
         }
@@ -575,6 +582,7 @@ impl PerformancePageBattery {
         energy_rate_graph.dataset_settings.scaling_settings = ScalingSettings::StickyUpDown;
         energy_rate_graph.dataset_settings.high_watermark = 10.;
         energy_rate_graph.dataset_settings.low_watermark = -10.;
+        energy_rate_graph.dataset_settings.fill = FillingSettings::FillToZero;
 
         this.imp().energy_rate_graph.add_dataset(energy_rate_graph);
 

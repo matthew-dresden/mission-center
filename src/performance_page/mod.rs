@@ -72,7 +72,7 @@ const MK_TO_0_C: i32 = -273150;
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{DatasetGroup, ScalingSettings};
+    use crate::performance_page::widgets::{DatasetGroup, FillingSettings, ScalingSettings};
     use crate::DataType;
     use std::marker::PhantomData;
 
@@ -745,7 +745,8 @@ mod imp {
             });
             actions.add_action(&action);
             view_actions.insert("gpu".to_string(), action);
-            let action = gio::SimpleAction::new_stateful("battery", None, &glib::Variant::from(false));
+            let action =
+                gio::SimpleAction::new_stateful("battery", None, &glib::Variant::from(false));
             action.connect_activate({
                 let this = this.downgrade();
                 move |action, _| {
@@ -831,7 +832,8 @@ mod imp {
             });
             actions.add_action(&action);
             view_actions.insert("fan".to_string(), action);
-            let action = gio::SimpleAction::new_stateful("battery", None, &glib::Variant::from(false));
+            let action =
+                gio::SimpleAction::new_stateful("battery", None, &glib::Variant::from(false));
             action.connect_activate({
                 let this = this.downgrade();
                 move |action, _| {
@@ -1123,7 +1125,7 @@ mod imp {
                 let graph_widget = summary.graph_widget();
 
                 let mut dataset_a = DatasetGroup::new();
-                dataset_a.dataset_settings.fill = false;
+                dataset_a.dataset_settings.fill = FillingSettings::None;
                 dataset_a.dataset_settings.dashed = true;
                 dataset_a.dataset_settings.high_watermark = mem_info.mem_total as f32;
                 dataset_a.dataset_settings.scaling_settings = ScalingSettings::Fixed;
@@ -1349,7 +1351,7 @@ mod imp {
                 let graph_widget = summary.graph_widget();
 
                 let mut dataset_a = DatasetGroup::new();
-                dataset_a.dataset_settings.fill = false;
+                dataset_a.dataset_settings.fill = FillingSettings::None;
                 dataset_a.dataset_settings.dashed = true;
                 let mut dataset_b = DatasetGroup::new();
                 dataset_a.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
@@ -1552,7 +1554,6 @@ mod imp {
             pages.push(Pages::Fan(fans));
         }
 
-
         fn fan_page_name(fan_info: &Fan) -> String {
             format!("fan-{}-{}", fan_info.hwmon_index, fan_info.fan_index)
         }
@@ -1636,8 +1637,11 @@ mod imp {
             let len = readings.batteries.len();
             let hide_index = len == 1;
             for i in 0..len {
-                let mut ret =
-                    self.create_battery_page(readings, if hide_index { None } else { Some(i) }, None);
+                let mut ret = self.create_battery_page(
+                    readings,
+                    if hide_index { None } else { Some(i) },
+                    None,
+                );
                 batteries.insert(std::mem::take(&mut ret.0), ret.1);
             }
 
@@ -1673,7 +1677,6 @@ mod imp {
                 1.,
             ));
 
-
             let settings = settings!();
 
             summary.graph_widget().connect_to_settings(&settings);
@@ -1701,9 +1704,7 @@ mod imp {
                     g_critical!(
                         "MissionCenter::PerformancePage",
                         "Failed to wire up battery action for {}, logic bug?",
-                        battery_static_info
-                            .model
-                            .as_str()
+                        battery_static_info.model.as_str()
                     );
                 }
                 Some(action) => {
@@ -1781,7 +1782,8 @@ mod imp {
             net_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
             gpu_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
             fan_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
-            battery_graphs.sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
+            battery_graphs
+                .sort_unstable_by(|(g1, _), (g2, _)| g1.widget_name().cmp(&g2.widget_name()));
 
             let sidebar = self.sidebar();
             sidebar.remove_all();
@@ -2053,11 +2055,9 @@ mod imp {
                     }
                     Pages::Battery(battery_pages) => {
                         for battery_page_name in battery_pages.keys() {
-                            if !readings
-                                .batteries
-                                .iter()
-                                .any(|battery| &Self::battery_page_name(&battery) == battery_page_name)
-                            {
+                            if !readings.batteries.iter().any(|battery| {
+                                &Self::battery_page_name(&battery) == battery_page_name
+                            }) {
                                 pages_to_destroy.push(battery_page_name.clone());
                             }
                         }
@@ -2432,7 +2432,9 @@ mod imp {
                         for (index, battery) in readings.batteries.iter().enumerate() {
                             let index = if hide_index { None } else { Some(index) };
 
-                            if let Some((summary, page)) = pages.get(&Self::battery_page_name(&battery)) {
+                            if let Some((summary, page)) =
+                                pages.get(&Self::battery_page_name(&battery))
+                            {
                                 // Search for a group of existing batteries and try to add new entries at that position
                                 summary
                                     .parent()
@@ -2449,13 +2451,13 @@ mod imp {
                                         Some(())
                                     });
 
-
                                 let graph_widget = summary.graph_widget();
                                 graph_widget.add_data_point(vec![vec![battery.percentage as f32]]);
                                 summary.set_info1(battery.model.as_str());
 
                                 if let Some(index) = index {
-                                    summary.set_heading(i18n_f("Battery {}", &[&index.to_string()]));
+                                    summary
+                                        .set_heading(i18n_f("Battery {}", &[&index.to_string()]));
                                 } else {
                                     summary.set_heading(i18n("Battery"));
                                 }
