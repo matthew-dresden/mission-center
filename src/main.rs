@@ -217,10 +217,18 @@ pub fn to_long_human_readable_time(seconds: u64) -> String {
         i18n_f("{} and {}", &[months_str, days_str])
     } else if days > 0 {
         /* Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours */
-        i18n_f("{} and {}", &[days_str, hours_str])
+        if days != 0 {
+            i18n_f("{} and {}", &[days_str, hours_str])
+        } else {
+            i18n_f("{}", &[days_str])
+        }
     } else if hours > 0 {
         /* Translators: Used for durations less than one day but greater than one hour. First %s is number of hours, second %s is minutes */
-        i18n_f("{} and {}", &[hours_str, minutes_str])
+        if minutes != 0 {
+            i18n_f("{} and {}", &[hours_str, minutes_str])
+        } else {
+            i18n_f("{}", &[hours_str])
+        }
     } else if minutes > 0 {
         String::from(minutes_str)
     } else if seconds == 0 {
@@ -239,7 +247,14 @@ pub fn to_short_human_readable_time(seconds: u32) -> String {
     let mins_string = ni18n_f("{} minute", "{} minutes", mins, &[&(mins).to_string()]);
 
     if mins > 0 {
-        format!("{} {}", mins_string, seconds_string)
+        format!("{}{}",
+            mins_string,
+            if seconds != 0 {
+                format!(" {}", seconds_string)
+            } else {
+                String::new()
+            }
+        )
     } else {
         format!("{}", seconds_string)
     }

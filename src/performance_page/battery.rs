@@ -34,6 +34,7 @@ use crate::performance_page::widgets::DatasetGroup;
 use crate::performance_page::widgets::ScalingSettings;
 use crate::performance_page::{PageExt, MK_TO_0_C};
 use crate::to_short_human_readable_time;
+use crate::to_long_human_readable_time;
 
 mod imp {
     use super::*;
@@ -76,7 +77,9 @@ mod imp {
         pub energy: OnceCell<gtk::Label>,
         pub power: OnceCell<gtk::Label>,
         pub voltage: OnceCell<gtk::Label>,
+        pub voltage_box: OnceCell<gtk::Box>,
         pub time_to: OnceCell<gtk::Label>,
+        pub time_to_box: OnceCell<gtk::Box>,
         pub time_to_direction: OnceCell<gtk::Label>,
         pub state: OnceCell<gtk::Label>,
         pub charge_cycles: OnceCell<gtk::Label>,
@@ -114,7 +117,9 @@ mod imp {
                 energy: Default::default(),
                 power: Default::default(),
                 voltage: Default::default(),
+                voltage_box: Default::default(),
                 time_to: Default::default(),
+                time_to_box: Default::default(),
                 time_to_direction: Default::default(),
                 state: Default::default(),
                 charge_cycles: Default::default(),
@@ -317,42 +322,47 @@ mod imp {
             }
 
             if let Some(power) = this.power.get() {
-                if let Some(v) = &battery.power {
-                    if let Some(v2) = &battery.state {
-                        if *v2 == 2 {
-                            power.set_visible(true);
-                            power.set_text(&format!("-{:.1} W", v))
+                if let Some(voltage_box) = this.power.get() {
+                    if let Some(v) = &battery.power {
+                        if let Some(v2) = &battery.state {
+                            if *v2 == 2 {
+                                power.set_visible(true);
+                                power.set_text(&format!("-{:.1} W", v))
+                            } else {
+                                power.set_visible(true);
+                                power.set_text(&format!("{:.1} W", v))
+                            }
                         } else {
                             power.set_visible(true);
                             power.set_text(&format!("{:.1} W", v))
+
                         }
                     } else {
-                        power.set_visible(true);
-                        power.set_text(&format!("{:.1} W", v))
-
+                        power.set_visible(false);
                     }
-                } else {
-                    power.set_visible(false)
                 }
             }
 
             if let Some(time_to) = this.time_to.get() {
                 if let Some(time_to_direction) = this.time_to_direction.get() {
-                    if let Some(v) = &battery.time_to_full {
-                        time_to.set_visible(true);
-                        time_to.set_text(&format!("{}s", v));
-                        time_to_direction.set_text("full");
-                    } else if let Some(v) = &battery.time_to_empty {
-                        time_to.set_visible(true);
-                        time_to.set_text(&format!("{}s", v));
-                        time_to_direction.set_text("empty");
-                    } else {
-                        time_to.set_visible(false)
+                    if let Some(time_to_box) = this.time_to_box.get() {
+                        if let Some(v) = &battery.time_to_full {
+                            time_to_box.set_visible(true);
+                            time_to.set_text(&to_long_human_readable_time(*v as u64));
+                            time_to_direction.set_text("full");
+                        } else if let Some(v) = &battery.time_to_empty {
+                            time_to_box.set_visible(true);
+                            time_to.set_text(&to_long_human_readable_time(*v as u64));
+                            time_to_direction.set_text("empty");
+                        } else {
+                            time_to_box.set_visible(false)
+                        }
                     }
                 }
             }
 
             if let Some(state) = this.state.get() {
+                println!("{:?}", battery.state);
                 if let Some(v) = &battery.state {
                     state.set_text(batterystate_to_str(v))
                 } else {
@@ -501,10 +511,20 @@ mod imp {
                     .object::<gtk::Label>("voltage")
                     .expect("Could not find `voltage` object in details pane"),
             );
+            let _ = self.voltage_box.set(
+                sidebar_content_builder
+                    .object::<gtk::Box>("voltage_box")
+                    .expect("Could not find `voltage_box` object in details pane"),
+            );
             let _ = self.time_to.set(
                 sidebar_content_builder
                     .object::<gtk::Label>("time_to")
                     .expect("Could not find `time_to` object in details pane"),
+            );
+            let _ = self.time_to_box.set(
+                sidebar_content_builder
+                    .object::<gtk::Box>("time_to_box")
+                    .expect("Could not find `time_to_box` object in details pane"),
             );
             let _ = self.time_to_direction.set(
                 sidebar_content_builder

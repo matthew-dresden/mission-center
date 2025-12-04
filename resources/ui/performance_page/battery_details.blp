@@ -42,6 +42,9 @@ Grid root {
       row-spacing: 5;
       column-spacing: 10;
 
+Grid {
+  row-spacing: 5;
+  column-spacing: 10;
   Box {
     layout {
       column: '0';
@@ -97,38 +100,10 @@ Grid root {
       selectable: true;
     }
   }
-  Box {
-    visible: bind power.visible;
-    layout {
-      column: '0';
-      row: '1';
-    }
-
-    orientation: vertical;
-    spacing: 3;
-
-    Label {
-      styles [
-        "caption",
-      ]
-
-      halign: start;
-      label: _("Power");
-    }
-
-    Label power {
-      styles [
-        "title-4",
-      ]
-
-      halign: start;
-      selectable: true;
-    }
-  }
-  Box {
+  Box voltage_box {
     visible: bind voltage.visible;
     layout {
-      column: '1';
+      column: '0';
       row: '1';
     }
 
@@ -154,9 +129,67 @@ Grid root {
     }
   }
   Box {
-    visible: bind time_to.visible;
+    visible: bind power.visible;
     layout {
       column: '1';
+      row: '1';
+    }
+
+    orientation: vertical;
+    spacing: 3;
+
+    Label {
+      styles [
+        "caption",
+      ]
+
+      halign: start;
+      label: _("Power");
+    }
+
+    Label power {
+      styles [
+        "title-4",
+      ]
+
+      halign: start;
+      selectable: true;
+    }
+  }
+  }
+
+  Box {
+    visible: bind state.visible;
+    layout {
+      column: '0';
+      row: '2';
+    }
+
+    orientation: vertical;
+    spacing: 3;
+
+    Label {
+      styles [
+        "caption",
+      ]
+
+      halign: start;
+      label: _("State");
+    }
+
+    Label state {
+      styles [
+        "title-4",
+      ]
+
+      halign: start;
+      selectable: true;
+    }
+  }
+
+  Box time_to_box {
+    layout {
+      column: '0';
       row: '3';
     }
 
@@ -184,34 +217,6 @@ Grid root {
     }
 
     Label time_to {
-      styles [
-        "title-4",
-      ]
-
-      halign: start;
-      selectable: true;
-    }
-  }
-  Box {
-    visible: bind state.visible;
-    layout {
-      column: '0';
-      row: '3';
-    }
-
-    orientation: vertical;
-    spacing: 3;
-
-    Label {
-      styles [
-        "caption",
-      ]
-
-      halign: start;
-      label: _("State");
-    }
-
-    Label state {
       styles [
         "title-4",
       ]
