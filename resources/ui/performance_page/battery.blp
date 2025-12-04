@@ -59,7 +59,7 @@ template $PerformancePageBattery: Box {
             "caption",
           ]
 
-          label: _("Power over ");
+          label: _("Power Output over ");
         }
         Label energy_rate_max_duration {
           styles [
@@ -94,6 +94,13 @@ template $PerformancePageBattery: Box {
       }
     }
     Box {
+        Label {
+          styles [
+            "caption",
+          ]
+          halign: end;
+          label: _("Power Input");
+        }
         Label energy_rate_min_y {
           styles [
             "caption",

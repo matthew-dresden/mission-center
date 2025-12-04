@@ -605,6 +605,30 @@ impl GraphWidget {
         it
     }
 
+    pub fn set_dataset_min_scale(&self, index: usize, min: f32) {
+        let mut sets = self.imp().data_sets.take();
+
+        assert!(index < sets.len());
+
+        sets[index].dataset_settings.low_watermark = min;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+    }
+
+    pub fn get_dataset_min_scale(&self, index: usize) -> f32 {
+        let sets = self.imp().data_sets.take();
+
+        let it = sets[index].dataset_settings.low_watermark;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+
+        it
+    }
+
     pub fn connect_to_settings(&self, settings: &gio::Settings) {
         // create a lock to prevent re-connectiong?
         self.imp().settings_inited.set(true);
