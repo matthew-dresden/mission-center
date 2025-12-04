@@ -480,7 +480,7 @@ impl PerformancePageFan {
         let mut temp_dataset = DatasetGroup::new();
         temp_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUpDown;
         temp_dataset.dataset_settings.high_watermark = 45.;
-        temp_dataset.dataset_settings.low_watermark = 35.;
+        temp_dataset.dataset_settings.low_watermark = -35.;
 
         this.imp().temp_graph.add_dataset(temp_dataset);
 

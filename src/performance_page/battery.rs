@@ -338,7 +338,7 @@ mod imp {
             }
 
             this.energy_rate_max_y.set_text(&i18n_f(
-                "{} W",
+                "-{} W",
                 &[&this.energy_rate_graph.get_dataset_max_scale(0).to_string()],
             ));
 
@@ -580,7 +580,7 @@ impl PerformancePageBattery {
 
         let mut energy_rate_graph = DatasetGroup::new();
         energy_rate_graph.dataset_settings.scaling_settings =
-            ScalingSettings::StickyUpDownEqualMagnitude;
+            ScalingSettings::StickyUpDown;
         energy_rate_graph.dataset_settings.high_watermark = 10.;
         energy_rate_graph.dataset_settings.low_watermark = -10.;
         energy_rate_graph.dataset_settings.fill = FillingSettings::FillToZero;
