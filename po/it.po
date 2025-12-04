@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-08-13 07:02+0000\n"
+"PO-Revision-Date: 2025-12-05 19:00+0000\n"
 "Last-Translator: Pierfrancesco Passerini <p.passerini@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -1229,9 +1229,8 @@ msgid "Filter running processes"
 msgstr "{} processo in esecuzione"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Processori virtuali:"
+msgstr ""
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
@@ -1339,8 +1338,9 @@ msgstr "Termina forzatamente app o processo"
 
 #: resources/ui/keyboard_shortcuts.blp:127
 #: resources/ui/keyboard_shortcuts.blp:165
+#, fuzzy
 msgid "Show Details Dialog"
-msgstr ""
+msgstr "Mostra dettagli"
 
 #: resources/ui/keyboard_shortcuts.blp:134
 msgid "Services Page"
@@ -1546,7 +1546,7 @@ msgstr "Log"
 #: resources/ui/about_system_dialog.blp:36
 #, fuzzy
 msgid "System Info"
-msgstr "Disco di sistema:"
+msgstr "System Info"
 
 #: resources/ui/about_system_dialog.blp:65
 #, fuzzy
@@ -1556,9 +1556,8 @@ msgstr "Copia le informazioni del dispositivo"
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Versione Vulkan:"
+msgstr "Versione"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
@@ -1587,9 +1586,8 @@ msgid "Windowing System"
 msgstr ""
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Macchina virtuale:"
+msgstr "Terminale virtuale"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1780,12 +1778,14 @@ msgid "Media Errors"
 msgstr "Errori dei media"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:297
+#, fuzzy
 msgid "Number Error Log Entries"
-msgstr ""
+msgstr "Numero di voci nel Registro Errori"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:305
+#, fuzzy
 msgid "Power Cycles"
-msgstr ""
+msgstr "Numero di avvii"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:249
 #, rust-format
@@ -1972,8 +1972,8 @@ msgstr "{}: {}"
 #, fuzzy, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Avvia servizio"
-msgstr[1] "Avvia servizio"
+msgstr[0] "{} Totale Servizio"
+msgstr[1] "{} Totale Servizi"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -2004,11 +2004,11 @@ msgid "No filters applied"
 msgstr ""
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} servizi in esecuzione"
-msgstr[1] "{} servizi in esecuzione"
+msgstr[0] "{} {} Servizio"
+msgstr[1] "{} {} Servizi"
 
 #: src/services_page/mod.rs:177
 #, fuzzy
