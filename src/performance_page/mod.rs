@@ -2426,11 +2426,12 @@ mod imp {
                         let mut last_sidebar_pos = -1;
                         let mut consecutive_dev_count = 0;
 
-                        let hide_index = readings.batteries.len() == 1;
+                        let num_bat = readings.batteries.len();
+                        let hide_index = num_bat == 1;
 
                         let mut new_devices = Vec::new();
                         for (index, battery) in readings.batteries.iter().enumerate() {
-                            let index = if hide_index { None } else { Some(index) };
+                            let index = if hide_index { None } else { Some(num_bat - index - 1) };
 
                             if let Some((summary, page)) =
                                 pages.get(&Self::battery_page_name(&battery))
@@ -2452,8 +2453,16 @@ mod imp {
                                     });
 
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.add_data_point(vec![vec![battery.percentage as f32]]);
+                                graph_widget.add_data_point(vec![vec![battery.percentage * 100.]]);
                                 summary.set_info1(battery.model.as_str());
+                                summary.set_info2(format!("{:.0}%{}",
+                                    battery.percentage * 100.,
+                                    if let Some(temp) = battery.temp {
+                                        format!(" ({} °C)", temp)
+                                    } else {
+                                        String::new()
+                                    }
+                                ));
 
                                 if let Some(index) = index {
                                     summary

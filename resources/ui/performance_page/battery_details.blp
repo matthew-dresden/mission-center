@@ -262,7 +262,7 @@ Grid root {
       column-spacing: 10;
 
       Label {
-          visible: bind technology.visible;
+          visible: bind serial.visible;
 
         styles [
           "caption",
@@ -276,9 +276,66 @@ Grid root {
         halign: start;
         margin-end: 5;
 
+        label: _("Serial:");
+        ellipsize: end;
+      }
+
+      Label {
+          visible: bind kind.visible;
+
+        styles [
+          "caption",
+        ]
+
+        layout {
+          column: '0';
+          row: '1';
+        }
+
+        halign: start;
+        margin-end: 5;
+
+        label: _("Type:");
+        ellipsize: end;
+      }
+
+      Label {
+          visible: bind power_supply.visible;
+
+        styles [
+          "caption",
+        ]
+
+        layout {
+          column: '0';
+          row: '2';
+        }
+
+        halign: start;
+        margin-end: 5;
+
+        label: _("Power Supply:");
+        ellipsize: end;
+      }
+      Label {
+          visible: bind technology.visible;
+
+        styles [
+          "caption",
+        ]
+
+        layout {
+          column: '0';
+          row: '3';
+        }
+
+        halign: start;
+        margin-end: 5;
+
         label: _("Technology:");
         ellipsize: end;
       }
+
 
       Label {
           visible: bind capacity.visible;
@@ -288,7 +345,7 @@ Grid root {
 
         layout {
           column: '0';
-          row: '1';
+          row: '4';
         }
 
         halign: start;
@@ -306,7 +363,7 @@ Grid root {
 
         layout {
           column: '0';
-          row: '2';
+          row: '5';
         }
 
         halign: start;
@@ -324,7 +381,7 @@ Grid root {
 
         layout {
           column: '0';
-          row: '3';
+          row: '6';
         }
 
         halign: start;
@@ -342,7 +399,7 @@ Grid root {
 
         layout {
           column: '0';
-          row: '4';
+          row: '7';
         }
 
         halign: start;
@@ -360,7 +417,7 @@ Grid root {
 
         layout {
           column: '0';
-          row: '5';
+          row: '8';
         }
 
         halign: start;
@@ -370,7 +427,7 @@ Grid root {
         ellipsize: end;
       }
 
-      Label technology {
+      Label serial {
         styles [
           "caption",
         ]
@@ -384,7 +441,7 @@ Grid root {
         selectable: true;
       }
 
-      Label capacity {
+      Label kind {
         styles [
           "caption",
         ]
@@ -398,7 +455,7 @@ Grid root {
         selectable: true;
       }
 
-      Label energy_empty {
+      Label power_supply {
         styles [
           "caption",
         ]
@@ -412,7 +469,7 @@ Grid root {
         selectable: true;
       }
 
-      Label energy_full {
+      Label technology {
         styles [
           "caption",
         ]
@@ -426,7 +483,7 @@ Grid root {
         selectable: true;
       }
 
-      Label energy_full_design {
+      Label capacity {
         styles [
           "caption",
         ]
@@ -440,7 +497,7 @@ Grid root {
         selectable: true;
       }
 
-      Label voltage_min_design {
+      Label energy_empty {
         styles [
           "caption",
         ]
@@ -448,6 +505,48 @@ Grid root {
         layout {
           column: '1';
           row: '5';
+        }
+
+        halign: start;
+        selectable: true;
+      }
+
+      Label energy_full {
+        styles [
+          "caption",
+        ]
+
+        layout {
+          column: '1';
+          row: '6';
+        }
+
+        halign: start;
+        selectable: true;
+      }
+
+      Label energy_full_design {
+        styles [
+          "caption",
+        ]
+
+        layout {
+          column: '1';
+          row: '7';
+        }
+
+        halign: start;
+        selectable: true;
+      }
+
+      Label voltage_min_design {
+        styles [
+          "caption",
+        ]
+
+        layout {
+          column: '1';
+          row: '8';
         }
 
         halign: start;

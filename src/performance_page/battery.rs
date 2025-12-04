@@ -81,6 +81,9 @@ mod imp {
         pub state: OnceCell<gtk::Label>,
         pub charge_cycles: OnceCell<gtk::Label>,
 
+        pub serial: OnceCell<gtk::Label>,
+        pub kind: OnceCell<gtk::Label>,
+        pub power_supply: OnceCell<gtk::Label>,
         pub technology: OnceCell<gtk::Label>,
         pub capacity: OnceCell<gtk::Label>,
         pub energy_empty: OnceCell<gtk::Label>,
@@ -116,6 +119,9 @@ mod imp {
                 state: Default::default(),
                 charge_cycles: Default::default(),
 
+                serial: Default::default(),
+                kind: Default::default(),
+                power_supply: Default::default(),
                 technology: Default::default(),
                 capacity: Default::default(),
                 energy_empty: Default::default(),
@@ -195,6 +201,31 @@ mod imp {
             let this = this.imp();
 
             this.title_battery_model.set_text(&battery.model);
+
+            if let Some(serial) = this.serial.get() {
+                if let Some(v) = &battery.serial {
+                    serial.set_text(&v)
+                } else {
+                    serial.set_visible(false)
+                }
+            }
+
+            if let Some(kind) = this.kind.get() {
+                if let Some(v) = &battery.kind {
+                    kind.set_text(batterykindto_str(v));
+                    this.title_battery_name.set_text(batterykindto_str(v));
+                } else {
+                    kind.set_visible(false)
+                }
+            }
+
+            if let Some(power_supply) = this.power_supply.get() {
+                if let Some(v) = &battery.power_supply {
+                    power_supply.set_text(&v.to_string())
+                } else {
+                    power_supply.set_visible(false)
+                }
+            }
 
             if let Some(technology) = this.technology.get() {
                 if let Some(tech) = &battery.technology {
@@ -287,8 +318,19 @@ mod imp {
 
             if let Some(power) = this.power.get() {
                 if let Some(v) = &battery.power {
-                    power.set_visible(true);
-                    power.set_text(&format!("{:.1} W", v))
+                    if let Some(v2) = &battery.state {
+                        if *v2 == 2 {
+                            power.set_visible(true);
+                            power.set_text(&format!("-{:.1} W", v))
+                        } else {
+                            power.set_visible(true);
+                            power.set_text(&format!("{:.1} W", v))
+                        }
+                    } else {
+                        power.set_visible(true);
+                        power.set_text(&format!("{:.1} W", v))
+
+                    }
                 } else {
                     power.set_visible(false)
                 }
@@ -326,7 +368,7 @@ mod imp {
 
             if let Some(v) = &battery.power {
                 if let Some(v2) = &battery.state {
-                    if *v2 == 1 {
+                    if *v2 == 2 {
                         this.energy_rate_graph
                             .add_data_point(vec![vec![-1. * (*v)]]);
                     } else {
@@ -479,6 +521,21 @@ mod imp {
                     .object::<gtk::Label>("charge_cycles")
                     .expect("Could not find `charge_cycles` object in details pane"),
             );
+            let _ = self.serial.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("serial")
+                    .expect("Could not find `serial` object in details pane"),
+            );
+            let _ = self.kind.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("kind")
+                    .expect("Could not find `kind` object in details pane"),
+            );
+            let _ = self.power_supply.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("power_supply")
+                    .expect("Could not find `power_supply` object in details pane"),
+            );
             let _ = self.technology.set(
                 sidebar_content_builder
                     .object::<gtk::Label>("technology")
@@ -619,8 +676,8 @@ fn batterystate_to_str(state: &i32) -> &str {
     }
 }
 
-fn batterytype_to_str(type_: &i32) -> &str {
-    match type_ {
+fn batterykindto_str(kind: &i32) -> &str {
+    match kind {
         1 => "LinePower",
         2 => "Battery",
         3 => "UPS",
