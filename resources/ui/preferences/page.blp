@@ -40,6 +40,44 @@ template $PreferencesPage: Adw.PreferencesPage {
         value-pos: left;
       }
     }
+
+    Adw.ActionRow {
+      title: _("Chart Time Range");
+
+      Box {
+        SpinButton range_minutes {
+          orientation: vertical;
+          wrap: false;
+          climb-rate: 1;
+
+          adjustment: Adjustment {
+            lower: 0;
+            upper: 30;
+            step-increment: 1;
+            value: 0;
+          };
+        }
+
+        Label {
+          label: _(":");
+        }
+
+        SpinButton range_seconds {
+          orientation: vertical;
+          wrap: true;
+          climb-rate: 1;
+
+          digits: 2;
+
+          adjustment: Adjustment {
+            lower: 0;
+            upper: 60;
+            step-increment: 1;
+            value: 0;
+          };
+        }
+      }
+    }
   }
 
   Adw.PreferencesGroup {

@@ -19,8 +19,13 @@
  */
 
 use adw::{prelude::*, subclass::prelude::*, SpinRow, SwitchRow};
+use glib::g_critical;
+use gtk::SpinButton;
 use gtk::{gio, glib, Scale};
 
+use std::sync::Mutex;
+
+use crate::application::INTERVAL_STEP;
 use crate::settings;
 
 const MAX_INTERVAL_TICKS: u64 = 200;
@@ -28,6 +33,16 @@ const MIN_INTERVAL_TICKS: u64 = 10;
 
 const MAX_POINTS: i32 = 600;
 const MIN_POINTS: i32 = 10;
+
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
+enum PointsUpdateSource {
+    DataPoints,
+    SettingsLoad,
+    UpdateInterval,
+    MinutesChanged,
+    SecondsChanged,
+    SecondsWrapped,
+}
 
 macro_rules! connect_switch_to_setting {
     ($this: expr, $switch_row: expr, $setting: literal) => {
@@ -81,6 +96,10 @@ mod imp {
         pub update_interval: TemplateChild<SpinRow>,
         #[template_child]
         pub data_points: TemplateChild<Scale>,
+        #[template_child]
+        pub range_minutes: TemplateChild<SpinButton>,
+        #[template_child]
+        pub range_seconds: TemplateChild<SpinButton>,
 
         #[template_child]
         pub smooth_graphs: TemplateChild<SwitchRow>,
@@ -148,50 +167,200 @@ mod imp {
         pub toggle_net_base_2: TemplateChild<adw::Toggle>,
         #[template_child]
         pub toggle_net_base_10: TemplateChild<adw::Toggle>,
+
+        pub interval_updating: Mutex<bool>,
     }
 
     impl PreferencesPage {
-        pub fn configure_update_speed(&self) {
-            use crate::application::INTERVAL_STEP;
-            use glib::g_critical;
+        fn configure_minutes_seconds_default(&self) {
+            let interval = self.update_interval.value();
+
+            self.configure_minutes_seconds(interval);
+        }
+
+        fn configure_minutes_seconds(&self, interval: f64) {
+            let max_seconds = MAX_POINTS as f64 * interval;
+
+            let set_minutes = self.range_minutes.value();
+
+            self.range_minutes
+                .set_range(0., (max_seconds / 60.).floor());
+
+            let min_secs = (set_minutes * 60. / interval).ceil() * interval % 60.;
+            let max_secs = ((set_minutes + 1.) * 60. / interval).floor() * interval % 60.;
+
+            let max_secs = if max_secs == 0. {
+                60. - interval
+            } else {
+                max_secs
+            };
+
+            let min_secs = min_secs.max((MIN_POINTS as f64) * interval - set_minutes * 60.);
+            let max_secs = max_secs.min(max_seconds - set_minutes * 60.);
+
+            let min_secs = (min_secs * 100.).round() / 100.;
+            let max_secs = (max_secs * 100.).round() / 100.;
+
+            let min_secs = if min_secs == max_secs {
+                max_secs - 2. * interval
+            } else {
+                min_secs
+            };
+
+            self.range_seconds.adjustment().set_step_increment(interval);
+            self.range_seconds.set_range(min_secs, max_secs);
+
+            if self.range_seconds.value() < min_secs {
+                self.range_seconds.set_value(min_secs);
+            } else if self.range_seconds.value() > max_secs {
+                self.range_seconds.set_value(max_secs);
+            }
+        }
+
+        pub fn configure_update_speed(&self, source: PointsUpdateSource) {
+            let _lock = match self.interval_updating.try_lock() {
+                Ok(g) => g,
+                Err(_) => {
+                    return;
+                }
+            };
 
             let settings = settings!();
 
-            let new_interval = (self.update_interval.value() / INTERVAL_STEP).round() as u64;
-            let new_points = self.data_points.value() as i32;
+            if source == PointsUpdateSource::SecondsWrapped {
+                let secs_val = self.range_seconds.value();
+                let mins_val = self.range_minutes.value();
+                let (minsec, maxsec) = self.range_seconds.range();
 
-            if new_interval <= MAX_INTERVAL_TICKS && new_interval >= MIN_INTERVAL_TICKS {
-                if settings
-                    .set_uint64("app-update-interval-u64", new_interval)
-                    .is_err()
-                {
+                self.range_seconds.set_range(0., 60.);
+
+                // handle all the kinds of wraps, up, down, all the way from min to max and vice versa
+                if secs_val == maxsec {
+                    self.range_seconds.set_value(60.);
+                    if mins_val == self.range_minutes.range().0 {
+                        self.range_minutes.set_value(self.range_minutes.range().1);
+                    } else {
+                        self.range_minutes.set_value(mins_val - 1.);
+                    }
+                } else if secs_val == minsec {
+                    self.range_seconds.set_value(0.);
+                    if mins_val == self.range_minutes.range().1 {
+                        self.range_minutes.set_value(self.range_minutes.range().0);
+                    } else {
+                        self.range_minutes.set_value(mins_val + 1.);
+                    }
+                } else {
                     g_critical!(
                         "MissionCenter::Preferences",
-                        "Failed to set update interval setting",
+                        "Seconds wrap direction ambiguous"
                     );
                 }
-            } else {
-                g_critical!(
-                    "MissionCenter::Preferences",
-                    "Update interval out of bounds",
-                );
             }
 
-            if new_points <= MAX_POINTS && new_points >= MIN_POINTS {
-                if settings
-                    .set_int("performance-page-data-points", new_points)
-                    .is_err()
-                {
-                    g_critical!(
-                        "MissionCenter::Preferences",
-                        "Failed to set update points setting",
-                    );
+            match source {
+                PointsUpdateSource::SettingsLoad => {
+                    let new_points = settings.int("performance-page-data-points") as f64;
+
+                    let interval =
+                        settings.uint64("app-update-interval-u64") as f64 * INTERVAL_STEP;
+
+                    let seconds = new_points * interval;
+
+                    self.data_points.set_value(new_points);
+
+                    self.range_minutes.set_value((seconds / 60.).floor());
+                    self.range_seconds.set_value(seconds % 60.);
+
+                    self.configure_minutes_seconds(interval);
                 }
-            } else {
-                g_critical!(
-                    "MissionCenter::Preferences",
-                    "Points interval out of bounds",
-                );
+                PointsUpdateSource::UpdateInterval => {
+                    let raw_interval = self.update_interval.value();
+                    let new_interval = ((raw_interval / INTERVAL_STEP).round() as u64)
+                        .clamp(MIN_INTERVAL_TICKS, MAX_INTERVAL_TICKS);
+
+                    if settings
+                        .set_uint64("app-update-interval-u64", new_interval)
+                        .is_err()
+                    {
+                        g_critical!(
+                            "MissionCenter::Preferences",
+                            "Failed to set update interval setting",
+                        );
+                    }
+
+                    let points = (self.data_points.value() as i32).clamp(MIN_POINTS, MAX_POINTS);
+
+                    let seconds = points as f64 * raw_interval;
+
+                    self.range_seconds
+                        .adjustment()
+                        .set_step_increment(raw_interval);
+
+                    self.range_minutes.set_value((seconds / 60.).floor());
+                    self.range_seconds.set_value(seconds % 60.);
+
+                    self.configure_minutes_seconds_default();
+                }
+                PointsUpdateSource::DataPoints => {
+                    let new_points =
+                        (self.data_points.value() as i32).clamp(MIN_POINTS, MAX_POINTS);
+
+                    if settings
+                        .set_int("performance-page-data-points", new_points)
+                        .is_err()
+                    {
+                        g_critical!(
+                            "MissionCenter::Preferences",
+                            "Failed to set update points setting",
+                        );
+                    }
+
+                    let interval = self.update_interval.value();
+
+                    let seconds = (new_points as f64) * interval;
+
+                    self.range_minutes.set_value((seconds / 60.).floor());
+                    self.range_seconds.set_value(seconds % 60.);
+
+                    self.configure_minutes_seconds_default();
+                }
+                PointsUpdateSource::MinutesChanged
+                | PointsUpdateSource::SecondsChanged
+                | PointsUpdateSource::SecondsWrapped => {
+                    let interval = self.update_interval.value();
+
+                    let minutes_value = self.range_minutes.value();
+                    let seconds_value = self.range_seconds.value();
+
+                    let seconds = minutes_value * 60. + seconds_value;
+
+                    // i.e.
+                    if seconds_value < 0. && self.range_seconds.range().0 != seconds_value {
+                        self.range_minutes.set_value((seconds / 60.).floor());
+                        self.range_seconds.set_range(0., 60.);
+                        self.range_seconds.set_value(seconds % 60.);
+                    }
+
+                    self.configure_minutes_seconds_default();
+
+                    let new_data_points = (((self.range_seconds.value()
+                        + self.range_minutes.value() * 60.)
+                        / interval)
+                        .round() as i32)
+                        .clamp(MIN_POINTS, MAX_POINTS);
+
+                    self.data_points.set_value(new_data_points as f64);
+
+                    if settings!()
+                        .set_int("performance-page-data-points", new_data_points)
+                        .is_err()
+                    {
+                        g_critical!(
+                            "MissionCenter::Preferences",
+                            "Failed to set update points setting",
+                        );
+                    }
+                }
             }
         }
     }
@@ -224,7 +393,8 @@ mod imp {
                     let this = self.obj().downgrade();
                     move |_| {
                         if let Some(this) = this.upgrade() {
-                            this.imp().configure_update_speed();
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::DataPoints);
                         }
                     }
                 });
@@ -236,7 +406,34 @@ mod imp {
                     let this = self.obj().downgrade();
                     move |_| {
                         if let Some(this) = this.upgrade() {
-                            this.imp().configure_update_speed();
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::UpdateInterval);
+                        }
+                    }
+                });
+
+            self.range_minutes
+                .downcast_ref::<SpinButton>()
+                .unwrap()
+                .connect_changed({
+                    let this = self.obj().downgrade();
+                    move |_| {
+                        if let Some(this) = this.upgrade() {
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::MinutesChanged);
+                        }
+                    }
+                });
+
+            self.range_seconds
+                .downcast_ref::<SpinButton>()
+                .unwrap()
+                .connect_changed({
+                    let this = self.obj().downgrade();
+                    move |_| {
+                        if let Some(this) = this.upgrade() {
+                            this.imp()
+                                .configure_update_speed(PointsUpdateSource::SecondsChanged);
                         }
                     }
                 });
@@ -313,6 +510,20 @@ mod imp {
                 self.toggle_net_base_2,
                 "performance-page-network-use-base2"
             );
+
+            self.configure_update_speed(PointsUpdateSource::SettingsLoad);
+
+            self.range_seconds.connect_wrapped({
+                let this = self.downgrade();
+
+                move |_| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+
+                    this.configure_update_speed(PointsUpdateSource::SecondsWrapped);
+                }
+            });
         }
     }
 
@@ -383,8 +594,6 @@ impl PreferencesPage {
     }
 
     fn set_initial_update_speed(&self) {
-        use crate::application::INTERVAL_STEP;
-
         let settings = settings!();
 
         let data_points = settings.int("performance-page-data-points");
