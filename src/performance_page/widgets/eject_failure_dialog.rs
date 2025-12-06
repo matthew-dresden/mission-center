@@ -55,8 +55,10 @@ mod imp {
 
             let parsed_results = Self::parse_error(error);
 
+            let mcapp = app!();
+
             for (appname, (app_obj, blockers)) in parsed_results {
-                let icon = app_obj.icon.map(|o| o.icon).flatten().unwrap_or_default();
+                let icon = mcapp.get_app_icon(&app_obj.id);
 
                 for blocker in blockers {
                     let row_builder = EjectFailureRowBuilder::new()

@@ -18,12 +18,20 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::num::NonZeroU32;
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+use std::time::Duration;
+use std::{cell::RefCell, collections::HashMap, sync::Arc};
+
 use arrayvec::ArrayString;
 use gtk::glib::{g_critical, g_debug};
+
 use magpie_types::about::{about_response, About};
-use magpie_types::apps::apps_response;
+use magpie_types::apps::apps_icon_response::AppsIconResponseValue;
 use magpie_types::apps::apps_response::AppList;
+use magpie_types::apps::icon::Icon;
 pub use magpie_types::apps::App;
+use magpie_types::apps::{apps_icon_response, apps_response};
 use magpie_types::common::Empty;
 use magpie_types::cpu::cpu_response;
 pub use magpie_types::cpu::Cpu;
@@ -52,10 +60,6 @@ use magpie_types::prost::Message;
 use magpie_types::services::services_response;
 use magpie_types::services::services_response::ServiceList;
 pub use magpie_types::services::Service;
-use std::num::NonZeroU32;
-use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
-use std::time::Duration;
-use std::{cell::RefCell, collections::HashMap, sync::Arc};
 
 use crate::magpie_client::flatpak_app_path;
 use crate::{flatpak_data_dir, is_flatpak, show_error_dialog_and_exit};
@@ -67,6 +71,7 @@ mod nng {
 type ResponseBody = response::Body;
 type AboutResponse = about_response::Response;
 type AppsResponse = apps_response::Response;
+type AppsIconResponse = apps_icon_response::Response;
 type CpuResponse = cpu_response::Response;
 type DisksResponse = disks_response::Response;
 type FansResponse = fans_response::Response;
@@ -881,6 +886,31 @@ impl Client {
                     .apps
                     .drain(..)
                     .map(|app| (app.id.clone(), app))
+                    .collect()
+            }
+        )
+    }
+
+    pub fn app_icons(&self, app_ids: Vec<String>) -> HashMap<String, Icon> {
+        let mut socket = self.socket.borrow_mut();
+
+        let response = make_request(
+            ipc::req_get_app_icons(app_ids),
+            &mut socket,
+            self.socket_addr.as_ref(),
+        )
+        .and_then(|response| response.body);
+
+        parse_response!(
+            response,
+            ResponseBody::AppIcons,
+            AppsIconResponse::Values,
+            AppsIconResponse::Error,
+            |mut app_list: AppsIconResponseValue| {
+                app_list
+                    .pairs
+                    .drain()
+                    .map(|(k, v)| (k, v.icon.unwrap_or_default()))
                     .collect()
             }
         )

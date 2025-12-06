@@ -30,6 +30,7 @@ use magpie_types::apps::App;
 use magpie_types::processes::{Process, ProcessUsageStats};
 use magpie_types::services::Service;
 
+use crate::app;
 use crate::table_view::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
 pub fn update_apps(
@@ -274,12 +275,7 @@ fn update_app(
         return;
     }
 
-    let icon = app
-        .icon
-        .as_ref()
-        .map(|i| i.icon.clone())
-        .flatten()
-        .unwrap_or(Icon::default());
+    let icon = app!().get_app_icon(&app.id);
 
     row_model.imp().set_icon(icon.clone());
 
