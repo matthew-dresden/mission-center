@@ -282,13 +282,13 @@ impl MissionCenterApplication {
         this.apps_icons_cache.set(icons.clone());
 
         let Some(apps) = icons else {
-            return None;
+            return Some(appids.drain(..).map(|app_id| app_id.to_string()).collect());
         };
 
         let out: Vec<_> = appids
             .drain(..)
             .filter_map(|appid| {
-                if apps.contains_key(appid) {
+                if !apps.contains_key(appid) {
                     Some(appid.clone())
                 } else {
                     None
