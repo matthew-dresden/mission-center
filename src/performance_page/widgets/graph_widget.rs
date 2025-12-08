@@ -481,12 +481,6 @@ impl GraphWidget {
         this.data_sets.set(data);
     }
 
-    pub fn fill_dataset(&self, index: usize, fill: f32) {
-        let mut data = self.imp().data_sets.take();
-        data[index].datas[index].fill_data_points(fill);
-        self.imp().data_sets.set(data);
-    }
-
     pub fn add_single_data_point(&self, idx: usize, datas: Vec<f32>) {
         let mut data = self.imp().data_sets.take();
 

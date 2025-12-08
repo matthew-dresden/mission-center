@@ -33,8 +33,8 @@ use crate::i18n::*;
 use crate::performance_page::widgets::DatasetGroup;
 use crate::performance_page::widgets::ScalingSettings;
 use crate::performance_page::{PageExt, MK_TO_0_C};
-use crate::to_short_human_readable_time;
 use crate::to_long_human_readable_time;
+use crate::to_short_human_readable_time;
 
 mod imp {
     use super::*;
@@ -302,8 +302,12 @@ mod imp {
                 charge_cycles.set_visible(battery.charge_cycles.is_some())
             }
 
-
-            let mut his = battery.history.iter().rev().map(|v| if v.is_nan() { 0.0 } else { *v }).collect::<Vec<f32>>();
+            let mut his = battery
+                .history
+                .iter()
+                .rev()
+                .map(|v| if v.is_nan() { 0.0 } else { *v })
+                .collect::<Vec<f32>>();
             let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
             history_graph.dataset_settings.high_watermark = 1.;
             history_graph.dataset_settings.low_watermark = 0.;
@@ -322,7 +326,7 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
-           this.history_graph.add_data_point(vec![vec![0.0]]);
+            this.history_graph.add_data_point(vec![vec![0.0]]);
 
             if let Some(percentage) = this.percentage.get() {
                 percentage.set_text(&i18n_f(
@@ -357,7 +361,6 @@ mod imp {
                         } else {
                             power.set_visible(true);
                             power.set_text(&format!("{:.1} W", v))
-
                         }
                     } else {
                         power.set_visible(false);
@@ -685,10 +688,11 @@ impl PerformancePageBattery {
         energy_rate_graph.dataset_settings.fill = FillingSettings::FillToZero;
 
         this.imp().energy_rate_graph.add_dataset(energy_rate_graph);
-        this.imp().energy_rate_graph.fill_dataset(0, 0.);
         this.imp().energy_rate_graph.connect_to_settings(settings);
 
-        this.imp().history_graph.connect_to_smooth_settings(settings);
+        this.imp()
+            .history_graph
+            .connect_to_smooth_settings(settings);
 
         this
     }

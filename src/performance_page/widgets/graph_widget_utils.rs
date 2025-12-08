@@ -377,18 +377,11 @@ impl DatasetGroup {
                         path_builder.line_to(last_point.x, height);
                         path_builder.line_to(first_point.x, height);
                     } else {
-                        path_builder.line_to(
-                            last_point.x,
-                            height * (self.dataset_settings.high_watermark)
-                                / (self.dataset_settings.high_watermark
-                                    - self.dataset_settings.low_watermark),
-                        );
-                        path_builder.line_to(
-                            first_point.x,
-                            height * (self.dataset_settings.high_watermark)
-                                / (self.dataset_settings.high_watermark
-                                    - self.dataset_settings.low_watermark),
-                        );
+                        let zeroheight = height * (self.dataset_settings.high_watermark)
+                            / (self.dataset_settings.high_watermark
+                                - self.dataset_settings.low_watermark);
+                        path_builder.line_to(last_point.x, zeroheight);
+                        path_builder.line_to(first_point.x, zeroheight);
                     }
                 }
             }
@@ -420,11 +413,6 @@ impl Dataset {
         self.used_data = new_points;
     }
 
-    pub fn fill_data_points(&mut self, fill: f32) {
-        self.data.fill(fill);
-        self.data.resize(MAX_POINTS as usize, fill);
-    }
-
     pub fn get_data(&self) -> Vec<f32> {
         self.data
             .iter()
@@ -447,7 +435,7 @@ impl Dataset {
             .iter()
             .take(self.used_data)
             .map(|v| {
-                if !v.is_normal() && (v == &0. && low_watermark >= 0.) {
+                if !v.is_normal() {
                     low_watermark
                 } else {
                     v.clone()
