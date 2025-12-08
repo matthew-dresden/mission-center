@@ -656,6 +656,19 @@ impl GraphWidget {
         );
     }
 
+    pub fn connect_to_smooth_settings(&self, settings: &gio::Settings) {
+        // create a lock to prevent re-connectiong?
+        self.imp().settings_inited.set(true);
+
+        connect_setting!(
+            self,
+            settings,
+            "performance-sliding-graphs",
+            boolean,
+            set_do_animation
+        );
+    }
+
     /**
      *  "connecting" when used with the Follow scaling settings makes two datasets use the largest high watermark, and the smallest low watermark
      */

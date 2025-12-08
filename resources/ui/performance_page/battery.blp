@@ -77,23 +77,26 @@ template $PerformancePageBattery: Box {
       }
     };
   }
-  Box energy_rate_box {
+  Box {
+    spacing: 10;
     orientation: vertical;
-    Box speed_box {
-      orientation: vertical;
+      Box energy_rate_box {
+        orientation: vertical;
+        Box speed_box {
+          orientation: vertical;
 
-      $GraphWidget energy_rate_graph {
-        vexpand: true;
-        hexpand: true;
+          $GraphWidget energy_rate_graph {
+            vexpand: true;
+            hexpand: true;
 
-        width-request: 100;
-        height-request: 50;
+            width-request: 100;
+            height-request: 50;
 
-        base-color: bind template.base-color;
-        scroll: true;
-      }
-    }
-    Box {
+            base-color: bind template.base-color;
+            scroll: true;
+          }
+        }
+      Box {
         Label {
           styles [
             "caption",
@@ -109,7 +112,41 @@ template $PerformancePageBattery: Box {
           halign: end;
         }
       }
+    }
 
+    Box history_box {
+      orientation: vertical;
+      Box {
+        Label {
+          styles [
+            "caption",
+          ]
+          label: _("History over past week");
+
+          hexpand: true;
+          halign: start;
+          valign: start;
+        }
+
+        Label {
+          styles [
+            "caption",
+          ]
+          label: _("100%");
+        }
+      }
+
+      $GraphWidget history_graph {
+        vexpand: true;
+        hexpand: true;
+
+        width-request: 100;
+        height-request: 50;
+
+        base-color: bind template.base-color;
+        scroll: true;
+      }
+    }
 }
 
   PopoverMenu context_menu {

@@ -48,9 +48,9 @@ mod imp {
         pub title_battery_name: TemplateChild<gtk::Label>,
         #[template_child]
         pub title_battery_model: TemplateChild<gtk::Label>,
+
         #[template_child]
         pub energy_rate_graph: TemplateChild<GraphWidget>,
-
         #[template_child]
         pub energy_rate_max_y: TemplateChild<gtk::Label>,
         #[template_child]
@@ -59,6 +59,11 @@ mod imp {
         pub energy_rate_max_duration: TemplateChild<gtk::Label>,
         #[template_child]
         pub energy_rate_box: TemplateChild<gtk::Box>,
+
+        #[template_child]
+        pub history_graph: TemplateChild<GraphWidget>,
+        #[template_child]
+        pub history_box: TemplateChild<gtk::Box>,
 
         #[template_child]
         pub context_menu: TemplateChild<gtk::Popover>,
@@ -100,11 +105,16 @@ mod imp {
             Self {
                 title_battery_name: Default::default(),
                 title_battery_model: Default::default(),
+
                 energy_rate_graph: Default::default(),
                 energy_rate_max_y: Default::default(),
                 energy_rate_min_y: Default::default(),
                 energy_rate_max_duration: Default::default(),
                 energy_rate_box: Default::default(),
+
+                history_box: Default::default(),
+                history_graph: Default::default(),
+
                 context_menu: Default::default(),
 
                 name: RefCell::new(String::new()),
@@ -292,6 +302,16 @@ mod imp {
                 charge_cycles.set_visible(battery.charge_cycles.is_some())
             }
 
+
+            let mut his = battery.history.iter().rev().map(|v| if v.is_nan() { 0.0 } else { *v }).collect::<Vec<f32>>();
+            let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
+            history_graph.dataset_settings.high_watermark = 1.;
+            history_graph.dataset_settings.low_watermark = 0.;
+
+            this.history_graph.add_dataset(history_graph);
+            this.history_graph.set_data_points(1008);
+            this.history_graph.update_animation(0.0);
+
             true
         }
 
@@ -301,6 +321,8 @@ mod imp {
             index: Option<usize>,
         ) -> bool {
             let this = this.imp();
+
+           this.history_graph.add_data_point(vec![vec![0.0]]);
 
             if let Some(percentage) = this.percentage.get() {
                 percentage.set_text(&i18n_f(
@@ -657,16 +679,16 @@ impl PerformancePageBattery {
 
         let mut energy_rate_graph = DatasetGroup::new();
         energy_rate_graph.dataset_settings.scaling_settings =
-            ScalingSettings::StickyUpDown;
+            ScalingSettings::StickyUpDownEqualMagnitude;
         energy_rate_graph.dataset_settings.high_watermark = 0.;
         energy_rate_graph.dataset_settings.low_watermark = 0.;
         energy_rate_graph.dataset_settings.fill = FillingSettings::FillToZero;
 
         this.imp().energy_rate_graph.add_dataset(energy_rate_graph);
-
         this.imp().energy_rate_graph.fill_dataset(0, 0.);
-
         this.imp().energy_rate_graph.connect_to_settings(settings);
+
+        this.imp().history_graph.connect_to_smooth_settings(settings);
 
         this
     }

@@ -91,6 +91,25 @@ impl DatasetGroup {
             datas: vec![Dataset::default()],
         }
     }
+    pub fn new_with_datas(d: Vec<Vec<f32>>) -> Self {
+        let mut datas = Vec::with_capacity(d.len());
+        for v in d {
+            datas.push(Dataset::new_with_data(v));
+        }
+        Self {
+            dataset_settings: DatasetSettings {
+                dashed: false,
+                fill: Default::default(),
+                visible: true,
+                scaling_settings: Default::default(),
+                low_watermark: 0.0,
+                high_watermark: 100.0,
+                following: None,
+                followed: None,
+            },
+            datas,
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -390,6 +409,13 @@ impl DatasetGroup {
 }
 
 impl Dataset {
+    pub fn new_with_data(d: Vec<f32>) -> Self {
+        Dataset {
+            data: d,
+            used_data: 0,
+        }
+    }
+
     pub fn update_data_points(&mut self, new_points: usize) {
         self.used_data = new_points;
     }
