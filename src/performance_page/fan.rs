@@ -27,9 +27,9 @@ use gtk::{gio, glib, prelude::*};
 
 use magpie_types::fan::Fan;
 
-use super::widgets::GraphWidget;
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::performance_page::{PageExt, MK_TO_0_C};
 use crate::to_short_human_readable_time;
 
@@ -179,45 +179,7 @@ mod imp {
 
     impl PerformancePageFan {
         pub fn set_static_information(this: &super::PerformancePageFan, fan: &Fan) -> bool {
-            let t = this.clone();
-
             let this = this.imp();
-
-            this.speed_graph.connect_local("resize", true, move |_| {
-                let this = t.imp();
-
-                {
-                    let width = this.speed_graph.width() as f32;
-                    let height = this.speed_graph.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.speed_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-                }
-
-                {
-                    let width = this.temp_graph.width() as f32;
-                    let height = this.temp_graph.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.temp_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-                }
-
-                None
-            });
 
             if let Some(legend_send) = this.legend_speed.get() {
                 legend_send
@@ -232,9 +194,6 @@ mod imp {
             if let Some(temp_name) = &fan.temp_name {
                 this.title_temp_name.set_text(temp_name);
             }
-
-            this.speed_graph.set_filled(1, false);
-            this.speed_graph.set_dashed(1, true);
 
             if fan.pwm_percent.is_none() {
                 if let Some(box_pwm) = this.bow_pwm.get() {
@@ -256,6 +215,10 @@ mod imp {
 
             if let Some(max_rpm) = fan.max_rpm {
                 this.speed_max_y.set_text(&format!("{}", max_rpm));
+
+                this.speed_graph
+                    .set_dataset_scaling(0, ScalingSettings::Fixed);
+                this.speed_graph.set_dataset_max_scale(0, max_rpm as f32);
             }
             true
         }
@@ -296,39 +259,31 @@ mod imp {
                     temp.set_text(&i18n_f("{} °C", &[&format!("{:.1}", fan_temp_c)]));
                 }
 
-                this.temp_graph.add_data_point(0, fan_temp_c);
-                this.temp_max_y.set_text(&format!(
-                    "{} °C",
-                    this.temp_graph
-                        .max_all_time(0)
-                        .unwrap_or(fan_temp_c.round())
-                ));
+                this.temp_graph.add_data_point(vec![vec![fan_temp_c]]);
+                this.temp_max_y
+                    .set_text(&format!("{} °C", this.temp_graph.get_dataset_max_scale(0)));
             }
 
-            this.speed_graph.add_data_point(0, fan.rpm as f32);
-            if let Some(pwm_percent) = fan.pwm_percent {
-                this.speed_graph.add_data_point(1, pwm_percent * 100.);
-            }
+            this.speed_graph.add_data_point(vec![
+                vec![fan.rpm as f32],
+                vec![fan.pwm_percent.unwrap_or(0.)],
+            ]);
 
             if fan.max_rpm.is_none() {
                 this.speed_max_y.set_text(&i18n_f(
                     "{} RPM",
-                    &[&this
-                        .speed_graph
-                        .max_all_time(0)
-                        .unwrap_or(fan.rpm as f32)
-                        .to_string()],
+                    &[&this.speed_graph.get_dataset_max_scale(0).to_string()],
                 ));
             }
 
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageFan) -> bool {
+        pub fn update_animations(this: &super::PerformancePageFan, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.speed_graph.update_animation();
-            this.temp_graph.update_animation();
+            this.speed_graph.update_animation(new_ticks);
+            this.temp_graph.update_animation(new_ticks);
 
             true
         }
@@ -490,8 +445,6 @@ impl PerformancePageFan {
             settings: &gio::Settings,
         ) {
             let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
             let delay = settings.uint64("app-update-interval-u64");
             let graph_max_duration =
                 (((delay as f64) * INTERVAL_STEP) * (data_points as f64)).round() as u32;
@@ -501,16 +454,7 @@ impl PerformancePageFan {
             let time_string = &to_short_human_readable_time(graph_max_duration);
 
             this.speed_graph_max_duration.set_text(time_string);
-            this.speed_graph.set_data_points(data_points);
-            this.speed_graph.set_smooth_graphs(smooth);
-            this.speed_graph.set_do_animation(sliding);
-            this.speed_graph.set_expected_animation_ticks(delay as u32);
-
             this.temp_graph_max_duration.set_text(time_string);
-            this.temp_graph.set_data_points(data_points);
-            this.temp_graph.set_smooth_graphs(smooth);
-            this.temp_graph.set_do_animation(sliding);
-            this.temp_graph.set_expected_animation_ticks(delay as u32);
         }
         update_refresh_rate_sensitive_labels(&this, settings);
 
@@ -532,23 +476,25 @@ impl PerformancePageFan {
             }
         });
 
-        settings.connect_changed(Some("performance-smooth-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
+        let mut temp_dataset = DatasetGroup::new();
+        temp_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUpDown;
+        temp_dataset.dataset_settings.high_watermark = 45.;
+        temp_dataset.dataset_settings.low_watermark = 35.;
 
-        settings.connect_changed(Some("performance-sliding-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
+        this.imp().temp_graph.add_dataset(temp_dataset);
+
+        let mut speed_dataset = DatasetGroup::new();
+        speed_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUp;
+        let mut rpm_dataset = DatasetGroup::new();
+        rpm_dataset.dataset_settings.dashed = true;
+        rpm_dataset.dataset_settings.fill = false;
+        rpm_dataset.dataset_settings.high_watermark = 1.;
+
+        this.imp().speed_graph.add_dataset(speed_dataset);
+        this.imp().speed_graph.add_dataset(rpm_dataset);
+
+        this.imp().temp_graph.connect_to_settings(settings);
+        this.imp().speed_graph.connect_to_settings(settings);
 
         this
     }
@@ -561,7 +507,7 @@ impl PerformancePageFan {
         imp::PerformancePageFan::update_readings(self, fan_info, index)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageFan::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageFan::update_animations(self, new_ticks)
     }
 }

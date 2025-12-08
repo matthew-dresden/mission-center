@@ -161,7 +161,7 @@
         </key>
         
         <key name="performance-page-cpu-graph" type="i">
-            <range min="1" max="2"/>
+            <range min="1" max="4"/>
             <default>1</default>
             <summary>Which graph is shown on the CPU performance page</summary>
         </key>

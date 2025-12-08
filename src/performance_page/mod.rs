@@ -19,6 +19,7 @@
  */
 
 use std::fmt::Write;
+use std::marker::PhantomData;
 use std::{
     cell::{Cell, RefCell},
     collections::{HashMap, HashSet},
@@ -36,9 +37,12 @@ use magpie_types::fan::Fan;
 use magpie_types::gpus::Gpu;
 use magpie_types::network::{Connection, ConnectionKind};
 
-use crate::{i18n::*, magpie_client::DiskKind, settings};
-
-use widgets::{GraphWidget, SidebarDropHint};
+use crate::i18n::*;
+use crate::magpie_client::DiskKind;
+use crate::performance_page::widgets::{
+    DatasetGroup, GraphWidget, ScalingSettings, SidebarDropHint,
+};
+use crate::{settings, DataType};
 
 mod cpu;
 mod disk;
@@ -69,8 +73,6 @@ const MK_TO_0_C: i32 = -273150;
 
 mod imp {
     use super::*;
-    use crate::DataType;
-    use std::marker::PhantomData;
 
     // GNOME color palette: Blue 4
     const CPU_BASE_COLOR: [u8; 3] = [0x1c, 0x71, 0xd8];
@@ -993,18 +995,10 @@ mod imp {
 
             let settings = settings!();
 
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
+            let usage_group = DatasetGroup::new();
+
+            summary.graph_widget().add_dataset(usage_group);
+            summary.graph_widget().connect_to_settings(&settings!());
 
             let page = CpuPage::new(&settings);
             page.set_base_color(gdk::RGBA::new(
@@ -1032,13 +1026,27 @@ mod imp {
             summary.set_widget_name("memory");
             let mem_info = readings.mem_info;
 
+            let settings = settings!();
+
             {
                 let graph_widget = summary.graph_widget();
 
-                graph_widget.set_value_range_max(mem_info.mem_total as f32);
-                graph_widget.set_data_set_count(2);
-                graph_widget.set_filled(0, false);
-                graph_widget.set_dashed(0, true);
+                let mut dataset_a = DatasetGroup::new();
+                dataset_a.dataset_settings.fill = false;
+                dataset_a.dataset_settings.dashed = true;
+                dataset_a.dataset_settings.high_watermark = mem_info.mem_total as f32;
+                dataset_a.dataset_settings.scaling_settings = ScalingSettings::Fixed;
+                let mut dataset_b = DatasetGroup::new();
+                dataset_b.dataset_settings.high_watermark = mem_info.mem_total as f32;
+                dataset_b.dataset_settings.scaling_settings = ScalingSettings::Fixed;
+
+                graph_widget.add_dataset(dataset_a);
+                graph_widget.add_dataset(dataset_b);
+
+                // graph_widget.connect_datasets(0, 1);
+                // graph_widget.connect_datasets(1, 0);
+
+                graph_widget.connect_to_settings(&settings);
             }
 
             summary.set_heading(i18n("Memory"));
@@ -1051,22 +1059,6 @@ mod imp {
                 MEMORY_BASE_COLOR[2] as f32 / 255.,
                 1.,
             ));
-
-            let settings = settings!();
-
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
-
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
 
             let page = MemoryPage::new(&settings);
             page.set_base_color(gdk::RGBA::new(
@@ -1190,19 +1182,10 @@ mod imp {
 
             let settings = settings!();
 
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
+            let busy_pct = DatasetGroup::new();
 
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
+            summary.graph_widget().add_dataset(busy_pct);
+            summary.graph_widget().connect_to_settings(&settings);
 
             let page = DiskPage::new(&page_name, &settings);
             page.set_base_color(gdk::RGBA::new(
@@ -1266,44 +1249,45 @@ mod imp {
                 ConnectionKind::try_from(connection.kind).expect("Invalid connection type");
             let conn_type = conn_kind.as_str_name();
 
+            let settings = settings!();
+
             let summary = SummaryGraph::new();
             summary.set_widget_name(&page_name);
             summary.set_heading(format!("{} ({})", conn_type, if_name));
             {
                 let graph_widget = summary.graph_widget();
-                graph_widget.set_data_set_count(2);
-                graph_widget.set_scaling(GraphWidget::auto_pow2_scaling());
-                graph_widget.set_filled(0, false);
-                graph_widget.set_dashed(0, true);
+
+                let mut dataset_a = DatasetGroup::new();
+                dataset_a.dataset_settings.fill = false;
+                dataset_a.dataset_settings.dashed = true;
+                let mut dataset_b = DatasetGroup::new();
+                dataset_a.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
+                dataset_b.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
+
+                graph_widget.add_dataset(dataset_a);
+                graph_widget.add_dataset(dataset_b);
+
+                graph_widget.connect_datasets(0, 1);
+                graph_widget.connect_datasets(1, 0);
+
                 graph_widget.set_base_color(gdk::RGBA::new(
                     NETWORK_BASE_COLOR[0] as f32 / 255.,
                     NETWORK_BASE_COLOR[1] as f32 / 255.,
                     NETWORK_BASE_COLOR[2] as f32 / 255.,
                     1.,
                 ));
+
+                graph_widget.connect_to_settings(&settings);
             }
-
-            let settings = settings!();
-
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
 
             if let Some(max_speed) = connection.max_speed_bytes_ps {
                 if !settings.boolean("performance-page-network-dynamic-scaling") {
                     summary
                         .graph_widget()
-                        .set_scaling(GraphWidget::no_scaling());
-                    summary.graph_widget().set_value_range_max(max_speed as f32);
+                        .set_dataset_scaling(0, ScalingSettings::Fixed);
+                    summary
+                        .graph_widget()
+                        .set_dataset_max_scale(0, max_speed as f32);
                 }
                 settings.connect_changed(Some("performance-page-network-dynamic-scaling"), {
                     let graph = summary.graph_widget().downgrade();
@@ -1317,11 +1301,11 @@ mod imp {
                             settings.boolean("performance-page-network-dynamic-scaling");
 
                         if dynamic_scaling {
-                            graph.set_scaling(GraphWidget::auto_pow2_scaling());
+                            graph.set_dataset_scaling(0, ScalingSettings::ScaleUpPow2);
                         } else {
-                            graph.set_scaling(GraphWidget::no_scaling());
+                            graph.set_dataset_scaling(0, ScalingSettings::Fixed);
+                            graph.set_dataset_max_scale(0, max_speed as f32);
                         }
-                        graph.set_value_range_max(max_speed as f32);
                     }
                 });
             }
@@ -1376,18 +1360,11 @@ mod imp {
 
             let settings = settings!();
 
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
+            let sumset = DatasetGroup::new();
+
+            summary.graph_widget().add_dataset(sumset);
+
+            summary.graph_widget().connect_to_settings(&settings);
 
             let page = GpuPage::new(gpu.device_name.as_ref().unwrap_or(&i18n("Unknown")));
 
@@ -1515,22 +1492,12 @@ mod imp {
 
             let settings = settings!();
 
-            summary
-                .graph_widget()
-                .set_scaling(GraphWidget::normalized_scaling());
-            summary.graph_widget().set_only_scale_up(true);
-            summary
-                .graph_widget()
-                .set_data_points(settings.int("performance-page-data-points") as u32);
-            summary
-                .graph_widget()
-                .set_smooth_graphs(settings.boolean("performance-smooth-graphs"));
-            summary
-                .graph_widget()
-                .set_do_animation(settings.boolean("performance-sliding-graphs"));
-            summary
-                .graph_widget()
-                .set_expected_animation_ticks(settings.uint64("app-update-interval-u64") as u32);
+            summary.graph_widget().connect_to_settings(&settings);
+
+            let mut speed_dataset = DatasetGroup::new();
+            speed_dataset.dataset_settings.scaling_settings = ScalingSettings::StickyUp;
+
+            summary.graph_widget().add_dataset(speed_dataset);
 
             let page = FanPage::new(&page_name, &settings);
             page.set_base_color(gdk::RGBA::new(
@@ -1903,21 +1870,10 @@ mod imp {
 
             let mut result = true;
 
-            let settings = settings!();
-
-            let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
-            let delay = settings.uint64("app-update-interval-u64") as u32;
-
             for page in &mut pages {
                 match page {
                     Pages::Cpu((summary, page)) => {
                         let graph_widget = summary.graph_widget();
-                        graph_widget.set_data_points(data_points);
-                        graph_widget.set_smooth_graphs(smooth);
-                        graph_widget.set_do_animation(sliding);
-                        graph_widget.set_expected_animation_ticks(delay);
 
                         let mut info2 = ArrayString::<256>::new();
                         let _ = write!(&mut info2, "{}%", readings.cpu.total_usage_percent.round());
@@ -1925,7 +1881,7 @@ mod imp {
                             let _ = write!(&mut info2, " ({:.0} °C)", temp);
                         }
 
-                        graph_widget.add_data_point(0, readings.cpu.total_usage_percent);
+                        graph_widget.add_data_point(vec![vec![readings.cpu.total_usage_percent]]);
                         if let Some(name) = readings.cpu.name.as_ref() {
                             summary.set_info1(name.as_str());
                             summary.set_info2(info2.as_str());
@@ -1950,12 +1906,10 @@ mod imp {
 
                         let used_raw = total_raw.saturating_sub(mem_avail);
                         let graph_widget = summary.graph_widget();
-                        graph_widget.set_data_points(data_points);
-                        graph_widget.set_smooth_graphs(smooth);
-                        graph_widget.set_do_animation(sliding);
-                        graph_widget.set_expected_animation_ticks(delay);
-                        graph_widget.add_data_point(0, readings.mem_info.committed as _);
-                        graph_widget.add_data_point(1, used_raw as _);
+                        graph_widget.add_data_point(vec![
+                            vec![readings.mem_info.committed as _],
+                            vec![used_raw as _],
+                        ]);
                         let used =
                             crate::to_human_readable_nice(used_raw as _, &DataType::MemoryBytes);
 
@@ -2001,11 +1955,7 @@ mod imp {
                                     });
 
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.set_data_points(data_points);
-                                graph_widget.set_smooth_graphs(smooth);
-                                graph_widget.set_do_animation(sliding);
-                                graph_widget.set_expected_animation_ticks(delay);
-                                graph_widget.add_data_point(0, disk.busy_percent);
+                                graph_widget.add_data_point(vec![vec![disk.busy_percent]]);
                                 if let Some(temp_mk) = disk.temperature_milli_k {
                                     summary.set_info2(format!(
                                         "{:.0}% ({:.0} °C)",
@@ -2074,13 +2024,11 @@ mod imp {
                                     });
 
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.set_data_points(data_points);
-                                graph_widget.set_smooth_graphs(smooth);
-                                graph_widget.set_do_animation(sliding);
-                                graph_widget.set_expected_animation_ticks(delay);
 
-                                graph_widget.add_data_point(0, network_connection.tx_rate_bytes_ps);
-                                graph_widget.add_data_point(1, network_connection.rx_rate_bytes_ps);
+                                graph_widget.add_data_point(vec![
+                                    vec![network_connection.tx_rate_bytes_ps],
+                                    vec![network_connection.rx_rate_bytes_ps],
+                                ]);
 
                                 let send_speed = network_connection.tx_rate_bytes_ps;
                                 let rec_speed = network_connection.rx_rate_bytes_ps;
@@ -2148,10 +2096,6 @@ mod imp {
                                     });
 
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.set_data_points(data_points);
-                                graph_widget.set_smooth_graphs(smooth);
-                                graph_widget.set_do_animation(sliding);
-                                graph_widget.set_expected_animation_ticks(delay);
 
                                 if let Some(index) = index {
                                     summary.set_heading(i18n_f("GPU {}", &[&format!("{}", index)]));
@@ -2161,7 +2105,7 @@ mod imp {
 
                                 let mut info2 = ArrayString::<256>::new();
                                 if let Some(v) = gpu.utilization_percent {
-                                    graph_widget.add_data_point(0, v);
+                                    graph_widget.add_data_point(vec![vec![v]]);
                                     let _ = write!(&mut info2, "{v}%");
                                 }
                                 if let Some(v) = gpu.temperature_c.map(|v| v.round() as u32) {
@@ -2221,11 +2165,7 @@ mod imp {
                                     });
 
                                 let graph_widget = summary.graph_widget();
-                                graph_widget.set_data_points(data_points);
-                                graph_widget.set_smooth_graphs(smooth);
-                                graph_widget.set_do_animation(sliding);
-                                graph_widget.set_expected_animation_ticks(delay);
-                                graph_widget.add_data_point(0, fan.rpm as f32);
+                                graph_widget.add_data_point(vec![vec![fan.rpm as f32]]);
                                 if let Some(fan_name) = &fan.fan_label {
                                     summary.set_info1(fan_name.as_str());
                                 } else if let Some(temp_name) = &fan.temp_name {
@@ -2280,7 +2220,7 @@ mod imp {
             result
         }
 
-        pub fn update_animations(this: &super::PerformancePage) -> bool {
+        pub fn update_animations(this: &super::PerformancePage, new_ticks: f32) -> bool {
             let mut pages = this.imp().pages.take();
 
             let mut result = true;
@@ -2290,45 +2230,45 @@ mod imp {
                     Pages::Cpu((summary, page)) => {
                         let graph_widget = summary.graph_widget();
 
-                        result &= graph_widget.update_animation();
-                        result &= page.update_animations();
+                        result &= graph_widget.update_animation(new_ticks);
+                        result &= page.update_animations(new_ticks);
                     }
                     Pages::Memory((summary, page)) => {
                         let graph_widget = summary.graph_widget();
 
-                        result &= graph_widget.update_animation();
-                        result &= page.update_animations();
+                        result &= graph_widget.update_animation(new_ticks);
+                        result &= page.update_animations(new_ticks);
                     }
                     Pages::Disk(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                     Pages::Network(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                     Pages::Gpu(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                     Pages::Fan(pages) => {
                         for (summary, page) in pages.values() {
                             let graph_widget = summary.graph_widget();
 
-                            result &= graph_widget.update_animation();
-                            result &= page.update_animations();
+                            result &= graph_widget.update_animation(new_ticks);
+                            result &= page.update_animations(new_ticks);
                         }
                     }
                 }
@@ -2499,8 +2439,8 @@ impl PerformancePage {
         imp::PerformancePage::update_readings(self, readings)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePage::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePage::update_animations(self, new_ticks)
     }
 
     pub fn sidebar_enable_all(&self) {

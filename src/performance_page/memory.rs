@@ -24,15 +24,14 @@ use adw::{self, subclass::prelude::*};
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
-use super::{
-    widgets::{GraphWidget, MemoryCompositionWidget},
-    PageExt,
-};
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget, MemoryCompositionWidget};
+use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
+
+use super::PageExt;
 
 mod imp {
     use super::*;
-    use crate::DataType;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageMemory)]
@@ -305,10 +304,9 @@ mod imp {
                 settings.boolean("performance-page-memory-composition-visible");
 
             this.usage_graph
-                .set_value_range_max(readings.mem_info.mem_total as f32);
+                .set_all_datasets_max_scale(readings.mem_info.mem_total as f32);
             this.swap_usage_graph
-                .set_value_range_max(readings.mem_info.swap_total as f32);
-            let t = this.obj().clone();
+                .set_all_datasets_max_scale(readings.mem_info.swap_total as f32);
 
             if !show_memory_composition {
                 this.box_mem_composition.set_visible(false);
@@ -322,28 +320,6 @@ mod imp {
                 legend_used
                     .set_resource(Some("/io/missioncenter/MissionCenter/line-solid-mem.svg"));
             }
-
-            this.usage_graph.connect_local("resize", true, move |_| {
-                let this = t.imp();
-
-                let width = this.usage_graph.width() as f32;
-                let height = this.usage_graph.height() as f32;
-
-                let mut a = width;
-                let mut b = height;
-                if width > height {
-                    a = height;
-                    b = width;
-                }
-
-                this.usage_graph
-                    .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                this.swap_usage_graph
-                    .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                None
-            });
 
             let total_mem = crate::to_human_readable_nice(
                 readings.mem_info.mem_total as _,
@@ -417,9 +393,11 @@ mod imp {
             };
             let used = mem_info.mem_total.saturating_sub(mem_avail);
             let standby = mem_info.mem_total.saturating_sub(used + mem_info.mem_free);
-            this.usage_graph.add_data_point(0, mem_info.committed as _);
-            this.usage_graph.add_data_point(1, mem_info.dirty as _);
-            this.usage_graph.add_data_point(2, used as _);
+            this.usage_graph.add_data_point(vec![
+                vec![mem_info.committed as _],
+                vec![mem_info.dirty as _],
+                vec![used as _],
+            ]);
 
             let total_mem = crate::to_human_readable_nice(
                 readings.mem_info.mem_total as _,
@@ -428,13 +406,14 @@ mod imp {
             this.total_ram.set_text(&total_mem);
 
             let max_ram = crate::to_human_readable_nice(
-                this.usage_graph.value_range_max(),
+                this.usage_graph.get_dataset_max_scale(0),
                 &DataType::MemoryBytes,
             );
             this.max_graph_ram.set_text(&max_ram);
 
             let swap_used = mem_info.swap_total.saturating_sub(mem_info.swap_free);
-            this.swap_usage_graph.add_data_point(0, swap_used as _);
+            this.swap_usage_graph
+                .add_data_point(vec![vec![swap_used as _]]);
 
             this.mem_composition.update_memory_information(mem_info);
 
@@ -520,11 +499,11 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageMemory) -> bool {
+        pub fn update_animations(this: &super::PerformancePageMemory, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.usage_graph.update_animation();
-            this.swap_usage_graph.update_animation();
+            this.usage_graph.update_animation(new_ticks);
+            this.swap_usage_graph.update_animation(new_ticks);
 
             true
         }
@@ -652,9 +631,29 @@ mod imp {
 
             let this = self.obj().clone();
 
-            self.usage_graph.set_filled(0, false);
-            self.usage_graph.set_dashed(0, true);
-            self.usage_graph.set_filled(1, false);
+            let mut dataset_a = DatasetGroup::new();
+            dataset_a.dataset_settings.fill = false;
+            dataset_a.dataset_settings.dashed = true;
+
+            let mut dataset_b = DatasetGroup::new();
+            dataset_b.dataset_settings.fill = false;
+
+            let dataset_c = DatasetGroup::new();
+
+            self.usage_graph.add_dataset(dataset_a);
+            self.usage_graph.add_dataset(dataset_b);
+            self.usage_graph.add_dataset(dataset_c);
+
+            self.usage_graph.connect_datasets(0, 1);
+            self.usage_graph.connect_datasets(1, 2);
+            self.usage_graph.connect_datasets(2, 0);
+
+            self.usage_graph.connect_to_settings(&settings!());
+
+            let swap_dataset = DatasetGroup::new();
+
+            self.swap_usage_graph.add_dataset(swap_dataset);
+            self.swap_usage_graph.connect_to_settings(&settings!());
 
             Self::configure_actions(&this);
             Self::configure_context_menu(&this);
@@ -832,24 +831,12 @@ impl PerformancePageMemory {
             let this = this.imp();
 
             let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
             let delay = settings.uint64("app-update-interval-u64");
             let graph_max_duration =
                 (((delay as f64) * INTERVAL_STEP) * (data_points as f64)).round() as u32;
 
             this.graph_max_duration
                 .set_text(&to_short_human_readable_time(graph_max_duration));
-
-            this.usage_graph.set_data_points(data_points);
-            this.swap_usage_graph.set_data_points(data_points);
-            this.usage_graph.set_smooth_graphs(smooth);
-            this.swap_usage_graph.set_smooth_graphs(smooth);
-            this.usage_graph.set_do_animation(sliding);
-            this.swap_usage_graph.set_do_animation(sliding);
-            this.usage_graph.set_expected_animation_ticks(delay as u32);
-            this.swap_usage_graph
-                .set_expected_animation_ticks(delay as u32);
         }
         update_refresh_rate_sensitive_labels(&this, settings);
 
@@ -863,24 +850,6 @@ impl PerformancePageMemory {
         });
 
         settings.connect_changed(Some("app-update-interval-u64"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
-
-        settings.connect_changed(Some("performance-smooth-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
-
-        settings.connect_changed(Some("performance-sliding-graphs"), {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
@@ -921,7 +890,7 @@ impl PerformancePageMemory {
         imp::PerformancePageMemory::update_readings(self, readings)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageMemory::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageMemory::update_animations(self, new_ticks)
     }
 }
