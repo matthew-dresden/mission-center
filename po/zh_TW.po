@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-12-03 12:00+0000\n"
+"PO-Revision-Date: 2025-12-09 11:00+0000\n"
 "Last-Translator: 默想刃Mokuso YB <mokusoyb@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/mission-center/mission-center/zh_Hant/>\n"
@@ -314,7 +314,6 @@ msgid "Show the swap graph"
 msgstr "顯示交換空間圖表"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
-#, fuzzy
 msgid "Show the gpu encode-decode graph"
 msgstr "顯示 GPU 編解碼圖表"
 
