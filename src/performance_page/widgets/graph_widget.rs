@@ -290,6 +290,8 @@ mod imp {
             }
 
             snapshot.pop();
+
+            self.draw_outline(snapshot, &bounds, &base_color)
         }
     }
 
