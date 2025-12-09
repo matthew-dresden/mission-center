@@ -18,35 +18,33 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::ffi::adw_carousel_indicator_dots_get_carousel;
-use glib::{ParamSpec, Properties, Value};
-use gtk::{
-    gdk,
-    gdk::prelude::*,
-    gio,
-    glib::{
-        self,
-        subclass::{prelude::*, Signal},
-    },
-    graphene,
-    gsk::{self, PathBuilder, Stroke},
-    prelude::*,
-    subclass::prelude::*,
-    Snapshot,
-};
 use std::cell::Cell;
-// pub use imp::DataSetDescriptor;
 
-use super::{DatasetGroup, FillingSettings, ScalingSettings, GRAPH_RADIUS};
+use glib::{ParamSpec, Properties, Value};
+use gtk::gdk;
+use gtk::gdk::prelude::*;
+use gtk::gio;
+use gtk::glib;
+use gtk::glib::g_warning;
+use gtk::glib::subclass::prelude::*;
+use gtk::glib::subclass::Signal;
+use gtk::graphene;
+use gtk::gsk;
+use gtk::gsk::PathBuilder;
+use gtk::gsk::Stroke;
+use gtk::prelude::*;
+use gtk::subclass::prelude::*;
+use gtk::Snapshot;
+use gtk::TextDirection;
+
+use crate::performance_page::widgets::graph_widget_utils::{DatasetGroup, ScalingSettings};
 
 // no faster than 200 Hz. if everything is going according to plan, we expect two animation frames in quick succession at the start of a new cycle and want to prevent rendering twice
 const ANIMATION_LOCKOUT: f32 = 0.005;
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::graph_widget_utils::DatasetGroup;
-    use gtk::glib::g_warning;
-    use gtk::TextDirection;
+    use crate::performance_page::widgets::GRAPH_RADIUS;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::GraphWidget)]
@@ -85,8 +83,8 @@ mod imp {
             Self {
                 data_points: Cell::new(0),
                 base_color: Cell::new(gdk::RGBA::new(0., 0., 0., 1.)),
-                horizontal_line_count: Cell::new(6),
-                vertical_line_count: Cell::new(9),
+                horizontal_line_count: Cell::new(9),
+                vertical_line_count: Cell::new(6),
                 animation_ticks: Cell::new(0.),
                 do_animation: Cell::new(false),
                 smooth_graphs: Cell::new(false),
@@ -242,29 +240,28 @@ mod imp {
             let need_redraw =
                 !self.do_animation.get() || self.need_redraw.get() || cached_shot.is_none();
 
-            let baze = if need_redraw {
+            let base_snapshot = if need_redraw {
                 self.need_redraw.set(false);
 
-                let beanshot = Snapshot::new();
-                let snapshot = &beanshot;
+                let snapshot = Snapshot::new();
 
                 if self.obj().grid_visible() {
-                    self.draw_grid(snapshot, width, height, scale_factor, &base_color);
+                    self.draw_grid(&snapshot, width, height, scale_factor, &base_color);
                 }
 
                 let mut data_sets = self.data_sets.take();
                 let object = self.obj();
                 for values in &mut data_sets {
-                    values.plot(snapshot, width, height, &*object);
+                    values.plot(&snapshot, width, height, &*object);
                 }
                 self.data_sets.set(data_sets);
 
-                beanshot.to_node()
+                snapshot.to_node()
             } else {
                 cached_shot
             };
 
-            let Some(baze) = baze else {
+            let Some(baze) = base_snapshot else {
                 g_warning!("MissionCenter", "Drawing was empty");
                 return;
             };
@@ -291,8 +288,6 @@ mod imp {
             } else {
                 snapshot.append_node(baze);
             }
-
-            self.draw_outline(snapshot, &bounds, &base_color);
 
             snapshot.pop();
         }
@@ -328,6 +323,9 @@ mod imp {
     impl WidgetImpl for GraphWidget {
         fn realize(&self) {
             self.parent_realize();
+
+            // connection has to happen slightly later than GraphWidget::new and this works so that the initial resize is not lost in the void
+            self.obj().connect_signals();
         }
 
         fn snapshot(&self, snapshot: &Snapshot) {
@@ -398,44 +396,46 @@ impl GraphWidget {
             if let Some(settings) = settings {
                 obj.connect_to_settings(settings);
             }
-
-            obj.connect_local("resize", true, {
-                let dcr = obj.downgrade();
-
-                move |_| {
-                    let Some(obj) = dcr.upgrade() else {
-                        return None;
-                    };
-
-                    let width = obj.width() as f32;
-                    let height = obj.height() as f32;
-
-                    let (a, b) = if width > height {
-                        (height, width)
-                    } else {
-                        (width, height)
-                    };
-
-                    obj.set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    None
-                }
-            });
-
-            obj.connect_visible_notify({
-                let dcr = obj.downgrade();
-
-                move |_| {
-                    let Some(obj) = dcr.upgrade() else {
-                        return;
-                    };
-
-                    obj.force_redraw();
-                }
-            });
         }
 
         obj
+    }
+
+    pub fn connect_signals(&self) {
+        let obj = self;
+        obj.connect_local("resize", true, {
+            let dcr = obj.downgrade();
+
+            move |_| {
+                let Some(obj) = dcr.upgrade() else {
+                    return None;
+                };
+
+                let width = obj.width() as f32;
+                let height = obj.height() as f32;
+
+                obj.set_vertical_line_count((width / 60.).round().max(6.) as u32);
+                obj.set_horizontal_line_count((height / 60.).round().max(9.) as u32);
+
+                None
+            }
+        });
+
+        obj.connect_visible_notify({
+            let dcr = obj.downgrade();
+
+            move |_| {
+                let Some(obj) = dcr.upgrade() else {
+                    return;
+                };
+
+                if !obj.is_visible() {
+                    return;
+                }
+
+                obj.force_redraw();
+            }
+        });
     }
 
     pub fn set_dashed(&self, index: usize, dashed: bool) {
@@ -465,10 +465,6 @@ impl GraphWidget {
     pub fn add_data_point(&self, datas: Vec<Vec<f32>>) {
         let this = self.imp();
         let mut data = this.data_sets.take();
-
-        if !this.settings_inited.get() {
-            let _ = 1 + 1;
-        }
 
         assert_eq!(datas.len(), data.len());
 
@@ -563,6 +559,18 @@ impl GraphWidget {
         self.force_redraw();
     }
 
+    pub fn set_all_datasets_watermarking_multiplier(&self, offset: f32) {
+        let mut sets = self.imp().data_sets.take();
+
+        for set in sets.iter_mut() {
+            set.dataset_settings.watermarking_multiplier = offset;
+        }
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+    }
+
     pub fn set_all_datasets_max_scale(&self, max: f32) {
         let mut sets = self.imp().data_sets.take();
 
@@ -624,7 +632,10 @@ impl GraphWidget {
     }
 
     pub fn connect_to_settings(&self, settings: &gio::Settings) {
-        // create a lock to prevent re-connectiong?
+        if self.imp().settings_inited.get() {
+            return;
+        }
+
         self.imp().settings_inited.set(true);
 
         connect_setting!(
@@ -685,5 +696,17 @@ impl GraphWidget {
 
     pub fn point_spacing_factor(&self) -> f32 {
         1. / (self.data_points() - (if self.do_animation() { 2 } else { 1 })) as f32
+    }
+
+    pub fn reset_auto_scaling(&self) {
+        let mut datasets = self.imp().data_sets.take();
+
+        for dataset in datasets.iter_mut() {
+            dataset.reset_auto_scaling();
+        }
+
+        Self::apply_followings(&mut datasets);
+
+        self.imp().data_sets.set(datasets);
     }
 }

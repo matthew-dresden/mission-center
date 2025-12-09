@@ -19,6 +19,7 @@
  */
 
 use std::cell::{BorrowError, Cell, Ref, RefCell};
+use std::collections::HashMap;
 
 use adw::glib::g_warning;
 use adw::{prelude::*, subclass::prelude::*};
@@ -26,6 +27,8 @@ use gtk::{
     gio,
     glib::{self, g_critical, property::PropertySet},
 };
+
+use magpie_types::apps::icon::Icon;
 
 use crate::about_system_dialog::AboutSystemDialog;
 use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
@@ -58,6 +61,8 @@ mod imp {
         pub settings: Cell<Option<gio::Settings>>,
         pub sys_info: RefCell<Option<crate::magpie_client::MagpieClient>>,
         pub window: RefCell<Option<crate::MissionCenterWindow>>,
+
+        pub apps_icons_cache: Cell<Option<HashMap<String, Icon>>>,
     }
 
     impl Default for MissionCenterApplication {
@@ -66,6 +71,7 @@ mod imp {
                 settings: Cell::new(None),
                 sys_info: RefCell::new(None),
                 window: RefCell::new(None),
+                apps_icons_cache: Cell::new(None),
             }
         }
     }
@@ -248,6 +254,65 @@ impl MissionCenterApplication {
         };
 
         window.set_initial_readings(readings)
+    }
+
+    pub fn set_app_icons(&self, icons: HashMap<String, Icon>) {
+        self.imp().apps_icons_cache.set(Some(icons))
+    }
+
+    pub fn merge_app_icons(&self, icons: HashMap<String, Icon>) {
+        let old = self.imp().apps_icons_cache.take();
+
+        let Some(mut old) = old else {
+            self.set_app_icons(icons);
+            return;
+        };
+
+        for (app_id, icon) in icons {
+            old.insert(app_id, icon);
+        }
+
+        self.set_app_icons(old);
+    }
+
+    pub fn missing_icons(&self, mut appids: Vec<&String>) -> Option<Vec<String>> {
+        let this = self.imp();
+        let icons = this.apps_icons_cache.take();
+
+        this.apps_icons_cache.set(icons.clone());
+
+        let Some(apps) = icons else {
+            return Some(appids.drain(..).map(|app_id| app_id.to_string()).collect());
+        };
+
+        let out: Vec<_> = appids
+            .drain(..)
+            .filter_map(|appid| {
+                if !apps.contains_key(appid) {
+                    Some(appid.clone())
+                } else {
+                    None
+                }
+            })
+            .collect();
+
+        if out.is_empty() {
+            None
+        } else {
+            Some(out)
+        }
+    }
+
+    pub fn get_app_icon(&self, app_id: &str) -> Icon {
+        let this = self.imp();
+        let icons = this.apps_icons_cache.take();
+
+        this.apps_icons_cache.set(icons.clone());
+
+        icons
+            .map(|map| map.get(app_id).cloned())
+            .flatten()
+            .unwrap_or_default()
     }
 
     pub fn setup_animations(&self) {

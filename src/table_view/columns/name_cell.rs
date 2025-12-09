@@ -89,12 +89,29 @@ mod imp {
                         return;
                     };
                     let this = this.imp();
-                    apply_icon_to_image(&this.icon, model.imp().neo_icon(), 48);
+                    // todo formalize this sizing.
+                    apply_icon_to_image(
+                        &this.icon,
+                        model.imp().neo_icon(),
+                        if model.content_type() == ContentType::Process {
+                            16
+                        } else {
+                            24
+                        },
+                    );
                 }
             });
             self.sig_icon.set(Some(sig_icon));
 
-            apply_icon_to_image(&self.icon, model.imp().neo_icon(), 48);
+            apply_icon_to_image(
+                &self.icon,
+                model.imp().neo_icon(),
+                if model.content_type() == ContentType::Process {
+                    16
+                } else {
+                    24
+                },
+            );
 
             let sig_name = model.connect_name_notify({
                 let this = this.clone();

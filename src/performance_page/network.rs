@@ -20,21 +20,22 @@
 
 use std::cell::{Cell, OnceCell, RefCell};
 
+use adw::gio::Settings;
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
 use magpie_types::network::{Connection, ConnectionKind};
 
-use super::PageExt;
-use crate::performance_page::widgets::ScalingSettings;
-use crate::performance_page::widgets::{DatasetGroup, GraphWidget};
-use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
+use crate::i18n::*;
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
+use crate::{application::INTERVAL_STEP, to_short_human_readable_time};
 use crate::{settings, DataType};
+
+use super::PageExt;
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::FillingSettings;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageNetwork)]
@@ -727,50 +728,22 @@ impl PerformancePageNetwork {
             .use_bytes
             .set(settings.boolean("performance-page-network-use-bytes"));
 
-        if let Some(max_speed) = this.imp().max_speed.get() {
-            let dynamic_scaling = settings.boolean("performance-page-network-dynamic-scaling");
-
-            if dynamic_scaling {
-                this.imp()
-                    .usage_graph
-                    .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
-            } else {
-                this.imp()
-                    .usage_graph
-                    .set_all_datasets_scaling(ScalingSettings::Fixed);
-
-                this.imp()
-                    .usage_graph
-                    .set_all_datasets_max_scale(max_speed as f32);
-            }
-        } else {
-            this.imp()
-                .usage_graph
-                .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
-        }
+        this.update_graph_scaling(settings);
 
         settings.connect_changed(Some("performance-page-network-dynamic-scaling"), {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
-                    if let Some(max_speed) = this.imp().max_speed.get() {
-                        let dynamic_scaling =
-                            settings.boolean("performance-page-network-dynamic-scaling");
+                    this.update_graph_scaling(settings);
+                }
+            }
+        });
 
-                        if dynamic_scaling {
-                            this.imp()
-                                .usage_graph
-                                .set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
-                        } else {
-                            this.imp()
-                                .usage_graph
-                                .set_all_datasets_scaling(ScalingSettings::Fixed);
-
-                            this.imp()
-                                .usage_graph
-                                .set_all_datasets_max_scale(max_speed as f32);
-                        }
-                    }
+        settings.connect_changed(Some("performance-page-network-use-base2"), {
+            let this = this.downgrade();
+            move |settings, _| {
+                if let Some(this) = this.upgrade() {
+                    this.update_graph_scaling(settings);
                 }
             }
         });
@@ -782,6 +755,7 @@ impl PerformancePageNetwork {
                     this.imp()
                         .use_bytes
                         .set(settings.boolean("performance-page-network-use-bytes"));
+                    this.update_graph_scaling(settings);
                 }
             }
         });
@@ -835,5 +809,52 @@ impl PerformancePageNetwork {
 
     pub fn use_bytes(&self) -> bool {
         self.imp().use_bytes.get()
+    }
+
+    fn update_graph_scaling(&self, settings: &Settings) {
+        let this = self.imp();
+        let usage_graph = &this.usage_graph;
+
+        if let Some(max_speed) = this.max_speed.get() {
+            let dynamic_scaling = settings.boolean("performance-page-network-dynamic-scaling");
+
+            if dynamic_scaling {
+                let base2 = settings.boolean("performance-page-network-use-base2");
+
+                if base2 {
+                    usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
+                } else {
+                    usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2Base10);
+
+                    usage_graph.set_all_datasets_watermarking_multiplier(if this.use_bytes.get() {
+                        1.
+                    } else {
+                        8.
+                    });
+                }
+
+                usage_graph.reset_auto_scaling();
+            } else {
+                usage_graph.set_all_datasets_scaling(ScalingSettings::Fixed);
+
+                usage_graph.set_all_datasets_max_scale(max_speed as f32);
+            }
+        } else {
+            let base2 = settings.boolean("performance-page-network-use-base2");
+
+            if base2 {
+                usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
+            } else {
+                usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2Base10);
+
+                usage_graph.set_all_datasets_watermarking_multiplier(if this.use_bytes.get() {
+                    1.
+                } else {
+                    8.
+                });
+            }
+
+            usage_graph.reset_auto_scaling();
+        }
     }
 }

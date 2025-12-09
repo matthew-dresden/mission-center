@@ -718,6 +718,9 @@ impl MagpieClient {
             .network_connections
             .sort_unstable_by(|n1, n2| n1.id.cmp(&n2.id));
 
+        let mut app_icons =
+            magpie.app_icons(readings.running_apps.keys().map(|k| k.clone()).collect());
+
         idle_add_once({
             let initial_readings = Readings {
                 cpu: readings.cpu.clone(),
@@ -735,7 +738,10 @@ impl MagpieClient {
                 system_services: std::mem::take(&mut readings.system_services),
             };
 
+            let initial_icons = std::mem::take(&mut app_icons);
+
             move || {
+                app!().set_app_icons(initial_icons);
                 app!().set_initial_readings(initial_readings);
                 app!().setup_animations();
             }
@@ -852,6 +858,18 @@ impl MagpieClient {
                 "System services load took: {:?}",
                 timer.elapsed()
             );
+
+            if let Some(missing) = app!().missing_icons(readings.running_apps.keys().collect()) {
+                let app_icons = magpie.app_icons(missing);
+
+                if !app_icons.is_empty() {
+                    idle_add_once({
+                        move || {
+                            app!().merge_app_icons(app_icons);
+                        }
+                    });
+                }
+            }
 
             readings
                 .disks_info

@@ -19,6 +19,7 @@
  */
 
 use std::fmt::Write;
+use std::marker::PhantomData;
 use std::{
     cell::{Cell, RefCell},
     collections::{HashMap, HashSet},
@@ -37,9 +38,12 @@ use magpie_types::fan::Fan;
 use magpie_types::gpus::Gpu;
 use magpie_types::network::{Connection, ConnectionKind};
 
-use crate::{i18n::*, magpie_client::DiskKind, settings};
-
-use widgets::{GraphWidget, SidebarDropHint};
+use crate::i18n::*;
+use crate::magpie_client::DiskKind;
+use crate::performance_page::widgets::{
+    DatasetGroup, GraphWidget, ScalingSettings, SidebarDropHint,
+};
+use crate::{settings, DataType};
 
 mod battery;
 mod cpu;
@@ -72,9 +76,6 @@ const MK_TO_0_C: i32 = -273150;
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{DatasetGroup, FillingSettings, ScalingSettings};
-    use crate::DataType;
-    use std::marker::PhantomData;
 
     // GNOME color palette: Blue 4
     const CPU_BASE_COLOR: [u8; 3] = [0x1c, 0x71, 0xd8];

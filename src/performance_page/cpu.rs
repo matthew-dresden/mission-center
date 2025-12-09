@@ -32,7 +32,6 @@ use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readab
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::FillingSettings;
 
     const GRAPH_SELECTION_OVERALL: i32 = 1;
     const GRAPH_SELECTION_ALL: i32 = 2;
@@ -837,25 +836,25 @@ mod imp {
                 let row_idx = i / col_count;
                 let col_idx = i % col_count;
 
-                let graf = GraphWidget::new(Some(&settings));
-                graf.set_base_color(&base_color);
-                graf.set_visible(graph_selection == GRAPH_SELECTION_ALL);
+                let new_graph = GraphWidget::new(Some(&settings));
+                new_graph.set_base_color(&base_color);
+                new_graph.set_visible(graph_selection == GRAPH_SELECTION_ALL);
 
                 let mut usage_group = DatasetGroup::new();
                 usage_group.dataset_settings.high_watermark = 100.;
                 let mut kernel_group = DatasetGroup::new();
-                kernel_group.dataset_settings.fill = FillingSettings::None;
+                kernel_group.dataset_settings.fill = false;
                 kernel_group.dataset_settings.dashed = true;
                 kernel_group.dataset_settings.visible = show_kernel_times;
                 kernel_group.dataset_settings.high_watermark = 100.;
 
-                graf.add_dataset(usage_group);
-                graf.add_dataset(kernel_group);
+                new_graph.add_dataset(usage_group);
+                new_graph.add_dataset(kernel_group);
 
                 self.usage_graphs
-                    .attach(&graf, col_idx as i32, row_idx as i32, 1, 1);
+                    .attach(&new_graph, col_idx as i32, row_idx as i32, 1, 1);
 
-                graph_widgets.push(graf);
+                graph_widgets.push(new_graph);
             }
 
             self.graph_widgets.set(graph_widgets);

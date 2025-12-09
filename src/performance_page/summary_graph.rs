@@ -19,12 +19,13 @@
  */
 
 use std::collections::HashSet;
+use std::marker::PhantomData;
 
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gdk, glib, prelude::*};
 
-use super::widgets::{GraphWidget, SidebarDropHint};
+use crate::performance_page::widgets::{GraphWidget, SidebarDropHint};
 use crate::settings;
 
 mod imp {

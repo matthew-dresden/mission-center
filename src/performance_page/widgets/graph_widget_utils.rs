@@ -38,6 +38,9 @@ pub enum ScalingSettings {
     ScaleUpPow2,
     ScaleDownPow2,
     ScaleUpDownPow2,
+    ScaleUpPow2Base10,
+    ScaleDownPow2Base10,
+    ScaleUpDownPow2Base10,
     StickyUp,
     StickyDown,
     StickyUpDown,
@@ -57,12 +60,17 @@ pub enum FillingSettings {
 #[derive(Clone)]
 pub struct DatasetSettings {
     pub dashed: bool,
+    pub fill: bool,
     pub visible: bool,
     pub fill: FillingSettings,
 
     pub scaling_settings: ScalingSettings,
     pub low_watermark: f32,
     pub high_watermark: f32,
+
+    // for example, when using pow2base10 scaling, we want to ensure we are using the correct reference point to calculate that nearest thousand.
+    // we keep this as a float to no exclude other uses
+    pub watermarking_multiplier: f32,
 
     pub following: Option<usize>,
     pub followed: Option<usize>,
@@ -85,6 +93,7 @@ impl DatasetGroup {
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
                 high_watermark: 100.0,
+                watermarking_multiplier: 1.,
                 following: None,
                 followed: None,
             },
@@ -139,6 +148,12 @@ impl DatasetGroup {
         self.update_expensive_scaling();
     }
 
+    pub fn reset_auto_scaling(&mut self) {
+        // todo this better with down scaling support
+        self.dataset_settings.high_watermark = 0.0;
+        self.update_expensive_scaling()
+    }
+
     fn round_up_to_next_power_of_two(num: f32) -> f32 {
         let num = num as u64;
 
@@ -154,6 +169,19 @@ impl DatasetGroup {
         n |= n >> 16;
 
         (n + 1) as f32
+    }
+
+    fn round_up_to_next_power_of_two_base_10(num: f32) -> f32 {
+        if num == 0. {
+            return 0.;
+        }
+
+        // take the power of two amount w.r.t. the last power of 1000
+        let log1000 = (num.log10() / 3.) as i32;
+
+        let num_below = 1000f32.powi(log1000);
+
+        Self::round_up_to_next_power_of_two((num / num_below).ceil()).min(1000.) * num_below
     }
 
     fn update_expensive_scaling(&mut self) {
@@ -173,12 +201,28 @@ impl DatasetGroup {
                     Self::round_up_to_next_power_of_two(self.get_maximum());
             }
             ScalingSettings::ScaleDownPow2 => {
-                // todo
+                // todo scale down
             }
             ScalingSettings::ScaleUpDownPow2 => {
                 self.dataset_settings.high_watermark =
                     Self::round_up_to_next_power_of_two(self.get_maximum());
-                // todo
+                // todo scale down
+            }
+            ScalingSettings::ScaleUpPow2Base10 => {
+                self.dataset_settings.high_watermark =
+                    Self::round_up_to_next_power_of_two_base_10(
+                        self.get_maximum() * self.dataset_settings.watermarking_multiplier,
+                    ) / self.dataset_settings.watermarking_multiplier;
+            }
+            ScalingSettings::ScaleDownPow2Base10 => {
+                // todo scale down
+            }
+            ScalingSettings::ScaleUpDownPow2Base10 => {
+                self.dataset_settings.high_watermark =
+                    Self::round_up_to_next_power_of_two_base_10(
+                        self.get_maximum() * self.dataset_settings.watermarking_multiplier,
+                    ) / self.dataset_settings.watermarking_multiplier;
+                // todo scale down
             }
             ScalingSettings::StickyUp => {}
             ScalingSettings::StickyDown => {}
@@ -238,6 +282,9 @@ impl DatasetGroup {
             ScalingSettings::ScaleUpPow2 => {}
             ScalingSettings::ScaleDownPow2 => {}
             ScalingSettings::ScaleUpDownPow2 => {}
+            ScalingSettings::ScaleUpPow2Base10 => {}
+            ScalingSettings::ScaleDownPow2Base10 => {}
+            ScalingSettings::ScaleUpDownPow2Base10 => {}
             ScalingSettings::StickyUp => {
                 if point > self.dataset_settings.high_watermark {
                     self.dataset_settings.high_watermark = point
@@ -294,10 +341,11 @@ impl DatasetGroup {
 
         let dataset_points = match self.dataset_settings.scaling_settings {
             ScalingSettings::Stacking => {
-                // Stack the dataset points on one another
+                // First, we pop the first dataset
                 let mut stacked_points: Vec<Vec<DatasetPoints>> =
                     dataset_points.drain(0..1).collect();
 
+                // for the remaining datasets, offset their y value off of the previous
                 for (series_index, series) in dataset_points.iter().enumerate() {
                     let stacked_series = &stacked_points[series_index];
                     assert_eq!(series.len(), stacked_series.len());

@@ -20,6 +20,7 @@
 
 use std::cell::{Cell, OnceCell, RefCell};
 
+use adw::gio::Settings;
 use adw::{prelude::AdwDialogExt, subclass::prelude::*};
 use glib::{g_warning, ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
@@ -28,18 +29,17 @@ use magpie_types::disks::{Disk, DiskKind};
 
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
-use crate::{app, to_short_human_readable_time};
+use crate::performance_page::disk_details::DiskDetails;
+use crate::performance_page::widgets::{
+    DatasetGroup, EjectFailureDialog, GraphWidget, ScalingSettings, SmartDataDialog,
+    SmartFailureDialog,
+};
+use crate::{app, settings, to_short_human_readable_time, DataType};
 
-use super::widgets::{EjectFailureDialog, SmartDataDialog, SmartFailureDialog};
 use super::PageExt;
 
 mod imp {
     use super::*;
-    use crate::performance_page::disk_details::DiskDetails;
-    use crate::performance_page::widgets::{
-        DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
-    };
-    use crate::{settings, DataType};
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageDisk)]
@@ -576,7 +576,50 @@ impl PerformancePageDisk {
             }
         });
 
+        settings.connect_changed(Some("performance-page-drive-use-base2"), {
+            let this = this.downgrade();
+            move |settings, _| {
+                if let Some(this) = this.upgrade() {
+                    this.update_graph_scaling(settings);
+                }
+            }
+        });
+
+        settings.connect_changed(Some("performance-page-drive-use-bytes"), {
+            let this = this.downgrade();
+            move |settings, _| {
+                if let Some(this) = this.upgrade() {
+                    this.update_graph_scaling(settings);
+                }
+            }
+        });
+
+        this.update_graph_scaling(settings);
+
         this
+    }
+
+    fn update_graph_scaling(&self, settings: &Settings) {
+        let this = self.imp();
+        let transfer_rate_graph = &this.disk_transfer_rate_graph;
+
+        let base2 = settings.boolean("performance-page-drive-use-base2");
+
+        if base2 {
+            transfer_rate_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
+        } else {
+            transfer_rate_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2Base10);
+
+            let bytes = settings.boolean("performance-page-drive-use-bytes");
+
+            transfer_rate_graph.set_all_datasets_watermarking_multiplier(if bytes {
+                1.
+            } else {
+                8.
+            });
+        }
+
+        transfer_rate_graph.reset_auto_scaling();
     }
 
     pub fn set_static_information(&self, index: Option<i32>, disk: &Disk) -> bool {

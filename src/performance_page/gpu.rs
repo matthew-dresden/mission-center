@@ -29,10 +29,12 @@ use gtk::{gio, glib, prelude::*};
 use magpie_types::gpus::Gpu;
 use magpie_types::gpus::OpenGlVariant;
 
-use super::{GpuDetails, PageExt};
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::{
     application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time, DataType,
 };
+
+use super::{GpuDetails, PageExt};
 
 mod imp {
     use super::*;
@@ -250,7 +252,7 @@ mod imp {
 
             this.infobar_content
                 .set_encode_decode_shared(gpu.encode_decode_shared);
-            // ???
+            // ??? might have broken this
             if gpu.encode_decode_shared {
                 this.infobar_content
                     .encode_label()
