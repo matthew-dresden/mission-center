@@ -26,7 +26,7 @@ use gtk::glib::g_critical;
 use gtk::{gio, glib, prelude::*};
 
 use super::PageExt;
-use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
+use crate::performance_page::widgets::{DatasetGroup, FillingSettings, GraphWidget, ScalingSettings};
 use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 
@@ -843,7 +843,7 @@ mod imp {
                 let mut usage_group = DatasetGroup::new();
                 usage_group.dataset_settings.high_watermark = 100.;
                 let mut kernel_group = DatasetGroup::new();
-                kernel_group.dataset_settings.fill = false;
+                kernel_group.dataset_settings.fill = FillingSettings::None;
                 kernel_group.dataset_settings.dashed = true;
                 kernel_group.dataset_settings.visible = show_kernel_times;
                 kernel_group.dataset_settings.high_watermark = 100.;

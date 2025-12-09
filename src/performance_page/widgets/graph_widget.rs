@@ -37,7 +37,7 @@ use gtk::subclass::prelude::*;
 use gtk::Snapshot;
 use gtk::TextDirection;
 
-use crate::performance_page::widgets::graph_widget_utils::{DatasetGroup, ScalingSettings};
+use crate::performance_page::widgets::graph_widget_utils::{DatasetGroup, FillingSettings, ScalingSettings};
 
 // no faster than 200 Hz. if everything is going according to plan, we expect two animation frames in quick succession at the start of a new cycle and want to prevent rendering twice
 const ANIMATION_LOCKOUT: f32 = 0.005;

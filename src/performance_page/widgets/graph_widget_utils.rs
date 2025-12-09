@@ -60,7 +60,6 @@ pub enum FillingSettings {
 #[derive(Clone)]
 pub struct DatasetSettings {
     pub dashed: bool,
-    pub fill: bool,
     pub visible: bool,
     pub fill: FillingSettings,
 
@@ -113,6 +112,7 @@ impl DatasetGroup {
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
                 high_watermark: 100.0,
+                watermarking_multiplier: 1.,
                 following: None,
                 followed: None,
             },
