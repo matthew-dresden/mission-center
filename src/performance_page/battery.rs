@@ -302,19 +302,74 @@ mod imp {
                 charge_cycles.set_visible(battery.charge_cycles.is_some())
             }
 
-            let mut his = battery
-                .history
-                .iter()
-                .rev()
-                .map(|v| if v.is_nan() { 0.0 } else { *v })
-                .collect::<Vec<f32>>();
-            let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
-            history_graph.dataset_settings.high_watermark = 1.;
-            history_graph.dataset_settings.low_watermark = 0.;
+            if battery.has_history {
+                let mut his_interpol = Vec::with_capacity(1008);
+                let mut num_interpol = 0;
+                let mut start_num = 2.;
 
-            this.history_graph.add_dataset(history_graph);
-            this.history_graph.set_data_points(1008);
-            this.history_graph.update_animation(0.0);
+                let mut his = battery.history.clone();
+
+                for v in his.iter_mut() {
+                    let mut v = *v;
+                    if v.is_nan() {
+                        num_interpol += 1;
+                        v = 0.0;
+                    } else {
+                        if num_interpol != 0 {
+                            if start_num > 1. {
+                                for _ in 0..num_interpol {
+                                    his_interpol.push(v)
+                                }
+                            } else {
+                                let diff = v - start_num;
+                                for i in 0..num_interpol {
+                                    his_interpol.push(start_num + diff * i as f32 / num_interpol as f32)
+                                }
+                            }
+                            num_interpol = 0;
+                        }
+                        his_interpol.push(v);
+                        start_num = v
+                    }
+                }
+
+                if num_interpol != 0 {
+                    let v = *(his.last().unwrap());
+                    for _ in 0..num_interpol {
+                        his_interpol.push(v)
+                    }
+                }
+
+                println!("{}", his_interpol.len());
+                println!("{}", his.len());
+
+                let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
+                history_graph.dataset_settings.high_watermark = 1.;
+
+                let mut history_graph_interpol = DatasetGroup::new_with_datas(vec![his_interpol]);
+                history_graph_interpol.dataset_settings.high_watermark = 1.;
+                history_graph_interpol.dataset_settings.dashed = true;
+                history_graph_interpol.dataset_settings.fill = FillingSettings::None;
+
+                this.history_graph.set_data_points(1008);
+                println!("hello");
+                this.history_graph.add_dataset(history_graph);
+                println!("hello");
+                this.history_graph.add_dataset(history_graph_interpol);
+                println!("hello");
+                this.history_graph.update_animation(0.0);
+                println!("hello");
+            } else {
+                let mut history_graph = DatasetGroup::new();
+                history_graph.dataset_settings.high_watermark = 0.;
+                history_graph.dataset_settings.low_watermark = 0.;
+
+                this.history_graph.add_dataset(history_graph);
+                this.history_graph.set_data_points(1);
+
+                this.history_box.set_visible(false);
+            }
+
 
             true
         }
@@ -325,8 +380,6 @@ mod imp {
             index: Option<usize>,
         ) -> bool {
             let this = this.imp();
-
-            this.history_graph.add_data_point(vec![vec![0.0]]);
 
             if let Some(percentage) = this.percentage.get() {
                 percentage.set_text(&i18n_f(
