@@ -323,7 +323,7 @@ mod imp {
                             } else {
                                 let diff = v - start_num;
                                 for i in 0..num_interpol {
-                                    his_interpol.push(start_num + diff * i as f32 / num_interpol as f32)
+                                    his_interpol.push(start_num + diff * (i + 1) as f32 / (num_interpol + 1) as f32)
                                 }
                             }
                             num_interpol = 0;
