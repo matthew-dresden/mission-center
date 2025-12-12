@@ -101,11 +101,12 @@ mod imp {
             if $new_idx == GRAPH_SELECTION_ALL_THREADS {
                 graph_widgets[1].set_dataset_max_scale(0, 100.);
                 graph_widgets[1].set_dataset_scaling(0, ScalingSettings::Fixed);
+                graph_widgets[1].set_dataset_opacity(0, 100. / 255. / (graph_widgets.len() - 2) as f32);
                 graph_widgets[1].set_visible(true);
-                graph_widgets[1].set_filled(0, FillingSettings::None);
             } else if $new_idx == GRAPH_SELECTION_ALL_THREADS_STACKED {
                 graph_widgets[1].set_dataset_max_scale(0, 100. * (graph_widgets.len() - 2) as f32);
                 graph_widgets[1].set_dataset_scaling(0, ScalingSettings::Stacking);
+                graph_widgets[1].set_dataset_opacity(0, 100. / 255.);
                 graph_widgets[1].set_visible(true);
                 graph_widgets[1].set_filled(0, FillingSettings::FillToBottom);
             } else {
@@ -821,7 +822,7 @@ mod imp {
             } else {
                 usage_group.dataset_settings.scaling_settings = ScalingSettings::Fixed;
                 usage_group.dataset_settings.high_watermark = 100.;
-                usage_group.dataset_settings.fill = FillingSettings::None;
+                usage_group.dataset_settings.opacity = 100. / 255. / cpu_count as f32;
             }
             usage_group.set_datasets(cpu_count);
 

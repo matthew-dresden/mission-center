@@ -349,7 +349,7 @@ mod imp {
                 let mut history_graph_interpol = DatasetGroup::new_with_datas(vec![his_interpol]);
                 history_graph_interpol.dataset_settings.high_watermark = 1.;
                 history_graph_interpol.dataset_settings.dashed = true;
-                history_graph_interpol.dataset_settings.fill = FillingSettings::None;
+                history_graph_interpol.dataset_settings.opacity = 0.1;
 
                 this.history_graph.set_data_points(1008);
                 println!("hello");

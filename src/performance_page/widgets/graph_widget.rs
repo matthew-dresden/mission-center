@@ -549,6 +549,16 @@ impl GraphWidget {
         self.force_redraw();
     }
 
+    pub fn set_dataset_opacity(&self, index: usize, opacity: f32) {
+        let mut sets = self.imp().data_sets.take();
+
+        sets[index].dataset_settings.opacity = opacity;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+    }
+
     pub fn set_all_datasets_scaling(&self, scaler: ScalingSettings) {
         let mut sets = self.imp().data_sets.take();
 

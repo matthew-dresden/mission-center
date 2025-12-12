@@ -62,6 +62,7 @@ pub struct DatasetSettings {
     pub dashed: bool,
     pub visible: bool,
     pub fill: FillingSettings,
+    pub opacity: f32,
 
     pub scaling_settings: ScalingSettings,
     pub low_watermark: f32,
@@ -89,6 +90,7 @@ impl DatasetGroup {
                 dashed: false,
                 fill: Default::default(),
                 visible: true,
+                opacity: 100. / 255.,
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
                 high_watermark: 100.0,
@@ -109,6 +111,7 @@ impl DatasetGroup {
                 dashed: false,
                 fill: Default::default(),
                 visible: true,
+                opacity: 100. / 255.,
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
                 high_watermark: 100.0,
@@ -370,7 +373,7 @@ impl DatasetGroup {
         let color = parent.base_color();
 
         let stroke_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 1.);
-        let fill_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 100. / 256.);
+        let fill_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), self.dataset_settings.opacity);
 
         let stroke = Stroke::new(1.);
 
