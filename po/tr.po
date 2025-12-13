@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-12-13 19:52+0000\n"
+"PO-Revision-Date: 2025-12-14 20:00+0000\n"
 "Last-Translator: İsmail POLAT <speretta@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/tr/>\n"
@@ -56,7 +56,7 @@ msgstr "Özellikler:"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:21
 msgid "Monitor overall or per-thread CPU usage"
-msgstr "Genel ya da işlemci başına kullanımı izleyin"
+msgstr "Genel veya iş parçacığı başına CPU kullanımını izleyin"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:22
 msgid ""
@@ -88,7 +88,7 @@ msgid ""
 "(Wi-Fi or Ethernet), wireless speeds and frequency, hardware address, IP "
 "address"
 msgstr ""
-"Ağ kartı adı, bağlantı türü (Kablosuz ya da Kablolu), kablosuz hızı ve "
+"Ağ kartı adı, bağlantı türü (Wi-Fi ya da Ethernet), kablosuz hızı ve "
 "frekansı, donanım adresi, IP adresi gibi ağ arayüzü bilgilerini görün"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:30
@@ -96,9 +96,9 @@ msgid ""
 "Monitor overall GPU usage, video encoder and decoder usage, memory usage and "
 "power consumption, powered by the popular NVTOP project"
 msgstr ""
-"Popüler NVTOP projesi tarafından desteklenen genel ekran kartı kullanımını, "
-"video kodlayıcı ve kod çözücü kullanımını, bellek kullanımını ve güç "
-"tüketimini izleyin"
+"Popüler NVTOP projesi tarafından desteklenen genel GPU kullanımını, video "
+"kodlayıcı ve kod çözücü kullanımını, bellek kullanımını ve güç tüketimini "
+"izleyin"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:33
 msgid "Monitor system fans"
@@ -117,7 +117,7 @@ msgid ""
 "Use hardware accelerated rendering for all the graphs in an effort to reduce "
 "CPU and overall resource usage"
 msgstr ""
-"İşlemci ve genel kaynak kullanımını azaltmak için tüm grafiklerde donanım "
+"CPU ve genel kaynak kullanımını düşürmek için tüm grafiklerde donanım "
 "hızlandırmalı işleme kullan"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:39
@@ -139,8 +139,8 @@ msgid ""
 "Intel GPU monitoring is only supported for Broadwell and later GPUs; and "
 "does not support VRAM, power, or temperature monitoring"
 msgstr ""
-"Intel ekran kartı izleme yalnızca Broadwell ve sonraki ekran kartlarını "
-"destekler; VRAM, güç ya da sıcaklık izlemeyi desteklemez"
+"Intel GPU izleme yalnızca Broadwell ve sonrası GPU'lar için desteklenir; "
+"VRAM, güç veya sıcaklık izlemeyi desteklemez"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:47
 msgid ""
@@ -235,8 +235,8 @@ msgstr "Sütun sıralaması uygulama yeniden başlatıldığında da korunur"
 msgid ""
 "Show CPU usage for Apps and Processes scaled to the number of available cores"
 msgstr ""
-"Uygulamalar ve Süreçlerin İşlemci kullanımını var olan çekirdek sayısına "
-"göre ölçeklendirilmiş göster"
+"Uygulama ve İşlemler için CPU kullanımını mevcut çekirdek sayısına göre "
+"ölçekleyerek göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:130
 msgid "Show a separator between each column in the Apps view"
@@ -268,11 +268,11 @@ msgstr "Hizmetler sayfası görünümünün sıralama yönü"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
-msgstr "İşlemci performansı sayfasında hangi grafik gösterilir"
+msgstr "CPU performansı sayfasında hangi grafik gösterilir"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:171
 msgid "Show kernel times in the CPU graphs"
-msgstr "İşlemci grafiklerinde çekirdek sürelerini gösterme"
+msgstr "CPU grafiklerinde çekirdek sürelerini göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:176
 msgid "Which page is shown on application startup, in the performance tab"
@@ -290,7 +290,7 @@ msgstr "Grafiklerinin canlandırılma durumu"
 #: data/io.missioncenter.MissionCenter.gschema.xml:192
 #: resources/ui/preferences/page.blp:65
 msgid "Show CPU information by default"
-msgstr "İşlemci bilgilerini öntanımlı olarak göster"
+msgstr "CPU bilgilerini öntanımlı olarak göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:197
 #: resources/ui/preferences/page.blp:71
@@ -310,7 +310,7 @@ msgstr "Ağ bilgilerini öntanımlı olarak göster"
 #: data/io.missioncenter.MissionCenter.gschema.xml:212
 #: resources/ui/preferences/page.blp:89
 msgid "Show GPU information by default"
-msgstr "Ekran kartı bilgilerini öntanımlı olarak göster"
+msgstr "GPU bilgilerini öntanımlı olarak göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:217
 #: resources/ui/preferences/page.blp:95
@@ -327,7 +327,7 @@ msgstr "Takas grafiğini göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
 msgid "Show the gpu encode-decode graph"
-msgstr "Ekran kartı kodlama-kod çözme grafiğini göster"
+msgstr "GPU kodlama-kod çözme grafiğini göster"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
@@ -397,7 +397,7 @@ msgstr "Kaynak Kullanımı"
 #: resources/ui/process_column_view/process_details_dialog.blp:176
 #: src/performance_page/mod.rs:980 src/process_tree/column_view_frame.rs:539
 msgid "CPU"
-msgstr "İşlemci"
+msgstr "CPU"
 
 #: resources/ui/apps_page/details_dialog.blp:193
 #: resources/ui/performance_page/memory.blp:41
@@ -432,7 +432,7 @@ msgstr "Ağ"
 #: src/performance_page/mod.rs:2159 src/process_tree/column_view_frame.rs:594
 #: src/process_tree/column_view_frame.rs:611
 msgid "GPU"
-msgstr "Ekran Kartı"
+msgstr "GPU"
 
 #: resources/ui/apps_page/details_dialog.blp:318
 #: resources/ui/process_column_view/column_view_frame.blp:90
@@ -440,7 +440,7 @@ msgstr "Ekran Kartı"
 #: src/process_tree/column_view_frame.rs:598
 #: src/process_tree/column_view_frame.rs:617
 msgid "GPU Memory"
-msgstr "Ekran Kartı Belleği"
+msgstr "GPU Belleği"
 
 #: resources/ui/apps_page/page.blp:75
 msgid "Collapse all apps and processes"
@@ -563,7 +563,7 @@ msgstr "_Ağ"
 #: resources/ui/performance_page/memory.blp:235
 #: resources/ui/performance_page/network.blp:133
 msgid "_GPU"
-msgstr "_Ekran Kartı"
+msgstr "_GPU"
 
 #: resources/ui/performance_page/cpu.blp:160
 #: resources/ui/performance_page/disk.blp:215
@@ -950,7 +950,7 @@ msgstr "Yuva:"
 
 #: resources/ui/performance_page/cpu_details.blp:235
 msgid "Virtual processors:"
-msgstr "Sanal işlemci:"
+msgstr "Sanal işlemciler:"
 
 #: resources/ui/performance_page/cpu_details.blp:249
 msgid "Virtualization:"
@@ -1034,7 +1034,7 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:64
 msgid "Show CPU Information"
-msgstr "İşlemci Bilgilerini Göster"
+msgstr "CPU Bilgilerini Göster"
 
 #: resources/ui/preferences/page.blp:70
 msgid "Show Memory Information"
@@ -1050,7 +1050,7 @@ msgstr "Ağ Bilgilerini Göster"
 
 #: resources/ui/preferences/page.blp:88
 msgid "Show GPU Information"
-msgstr "Ekran Kartı Bilgilerini Göster"
+msgstr "GPU Bilgilerini Göster"
 
 #: resources/ui/preferences/page.blp:94
 msgid "Show Fan Information"
@@ -1062,7 +1062,7 @@ msgstr "Uygulama ve Hizmet Sayfaları"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
-msgstr "İşlemci İstatistiklerini Birleştir"
+msgstr "İşlem İstatistiklerini Birleştir"
 
 #: resources/ui/preferences/page.blp:109
 msgid "Remember Sorting"
@@ -1082,12 +1082,11 @@ msgstr "Uygulama yeniden başlatıldığında sütunların sırasını koru"
 
 #: resources/ui/preferences/page.blp:119
 msgid "Scale CPU Usage to Core Count"
-msgstr "İşlemci Kullanımını Çekirdek Sayısına Ölçekle"
+msgstr "CPU Kullanımını Çekirdek Sayısına Ölçekle"
 
 #: resources/ui/preferences/page.blp:120
 msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
-"İşlemci kullanımını var olan çekirdek sayısına göre ölçeklendirilmiş göster"
+msgstr "CPU kullanımını mevcut çekirdek sayısına göre ölçekleyerek göster"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1895,7 +1894,7 @@ msgstr "Video kodlama/kod çözme"
 #: src/performance_page/mod.rs:2157
 #, rust-format
 msgid "GPU {}"
-msgstr "Ekran Kartı {}"
+msgstr "GPU {}"
 
 #: src/performance_page/gpu.rs:570
 msgid "Total Memory"
