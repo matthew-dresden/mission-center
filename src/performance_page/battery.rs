@@ -340,9 +340,6 @@ mod imp {
                     }
                 }
 
-                println!("{}", his_interpol.len());
-                println!("{}", his.len());
-
                 let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
                 history_graph.dataset_settings.high_watermark = 1.;
 
@@ -352,13 +349,9 @@ mod imp {
                 history_graph_interpol.dataset_settings.opacity = 0.1;
 
                 this.history_graph.set_data_points(1008);
-                println!("hello");
                 this.history_graph.add_dataset(history_graph);
-                println!("hello");
                 this.history_graph.add_dataset(history_graph_interpol);
-                println!("hello");
                 this.history_graph.update_animation(0.0);
-                println!("hello");
             } else {
                 let mut history_graph = DatasetGroup::new();
                 history_graph.dataset_settings.high_watermark = 0.;
