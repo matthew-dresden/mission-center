@@ -33,8 +33,8 @@ use crate::app;
 use crate::application::{BASE_INTERVAL, INTERVAL_STEP};
 
 pub use client::{
-    App, Battery, Client, Connection, Cpu, Disk, DiskKind, ErrorEjectFailed, Fan, Gpu, Memory, MemoryDevice,
-    Process, Service, SmartData,
+    App, Battery, Client, Connection, Cpu, Disk, DiskKind, ErrorEjectFailed, Fan, Gpu, Memory,
+    MemoryDevice, Process, Service, SmartData,
 };
 use magpie_types::about::About;
 use magpie_types::processes::processes_response::process_map::NetworkStatsError;

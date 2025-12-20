@@ -31,8 +31,8 @@ use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::disk_details::DiskDetails;
 use crate::performance_page::widgets::{
-    DatasetGroup, EjectFailureDialog, FillingSettings, GraphWidget, ScalingSettings, SmartDataDialog,
-    SmartFailureDialog,
+    DatasetGroup, EjectFailureDialog, FillingSettings, GraphWidget, ScalingSettings,
+    SmartDataDialog, SmartFailureDialog,
 };
 use crate::{app, settings, to_short_human_readable_time, DataType};
 

@@ -32,6 +32,9 @@ use magpie_types::apps::apps_response::AppList;
 use magpie_types::apps::icon::Icon;
 pub use magpie_types::apps::App;
 use magpie_types::apps::{apps_icon_response, apps_response};
+use magpie_types::battery::battery_response;
+use magpie_types::battery::battery_response::BatteryList;
+pub use magpie_types::battery::Battery;
 use magpie_types::common::Empty;
 use magpie_types::cpu::cpu_response;
 pub use magpie_types::cpu::Cpu;
@@ -42,9 +45,6 @@ pub use magpie_types::disks::{Disk, DiskKind, ErrorEjectFailed, SmartData};
 use magpie_types::fan::fans_response;
 use magpie_types::fan::fans_response::FanList;
 pub use magpie_types::fan::Fan;
-use magpie_types::battery::battery_response;
-use magpie_types::battery::battery_response::BatteryList;
-pub use magpie_types::battery::Battery;
 use magpie_types::gpus::gpus_response;
 use magpie_types::gpus::gpus_response::GpuMap;
 pub use magpie_types::gpus::Gpu;
@@ -806,8 +806,12 @@ impl Client {
     pub fn batteries_info(&self) -> Vec<Battery> {
         let mut socket = self.socket.borrow_mut();
 
-        let response = make_request(ipc::req_get_batteries(), &mut socket, self.socket_addr.as_ref())
-            .and_then(|response| response.body);
+        let response = make_request(
+            ipc::req_get_batteries(),
+            &mut socket,
+            self.socket_addr.as_ref(),
+        )
+        .and_then(|response| response.body);
 
         parse_response!(
             response,

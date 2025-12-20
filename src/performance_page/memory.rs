@@ -24,7 +24,9 @@ use adw::{self, subclass::prelude::*};
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
-use crate::performance_page::widgets::{DatasetGroup, FillingSettings, GraphWidget, MemoryCompositionWidget};
+use crate::performance_page::widgets::{
+    DatasetGroup, FillingSettings, GraphWidget, MemoryCompositionWidget,
+};
 use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 

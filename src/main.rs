@@ -247,7 +247,8 @@ pub fn to_short_human_readable_time(seconds: u32) -> String {
     let mins_string = ni18n_f("{} minute", "{} minutes", mins, &[&(mins).to_string()]);
 
     if mins > 0 {
-        format!("{}{}",
+        format!(
+            "{}{}",
             mins_string,
             if seconds != 0 {
                 format!(" {}", seconds_string)

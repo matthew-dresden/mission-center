@@ -373,7 +373,12 @@ impl DatasetGroup {
         let color = parent.base_color();
 
         let stroke_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 1.);
-        let fill_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), self.dataset_settings.opacity);
+        let fill_color = gdk::RGBA::new(
+            color.red(),
+            color.green(),
+            color.blue(),
+            self.dataset_settings.opacity,
+        );
 
         let stroke = Stroke::new(1.);
 
