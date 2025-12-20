@@ -215,7 +215,13 @@ mod imp {
 
             let this = this.imp();
 
-            this.title_battery_model.set_text(&battery.model);
+            let vendor_model = match (!battery.vendor.is_empty(), !battery.model.is_empty()) {
+                (true, true) => &format!("{} {}", &battery.vendor, &battery.model),
+                (true, false) => &battery.vendor,
+                (false, true) => &battery.model,
+                (false, false) => &format!("Unknown"),
+            };
+            this.title_battery_model.set_text(vendor_model);
 
             if let Some(serial) = this.serial.get() {
                 if let Some(v) = &battery.serial {
@@ -340,9 +346,6 @@ mod imp {
                     }
                 }
 
-                println!("{}", his_interpol.len());
-                println!("{}", his.len());
-
                 let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
                 history_graph.dataset_settings.high_watermark = 1.;
 
@@ -352,13 +355,9 @@ mod imp {
                 history_graph_interpol.dataset_settings.opacity = 0.1;
 
                 this.history_graph.set_data_points(1008);
-                println!("hello");
                 this.history_graph.add_dataset(history_graph);
-                println!("hello");
                 this.history_graph.add_dataset(history_graph_interpol);
-                println!("hello");
                 this.history_graph.update_animation(0.0);
-                println!("hello");
             } else {
                 let mut history_graph = DatasetGroup::new();
                 history_graph.dataset_settings.high_watermark = 0.;
@@ -440,7 +439,6 @@ mod imp {
             }
 
             if let Some(state) = this.state.get() {
-                println!("{:?}", battery.state);
                 if let Some(v) = &battery.state {
                     state.set_text(batterystate_to_str(v))
                 } else {
