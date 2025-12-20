@@ -673,7 +673,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub str uct PerformancePageBattery(ObjectSubclass<imp::PerformancePageBattery>)
+    pub struct PerformancePageBattery(ObjectSubclass<imp::PerformancePageBattery>)
         @extends gtk::Box, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable;
 }
