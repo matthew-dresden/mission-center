@@ -233,8 +233,8 @@ mod imp {
 
             if let Some(kind) = this.kind.get() {
                 if let Some(v) = &battery.kind {
-                    kind.set_text(batterykindto_str(v));
-                    this.title_battery_name.set_text(batterykindto_str(v));
+                    kind.set_text(batterykind_to_str(v));
+                    this.title_battery_name.set_text(batterykind_to_str(v));
                 } else {
                     kind.set_visible(false)
                 }
@@ -250,7 +250,7 @@ mod imp {
 
             if let Some(technology) = this.technology.get() {
                 if let Some(tech) = &battery.technology {
-                    technology.set_text(tech)
+                    technology.set_text(batterytechnology_to_str(tech))
                 } else {
                     technology.set_visible(false)
                 }
@@ -775,7 +775,7 @@ fn batterystate_to_str(state: &i32) -> &str {
     }
 }
 
-fn batterykindto_str(kind: &i32) -> &str {
+fn batterykind_to_str(kind: &i32) -> &str {
     match kind {
         1 => "LinePower",
         2 => "Battery",
@@ -805,6 +805,18 @@ fn batterykindto_str(kind: &i32) -> &str {
         36 => "Wearable",
         37 => "Toy",
         38 => "Generic bluetooth",
+        _ => "",
+    }
+}
+
+fn batterytechnology_to_str(kind: &i32) -> &str {
+    match kind {
+        1 => "Lithium Ion",
+        2 => "Lithium Polymer",
+        3 => "Lithium Iron Phosphate",
+        4 => "Lead Acid",
+        5 => "Nickel Cadmium",
+        6 => "Nickel Metal Hydride",
         _ => "",
     }
 }
