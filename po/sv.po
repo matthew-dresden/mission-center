@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
 "PO-Revision-Date: 2025-12-25 13:00+0000\n"
-"Last-Translator: Viktor Engkvist <viktor.engkvist@rivig.net>\n"
+"Last-Translator: Game Nobz <lukas05gustafsson@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/sv/>\n"
 "Language: sv\n"
@@ -96,9 +96,8 @@ msgstr ""
 "minnesanvändning och strömförbrukning, drivs av den populära NVTOP projektet"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:33
-#, fuzzy
 msgid "Monitor system fans"
-msgstr "Övervaka systemresursanvändning"
+msgstr "Övervaka systemfläktar"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:34
 msgid "See a breakdown of resource usage by app and process"
