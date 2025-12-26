@@ -1650,7 +1650,11 @@ mod imp {
         }
 
         fn battery_page_name(battery_info: &Battery) -> String {
-            format!("battery-{}-{}", battery_info.power_supply.map(|x| x as u8).unwrap_or(2), battery_info.name)
+            format!(
+                "battery-{}-{}",
+                battery_info.power_supply.map(|x| x as u8).unwrap_or(2),
+                battery_info.name
+            )
         }
 
         pub fn create_battery_page(
@@ -2432,11 +2436,7 @@ mod imp {
 
                         let mut new_devices = Vec::new();
                         for (index, battery) in readings.batteries.iter().enumerate() {
-                            let index = if hide_index {
-                                None
-                            } else {
-                                Some(index)
-                            };
+                            let index = if hide_index { None } else { Some(index) };
 
                             if let Some((summary, page)) =
                                 pages.get(&Self::battery_page_name(&battery))
