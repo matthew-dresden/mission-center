@@ -1650,7 +1650,7 @@ mod imp {
         }
 
         fn battery_page_name(battery_info: &Battery) -> String {
-            format!("battery-{}", battery_info.name)
+            format!("battery-{}-{}", battery_info.power_supply.map(|x| x as u8).unwrap_or(2), battery_info.name)
         }
 
         pub fn create_battery_page(
@@ -2435,7 +2435,7 @@ mod imp {
                             let index = if hide_index {
                                 None
                             } else {
-                                Some(num_bat - index - 1)
+                                Some(index)
                             };
 
                             if let Some((summary, page)) =
