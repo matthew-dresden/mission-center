@@ -532,6 +532,12 @@ impl GraphWidget {
         true
     }
 
+    pub fn clear_datasets(&self) {
+        let mut sets = self.imp().data_sets.take();
+        sets.clear();
+        self.imp().data_sets.set(sets);
+    }
+
     pub fn add_dataset(&self, mut dataset: DatasetGroup) {
         let mut sets = self.imp().data_sets.take();
 

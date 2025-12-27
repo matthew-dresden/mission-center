@@ -98,6 +98,10 @@ mod imp {
         pub energy_full: OnceCell<gtk::Label>,
         pub energy_full_design: OnceCell<gtk::Label>,
         pub voltage_min_design: OnceCell<gtk::Label>,
+        pub voltage_max_design: OnceCell<gtk::Label>,
+        pub charge_threshold_enabled: OnceCell<gtk::Label>,
+        pub charge_start_threshold: OnceCell<gtk::Label>,
+        pub charge_end_threshold: OnceCell<gtk::Label>,
     }
 
     impl Default for PerformancePageBattery {
@@ -143,6 +147,10 @@ mod imp {
                 energy_full: Default::default(),
                 energy_full_design: Default::default(),
                 voltage_min_design: Default::default(),
+                voltage_max_design: Default::default(),
+                charge_threshold_enabled: Default::default(),
+                charge_start_threshold: Default::default(),
+                charge_end_threshold: Default::default(),
             }
         }
     }
@@ -296,6 +304,14 @@ mod imp {
                 }
             }
 
+            if let Some(voltage_max_design) = this.voltage_max_design.get() {
+                if let Some(v) = &battery.voltage_max_design {
+                    voltage_max_design.set_text(&format!("{:.1} V", v))
+                } else {
+                    voltage_max_design.set_visible(false)
+                }
+            }
+
             if let Some(voltage) = this.voltage.get() {
                 voltage.set_visible(battery.voltage.is_some())
             }
@@ -308,59 +324,22 @@ mod imp {
                 charge_cycles.set_visible(battery.charge_cycles.is_some())
             }
 
+            if battery.charge_threshold_supported == 0 {
+                if let Some(charge_threshold_enabled) = this.charge_threshold_enabled.get() {
+                    charge_threshold_enabled.set_visible(false)
+                }
+
+                if let Some(charge_start_threshold) = this.charge_start_threshold.get() {
+                    charge_start_threshold.set_visible(false)
+                }
+
+                if let Some(charge_end_threshold) = this.charge_end_threshold.get() {
+                    charge_end_threshold.set_visible(false)
+                }
+            }
+
             if battery.has_history {
-                let mut his_interpol = Vec::with_capacity(1008);
-                let mut num_interpol = 0;
-                let mut start_num = 2.;
-
-                let mut his = battery.history.clone();
-
-                for v in his.iter_mut() {
-                    let mut v = *v;
-                    if v.is_nan() {
-                        num_interpol += 1;
-                        v = 0.0;
-                    } else {
-                        if num_interpol != 0 {
-                            if start_num > 1. {
-                                for _ in 0..num_interpol {
-                                    his_interpol.push(v)
-                                }
-                            } else {
-                                let diff = v - start_num;
-                                for i in 0..num_interpol {
-                                    his_interpol.push(
-                                        start_num
-                                            + diff * (i + 1) as f32 / (num_interpol + 1) as f32,
-                                    )
-                                }
-                            }
-                            num_interpol = 0;
-                        }
-                        his_interpol.push(v);
-                        start_num = v
-                    }
-                }
-
-                if num_interpol != 0 {
-                    let v = *(his.last().unwrap());
-                    for _ in 0..num_interpol {
-                        his_interpol.push(v)
-                    }
-                }
-
-                let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
-                history_graph.dataset_settings.high_watermark = 1.;
-
-                let mut history_graph_interpol = DatasetGroup::new_with_datas(vec![his_interpol]);
-                history_graph_interpol.dataset_settings.high_watermark = 1.;
-                history_graph_interpol.dataset_settings.dashed = true;
-                history_graph_interpol.dataset_settings.opacity = 0.1;
-
-                this.history_graph.set_data_points(1008);
-                this.history_graph.add_dataset(history_graph);
-                this.history_graph.add_dataset(history_graph_interpol);
-                this.history_graph.update_animation(0.0);
+                update_history(this, battery)
             } else {
                 let mut history_graph = DatasetGroup::new();
                 history_graph.dataset_settings.high_watermark = 0.;
@@ -466,6 +445,45 @@ mod imp {
                     this.energy_rate_graph.add_data_point(vec![vec![*v]]);
                 }
             }
+            if battery.charge_threshold_supported != 0 {
+                if let Some(charge_threshold_enabled) = this.charge_threshold_enabled.get() {
+                    if battery.charge_threshold_enabled {
+                        if battery.charge_threshold_supported >= 4 {
+                            charge_threshold_enabled.set_text("Firmware")
+                        } else {
+                            charge_threshold_enabled.set_text("True")
+                        }
+                    } else {
+                        charge_threshold_enabled.set_text("False")
+                    }
+                }
+
+                if let Some(charge_start_threshold) = this.charge_start_threshold.get() {
+                    if let Some(v) = battery.charge_start_threshold {
+                        if battery.charge_threshold_enabled {
+                            charge_start_threshold.set_text(&format!("{}%", v));
+                            charge_start_threshold.set_visible(true)
+                        } else {
+                            charge_start_threshold.set_visible(false)
+                        }
+                    } else {
+                        charge_start_threshold.set_visible(false)
+                    }
+                }
+
+                if let Some(charge_end_threshold) = this.charge_end_threshold.get() {
+                    if let Some(v) = battery.charge_end_threshold {
+                        if battery.charge_threshold_enabled {
+                            charge_end_threshold.set_text(&format!("{}%", v));
+                            charge_end_threshold.set_visible(true)
+                        } else {
+                            charge_end_threshold.set_visible(false)
+                        }
+                    } else {
+                        charge_end_threshold.set_visible(false)
+                    }
+                }
+            }
 
             this.energy_rate_max_y.set_text(&i18n_f(
                 "{} W",
@@ -476,6 +494,10 @@ mod imp {
                 "{} W",
                 &[&this.energy_rate_graph.get_dataset_min_scale(0).to_string()],
             ));
+
+            if battery.history_changed {
+                update_history(this, battery)
+            }
 
             true
         }
@@ -664,6 +686,26 @@ mod imp {
                     .object::<gtk::Label>("voltage_min_design")
                     .expect("Could not find `voltage_min_design` object in details pane"),
             );
+            let _ = self.voltage_max_design.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("voltage_max_design")
+                    .expect("Could not find `voltage_max_design` object in details pane"),
+            );
+            let _ = self.charge_threshold_enabled.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("charge_threshold_enabled")
+                    .expect("Could not find `charge_threshold_enabled` object in details pane"),
+            );
+            let _ = self.charge_start_threshold.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("charge_start_threshold")
+                    .expect("Could not find `charge_start_threshold` object in details pane"),
+            );
+            let _ = self.charge_end_threshold.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("charge_end_threshold")
+                    .expect("Could not find `charge_end_threshold` object in details pane"),
+            );
         }
     }
 
@@ -761,6 +803,61 @@ impl PerformancePageBattery {
     pub fn update_animations(&self, new_ticks: f32) -> bool {
         imp::PerformancePageBattery::update_animations(self, new_ticks)
     }
+}
+
+fn update_history(this: &crate::performance_page::battery::imp::PerformancePageBattery, battery: &Battery) {
+    let mut his_interpol = Vec::with_capacity(1008);
+    let mut num_interpol = 0;
+    let mut start_num = 2.;
+
+    let mut his = battery.history.clone();
+
+    for v in his.iter_mut() {
+        let v = *v;
+        if v.is_nan() {
+            num_interpol += 1;
+        } else {
+            if num_interpol != 0 {
+                if start_num > 1. {
+                    for _ in 0..num_interpol {
+                        his_interpol.push(v)
+                    }
+                } else {
+                    let diff = v - start_num;
+                    for i in 0..num_interpol {
+                        his_interpol.push(
+                            start_num
+                                + diff * (i + 1) as f32 / (num_interpol + 1) as f32,
+                        )
+                    }
+                }
+                num_interpol = 0;
+            }
+            his_interpol.push(v);
+            start_num = v
+        }
+    }
+
+    if num_interpol != 0 {
+        let v = *(his.first().unwrap());
+        for _ in 0..num_interpol {
+            his_interpol.push(v)
+        }
+    }
+
+    let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
+    history_graph.dataset_settings.high_watermark = 1.;
+
+    let mut history_graph_interpol = DatasetGroup::new_with_datas(vec![his_interpol]);
+    history_graph_interpol.dataset_settings.high_watermark = 1.;
+    history_graph_interpol.dataset_settings.dashed = true;
+    history_graph_interpol.dataset_settings.opacity = 0.1;
+
+    this.history_graph.set_data_points(1008);
+    this.history_graph.clear_datasets();
+    this.history_graph.add_dataset(history_graph);
+    this.history_graph.add_dataset(history_graph_interpol);
+    this.history_graph.update_animation(0.0);
 }
 
 fn batterystate_to_str(state: &i32) -> &str {
