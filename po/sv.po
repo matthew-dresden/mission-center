@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-12-25 13:00+0000\n"
-"Last-Translator: Game Nobz <lukas05gustafsson@gmail.com>\n"
+"PO-Revision-Date: 2025-12-30 23:00+0000\n"
+"Last-Translator: Viktor Engkvist <viktor.engkvist@rivig.net>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/sv/>\n"
 "Language: sv\n"
@@ -39,11 +39,12 @@ msgid "Monitor system resource usage"
 msgstr "Övervaka systemresursanvändning"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:18
-#, fuzzy
 msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
-msgstr "Övervaka din CPU, Minne, Disk, Nätverk och GPU användning"
+msgstr ""
+"Övervaka användningen av CPU, minne, disk, nätverk och GPU, samt visa denna "
+"information per app och process"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 msgid "Features:"
@@ -108,13 +109,12 @@ msgid "Supports a minified summary view for simple monitoring"
 msgstr "Stöder en minimerad sammanfattningsvy för simpel övervakning"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:36
-#, fuzzy
 msgid ""
 "Use hardware accelerated rendering for all the graphs in an effort to reduce "
 "CPU and overall resource usage"
 msgstr ""
-"Använd Maskinvaruaccelererad rendering för alla grafer i ett försök att "
-"reducera CPU och totala resursanvändning"
+"Använd maskinvaruaccelererad rendering för alla grafer för att minska "
+"belastningen på CPU och övriga resurser"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:39
 msgid "Uses GTK4 and Libadwaita"
@@ -133,6 +133,8 @@ msgid ""
 "Intel GPU monitoring is only supported for Broadwell and later GPUs; and "
 "does not support VRAM, power, or temperature monitoring"
 msgstr ""
+"Övervakning av Intel-GPU:er stöds endast för Broadwell och senare, och "
+"saknar stöd för övervakning av VRAM, strömförbrukning eller temperatur"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:47
 msgid ""
@@ -140,6 +142,8 @@ msgid ""
 "\"Applications\" section (Upstream issue: https://github.com/linuxmint/"
 "cinnamon/issues/12015)"
 msgstr ""
+"Om du använder Linux Mint/Cinnamon kan det hända att startade appar inte "
+"syns i avsnittet ”Appar” (https://github.com/linuxmint/cinnamon/issues/12015)"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:51
 msgid "Comments, suggestions, bug reports and contributions welcome"
@@ -150,13 +154,12 @@ msgid "Which page is shown on application startup"
 msgstr "Vilken sida visas på programuppstart"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:51
-#, fuzzy
 msgid "Interface Style"
-msgstr "Kortnamn:"
+msgstr "Utseende"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:52
 msgid "If light or dark interface style should be used"
-msgstr ""
+msgstr "Om ljust eller mörkt utseende ska användas"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:58
 msgid "DEPRECATED! NO LONGER IN USE!"
@@ -637,9 +640,8 @@ msgstr "Videokodningsanvändning"
 
 #: resources/ui/performance_page/gpu.blp:162
 #: resources/ui/performance_page/memory.blp:76
-#, fuzzy
 msgid "Memory usage over "
-msgstr "Minnesanvändning"
+msgstr "Minnesanvändning under "
 
 #: resources/ui/performance_page/gpu.blp:208
 msgid "Show Encode/Decode Usage"
@@ -652,12 +654,11 @@ msgstr "Minnesanvändning"
 
 #: resources/ui/performance_page/memory.blp:172
 msgid "Memory composition"
-msgstr "Minnessammansättning"
+msgstr "Minnesfördelning"
 
 #: resources/ui/performance_page/memory.blp:196
-#, fuzzy
 msgid "Show Memory Composition"
-msgstr "Minnessammansättning"
+msgstr "Visa minnesfördelning"
 
 #: resources/ui/performance_page/memory.blp:200
 msgid "Show Swap Usage"
@@ -850,14 +851,12 @@ msgid "Memory Speed"
 msgstr "Minneshastighet"
 
 #: resources/ui/performance_page/gpu_details.blp:407
-#, fuzzy
 msgid "Video encode"
-msgstr "Videokodning/avkodning"
+msgstr "Videokodning"
 
 #: resources/ui/performance_page/gpu_details.blp:453
-#, fuzzy
 msgid "Video decode"
-msgstr "Videokodning/avkodning"
+msgstr "Videoavkodning"
 
 #: resources/ui/performance_page/gpu_details.blp:483
 msgid "Temperature"
@@ -876,9 +875,8 @@ msgid "PCI Express speed:"
 msgstr "PCI Express hastighet:"
 
 #: resources/ui/performance_page/gpu_details.blp:566
-#, fuzzy
 msgid "Max PCI Express speed:"
-msgstr "PCI Express hastighet:"
+msgstr "Maximal PCI Express-hastighet:"
 
 #: resources/ui/performance_page/gpu_details.blp:582
 msgid "PCI bus address:"
@@ -893,6 +891,8 @@ msgid ""
 "There was a problem fetching SMART data. Try running from the command line "
 "to get more information."
 msgstr ""
+"Det gick inte att hämta S.M.A.R.T.-data. Kör programmet via terminalen för "
+"att se eventuell felinformation."
 
 #: resources/ui/performance_page/disk_details.blp:63
 msgid "Read speed"
@@ -984,15 +984,15 @@ msgstr "Virtuell dator:"
 
 #: resources/ui/performance_page/cpu_details.blp:277
 msgid "L1 cache:"
-msgstr "L1 cache:"
+msgstr "L1-cache:"
 
 #: resources/ui/performance_page/cpu_details.blp:291
 msgid "L2 cache:"
-msgstr "L2 cache:"
+msgstr "L2-cache:"
 
 #: resources/ui/performance_page/cpu_details.blp:305
 msgid "L3 cache:"
-msgstr "L3 cache:"
+msgstr "L3-cache:"
 
 #: resources/ui/performance_page/cpu_details.blp:319
 msgid "Cpufreq driver:"
@@ -1004,12 +1004,11 @@ msgstr "Cpufreq guvernör:"
 
 #: resources/ui/performance_page/cpu_details.blp:347
 msgid "Power preference:"
-msgstr "Strömpreferens:"
+msgstr "Ströminställning:"
 
 #: resources/ui/preferences/page.blp:6
-#, fuzzy
 msgid "General"
-msgstr "Allmänna inställningar"
+msgstr "Allmänt"
 
 #: resources/ui/preferences/page.blp:9
 msgid "Update Interval"
@@ -1025,7 +1024,6 @@ msgid "Chart Data Points"
 msgstr "Diagramdatapunkter"
 
 #: resources/ui/preferences/page.blp:46 resources/ui/keyboard_shortcuts.blp:68
-#, fuzzy
 msgid "Performance Page"
 msgstr "Prestanda"
 
@@ -1143,7 +1141,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:141 resources/ui/preferences/page.blp:179
 #: resources/ui/preferences/page.blp:217
 msgid "Bytes"
-msgstr ""
+msgstr "Byte"
 
 #: resources/ui/preferences/page.blp:145
 msgid "Use Bits as a Unit of Measurement for Memory"
@@ -1152,7 +1150,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
 #: resources/ui/preferences/page.blp:222
 msgid "Bits"
-msgstr ""
+msgstr "Bitar"
 
 #: resources/ui/preferences/page.blp:152
 #, fuzzy
@@ -1272,7 +1270,7 @@ msgstr ""
 
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Tangentbordsgenvägar"
 
 #: resources/ui/keyboard_shortcuts.blp:10
 msgid "Global"
@@ -1288,13 +1286,12 @@ msgid "Close Window"
 msgstr ""
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Preferenser"
+msgstr "Öppna inställningar"
 
 #: resources/ui/keyboard_shortcuts.blp:41
 msgid "Show Keyboard Shortcuts"
-msgstr ""
+msgstr "Visa tangentbordsgenvägar"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 #, fuzzy
@@ -1360,19 +1357,16 @@ msgid "Services Page"
 msgstr "Tjänster"
 
 #: resources/ui/keyboard_shortcuts.blp:150
-#, fuzzy
 msgid "Start Service"
-msgstr "Tjänster"
+msgstr "Starta tjänst"
 
 #: resources/ui/keyboard_shortcuts.blp:155
-#, fuzzy
 msgid "Stop Service"
-msgstr "Tjänster"
+msgstr "Stoppa tjänst"
 
 #: resources/ui/keyboard_shortcuts.blp:160
-#, fuzzy
 msgid "Restart Service"
-msgstr "Starta om"
+msgstr "Starta om tjänst"
 
 #. The `Name` column should be default aligned
 #. The column that contains the context menu button should be default aligned
@@ -1384,11 +1378,12 @@ msgid "Name"
 msgstr "Namn"
 
 #: resources/ui/process_column_view/column_view_frame.blp:66
-#, fuzzy
 msgid ""
 "Shared\n"
 "Memory"
-msgstr "Minne"
+msgstr ""
+"Delat\n"
+"minne"
 
 #: resources/ui/process_column_view/column_view_frame.blp:72
 #: src/performance_page/mod.rs:1131 src/process_tree/column_view_frame.rs:565
@@ -1603,31 +1598,28 @@ msgid "Windowing System"
 msgstr ""
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Virtuell dator:"
+msgstr "Virtuell terminal"
 
 #: resources/ui/window.blp:49
-#, fuzzy
 msgid "Enable All"
-msgstr "Aktiverad"
+msgstr "Aktivera alla"
 
 #: resources/ui/window.blp:54
 msgid "Disable All"
-msgstr ""
+msgstr "Inaktivera alla"
 
 #: resources/ui/window.blp:59
 msgid "Reset to Default"
-msgstr ""
+msgstr "Återställ till standard"
 
 #: resources/ui/window.blp:64
 msgid "Devices"
 msgstr "Enheter"
 
 #: resources/ui/window.blp:70
-#, fuzzy
 msgid "Edit Sidebar"
-msgstr "Visa Sidofält"
+msgstr "Redigera sidofältet"
 
 #: resources/ui/window.blp:118
 msgid "Type a name or PID to search"
@@ -1640,7 +1632,7 @@ msgstr "Minnessammansättning"
 
 #: resources/ui/window.blp:148
 msgid "Main Menu"
-msgstr ""
+msgstr "Huvudmeny"
 
 #: resources/ui/window.blp:178
 msgid "Loading..."
@@ -1660,11 +1652,11 @@ msgstr "Tjänster"
 
 #: resources/ui/window.blp:237
 msgid "_Preferences"
-msgstr "_Preferenser"
+msgstr "_Inställningar"
 
 #: resources/ui/window.blp:242
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "_Tangentbordsgenvägar"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
@@ -1691,7 +1683,7 @@ msgstr[1] "{} Aktiva Tjänster"
 #: src/performance_page/widgets/smart_data_dialog.rs:95
 #, rust-format
 msgid "{} ago"
-msgstr ""
+msgstr "{} sedan"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:98
 #: src/performance_page/cpu.rs:321 src/performance_page/cpu.rs:332
@@ -1733,7 +1725,7 @@ msgstr ""
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
@@ -2077,11 +2069,11 @@ msgstr[0] "{} år"
 msgstr[1] "{} år"
 
 #: src/main.rs:107
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} month"
 msgid_plural "{} months"
-msgstr[0] "{} minut{} "
-msgstr[1] "{} minut{} "
+msgstr[0] "{} månad"
+msgstr[1] "{} månader"
 
 #: src/main.rs:111
 #, rust-format
@@ -2098,18 +2090,18 @@ msgstr[0] "{} timme"
 msgstr[1] "{} timmar"
 
 #: src/main.rs:119 src/main.rs:184
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
-msgstr[0] "{} minut{} "
-msgstr[1] "{} minut{} "
+msgstr[0] "{} minut"
+msgstr[1] "{} minuter"
 
 #: src/main.rs:123 src/main.rs:182
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
-msgstr[0] "{} sekund{}"
-msgstr[1] "{} sekund{}"
+msgstr[0] "{} sekund"
+msgstr[1] "{} sekunder"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159
