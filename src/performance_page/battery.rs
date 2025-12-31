@@ -819,10 +819,13 @@ fn update_history(this: &crate::performance_page::battery::imp::PerformancePageB
         } else {
             if num_interpol != 0 {
                 if start_num > 1. {
-                    for _ in 0..num_interpol {
+                    for _ in 0..(num_interpol + 1) {
                         his_interpol.push(v)
                     }
                 } else {
+                    if let Some(x) = his_interpol.last_mut() {
+                        *x = start_num
+                    }
                     let diff = v - start_num;
                     for i in 0..num_interpol {
                         his_interpol.push(
@@ -830,10 +833,12 @@ fn update_history(this: &crate::performance_page::battery::imp::PerformancePageB
                                 + diff * (i + 1) as f32 / (num_interpol + 1) as f32,
                         )
                     }
+                    his_interpol.push(v)
                 }
                 num_interpol = 0;
+            } else {
+                his_interpol.push(f32::NAN);
             }
-            his_interpol.push(v);
             start_num = v
         }
     }
@@ -845,13 +850,17 @@ fn update_history(this: &crate::performance_page::battery::imp::PerformancePageB
         }
     }
 
+    println!("{:?}", his);
+
     let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
     history_graph.dataset_settings.high_watermark = 1.;
+    history_graph.dataset_settings.vertical_dropoff_lines = false;
 
     let mut history_graph_interpol = DatasetGroup::new_with_datas(vec![his_interpol]);
     history_graph_interpol.dataset_settings.high_watermark = 1.;
     history_graph_interpol.dataset_settings.dashed = true;
     history_graph_interpol.dataset_settings.opacity = 0.1;
+    history_graph_interpol.dataset_settings.vertical_dropoff_lines = false;
 
     this.history_graph.set_data_points(1008);
     this.history_graph.clear_datasets();

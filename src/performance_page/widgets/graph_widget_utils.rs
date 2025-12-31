@@ -63,13 +63,14 @@ pub struct DatasetSettings {
     pub visible: bool,
     pub fill: FillingSettings,
     pub opacity: f32,
+    pub vertical_dropoff_lines: bool,
 
     pub scaling_settings: ScalingSettings,
     pub low_watermark: f32,
     pub high_watermark: f32,
 
     // for example, when using pow2base10 scaling, we want to ensure we are using the correct reference point to calculate that nearest thousand.
-    // we keep this as a float to no exclude other uses
+    // we keep this as a float to not exclude other uses
     pub watermarking_multiplier: f32,
 
     pub following: Option<usize>,
@@ -91,6 +92,7 @@ impl DatasetGroup {
                 fill: Default::default(),
                 visible: true,
                 opacity: 100. / 255.,
+                vertical_dropoff_lines: true,
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
                 high_watermark: 100.0,
@@ -112,6 +114,7 @@ impl DatasetGroup {
                 fill: Default::default(),
                 visible: true,
                 opacity: 100. / 255.,
+                vertical_dropoff_lines: true,
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
                 high_watermark: 100.0,
@@ -342,7 +345,7 @@ impl DatasetGroup {
             .map(|pts| pts.plot(width, height, &self.dataset_settings, parent))
             .collect();
 
-        let dataset_points = match self.dataset_settings.scaling_settings {
+        dataset_points = match self.dataset_settings.scaling_settings {
             ScalingSettings::Stacking => {
                 // First, we pop the first dataset
                 let mut stacked_points: Vec<Vec<DatasetPoints>> =
@@ -387,72 +390,149 @@ impl DatasetGroup {
         }
 
         for (set_index, set) in dataset_points.iter().enumerate() {
-            let path_builder = PathBuilder::new();
+            let set_split = set.split(|set| set.y.is_nan() );
 
-            let (Some(first_point), Some(last_point)) = (set.first(), set.last()) else {
-                continue;
-            };
+            for set in set_split {
 
-            path_builder.move_to(first_point.x, first_point.y);
+                let path_builder = PathBuilder::new();
 
-            let (mut lastx, mut lasty) = (first_point.x, first_point.y);
+                let (Some(first_point), Some(last_point)) = (set.first(), set.last()) else {
+                    continue;
+                };
 
-            for point in set.iter().skip(1) {
-                if parent.smooth_graphs() {
-                    let deltax = point.x - lastx;
-                    path_builder.cubic_to(
-                        lastx + deltax / 2f32,
-                        lasty,
-                        lastx + deltax / 2f32,
-                        point.y,
-                        point.x,
-                        point.y,
-                    );
+                path_builder.move_to(first_point.x, first_point.y);
 
-                    lastx = point.x;
-                    lasty = point.y;
-                } else {
-                    path_builder.line_to(point.x, point.y);
-                }
-            }
+                let (mut lastx, mut lasty) = (first_point.x, first_point.y);
 
-            match self.dataset_settings.fill {
-                FillingSettings::FillToBottom | FillingSettings::None => {
-                    path_builder.line_to(last_point.x, height);
-                    path_builder.line_to(first_point.x, height);
-                }
-                FillingSettings::FillToTop => {
-                    path_builder.line_to(last_point.x, 0.);
-                    path_builder.line_to(first_point.x, 0.);
-                }
-                FillingSettings::FillToZero => {
-                    if self.dataset_settings.low_watermark >= 0.
-                        || self.dataset_settings.low_watermark
-                            >= self.dataset_settings.high_watermark
-                    {
-                        path_builder.line_to(last_point.x, height);
-                        path_builder.line_to(first_point.x, height);
+                for point in set.iter().skip(1) {
+                    if parent.smooth_graphs() {
+                        let deltax = point.x - lastx;
+                        path_builder.cubic_to(
+                            lastx + deltax / 2f32,
+                            lasty,
+                            lastx + deltax / 2f32,
+                            point.y,
+                            point.x,
+                            point.y,
+                        );
+
+                        lastx = point.x;
+                        lasty = point.y;
                     } else {
-                        let zeroheight = height * (self.dataset_settings.high_watermark)
-                            / (self.dataset_settings.high_watermark
-                                - self.dataset_settings.low_watermark);
-                        path_builder.line_to(last_point.x, zeroheight);
-                        path_builder.line_to(first_point.x, zeroheight);
+                        path_builder.line_to(point.x, point.y);
                     }
                 }
+
+
+                if self.dataset_settings.vertical_dropoff_lines {
+                    match self.dataset_settings.fill {
+                        FillingSettings::FillToBottom | FillingSettings::None => {
+                            path_builder.line_to(last_point.x, height);
+                            path_builder.line_to(first_point.x, height);
+                        }
+                        FillingSettings::FillToTop => {
+                            path_builder.line_to(last_point.x, 0.);
+                            path_builder.line_to(first_point.x, 0.);
+                        }
+                        FillingSettings::FillToZero => {
+                            if self.dataset_settings.low_watermark >= 0.
+                                || self.dataset_settings.low_watermark
+                                    >= self.dataset_settings.high_watermark
+                            {
+                                path_builder.line_to(last_point.x, height);
+                                path_builder.line_to(first_point.x, height);
+                            } else {
+                                let zeroheight = height * (self.dataset_settings.high_watermark)
+                                    / (self.dataset_settings.high_watermark
+                                        - self.dataset_settings.low_watermark);
+                                path_builder.line_to(last_point.x, zeroheight);
+                                path_builder.line_to(first_point.x, zeroheight);
+                            }
+                        }
+                    }
+
+                    path_builder.close();
+
+                    let path = path_builder.to_path();
+
+                    if self.dataset_settings.fill != FillingSettings::None
+                        && (self.dataset_settings.scaling_settings != ScalingSettings::Stacking
+                            || set_index == dataset_points.len() - 1)
+                    {
+                        snapshot.append_fill(&path, FillRule::Winding, &fill_color);
+                    }
+
+                    snapshot.append_stroke(&path, &stroke, &stroke_color);
+                } else {
+                    let line = path_builder.to_path();
+
+                    let path_builder = PathBuilder::new();
+
+                    path_builder.move_to(first_point.x, first_point.y);
+
+                    // builder.add_path(&line) doesn't work with the fill
+
+                    let (mut lastx, mut lasty) = (first_point.x, first_point.y);
+
+                    for point in set.iter().skip(1) {
+                        if parent.smooth_graphs() {
+                            let deltax = point.x - lastx;
+                            path_builder.cubic_to(
+                                lastx + deltax / 2f32,
+                                lasty,
+                                lastx + deltax / 2f32,
+                                point.y,
+                                point.x,
+                                point.y,
+                            );
+
+                            lastx = point.x;
+                            lasty = point.y;
+                        } else {
+                            path_builder.line_to(point.x, point.y);
+                        }
+                    }
+
+                    match self.dataset_settings.fill {
+                        FillingSettings::FillToBottom | FillingSettings::None => {
+                            path_builder.line_to(last_point.x, height);
+                            path_builder.line_to(first_point.x, height);
+                        }
+                        FillingSettings::FillToTop => {
+                            path_builder.line_to(last_point.x, 0.);
+                            path_builder.line_to(first_point.x, 0.);
+                        }
+                        FillingSettings::FillToZero => {
+                            if self.dataset_settings.low_watermark >= 0.
+                                || self.dataset_settings.low_watermark
+                                    >= self.dataset_settings.high_watermark
+                            {
+                                path_builder.line_to(last_point.x, height);
+                                path_builder.line_to(first_point.x, height);
+                            } else {
+                                let zeroheight = height * (self.dataset_settings.high_watermark)
+                                    / (self.dataset_settings.high_watermark
+                                        - self.dataset_settings.low_watermark);
+                                path_builder.line_to(last_point.x, zeroheight);
+                                path_builder.line_to(first_point.x, zeroheight);
+                            }
+                        }
+                    }
+
+                    path_builder.close();
+
+                    let path = path_builder.to_path();
+
+                    if self.dataset_settings.fill != FillingSettings::None
+                        && (self.dataset_settings.scaling_settings != ScalingSettings::Stacking
+                            || set_index == dataset_points.len() - 1)
+                    {
+                        snapshot.append_fill(&path, FillRule::Winding, &fill_color);
+                    }
+
+                    snapshot.append_stroke(&line, &stroke, &stroke_color);
+                }
             }
-            path_builder.close();
-
-            let path = path_builder.to_path();
-
-            if self.dataset_settings.fill != FillingSettings::None
-                && (self.dataset_settings.scaling_settings != ScalingSettings::Stacking
-                    || set_index == dataset_points.len() - 1)
-            {
-                snapshot.append_fill(&path, FillRule::Winding, &fill_color);
-            }
-
-            snapshot.append_stroke(&path, &stroke, &stroke_color);
         }
     }
 }
@@ -491,11 +571,12 @@ impl Dataset {
             .iter()
             .take(self.used_data)
             .map(|v| {
-                if !v.is_normal() {
-                    low_watermark
-                } else {
-                    v.clone()
-                }
+                //if !v.is_normal() {
+                    //low_watermark
+                //} else {
+                    //v.clone()
+                //}
+                v.clone()
             })
             .collect()
     }
@@ -529,8 +610,12 @@ impl Dataset {
 
 impl Default for Dataset {
     fn default() -> Self {
+        let mut data = vec![f32::NAN; MAX_POINTS as usize];
+        if let Some(v) = data.first_mut() { // so there's no vertical drop on first refresh
+            *v = 0.0
+        }
         Self {
-            data: vec![f32::NAN; MAX_POINTS as usize],
+            data,
             used_data: MIN_POINTS as usize,
         }
     }
