@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-12-30 23:00+0000\n"
+"PO-Revision-Date: 2026-01-01 01:01+0000\n"
 "Last-Translator: Viktor Engkvist <viktor.engkvist@rivig.net>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/sv/>\n"
@@ -389,9 +389,8 @@ msgstr ""
 
 #: resources/ui/apps_page/details_dialog.blp:154
 #: resources/ui/process_column_view/process_details_dialog.blp:162
-#, fuzzy
 msgid "Resource Usage"
-msgstr "Minnesanvändning"
+msgstr "Resursanvändning"
 
 #: resources/ui/apps_page/details_dialog.blp:168
 #: resources/ui/performance_page/cpu.blp:45
@@ -411,24 +410,21 @@ msgstr "Minne"
 
 #: resources/ui/apps_page/details_dialog.blp:218
 #: resources/ui/process_column_view/process_details_dialog.blp:226
-#, fuzzy
 msgid "Shared Memory"
-msgstr "Minne"
+msgstr "Delat minne"
 
 #: resources/ui/apps_page/details_dialog.blp:243
 #: resources/ui/process_column_view/process_details_dialog.blp:251
-#, fuzzy
 msgid "Drives"
-msgstr "Disk"
+msgstr "Diskar"
 
 #: resources/ui/apps_page/details_dialog.blp:268
 #: resources/ui/process_column_view/column_view_frame.blp:78
 #: resources/ui/process_column_view/process_details_dialog.blp:276
 #: src/process_tree/column_view_frame.rs:579
 #: src/process_tree/column_view_frame.rs:588
-#, fuzzy
 msgid "Network"
-msgstr "_Nätverk"
+msgstr "Nätverk"
 
 #: resources/ui/apps_page/details_dialog.blp:293
 #: resources/ui/process_column_view/column_view_frame.blp:84
@@ -444,9 +440,8 @@ msgstr "GPU"
 #: resources/ui/process_column_view/process_details_dialog.blp:326
 #: src/process_tree/column_view_frame.rs:598
 #: src/process_tree/column_view_frame.rs:617
-#, fuzzy
 msgid "GPU Memory"
-msgstr "GPU Minne"
+msgstr "GPU-minne"
 
 #: resources/ui/apps_page/page.blp:75
 msgid "Collapse all apps and processes"
@@ -483,9 +478,8 @@ msgstr ""
 
 #: resources/ui/performance_page/cpu.blp:63
 #: resources/ui/performance_page/gpu.blp:72
-#, fuzzy
 msgid "Utilization over "
-msgstr "Användning Över {}{}"
+msgstr "Användning under "
 
 #: resources/ui/performance_page/cpu.blp:78
 #: resources/ui/performance_page/gpu.blp:86
@@ -579,7 +573,7 @@ msgstr "_GPU"
 #: resources/ui/performance_page/memory.blp:240
 #: resources/ui/performance_page/network.blp:138
 msgid "_Fan"
-msgstr ""
+msgstr "_Fläkt"
 
 #: resources/ui/performance_page/cpu.blp:168
 #: resources/ui/performance_page/disk.blp:223
@@ -592,16 +586,15 @@ msgstr "_Kopia"
 
 #: resources/ui/performance_page/disk.blp:66
 msgid "Show SMART Data"
-msgstr ""
+msgstr "Visa S.M.A.R.T-data"
 
 #: resources/ui/performance_page/disk.blp:77
 msgid "Eject Disk"
-msgstr ""
+msgstr "Mata ut disk"
 
 #: resources/ui/performance_page/disk.blp:99
-#, fuzzy
 msgid "Active time over "
-msgstr "Aktiv tid"
+msgstr "Aktiv tid under "
 
 #: resources/ui/performance_page/disk.blp:140
 #: resources/ui/performance_page/network.blp:61
@@ -610,28 +603,24 @@ msgid "Throughput over "
 msgstr "Kapacitet"
 
 #: resources/ui/performance_page/fan.blp:61
-#, fuzzy
 msgid "Fan speed over "
-msgstr "Minnesanvändning"
+msgstr "Fläkthastighet under "
 
 #: resources/ui/performance_page/fan.blp:112
-#, fuzzy
 msgid "Temperature over "
-msgstr "Temperatur"
+msgstr "Temperatur under "
 
 #: resources/ui/performance_page/fan_details.blp:59
-#, fuzzy
 msgid "Fan Speed"
-msgstr "Hastighet"
+msgstr "Fläkthastighet"
 
 #: resources/ui/performance_page/fan_details.blp:98
 msgid "PWM Percentage"
-msgstr ""
+msgstr "PWM-procent"
 
 #: resources/ui/performance_page/fan_details.blp:125
-#, fuzzy
 msgid "Current Temperature"
-msgstr "Temperatur"
+msgstr "Aktuell temperatur"
 
 #: resources/ui/performance_page/gpu.blp:119
 #, fuzzy
@@ -755,11 +744,11 @@ msgstr "Hårdvaruadress:"
 
 #: resources/ui/performance_page/network_details.blp:401
 msgid "IPv4 address:"
-msgstr "IPv4 adress:"
+msgstr "IPv4-adress:"
 
 #: resources/ui/performance_page/network_details.blp:427
 msgid "IPv6 address:"
-msgstr "IPv6 adress:"
+msgstr "IPv6-adress:"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
@@ -767,16 +756,15 @@ msgstr "S.M.A.R.T.-data"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:48
 msgid "Last Updated"
-msgstr ""
+msgstr "Senast uppdaterad"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:72
-#, fuzzy
 msgid "Powered On"
-msgstr "Strömförbrukning"
+msgstr "Drifttid"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:96
 msgid "Drive Health"
-msgstr ""
+msgstr "Diskhälsa"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
@@ -790,12 +778,11 @@ msgstr ""
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
 msgid "Value"
-msgstr ""
+msgstr "Värde"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
-#, fuzzy
 msgid "ID"
-msgstr "PID"
+msgstr "ID"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
 #, fuzzy
@@ -813,7 +800,7 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:211
 msgid "Updates"
-msgstr ""
+msgstr "Uppdateringar"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:217
 msgid "Assessment"
@@ -835,18 +822,15 @@ msgstr "Strömförbrukning"
 
 #: resources/ui/performance_page/gpu_details.blp:200
 #: src/performance_page/gpu.rs:552
-#, fuzzy
 msgid "Memory Usage"
 msgstr "Minnesanvändning"
 
 #: resources/ui/performance_page/gpu_details.blp:274
 #: src/performance_page/gpu.rs:629
-#, fuzzy
 msgid "Shared Memory Usage"
-msgstr "Minnesanvändning"
+msgstr "Användning av delat minne"
 
 #: resources/ui/performance_page/gpu_details.blp:332
-#, fuzzy
 msgid "Memory Speed"
 msgstr "Minneshastighet"
 
@@ -864,11 +848,11 @@ msgstr "Temperatur"
 
 #: resources/ui/performance_page/gpu_details.blp:514
 msgid "OpenGL version:"
-msgstr "OpenGL version:"
+msgstr "OpenGL-version:"
 
 #: resources/ui/performance_page/gpu_details.blp:530
 msgid "Vulkan version:"
-msgstr "Vulkan version:"
+msgstr "Vulkan-version:"
 
 #: resources/ui/performance_page/gpu_details.blp:548
 msgid "PCI Express speed:"
@@ -880,11 +864,11 @@ msgstr "Maximal PCI Express-hastighet:"
 
 #: resources/ui/performance_page/gpu_details.blp:582
 msgid "PCI bus address:"
-msgstr "PCI buss adress:"
+msgstr "PCI-bussadress:"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
 msgid "Failed To Get SMART Data"
-msgstr ""
+msgstr "Det gick inte att hämta S.M.A.R.T.-data"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:31
 msgid ""
@@ -904,11 +888,11 @@ msgstr "Skrivhastighet"
 
 #: resources/ui/performance_page/disk_details.blp:130
 msgid "Total Read"
-msgstr ""
+msgstr "Totalt läst"
 
 #: resources/ui/performance_page/disk_details.blp:159
 msgid "Total Written"
-msgstr ""
+msgstr "Totalt skrivet"
 
 #: resources/ui/performance_page/disk_details.blp:188
 msgid "Active time"
@@ -932,11 +916,11 @@ msgstr "Systemdisk:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Serienummer:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
@@ -1015,9 +999,8 @@ msgid "Update Interval"
 msgstr "Uppdateringsintervall"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} sekund{}"
+msgstr "I sekunder"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1041,11 +1024,11 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:55
 msgid "Animate graphs (may negatively impact performance)"
-msgstr ""
+msgstr "Animera grafer (kan påverka prestandan negativt)"
 
 #: resources/ui/preferences/page.blp:59
 msgid "Scale Network Graphs Dynamically"
-msgstr ""
+msgstr "Dynamisk skalning av nätverksgrafer"
 
 #: resources/ui/preferences/page.blp:60
 msgid ""
@@ -1055,29 +1038,27 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:64
 msgid "Show CPU Information"
-msgstr ""
+msgstr "Visa CPU-information"
 
 #: resources/ui/preferences/page.blp:70
-#, fuzzy
 msgid "Show Memory Information"
-msgstr "Minnessammansättning"
+msgstr "Visa minnesinformation"
 
 #: resources/ui/preferences/page.blp:76
 msgid "Show Disk Information"
-msgstr ""
+msgstr "Visa diskinformation"
 
 #: resources/ui/preferences/page.blp:82
 msgid "Show Network Information"
-msgstr ""
+msgstr "Visa nätverksinformation"
 
 #: resources/ui/preferences/page.blp:88
 msgid "Show GPU Information"
-msgstr ""
+msgstr "Visa GPU-information"
 
 #: resources/ui/preferences/page.blp:94
-#, fuzzy
 msgid "Show Fan Information"
-msgstr "Process och användarinformation"
+msgstr "Visa fläktinformation"
 
 #: resources/ui/preferences/page.blp:101
 #, fuzzy
@@ -1099,12 +1080,11 @@ msgstr "Kom ihåg sorteringen för app och process listan vid programomstart"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
-msgstr ""
+msgstr "Kom ihåg kolumnordning"
 
 #: resources/ui/preferences/page.blp:115
-#, fuzzy
 msgid "Persist the order of the columns, across app restarts"
-msgstr "Kom ihåg sorteringen för app och process listan vid programomstart"
+msgstr "Bevarar kolumnernas ordning även när programmet startas om"
 
 #: resources/ui/preferences/page.blp:119
 msgid "Scale CPU Usage to Core Count"
@@ -1127,7 +1107,7 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:130
 msgid "Global Units"
-msgstr ""
+msgstr "Globala enheter"
 
 #: resources/ui/preferences/page.blp:133
 #, fuzzy
@@ -1164,7 +1144,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:160 resources/ui/preferences/page.blp:198
 #: resources/ui/preferences/page.blp:236
 msgid "Base 10"
-msgstr ""
+msgstr "Bas 10"
 
 #: resources/ui/preferences/page.blp:164
 msgid "Use Base 2 for Memory"
@@ -1173,7 +1153,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:165 resources/ui/preferences/page.blp:203
 #: resources/ui/preferences/page.blp:241
 msgid "Base 2"
-msgstr ""
+msgstr "Bas 2"
 
 #: resources/ui/preferences/page.blp:171
 msgid "Drive Usage Unit"
@@ -1461,7 +1441,7 @@ msgstr "Användare 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "App-ID"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1506,9 +1486,8 @@ msgid "Start service"
 msgstr "Starta tjänst"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:90
-#, fuzzy
 msgid "Stop service"
-msgstr "Tjänster"
+msgstr "Stoppa tjänst"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:106
 msgid "Restart service"
@@ -1549,21 +1528,19 @@ msgstr "Grupp"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Filplats"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "Loggar"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Systemdisk:"
+msgstr "Systeminfo"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Minnessammansättning"
+msgstr "Operativsystem"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
@@ -1573,29 +1550,27 @@ msgstr "Version"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "Pakethanterare"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Pakethanterarens version"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Process och användarinformation"
+msgstr "Kärna"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Kärnversion"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Minnessammansättning"
+msgstr "Skrivbordsmiljö"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Fönstersystem"
 
 #: resources/ui/about_system_dialog.blp:344
 msgid "Virtual Terminal"
@@ -1667,18 +1642,18 @@ msgid "_About Mission Center"
 msgstr "_Om Mission Center"
 
 #: src/apps_page/mod.rs:259
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
-msgstr[0] "{} Aktiva Tjänster"
-msgstr[1] "{} Aktiva Tjänster"
+msgstr[0] "{} aktiv app"
+msgstr[1] "{} aktiva appar"
 
 #: src/apps_page/mod.rs:269
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Running Process"
 msgid_plural "{} Running Processes"
-msgstr[0] "{} Aktiva Tjänster"
-msgstr[1] "{} Aktiva Tjänster"
+msgstr[0] "{} aktiv tjänst"
+msgstr[1] "{} aktiva tjänster"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:95
 #, rust-format
@@ -1701,27 +1676,27 @@ msgstr "Okänd"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:130
 msgid "Pre-Fail"
-msgstr ""
+msgstr "Innan fel"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:131
 msgid "Old-Age"
-msgstr ""
+msgstr "Hög ålder"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:134
 msgid "Online"
-msgstr ""
+msgstr "Ansluten"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:135
 msgid "Offline"
-msgstr ""
+msgstr "Frånkopplad"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:142
 msgid "FAILING"
-msgstr ""
+msgstr "MISSLYCKADES"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:147
 msgid "Failed in the past"
-msgstr ""
+msgstr "Problem tidigare"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
@@ -1732,13 +1707,12 @@ msgid "Percent Used"
 msgstr ""
 
 #: src/performance_page/widgets/smart_data_dialog.rs:205
-#, fuzzy
 msgid "Available Spare"
-msgstr "Tillgänglig"
+msgstr "Tillgänglig reservkapacitet"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
-msgstr ""
+msgstr "Gränsvärde för reservkapacitet"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:221
 msgid "Total Data Read"
@@ -1775,13 +1749,12 @@ msgid "{} °C"
 msgstr "{} °C"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:272
-#, fuzzy
 msgid "Critical Temperature"
-msgstr "Temperatur"
+msgstr "Kritisk temperatur"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:279
 msgid "Temps"
-msgstr ""
+msgstr "Temperaturer"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:281
 msgid "Unsafe Shutdowns"
@@ -1797,7 +1770,7 @@ msgstr ""
 
 #: src/performance_page/widgets/smart_data_dialog.rs:305
 msgid "Power Cycles"
-msgstr ""
+msgstr "Antal starter"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:249
 #, fuzzy, rust-format
@@ -1848,9 +1821,9 @@ msgstr ""
 "operativsystemet, drivrutiner, eller applikationer behöver mer minne"
 
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} sectors"
-msgstr "{} sekund{}"
+msgstr "{} sektorer"
 
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
@@ -1873,7 +1846,7 @@ msgstr "Disk {} ({})"
 #: src/performance_page/disk.rs:205 src/performance_page/disk.rs:359
 #, rust-format
 msgid "Drive ({})"
-msgstr "Hård Disk ({})"
+msgstr "Disk ({})"
 
 #: src/performance_page/disk.rs:243 src/performance_page/mod.rs:1122
 msgid "HDD"
@@ -1892,9 +1865,8 @@ msgid "eMMC"
 msgstr "eMMC"
 
 #: src/performance_page/disk.rs:247 src/performance_page/mod.rs:1126
-#, fuzzy
 msgid "SD"
-msgstr "SSD"
+msgstr "SD"
 
 #: src/performance_page/disk.rs:248 src/performance_page/mod.rs:1127
 msgid "iSCSI"
@@ -1909,14 +1881,13 @@ msgid "Floppy"
 msgstr "Diskett"
 
 #: src/performance_page/disk.rs:251 src/performance_page/mod.rs:1130
-#, fuzzy
 msgid "Thumb Drive"
-msgstr "Disk"
+msgstr "USB-minne"
 
 #: src/performance_page/disk.rs:355
 #, rust-format
 msgid "Drive {} ({})"
-msgstr "Hård Disk {} ({})"
+msgstr "Disk {} ({})"
 
 #: src/performance_page/disk.rs:385 src/performance_page/fan.rs:280
 #: src/performance_page/fan.rs:315
@@ -1941,7 +1912,6 @@ msgid "{}%"
 msgstr "{} %"
 
 #: src/performance_page/gpu.rs:285
-#, fuzzy
 msgid "Video encode/decode"
 msgstr "Videokodning/avkodning"
 
@@ -1952,17 +1922,16 @@ msgid "GPU {}"
 msgstr "GPU {}"
 
 #: src/performance_page/gpu.rs:570
-#, fuzzy
 msgid "Total Memory"
-msgstr "Minne"
+msgstr "Totalt minne"
 
 #: src/performance_page/gpu.rs:599
 msgid "Dedicated and shared memory usage over "
-msgstr ""
+msgstr "Användning av dedikerat och delat minne under "
 
 #: src/performance_page/gpu.rs:645
 msgid "Total Shared Memory"
-msgstr ""
+msgstr "Totalt delat minne"
 
 #: src/performance_page/memory.rs:376
 #, rust-format
@@ -1979,9 +1948,9 @@ msgid "{} {} ({})"
 msgstr "{} {}{}B/s"
 
 #: src/performance_page/mod.rs:2097 src/performance_page/mod.rs:2098
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}: {}"
-msgstr "{}: {} {}bps"
+msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
 #, fuzzy, rust-format
@@ -2006,9 +1975,8 @@ msgid "Stopped"
 msgstr "Stoppad"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "Aktiverad"
+msgstr "Inaktiverad"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
@@ -2044,14 +2012,12 @@ msgid "Section Header"
 msgstr ""
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Tjänster"
+msgstr "Tjänst"
 
 #: src/process_tree/row_model.rs:265
-#, fuzzy
 msgid "App"
-msgstr "Appar"
+msgstr "App"
 
 #: src/process_tree/service_details_dialog.rs:203
 msgid "Copy logs to clipboard"
