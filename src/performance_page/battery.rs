@@ -25,7 +25,7 @@ use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
-use magpie_types::battery::{Battery, BatteryState, BatteryType};
+use magpie_types::battery::{Battery, BatteryState, BatteryType, HistoryPoint};
 
 use super::widgets::{FillingSettings, GraphWidget};
 use crate::application::INTERVAL_STEP;
@@ -805,67 +805,81 @@ impl PerformancePageBattery {
     }
 }
 
-fn update_history(this: &crate::performance_page::battery::imp::PerformancePageBattery, battery: &Battery) {
-    let mut his_interpol = Vec::with_capacity(1008);
-    let mut num_interpol = 0;
-    let mut start_num = 2.;
+fn update_history(
+    this: &crate::performance_page::battery::imp::PerformancePageBattery,
+    battery: &Battery,
+) {
+    let datapoints = battery.history.len();
+    //let his: Vec<(f32, f32)> = Vec::with_capacity(datapoits);
 
-    let mut his = battery.history.clone();
+    let his = battery
+        .history
+        .iter()
+        .cloned()
+        .map(|d| (d.x, d.y))
+        .collect();
 
-    for v in his.iter_mut() {
-        let v = *v;
-        if v.is_nan() {
-            num_interpol += 1;
-        } else {
-            if num_interpol != 0 {
-                if start_num > 1. {
-                    for _ in 0..(num_interpol + 1) {
-                        his_interpol.push(v)
-                    }
-                } else {
-                    if let Some(x) = his_interpol.last_mut() {
-                        *x = start_num
-                    }
-                    let diff = v - start_num;
-                    for i in 0..num_interpol {
-                        his_interpol.push(
-                            start_num
-                                + diff * (i + 1) as f32 / (num_interpol + 1) as f32,
-                        )
-                    }
-                    his_interpol.push(v)
-                }
-                num_interpol = 0;
-            } else {
-                his_interpol.push(f32::NAN);
-            }
-            start_num = v
-        }
-    }
+    //let mut his_interpol = Vec::with_capacity(datapoints);
 
-    if num_interpol != 0 {
-        let v = *(his.first().unwrap());
-        for _ in 0..num_interpol {
-            his_interpol.push(v)
-        }
-    }
+    //let mut num_interpol = 0;
+    //let mut num_value = 0;
+    //let mut start_num = 2.;
 
-    println!("{:?}", his);
+    //let mut his = battery.history.clone();
+
+    //for v in his.iter_mut() {
+    //let v = *v;
+    //if v.is_nan() {
+    //num_interpol += 1;
+    //} else {
+    //if num_interpol != 0 {
+    //if start_num > 1. {
+    //for _ in 0..(num_interpol + 1) {
+    //his_interpol.push(v)
+    //}
+    //} else {
+    //if let Some(x) = his_interpol.last_mut() {
+    //*x = start_num
+    //}
+    //let diff = v - start_num;
+    //for i in 0..num_interpol {
+    //his_interpol.push(
+    //start_num
+    //+ diff * (i + 1) as f32 / (num_interpol + 1) as f32,
+    //)
+    //}
+    //his_interpol.push(v)
+    //}
+    //num_interpol = 0;
+    //} else {
+    //his_interpol.push(f32::NAN);
+    //}
+    //start_num = v;
+    //num_value += 1;
+    //}
+    //}
+
+    //if num_interpol != 0 {
+    //let v = *(his.first().unwrap());
+    //for _ in 0..num_interpol {
+    //his_interpol.push(v)
+    //}
+    //}
 
     let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
     history_graph.dataset_settings.high_watermark = 1.;
     history_graph.dataset_settings.vertical_dropoff_lines = false;
 
-    let mut history_graph_interpol = DatasetGroup::new_with_datas(vec![his_interpol]);
-    history_graph_interpol.dataset_settings.high_watermark = 1.;
-    history_graph_interpol.dataset_settings.dashed = true;
-    history_graph_interpol.dataset_settings.opacity = 0.1;
-    history_graph_interpol.dataset_settings.vertical_dropoff_lines = false;
+    //let mut history_graph_interpol = DatasetGroup::new_with_datas(vec![his_interpol]);
+    //history_graph_interpol.dataset_settings.high_watermark = 1.;
+    //history_graph_interpol.dataset_settings.dashed = true;
+    //history_graph_interpol.dataset_settings.opacity = 0.1;
+    //history_graph_interpol.dataset_settings.vertical_dropoff_lines = false;
 
-    this.history_graph.set_data_points(1008);
+    this.history_graph.set_data_points(datapoints as u32);
     this.history_graph.clear_datasets();
     this.history_graph.add_dataset(history_graph);
-    this.history_graph.add_dataset(history_graph_interpol);
+    //this.history_graph.add_dataset(history_graph_interpol);
     this.history_graph.update_animation(0.0);
 }
 

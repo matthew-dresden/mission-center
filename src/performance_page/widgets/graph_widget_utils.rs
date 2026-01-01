@@ -103,7 +103,7 @@ impl DatasetGroup {
             datas: vec![Dataset::default()],
         }
     }
-    pub fn new_with_datas(d: Vec<Vec<f32>>) -> Self {
+    pub fn new_with_datas(d: Vec<Vec<(f32, f32)>>) -> Self {
         let mut datas = Vec::with_capacity(d.len());
         for v in d {
             datas.push(Dataset::new_with_data(v));
@@ -130,6 +130,7 @@ impl DatasetGroup {
 #[derive(Clone)]
 pub struct Dataset {
     data: Vec<f32>,
+    x_points: Vec<f32>,
     pub used_data: usize,
 }
 
@@ -390,10 +391,9 @@ impl DatasetGroup {
         }
 
         for (set_index, set) in dataset_points.iter().enumerate() {
-            let set_split = set.split(|set| set.y.is_nan() );
+            let set_split = set.split(|set| set.y.is_nan());
 
             for set in set_split {
-
                 let path_builder = PathBuilder::new();
 
                 let (Some(first_point), Some(last_point)) = (set.first(), set.last()) else {
@@ -422,7 +422,6 @@ impl DatasetGroup {
                         path_builder.line_to(point.x, point.y);
                     }
                 }
-
 
                 if self.dataset_settings.vertical_dropoff_lines {
                     match self.dataset_settings.fill {
@@ -538,9 +537,12 @@ impl DatasetGroup {
 }
 
 impl Dataset {
-    pub fn new_with_data(d: Vec<f32>) -> Self {
+    pub fn new_with_data(d: Vec<(f32, f32)>) -> Self {
+        let len = d.len();
+        let (x_points, data) = d.into_iter().unzip();
         Dataset {
-            data: d,
+            data,
+            x_points,
             used_data: 0,
         }
     }
@@ -572,9 +574,9 @@ impl Dataset {
             .take(self.used_data)
             .map(|v| {
                 //if !v.is_normal() {
-                    //low_watermark
+                //low_watermark
                 //} else {
-                    //v.clone()
+                //v.clone()
                 //}
                 v.clone()
             })
@@ -593,8 +595,9 @@ impl Dataset {
 
         let spacing = width * parent.point_spacing_factor();
 
-        let points: Vec<_> = (0..)
-            .map(|x| x as f32)
+        let points: Vec<_> = self
+            .x_points
+            .iter()
             .zip(
                 self.get_data_sanitized(val_min)
                     .iter()
@@ -611,11 +614,13 @@ impl Dataset {
 impl Default for Dataset {
     fn default() -> Self {
         let mut data = vec![f32::NAN; MAX_POINTS as usize];
-        if let Some(v) = data.first_mut() { // so there's no vertical drop on first refresh
+        if let Some(v) = data.first_mut() {
+            // so there's no vertical drop on first refresh
             *v = 0.0
         }
         Self {
             data,
+            x_points: (0..MAX_POINTS as usize).map(|x| x as f32).collect(),
             used_data: MIN_POINTS as usize,
         }
     }
