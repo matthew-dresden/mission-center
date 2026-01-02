@@ -518,7 +518,7 @@ mod imp {
             let unsupported = glib::GString::from(unsupported);
 
             format!(
-            r#"Battery
+                r#"Battery
 
     {} {}
 
@@ -541,119 +541,118 @@ mod imp {
     Charge Threshold:       {}
     Charge Start Threshold: {}
     Charge End Threshold:   {}"#,
-            self.title_battery_model.text(),
-            self.serial
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.kind
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.energy_full
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.technology
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.capacity
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.energy_full_design
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.energy_empty
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.voltage_max_design
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.voltage_min_design
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.power_supply
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-
-            self.percentage
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.state
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            if let Some(time_to_box) = self.time_to_box.get() {
-                if time_to_box.is_visible() {
-                    format!("\n    Time to {:<5}:          {}",
-                        self.time_to_direction
-                            .get()
-                            .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                            .unwrap_or(unsupported.clone()),
-                        self.time_to
-                            .get()
-                            .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                            .unwrap_or(unsupported.clone()),
-                    )
+                self.title_battery_model.text(),
+                self.serial
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.kind
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.energy_full
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.technology
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.capacity
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.energy_full_design
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.energy_empty
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.voltage_max_design
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.voltage_min_design
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.power_supply
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.percentage
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.state
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                if let Some(time_to_box) = self.time_to_box.get() {
+                    if time_to_box.is_visible() {
+                        format!(
+                            "\n    Time to {:<5}:          {}",
+                            self.time_to_direction
+                                .get()
+                                .map(|s| s.text())
+                                .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                                .unwrap_or(unsupported.clone()),
+                            self.time_to
+                                .get()
+                                .map(|s| s.text())
+                                .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                                .unwrap_or(unsupported.clone()),
+                        )
+                    } else {
+                        String::new()
+                    }
                 } else {
                     String::new()
-                }
-            } else {
-                String::new()
-            },
-            self.charge_cycles
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.power
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.voltage
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-
-            self.charge_threshold_enabled
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.charge_start_threshold
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
-            self.charge_end_threshold
-                .get()
-                .map(|s| s.text())
-                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
-                .unwrap_or(unsupported.clone()),
+                },
+                self.charge_cycles
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.power
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.voltage
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.charge_threshold_enabled
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.charge_start_threshold
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
+                self.charge_end_threshold
+                    .get()
+                    .map(|s| s.text())
+                    .map(|s| if s.is_empty() { unsupported.clone() } else { s })
+                    .unwrap_or(unsupported.clone()),
             )
         }
     }
@@ -934,10 +933,11 @@ fn update_history(
                 .history
                 .len()
                 .checked_sub(2)
-                .map(|i| &battery.history[i]) {
+                .map(|i| &battery.history[i])
+            {
                 first = f
             } else {
-                return
+                return;
             }
         }
         his_interpol.push((TOTAL_SECS as f32, first.y));
