@@ -470,10 +470,10 @@ mod imp {
                         if battery.charge_threshold_supported >= 4 {
                             charge_threshold_enabled.set_text("Firmware")
                         } else {
-                            charge_threshold_enabled.set_text("Yes")
+                            charge_threshold_enabled.set_text(&i18n("Yes"))
                         }
                     } else {
-                        charge_threshold_enabled.set_text("No")
+                        charge_threshold_enabled.set_text(&i18n("Yes"))
                     }
                 }
 
