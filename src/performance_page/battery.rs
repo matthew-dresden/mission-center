@@ -326,15 +326,18 @@ mod imp {
 
             if battery.charge_threshold_supported == 0 {
                 if let Some(charge_threshold_enabled) = this.charge_threshold_enabled.get() {
-                    charge_threshold_enabled.set_visible(false)
+                    charge_threshold_enabled.set_visible(false);
+                    charge_threshold_enabled.set_text("");
                 }
 
                 if let Some(charge_start_threshold) = this.charge_start_threshold.get() {
-                    charge_start_threshold.set_visible(false)
+                    charge_start_threshold.set_visible(false);
+                    charge_start_threshold.set_text("");
                 }
 
                 if let Some(charge_end_threshold) = this.charge_end_threshold.get() {
-                    charge_end_threshold.set_visible(false)
+                    charge_end_threshold.set_visible(false);
+                    charge_end_threshold.set_text("");
                 }
             }
 
@@ -407,11 +410,11 @@ mod imp {
                         if let Some(v) = &battery.time_to_full {
                             time_to_box.set_visible(true);
                             time_to.set_text(&to_long_human_readable_time(*v as u64));
-                            time_to_direction.set_text("full");
+                            time_to_direction.set_text("Full");
                         } else if let Some(v) = &battery.time_to_empty {
                             time_to_box.set_visible(true);
                             time_to.set_text(&to_long_human_readable_time(*v as u64));
-                            time_to_direction.set_text("empty");
+                            time_to_direction.set_text("Empty");
                         } else {
                             time_to_box.set_visible(false)
                         }
@@ -451,10 +454,10 @@ mod imp {
                         if battery.charge_threshold_supported >= 4 {
                             charge_threshold_enabled.set_text("Firmware")
                         } else {
-                            charge_threshold_enabled.set_text("True")
+                            charge_threshold_enabled.set_text("Yes")
                         }
                     } else {
-                        charge_threshold_enabled.set_text("False")
+                        charge_threshold_enabled.set_text("No")
                     }
                 }
 
@@ -514,33 +517,144 @@ mod imp {
             let unsupported = i18n("Unsupported");
             let unsupported = glib::GString::from(unsupported);
 
-            //format!(
-            //r#"Fan
+            format!(
+            r#"Battery
 
-            //{}
-            //{}
+    {} {}
 
-            //Speed:               {}
-            //PWM Percentage:      {}
-            //Current Temperature: {}"#,
-            //self.title_fan_name.text(),
-            //self.title_temp_name.text(),
-            //self.speed
-            //.get()
-            //.map(|s| s.text())
-            //.unwrap_or(unsupported.clone()),
-            //self.pwm
-            //.get()
-            //.and_then(|pwm| if !pwm.is_visible() { None } else { Some(pwm) })
-            //.map(|s| s.text())
-            //.unwrap_or(unsupported.clone()),
-            //self.temp
-            //.get()
-            //.and_then(|temp| if !temp.is_visible() { None } else { Some(temp) })
-            //.map(|s| s.text())
-            //.unwrap_or(unsupported)
-            //)
-            String::new()
+    Type:                   {}
+    Energy Full:            {}
+    Technology:             {}
+    capacity:               {}
+    Energy Full (design):   {}
+    Energy Empty            {}
+    Voltage Max (design):   {}
+    Voltage Min (design):   {}
+    Power Supply:           {}
+
+    Percentage:             {}
+    State:                  {}{}
+    Charge Cycles:          {}
+    Power Output:           {}
+    Voltage:                {}
+
+    Charge Threshold:       {}
+    Charge Start Threshold: {}
+    Charge End Threshold:   {}"#,
+            self.title_battery_model.text(),
+            self.serial
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.kind
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.energy_full
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.technology
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.capacity
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.energy_full_design
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.energy_empty
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.voltage_max_design
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.voltage_min_design
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.power_supply
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+
+            self.percentage
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.state
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            if let Some(time_to_box) = self.time_to_box.get() {
+                if time_to_box.is_visible() {
+                    format!("\n    Time to {:<5}:          {}",
+                        self.time_to_direction
+                            .get()
+                            .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                            .unwrap_or(unsupported.clone()),
+                        self.time_to
+                            .get()
+                            .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                            .unwrap_or(unsupported.clone()),
+                    )
+                } else {
+                    String::new()
+                }
+            } else {
+                String::new()
+            },
+            self.charge_cycles
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.power
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.voltage
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+
+            self.charge_threshold_enabled
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.charge_start_threshold
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            self.charge_end_threshold
+                .get()
+                .map(|s| s.text())
+                .map(|s| if s.is_empty() {unsupported.clone()} else {s})
+                .unwrap_or(unsupported.clone()),
+            )
         }
     }
 
@@ -814,7 +928,18 @@ fn update_history(
 
     let mut his = Vec::with_capacity(datapoints);
     let mut his_interpol = Vec::new();
-    if let Some(first) = battery.history.last() {
+    if let Some(mut first) = battery.history.last() {
+        if first.y.is_nan() {
+            if let Some(f) = battery
+                .history
+                .len()
+                .checked_sub(2)
+                .map(|i| &battery.history[i]) {
+                first = f
+            } else {
+                return
+            }
+        }
         his_interpol.push((TOTAL_SECS as f32, first.y));
         his_interpol.push((first.x, first.y));
         his_interpol.push((first.x, f32::NAN));
@@ -832,8 +957,6 @@ fn update_history(
     }
     his.push((0.0, battery.percentage));
 
-    println!("{:#?}", his.len());
-
     let mut history_graph = DatasetGroup::new_with_datas(vec![his]);
     history_graph.dataset_settings.high_watermark = 1.;
     history_graph.dataset_settings.vertical_dropoff_lines = false;
@@ -842,7 +965,9 @@ fn update_history(
     history_graph_interpol.dataset_settings.high_watermark = 1.;
     history_graph_interpol.dataset_settings.dashed = true;
     history_graph_interpol.dataset_settings.opacity = 0.1;
-    history_graph_interpol.dataset_settings.vertical_dropoff_lines = false;
+    history_graph_interpol
+        .dataset_settings
+        .vertical_dropoff_lines = false;
 
     this.history_graph.set_data_points(TOTAL_SECS);
     this.history_graph.clear_datasets();
