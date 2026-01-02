@@ -341,7 +341,7 @@ mod imp {
                 }
             }
 
-            if battery.has_history {
+            if battery.has_history && battery.history.len() >= 2 {
                 update_history(this, battery)
             } else {
                 let mut history_graph = DatasetGroup::new();
@@ -498,7 +498,7 @@ mod imp {
                 &[&this.energy_rate_graph.get_dataset_min_scale(0).to_string()],
             ));
 
-            if battery.history_changed {
+            if battery.history_changed && battery.history.len() >= 2 {
                 update_history(this, battery)
             }
 
