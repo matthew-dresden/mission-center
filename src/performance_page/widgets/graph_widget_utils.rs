@@ -556,7 +556,6 @@ impl DatasetGroup {
 
 impl Dataset {
     pub fn new_with_data(d: Vec<(f32, f32)>) -> Self {
-        let len = d.len();
         let (x_points, data) = d.into_iter().unzip();
         Dataset {
             data,
@@ -566,7 +565,7 @@ impl Dataset {
     }
 
     pub fn new_with_fill(v: f32) -> Self {
-        let mut data = vec![v; MAX_POINTS as usize];
+        let data = vec![v; MAX_POINTS as usize];
         Self {
             data,
             x_points: (0..MAX_POINTS as usize).map(|x| x as f32).collect(),
@@ -600,12 +599,11 @@ impl Dataset {
             .iter()
             .take(self.used_data)
             .map(|v| {
-                //if !v.is_normal() {
-                //low_watermark
-                //} else {
-                //v.clone()
-                //}
-                v.clone()
+                if !v.is_normal() && !v.is_nan() {
+                    low_watermark
+                } else {
+                    v.clone()
+                }
             })
             .collect()
     }

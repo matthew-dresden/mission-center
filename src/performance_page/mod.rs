@@ -1685,7 +1685,7 @@ mod imp {
             let settings = settings!();
 
             summary.graph_widget().connect_to_settings(&settings);
-            let mut speed_dataset = DatasetGroup::new();
+            let speed_dataset = DatasetGroup::new();
 
             summary.graph_widget().add_dataset(speed_dataset);
 

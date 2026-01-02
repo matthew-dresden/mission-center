@@ -272,7 +272,7 @@ mod imp {
 
             if let Some(energy_empty) = this.energy_empty.get() {
                 if let Some(v) = &battery.energy_empty {
-                    energy_empty.set_text(&format!("{} mWh", v))
+                    energy_empty.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
                 } else {
                     energy_empty.set_visible(false)
                 }
@@ -280,7 +280,7 @@ mod imp {
 
             if let Some(energy_full) = this.energy_full.get() {
                 if let Some(v) = &battery.energy_full {
-                    energy_full.set_text(&format!("{} mWh", v))
+                    energy_full.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
                 } else {
                     energy_full.set_visible(false)
                 }
@@ -288,7 +288,7 @@ mod imp {
 
             if let Some(energy_full_design) = this.energy_full_design.get() {
                 if let Some(v) = &battery.energy_full_design {
-                    energy_full_design.set_text(&format!("{} mWh", v))
+                    energy_full_design.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
                 } else {
                     energy_full_design.set_visible(false)
                 }
@@ -362,17 +362,15 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
-            if let Some(kind) = this.kind.get() {
-                if let Some(v) = &battery.kind {
-                    if let Some(index) = index {
-                        this.title_battery_name.set_text(&format!(
-                            "{} {}",
-                            batterykind_to_str(v),
-                            index,
-                        ));
-                    } else {
-                        this.title_battery_name.set_text(batterykind_to_str(v));
-                    }
+            if let Some(v) = &battery.kind {
+                if let Some(index) = index {
+                    this.title_battery_name.set_text(&format!(
+                        "{} {}",
+                        batterykind_to_str(v),
+                        index,
+                    ));
+                } else {
+                    this.title_battery_name.set_text(batterykind_to_str(v));
                 }
             } else {
                 if let Some(index) = index {
@@ -395,28 +393,26 @@ mod imp {
 
             if let Some(energy) = this.energy.get() {
                 if let Some(v) = &battery.energy {
-                    energy.set_text(&format!("{} mWh", v))
+                    energy.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
                 }
             }
 
             if let Some(power) = this.power.get() {
-                if let Some(voltage_box) = this.power.get() {
-                    if let Some(v) = &battery.power {
-                        if let Some(v2) = &battery.state {
-                            if *v2 == 2 {
-                                power.set_visible(true);
-                                power.set_text(&format!("-{:.1} W", v))
-                            } else {
-                                power.set_visible(true);
-                                power.set_text(&format!("{:.1} W", v))
-                            }
+                if let Some(v) = &battery.power {
+                    if let Some(v2) = &battery.state {
+                        if *v2 == 2 {
+                            power.set_visible(true);
+                            power.set_text(&format!("-{:.1} W", v))
                         } else {
                             power.set_visible(true);
                             power.set_text(&format!("{:.1} W", v))
                         }
                     } else {
-                        power.set_visible(false);
+                        power.set_visible(true);
+                        power.set_text(&format!("{:.1} W", v))
                     }
+                } else {
+                    power.set_visible(false);
                 }
             }
 
@@ -426,11 +422,11 @@ mod imp {
                         if let Some(v) = &battery.time_to_full {
                             time_to_box.set_visible(true);
                             time_to.set_text(&to_long_human_readable_time(*v as u64));
-                            time_to_direction.set_text("Full");
+                            time_to_direction.set_text(&i18n("Full"));
                         } else if let Some(v) = &battery.time_to_empty {
                             time_to_box.set_visible(true);
                             time_to.set_text(&to_long_human_readable_time(*v as u64));
-                            time_to_direction.set_text("Empty");
+                            time_to_direction.set_text(&i18n("Empty"));
                         } else {
                             time_to_box.set_visible(false)
                         }
@@ -468,7 +464,7 @@ mod imp {
                 if let Some(charge_threshold_enabled) = this.charge_threshold_enabled.get() {
                     if battery.charge_threshold_enabled {
                         if battery.charge_threshold_supported >= 4 {
-                            charge_threshold_enabled.set_text("Firmware")
+                            charge_threshold_enabled.set_text(&i18n("Firmware"))
                         } else {
                             charge_threshold_enabled.set_text(&i18n("Yes"))
                         }
@@ -960,7 +956,7 @@ fn update_history(
         his_interpol.push((first.x, first.y));
         his_interpol.push((first.x, f32::NAN));
     }
-    for (i, d) in battery.history.windows(3).rev().enumerate() {
+    for d in battery.history.windows(3).rev() {
         if d[1].y.is_nan() {
             his_interpol.push((d[0].x, d[0].y));
             his_interpol.push((d[2].x, d[2].y));
