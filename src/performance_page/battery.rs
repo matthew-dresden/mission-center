@@ -25,14 +25,14 @@ use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
-use magpie_types::battery::{Battery, BatteryState, BatteryType, HistoryPoint};
+use magpie_types::battery::Battery;
 
 use super::widgets::{FillingSettings, GraphWidget};
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::widgets::DatasetGroup;
 use crate::performance_page::widgets::ScalingSettings;
-use crate::performance_page::{PageExt, MK_TO_0_C};
+use crate::performance_page::PageExt;
 use crate::to_long_human_readable_time;
 use crate::to_short_human_readable_time;
 
@@ -219,9 +219,16 @@ mod imp {
             this: &super::PerformancePageBattery,
             battery: &Battery,
         ) -> bool {
-            let t = this.clone();
-
             let this = this.imp();
+
+            if let Some(kind) = this.kind.get() {
+                if let Some(v) = &battery.kind {
+                    kind.set_text(batterykind_to_str(v));
+                    this.title_battery_name.set_text(batterykind_to_str(v));
+                } else {
+                    kind.set_visible(false)
+                }
+            }
 
             let vendor_model = match (!battery.vendor.is_empty(), !battery.model.is_empty()) {
                 (true, true) => &format!("{} {}", &battery.vendor, &battery.model),
@@ -236,15 +243,6 @@ mod imp {
                     serial.set_text(&v)
                 } else {
                     serial.set_visible(false)
-                }
-            }
-
-            if let Some(kind) = this.kind.get() {
-                if let Some(v) = &battery.kind {
-                    kind.set_text(batterykind_to_str(v));
-                    this.title_battery_name.set_text(batterykind_to_str(v));
-                } else {
-                    kind.set_visible(false)
                 }
             }
 
@@ -364,11 +362,29 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
+            if let Some(kind) = this.kind.get() {
+                if let Some(v) = &battery.kind {
+                    if let Some(index) = index {
+                        this.title_battery_name.set_text(&format!(
+                            "{} {}",
+                            batterykind_to_str(v),
+                            index,
+                        ));
+                    } else {
+                        this.title_battery_name.set_text(batterykind_to_str(v));
+                    }
+                }
+            } else {
+                if let Some(index) = index {
+                    this.title_battery_name
+                        .set_text(&format!("Battery {}", index));
+                } else {
+                    this.title_battery_name.set_text("Battery");
+                }
+            }
+
             if let Some(percentage) = this.percentage.get() {
-                percentage.set_text(&i18n_f(
-                    "{}%",
-                    &[&format!("{:.0}", battery.percentage * 100.)],
-                ));
+                percentage.set_text(&format!("{:.0}", battery.percentage * 100.));
             }
 
             if let Some(voltage) = this.voltage.get() {
