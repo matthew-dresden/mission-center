@@ -125,6 +125,24 @@ impl DatasetGroup {
             datas,
         }
     }
+    pub fn new_with_fill(v: f32) -> Self {
+        Self {
+            dataset_settings: DatasetSettings {
+                dashed: false,
+                fill: Default::default(),
+                visible: true,
+                opacity: 100. / 255.,
+                vertical_dropoff_lines: true,
+                scaling_settings: Default::default(),
+                low_watermark: 0.0,
+                high_watermark: 100.0,
+                watermarking_multiplier: 1.,
+                following: None,
+                followed: None,
+            },
+            datas: vec![Dataset::new_with_fill(v)],
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -544,6 +562,15 @@ impl Dataset {
             data,
             x_points,
             used_data: 0,
+        }
+    }
+
+    pub fn new_with_fill(v: f32) -> Self {
+        let mut data = vec![v; MAX_POINTS as usize];
+        Self {
+            data,
+            x_points: (0..MAX_POINTS as usize).map(|x| x as f32).collect(),
+            used_data: MIN_POINTS as usize,
         }
     }
 
