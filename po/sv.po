@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2026-01-01 01:01+0000\n"
+"PO-Revision-Date: 2026-01-03 23:01+0000\n"
 "Last-Translator: Viktor Engkvist <viktor.engkvist@rivig.net>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/sv/>\n"
@@ -637,9 +637,8 @@ msgid "Show Encode/Decode Usage"
 msgstr ""
 
 #: resources/ui/performance_page/memory.blp:121
-#, fuzzy
 msgid "Swap usage over "
-msgstr "Minnesanvändning"
+msgstr "Växlingsfilsanvändning under "
 
 #: resources/ui/performance_page/memory.blp:172
 msgid "Memory composition"
@@ -651,7 +650,7 @@ msgstr "Visa minnesfördelning"
 
 #: resources/ui/performance_page/memory.blp:200
 msgid "Show Swap Usage"
-msgstr ""
+msgstr "Visa växlingsfilsanvändning"
 
 #: resources/ui/performance_page/memory_details.blp:58
 msgid "In use"
@@ -708,7 +707,7 @@ msgstr "Skicka"
 
 #: resources/ui/performance_page/network_details.blp:130
 msgid "Total Received"
-msgstr ""
+msgstr "Totalt mottaget"
 
 #: resources/ui/performance_page/network_details.blp:159
 msgid "Total Sent"
@@ -768,12 +767,12 @@ msgstr "Diskhälsa"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
-msgstr ""
+msgstr "S.M.A.R.T.-teststatus"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
 msgid "Attribute"
-msgstr ""
+msgstr "Attribut"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
@@ -785,18 +784,16 @@ msgid "ID"
 msgstr "ID"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
-#, fuzzy
 msgid "Normalized"
-msgstr "Formaterad:"
+msgstr "Normaliserad"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:193
-#, fuzzy
 msgid "Threshold"
-msgstr "Trådar"
+msgstr "Tröskelvärde"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:199
 msgid "Worst"
-msgstr ""
+msgstr "Sämsta"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:211
 msgid "Updates"
@@ -1258,12 +1255,12 @@ msgstr ""
 
 #: resources/ui/keyboard_shortcuts.blp:21
 msgid "Open Menu"
-msgstr ""
+msgstr "Öppna meny"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Stäng fönster"
 
 #: resources/ui/keyboard_shortcuts.blp:36
 msgid "Open Preferences"
@@ -1293,9 +1290,8 @@ msgid "Toggle Sidebar"
 msgstr "Visa Sidofält"
 
 #: resources/ui/keyboard_shortcuts.blp:79
-#, fuzzy
 msgid "Copy Device Information"
-msgstr "Minnessammansättning"
+msgstr "Kopiera enhetsinformation"
 
 #: resources/ui/keyboard_shortcuts.blp:84
 #, fuzzy
@@ -1445,7 +1441,7 @@ msgstr "App-ID"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
-msgstr ""
+msgstr "Starta den markerade tjänsten"
 
 #: resources/ui/process_column_view/service_action_bar.blp:47
 #: resources/ui/process_column_view/service_action_bar.blp:118
@@ -1454,11 +1450,11 @@ msgstr "Starta"
 
 #: resources/ui/process_column_view/service_action_bar.blp:54
 msgid "Stop the selected service"
-msgstr ""
+msgstr "Stoppa den markerade tjänsten"
 
 #: resources/ui/process_column_view/service_action_bar.blp:74
 msgid "Restart the selected service"
-msgstr ""
+msgstr "Starta om den markerade tjänsten"
 
 #: resources/ui/process_column_view/service_action_bar.blp:86
 #: resources/ui/process_column_view/service_action_bar.blp:128
@@ -1467,7 +1463,7 @@ msgstr "Starta om"
 
 #: resources/ui/process_column_view/service_action_bar.blp:93
 msgid "Show details of the selected service"
-msgstr ""
+msgstr "Visa detaljer för den markerade tjänsten"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:33
 msgid "Service Details"
@@ -1936,16 +1932,16 @@ msgstr "Totalt delat minne"
 #: src/performance_page/memory.rs:376
 #, rust-format
 msgid "{} of {}"
-msgstr ""
+msgstr "{} av {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
 msgstr "Hämtning av ytterligare minnesinformation misslyckades"
 
 #: src/performance_page/mod.rs:1136
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} ({})"
-msgstr "{} {}{}B/s"
+msgstr "{} {} ({})"
 
 #: src/performance_page/mod.rs:2097 src/performance_page/mod.rs:2098
 #, rust-format
@@ -1953,11 +1949,11 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Tjänster"
-msgstr[1] "Tjänster"
+msgstr[0] "{} tjänst totalt"
+msgstr[1] "{} tjänster totalt"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1987,21 +1983,19 @@ msgid "No filters applied"
 msgstr ""
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} Aktiva Tjänster"
-msgstr[1] "{} Aktiva Tjänster"
+msgstr[0] "{} {} tjänst"
+msgstr[1] "{} {} tjänster"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Tjänster"
+msgstr "Användartjänster"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Tjänster"
+msgstr "Systemtjänster"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
@@ -2071,9 +2065,9 @@ msgstr[1] "{} sekunder"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}, {} and {}"
-msgstr "{}: {} {}bps"
+msgstr "{}, {} och {}"
 
 #. Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days
 #. Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours
