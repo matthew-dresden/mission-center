@@ -223,8 +223,8 @@ mod imp {
 
             if let Some(kind) = this.kind.get() {
                 if let Some(v) = &battery.kind {
-                    kind.set_text(batterykind_to_str(v));
-                    this.title_battery_name.set_text(batterykind_to_str(v));
+                    kind.set_text(&batterykind_to_str(v));
+                    this.title_battery_name.set_text(&batterykind_to_str(v));
                 } else {
                     kind.set_visible(false)
                 }
@@ -234,7 +234,7 @@ mod imp {
                 (true, true) => &format!("{} {}", &battery.vendor, &battery.model),
                 (true, false) => &battery.vendor,
                 (false, true) => &battery.model,
-                (false, false) => &format!("Unknown"),
+                (false, false) => &i18n("Unknown"),
             };
             this.title_battery_model.set_text(vendor_model);
 
@@ -256,7 +256,7 @@ mod imp {
 
             if let Some(technology) = this.technology.get() {
                 if let Some(tech) = &battery.technology {
-                    technology.set_text(batterytechnology_to_str(tech))
+                    technology.set_text(&batterytechnology_to_str(tech))
                 } else {
                     technology.set_visible(false)
                 }
@@ -370,14 +370,14 @@ mod imp {
                         index,
                     ));
                 } else {
-                    this.title_battery_name.set_text(batterykind_to_str(v));
+                    this.title_battery_name.set_text(&batterykind_to_str(v));
                 }
             } else {
                 if let Some(index) = index {
                     this.title_battery_name
-                        .set_text(&format!("Battery {}", index));
+                        .set_text(&i18n_f("Battery {}", &[&index.to_string()]));
                 } else {
-                    this.title_battery_name.set_text("Battery");
+                    this.title_battery_name.set_text(&i18n("Battery"));
                 }
             }
 
@@ -436,9 +436,9 @@ mod imp {
 
             if let Some(state) = this.state.get() {
                 if let Some(v) = &battery.state {
-                    state.set_text(batterystate_to_str(v))
+                    state.set_text(&batterystate_to_str(v))
                 } else {
-                    state.set_text("Unknown")
+                    state.set_text(&i18n("Unknown"))
                 }
             }
 
@@ -988,60 +988,60 @@ fn update_history(
     this.history_graph.update_animation(0.0);
 }
 
-fn batterystate_to_str(state: &i32) -> &str {
+fn batterystate_to_str(state: &i32) -> String {
     match state {
-        1 => "Charging",
-        2 => "Discharging",
-        3 => "Empty",
-        4 => "Fully charged",
-        5 => "Pending charge",
-        6 => "Pending discharge",
-        _ => "",
+        1 => i18n("Charging"),
+        2 => i18n("Discharging"),
+        3 => i18n("Empty"),
+        4 => i18n("Fully charged"),
+        5 => i18n("Pending charge"),
+        6 => i18n("Pending discharge"),
+        _ => String::new(),
     }
 }
 
-fn batterykind_to_str(kind: &i32) -> &str {
+fn batterykind_to_str(kind: &i32) -> String {
     match kind {
-        1 => "LinePower",
-        2 => "Battery",
-        3 => "UPS",
-        4 => "Monitor",
-        5 => "Mouse",
-        6 => "Keyboard",
-        7 => "PDA",
-        8 => "Phone",
-        9 => "Media player",
-        10 => "Tablet",
-        11 => "Computer",
-        12 => "Gaming Input",
-        13 => "Pen",
-        14 => "Touchpad",
-        15 => "Modem",
-        16 => "Network",
-        17 => "Headset",
-        18 => "Speakers",
-        19 => "Headphones",
-        20 => "Video",
-        21 => "Other Audio",
-        22 => "Remote Control",
-        23 => "Printer",
-        34 => "Scanner",
-        35 => "Camera",
-        36 => "Wearable",
-        37 => "Toy",
-        38 => "Generic bluetooth",
-        _ => "",
+        1 => i18n("LinePower"),
+        2 => i18n("Battery"),
+        3 => i18n("UPS"),
+        4 => i18n("Monitor"),
+        5 => i18n("Mouse"),
+        6 => i18n("Keyboard"),
+        7 => i18n("PDA"),
+        8 => i18n("Phone"),
+        9 => i18n("Media player"),
+        10 => i18n("Tablet"),
+        11 => i18n("Computer"),
+        12 => i18n("Gaming Input"),
+        13 => i18n("Pen"),
+        14 => i18n("Touchpad"),
+        15 => i18n("Modem"),
+        16 => i18n("Network"),
+        17 => i18n("Headset"),
+        18 => i18n("Speakers"),
+        19 => i18n("Headphones"),
+        20 => i18n("Video"),
+        21 => i18n("Other Audio"),
+        22 => i18n("Remote Control"),
+        23 => i18n("Printer"),
+        34 => i18n("Scanner"),
+        35 => i18n("Camera"),
+        36 => i18n("Wearable"),
+        37 => i18n("Toy"),
+        38 => i18n("Generic bluetooth"),
+        _ => String::new(),
     }
 }
 
-fn batterytechnology_to_str(kind: &i32) -> &str {
+fn batterytechnology_to_str(kind: &i32) -> String {
     match kind {
-        1 => "Lithium Ion",
-        2 => "Lithium Polymer",
-        3 => "Lithium Iron Phosphate",
-        4 => "Lead Acid",
-        5 => "Nickel Cadmium",
-        6 => "Nickel Metal Hydride",
-        _ => "",
+        1 => i18n("Lithium Ion"),
+        2 => i18n("Lithium Polymer"),
+        3 => i18n("Lithium Iron Phosphate"),
+        4 => i18n("Lead Acid"),
+        5 => i18n("Nickel Cadmium"),
+        6 => i18n("Nickel Metal Hydride"),
+        _ => String::new(),
     }
 }
