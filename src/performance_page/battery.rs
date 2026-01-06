@@ -382,7 +382,7 @@ mod imp {
             }
 
             if let Some(percentage) = this.percentage.get() {
-                percentage.set_text(&format!("{:.0}", battery.percentage * 100.));
+                percentage.set_text(&format!("{:.0}%", battery.percentage * 100.));
             }
 
             if let Some(voltage) = this.voltage.get() {
