@@ -225,7 +225,6 @@ fn special_shortcuts(
         no_modifier_shortcuts.insert(gdk::Key::F6, select_device_6);
         no_modifier_shortcuts.insert(gdk::Key::F7, select_device_7);
         no_modifier_shortcuts.insert(gdk::Key::F8, select_device_8);
-        no_modifier_shortcuts.insert(gdk::Key::F9, select_device_9);
         shortcuts.insert(gdk::ModifierType::NO_MODIFIER_MASK, no_modifier_shortcuts);
 
         let mut ctrl_shortcuts = HashMap::<gdk::Key, fn(&MissionCenterWindow) -> bool>::new();
@@ -534,7 +533,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.select-tab-performance", &["<Control>1"]);
+            app.set_accels_for_action("win.select-tab-performance", &["<Control>1", "<Alt>1"]);
 
             let action = gio::SimpleAction::new("select-tab-apps", None);
             action.connect_activate({
@@ -552,7 +551,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.select-tab-apps", &["<Control>2"]);
+            app.set_accels_for_action("win.select-tab-apps", &["<Control>2", "<Alt>2"]);
 
             let action = gio::SimpleAction::new("select-tab-services", None);
             action.connect_activate({
@@ -570,7 +569,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.select-tab-services", &["<Control>3"]);
+            app.set_accels_for_action("win.select-tab-services", &["<Control>3", "<Alt>3"]);
 
             let action =
                 gio::SimpleAction::new_stateful("toggle-sidebar", None, &true.to_variant());
@@ -609,7 +608,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.toggle-sidebar", &["<Control>T"]);
+            app.set_accels_for_action("win.toggle-sidebar", &["<Control>T", "F9"]);
 
             let action = gio::SimpleAction::new("close", None);
             action.connect_activate({
