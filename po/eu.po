@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-12-03 12:00+0000\n"
+"PO-Revision-Date: 2026-01-08 16:01+0000\n"
 "Last-Translator: Ibai Oihanguren Sala <ibaios@disroot.org>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/eu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -678,11 +678,11 @@ msgstr "Cacheratuta"
 
 #: resources/ui/performance_page/memory_details.blp:190
 msgid "Swap used"
-msgstr "Erabilitako truk.-espazioa"
+msgstr "Erabilitako truk.-esp."
 
 #: resources/ui/performance_page/memory_details.blp:221
 msgid "Swap available"
-msgstr "Truk.-espazio erabilgarria"
+msgstr "Truk.-esp. erabilgarria"
 
 #: resources/ui/performance_page/memory_details.blp:246
 msgid "Speed:"
@@ -905,7 +905,7 @@ msgstr "Denbora aktiboa"
 
 #: resources/ui/performance_page/disk_details.blp:217
 msgid "Avg. response time"
-msgstr "Batez besteko erantzute denbora"
+msgstr "Batez best. erantzute denb."
 
 #: resources/ui/performance_page/disk_details.blp:242
 msgid "Capacity:"
