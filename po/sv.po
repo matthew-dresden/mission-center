@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2026-01-03 23:01+0000\n"
+"PO-Revision-Date: 2026-01-08 16:01+0000\n"
 "Last-Translator: Viktor Engkvist <viktor.engkvist@rivig.net>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/sv/>\n"
@@ -711,7 +711,7 @@ msgstr "Totalt mottaget"
 
 #: resources/ui/performance_page/network_details.blp:159
 msgid "Total Sent"
-msgstr ""
+msgstr "Totalt skickat"
 
 #: resources/ui/performance_page/network_details.blp:184
 msgid "Interface name:"
@@ -1238,12 +1238,12 @@ msgstr "Följ systemstilen"
 #: resources/ui/widgets/theme_selector.blp:35
 #: resources/ui/widgets/theme_selector.blp:38
 msgid "Light style"
-msgstr ""
+msgstr "Ljust"
 
 #: resources/ui/widgets/theme_selector.blp:53
 #: resources/ui/widgets/theme_selector.blp:56
 msgid "Dark style"
-msgstr ""
+msgstr "Mörkt"
 
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
@@ -1271,9 +1271,8 @@ msgid "Show Keyboard Shortcuts"
 msgstr "Visa tangentbordsgenvägar"
 
 #: resources/ui/keyboard_shortcuts.blp:46
-#, fuzzy
 msgid "Show Performance Page"
-msgstr "Prestanda"
+msgstr "Visa prestandasidan"
 
 #: resources/ui/keyboard_shortcuts.blp:51
 #, fuzzy
@@ -1313,9 +1312,8 @@ msgid "Search"
 msgstr "Sök"
 
 #: resources/ui/keyboard_shortcuts.blp:117
-#, fuzzy
 msgid "Stop App or Process"
-msgstr "Stoppa Process"
+msgstr "Stoppa app eller process"
 
 #: resources/ui/keyboard_shortcuts.blp:122
 #, fuzzy
