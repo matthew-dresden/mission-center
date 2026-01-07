@@ -80,10 +80,6 @@ fn special_shortcuts(
         select_device(window, 7)
     }
 
-    fn select_device_9(window: &MissionCenterWindow) -> bool {
-        select_device(window, 8)
-    }
-
     fn toggle_search(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
         let result = imp.search_button.is_visible() && !imp.search_button.is_active();

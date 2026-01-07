@@ -221,7 +221,6 @@ mod imp {
                 &glib::Variant::from(graph_selection == GRAPH_SELECTION_ALL_THREADS_STACKED),
             );
 
-            let apa = all_processors_action.clone();
             let ova = overall_action.clone();
             let ata = all_threads_action.clone();
             let sta = stacked_threads_action.clone();
@@ -235,7 +234,6 @@ mod imp {
             actions.add_action(&all_processors_action);
 
             let apa = all_processors_action.clone();
-            let ova = overall_action.clone();
             let ata = all_threads_action.clone();
             let sta = stacked_threads_action.clone();
 
@@ -256,7 +254,6 @@ mod imp {
 
             let apa = all_processors_action.clone();
             let ova = overall_action.clone();
-            let ata = all_threads_action.clone();
             let sta = stacked_threads_action.clone();
 
             all_threads_action.connect_activate({
@@ -277,7 +274,6 @@ mod imp {
             let apa = all_processors_action.clone();
             let ova = overall_action.clone();
             let ata = all_threads_action.clone();
-            let sta = stacked_threads_action.clone();
 
             stacked_threads_action.connect_activate({
                 let this = this.downgrade();
