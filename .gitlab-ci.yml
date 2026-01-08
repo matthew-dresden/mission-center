@@ -321,6 +321,7 @@ check-magpie-main:
   interruptible: true
   allow_failure: true
   before_script:
+    - !reference [ ".shared", "setup_apt" ]
     - !reference [ ".shared", "checkout_submodule" ]
   script:
     - cd subprojects/magpie
