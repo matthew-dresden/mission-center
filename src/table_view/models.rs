@@ -405,7 +405,14 @@ fn update_service(
         );
     } else {
         row_model.children().remove_all();
+
+        set_empty_stats(&row_model);
     }
+}
+
+#[inline]
+fn set_empty_stats(row_model: &RowModel) {
+    set_stats(&row_model, &Default::default());
 }
 
 fn set_stats(row_model: &RowModel, usage_stats: &ProcessUsageStats) {
