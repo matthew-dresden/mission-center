@@ -93,7 +93,6 @@ check-fmt:
     - !reference [ ".shared", "install_rust" ]
   script:
     - ./support/check-cargo-fmt.sh
-    - echo $CI_MERGE_REQUEST_LABELS
   rules:
     - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -317,3 +316,15 @@ appimage-job-arm:
     - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     
+check-magpie-main:
+  stage: test
+  interruptible: true
+  allow_failure: true
+  before_script:
+    - !reference [ ".shared", "checkout_submodule" ]
+  script:
+    - cd subprojects/magpie
+    - [ -z "$(git log main HEAD --not $(git merge-base --all main HEAD))" ]
+  rules:
+    - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
