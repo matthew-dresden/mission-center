@@ -325,7 +325,7 @@ check-magpie-main:
     - !reference [ ".shared", "checkout_submodule" ]
   script:
     - cd subprojects/magpie
-    - [[ -z "$(git log main HEAD --not $(git merge-base --all main HEAD))" ]]
+    - '[[ -z "$(git log main HEAD --not $(git merge-base --all main HEAD))" ]]'
   rules:
     - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
