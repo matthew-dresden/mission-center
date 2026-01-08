@@ -19,6 +19,7 @@
  */
 
 use std::cell::{Cell, OnceCell, RefCell};
+use std::collections::HashMap;
 
 use adw::gio::Settings;
 use adw::{prelude::AdwDialogExt, subclass::prelude::*};
@@ -32,7 +33,7 @@ use crate::i18n::*;
 use crate::performance_page::disk_details::DiskDetails;
 use crate::performance_page::widgets::{
     DatasetGroup, EjectFailureDialog, GraphWidget, ScalingSettings, SmartDataDialog,
-    SmartFailureDialog,
+    SmartFailureDialog, PartitionUsageItem,
 };
 use crate::{app, settings, to_short_human_readable_time, DataType};
 
