@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-11-05 18:51+0000\n"
-"Last-Translator: Randy <maxdesigna7x@gmail.com>\n"
+"PO-Revision-Date: 2025-11-27 05:03+0000\n"
+"Last-Translator: Xusi Fons <xusi@keemail.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/es/>\n"
 "Language: es\n"
@@ -29,11 +29,9 @@ msgid ""
 "Task manager;Resource monitor;System monitor;Processor;Processes;Performance "
 "monitor;CPU;GPU;Disc;Disk;Memory;Network;Utilisation;Utilization"
 msgstr ""
-"Task manager;Resource monitor;System monitor;Processor;Processes;Performance "
-"monitor;CPU;GPU;Disc;Disk;Memory;Network;Utilisation;Utilization;Administrador "
-"de tareas;Monitor de recursos;Monitor del "
+"Administrador de tareas;Monitor de recursos;Monitor del "
 "sistema;Procesador;Procesos;Monitor de "
-"rendimiento;CPU;GPU;Disco;Disco;Memoria;Red;Utilización;Uso;"
+"rendimiento;CPU;GPU;Disco;Disco;Memoria;Red;Utilización;Uso"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:6
 msgid "Mission Center Developers"
@@ -265,22 +263,18 @@ msgid "The order of columns in the Apps page view"
 msgstr "El orden de las columnas en la vista de la página de aplicaciones"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
 msgstr ""
 "El nombre de la columna por la cual se ordena la vista de la página de "
-"aplicaciones"
+"Servicios"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr ""
-"La dirección de l ordenación de la vista de la página de las Aplicaciones"
+msgstr "La dirección del orden de visualización de la página de Servicios"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "El orden de las columnas en la vista de la página de aplicaciones"
+msgstr "El orden de las columnas en la vista de la página de Servicios"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -877,9 +871,8 @@ msgid "PCI bus address:"
 msgstr "Dirección del bus PCI:"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
-#, fuzzy
 msgid "Failed To Get SMART Data"
-msgstr "Mostrar datos SMART"
+msgstr "Error al obtener datos de SMART"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:31
 msgid ""
@@ -931,7 +924,7 @@ msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr "Serial:"
+msgstr "Número de serie:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
@@ -1010,9 +1003,8 @@ msgid "Update Interval"
 msgstr "Intervalo de actualización"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} segundo{}"
+msgstr "En segundos"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1075,9 +1067,8 @@ msgid "Show Fan Information"
 msgstr "Mostrar información del ventilador"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "Página de servicios"
+msgstr "Aplicación &amp; Página de servicios"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1088,11 +1079,8 @@ msgid "Remember Sorting"
 msgstr "Recordar el orden"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
-msgstr ""
-"Mantener el orden de apps y procesos por columna después de reiniciar la "
-"aplicación"
+msgstr "Mantener el orden por columna después de reiniciar la aplicación"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
@@ -1108,11 +1096,8 @@ msgid "Scale CPU Usage to Core Count"
 msgstr "Escalar el uso de la CPU al número de núcleos"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
-"Muestra el uso de la CPU para aplicaciones y procesos en función del número "
-"de núcleos disponibles"
+msgstr "Muestra el uso de la CPU en función del número de núcleos disponibles"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1219,19 +1204,16 @@ msgid "Use Base 2 for Network Interfaces"
 msgstr "Usar base 2 para interfaces de red"
 
 #: resources/ui/services_page/page.blp:84
-#, fuzzy
 msgid "Collapse all expanded services"
-msgstr "Contraer todas las aplicaciones y procesos"
+msgstr "Contraer todos los servicios expandidos"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "{} Proceso en ejecución"
+msgstr "Filtrar procesos en ejecución"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Procesadores virtuales:"
+msgstr "Filtrar procesos fallidos"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
@@ -1273,9 +1255,8 @@ msgid "Global"
 msgstr "Global"
 
 #: resources/ui/keyboard_shortcuts.blp:21
-#, fuzzy
 msgid "Open Menu"
-msgstr "Menú principal"
+msgstr "Abrir el menú"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
@@ -1283,14 +1264,12 @@ msgid "Close Window"
 msgstr "Cerrar ventana"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Preferencias"
+msgstr "Abrir las preferencias"
 
 #: resources/ui/keyboard_shortcuts.blp:41
-#, fuzzy
 msgid "Show Keyboard Shortcuts"
-msgstr "Atajos de teclado"
+msgstr "Mostrar los atajos de teclado"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1422,35 +1401,35 @@ msgstr "Suspender (DETENIDO)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "Continuar (CONT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "Colgar (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "Interrumpir (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "Terminar (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "Matar (KILL)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "Usuario 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "Usuario 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "Identificador de aplicación"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1537,59 +1516,53 @@ msgstr "Grupo"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Ubicación del fichero"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "Registros"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Disco del sistema:"
+msgstr "Información del sistema"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Copiar información del dispositivo"
+msgstr "Información del sistema operativo"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Versión de Vulkan:"
+msgstr "Versión"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "Gestor de paquetes"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Versión del gestor de paquetes"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Mostrar información del ventilador"
+msgstr "Información del Kernel"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Versión del Kernel"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Copiar información del dispositivo"
+msgstr "Información del entorno de escritorio"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Sistema de ventanas"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Máquina virtual:"
+msgstr "Terminal virtual"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1649,7 +1622,7 @@ msgstr "Atajos de _Teclado"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "_Acerca del sistema"
 
 #: resources/ui/window.blp:256
 msgid "_About Mission Center"
@@ -1786,49 +1759,49 @@ msgid "Power Cycles"
 msgstr "Ciclos de encendido"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:249
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "In use ({})\n"
 "\n"
 "Memory used by the operating system and running applications"
 msgstr ""
-"En uso ({}B)\n"
+"En uso ({})\n"
 "\n"
 "Memoria usada por el sistema operativo y las aplicaciones en ejecución"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:279
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Modified ({})\n"
 "\n"
 "Memory whose contents must be written to disk before it can be used by "
 "another process"
 msgstr ""
-"Modificada ({}B)\n"
+"Modificada ({})\n"
 "\n"
 "Memoria cuyo contenido debe escribirse en disco antes de que pueda ser usada "
 "por otro proceso"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:303
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Standby ({})\n"
 "\n"
 "Memory that contains cached data and code that is not actively in use"
 msgstr ""
-"En espera ({}B)\n"
+"En espera ({})\n"
 "\n"
 "Memoria que contiene datos en caché y código que no se usa activamente"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:316
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Free ({})\n"
 "\n"
 "Memory that is not currently in use, and that will be repurposed first when "
 "the operating system, drivers, or applications need more memory"
 msgstr ""
-"Libre ({}B)\n"
+"Libre ({})\n"
 "\n"
 "Memoria que no está actualmente en uso, y que será reusada en primer lugar "
 "cuando el sistema operativo, los controladores o las aplicaciones necesiten "
@@ -1950,7 +1923,7 @@ msgstr "Mem. compartida total"
 #: src/performance_page/memory.rs:376
 #, rust-format
 msgid "{} of {}"
-msgstr ""
+msgstr "{} de {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
@@ -1967,11 +1940,11 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Iniciar servicio"
-msgstr[1] "Iniciar servicio"
+msgstr[0] "{} servicio en total"
+msgstr[1] "{} servicios en total"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1989,34 +1962,31 @@ msgid "Stopped"
 msgstr "Detenido"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "Desactivar todo"
+msgstr "Deshabilitado"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "No hay servicios que coincidan con los filtros actuales"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "No hay filtros aplicados"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} Servicios en ejecución"
-msgstr[1] "{} Servicios en ejecución"
+msgstr[0] "{} {} servicio"
+msgstr[1] "{} {} servicios"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Servicios"
+msgstr "Servicios del usuario"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Parar servicio"
+msgstr "Servicios del sistema"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
@@ -2027,9 +1997,8 @@ msgid "Section Header"
 msgstr "Encabezado de sección"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Servicios"
+msgstr "Servicio"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"
@@ -2044,46 +2013,46 @@ msgid "translator-credits"
 msgstr "Óscar Fernández Díaz <oscfdezdz@tuta.io>"
 
 #: src/main.rs:103
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} year"
 msgid_plural "{} years"
 msgstr[0] "{} año"
-msgstr[1] "{} año"
+msgstr[1] "{} años"
 
 #: src/main.rs:107
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} month"
 msgid_plural "{} months"
-msgstr[0] "{} minuto{} "
-msgstr[1] "{} minuto{} "
+msgstr[0] "{} mes"
+msgstr[1] "{} meses"
 
 #: src/main.rs:111
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} day"
 msgid_plural "{} days"
 msgstr[0] "{} día"
-msgstr[1] "{} día"
+msgstr[1] "{} días"
 
 #: src/main.rs:115
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
 msgstr[0] "{} hora"
-msgstr[1] "{} hora"
+msgstr[1] "{} horas"
 
 #: src/main.rs:119 src/main.rs:184
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
-msgstr[0] "{:} minuto"
-msgstr[1] "{:} minuto"
+msgstr[0] "{} minuto"
+msgstr[1] "{} minutos"
 
 #: src/main.rs:123 src/main.rs:182
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
-msgstr[0] "{} segundo{}"
-msgstr[1] "{} segundo{}"
+msgstr[0] "{} segundo"
+msgstr[1] "{} segundos"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159

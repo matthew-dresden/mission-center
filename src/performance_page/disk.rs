@@ -20,6 +20,7 @@
 
 use std::cell::{Cell, OnceCell, RefCell};
 
+use adw::gio::Settings;
 use adw::{prelude::AdwDialogExt, subclass::prelude::*};
 use glib::{g_warning, ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
@@ -28,18 +29,17 @@ use magpie_types::disks::{Disk, DiskKind};
 
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
-use crate::{app, to_short_human_readable_time};
-
-use super::widgets::{
-    EjectFailureDialog, GraphWidget, PartitionUsageItem, SmartDataDialog, SmartFailureDialog,
+use crate::performance_page::disk_details::DiskDetails;
+use crate::performance_page::widgets::{
+    DatasetGroup, EjectFailureDialog, GraphWidget, ScalingSettings, SmartDataDialog,
+    SmartFailureDialog,
 };
+use crate::{app, settings, to_short_human_readable_time, DataType};
+
 use super::PageExt;
 
 mod imp {
     use super::*;
-    use crate::performance_page::disk_details::DiskDetails;
-    use crate::DataType;
-    use std::collections::HashMap;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageDisk)]
@@ -170,31 +170,6 @@ mod imp {
             index: Option<i32>,
             disk: &Disk,
         ) -> bool {
-            let t = this.clone();
-            this.imp()
-                .usage_graph
-                .connect_local("resize", true, move |_| {
-                    let this = t.imp();
-
-                    let width = this.usage_graph.width() as f32;
-                    let height = this.usage_graph.height() as f32;
-
-                    let mut a = width;
-                    let mut b = height;
-                    if width > height {
-                        a = height;
-                        b = width;
-                    }
-
-                    this.usage_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    this.disk_transfer_rate_graph
-                        .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                    None
-                });
-
             let this = this.imp();
 
             let _ = this.raw_disk_id.set(disk.id.clone());
@@ -373,11 +348,12 @@ mod imp {
             }
 
             this.max_y.set_text(&crate::to_human_readable_nice(
-                this.disk_transfer_rate_graph.value_range_max(),
+                this.disk_transfer_rate_graph.get_dataset_max_scale(0),
                 &DataType::DriveBytesPerSecond,
             ));
 
-            this.usage_graph.add_data_point(0, disk.busy_percent);
+            this.usage_graph
+                .add_data_point(vec![vec![disk.busy_percent]]);
 
             let cap = disk.formatted_bytes;
             this.infobar_content
@@ -405,8 +381,10 @@ mod imp {
                 .avg_response_time()
                 .set_text(&format!("{:.2} ms", disk.response_time_ms));
 
-            this.disk_transfer_rate_graph
-                .add_data_point(0, disk.rx_speed_bytes_ps as f32);
+            this.disk_transfer_rate_graph.add_data_point(vec![
+                vec![disk.rx_speed_bytes_ps as f32],
+                vec![disk.tx_speed_bytes_ps as f32],
+            ]);
             this.infobar_content
                 .read_speed()
                 .set_text(&crate::to_human_readable_nice(
@@ -421,8 +399,6 @@ mod imp {
                     &DataType::DriveBytes,
                 ));
 
-            this.disk_transfer_rate_graph
-                .add_data_point(1, disk.tx_speed_bytes_ps as f32);
             this.infobar_content
                 .write_speed()
                 .set_text(&crate::to_human_readable_nice(
@@ -472,11 +448,11 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageDisk) -> bool {
+        pub fn update_animations(this: &super::PerformancePageDisk, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.usage_graph.update_animation();
-            this.disk_transfer_rate_graph.update_animation();
+            this.usage_graph.update_animation(new_ticks);
+            this.disk_transfer_rate_graph.update_animation(new_ticks);
 
             true
         }
@@ -545,6 +521,28 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
+            let mut tx_dataset = DatasetGroup::new();
+            let mut rx_dataset = DatasetGroup::new();
+
+            tx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
+            tx_dataset.dataset_settings.fill = false;
+            tx_dataset.dataset_settings.dashed = true;
+            rx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
+
+            self.disk_transfer_rate_graph.add_dataset(tx_dataset);
+            self.disk_transfer_rate_graph.add_dataset(rx_dataset);
+
+            self.disk_transfer_rate_graph.connect_datasets(0, 1);
+
+            let usage_dataset = DatasetGroup::new();
+
+            self.usage_graph.add_dataset(usage_dataset);
+
+            let settings = settings!();
+
+            self.disk_transfer_rate_graph.connect_to_settings(&settings);
+            self.usage_graph.connect_to_settings(&settings);
+
             let obj = self.obj();
             let this = obj.upcast_ref::<super::PerformancePageDisk>().clone();
 
@@ -583,8 +581,6 @@ impl PerformancePageDisk {
             settings: &gio::Settings,
         ) {
             let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
             let delay = settings.uint64("app-update-interval-u64");
             let graph_max_duration =
                 (((delay as f64) * INTERVAL_STEP) * (data_points as f64)).round() as u32;
@@ -593,15 +589,6 @@ impl PerformancePageDisk {
 
             this.graph_max_duration
                 .set_text(&to_short_human_readable_time(graph_max_duration));
-            this.usage_graph.set_data_points(data_points);
-            this.usage_graph.set_smooth_graphs(smooth);
-            this.usage_graph.set_do_animation(sliding);
-            this.usage_graph.set_expected_animation_ticks(delay as u32);
-            this.disk_transfer_rate_graph.set_data_points(data_points);
-            this.disk_transfer_rate_graph.set_smooth_graphs(smooth);
-            this.disk_transfer_rate_graph.set_do_animation(sliding);
-            this.disk_transfer_rate_graph
-                .set_expected_animation_ticks(delay as u32);
         }
         update_refresh_rate_sensitive_labels(&this, settings);
 
@@ -623,25 +610,50 @@ impl PerformancePageDisk {
             }
         });
 
-        settings.connect_changed(Some("performance-smooth-graphs"), {
+        settings.connect_changed(Some("performance-page-drive-use-base2"), {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
+                    this.update_graph_scaling(settings);
                 }
             }
         });
 
-        settings.connect_changed(Some("performance-sliding-graphs"), {
+        settings.connect_changed(Some("performance-page-drive-use-bytes"), {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
+                    this.update_graph_scaling(settings);
                 }
             }
         });
+
+        this.update_graph_scaling(settings);
 
         this
+    }
+
+    fn update_graph_scaling(&self, settings: &Settings) {
+        let this = self.imp();
+        let transfer_rate_graph = &this.disk_transfer_rate_graph;
+
+        let base2 = settings.boolean("performance-page-drive-use-base2");
+
+        if base2 {
+            transfer_rate_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
+        } else {
+            transfer_rate_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2Base10);
+
+            let bytes = settings.boolean("performance-page-drive-use-bytes");
+
+            transfer_rate_graph.set_all_datasets_watermarking_multiplier(if bytes {
+                1.
+            } else {
+                8.
+            });
+        }
+
+        transfer_rate_graph.reset_auto_scaling();
     }
 
     pub fn set_static_information(&self, index: Option<i32>, disk: &Disk) -> bool {
@@ -652,7 +664,7 @@ impl PerformancePageDisk {
         imp::PerformancePageDisk::update_readings(self, index, disk)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageDisk::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageDisk::update_animations(self, new_ticks)
     }
 }

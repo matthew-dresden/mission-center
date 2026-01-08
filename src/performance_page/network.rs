@@ -20,18 +20,22 @@
 
 use std::cell::{Cell, OnceCell, RefCell};
 
+use adw::gio::Settings;
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
 use magpie_types::network::{Connection, ConnectionKind};
 
-use super::{widgets::GraphWidget, PageExt};
-use crate::{application::INTERVAL_STEP, i18n::*, to_short_human_readable_time};
+use crate::i18n::*;
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
+use crate::{application::INTERVAL_STEP, to_short_human_readable_time};
+use crate::{settings, DataType};
+
+use super::PageExt;
 
 mod imp {
     use super::*;
-    use crate::DataType;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageNetwork)]
@@ -262,25 +266,6 @@ mod imp {
                 this.device_name.set_text(&i18n("Unknown"));
             }
 
-            let t = this.obj().clone();
-            this.usage_graph.connect_local("resize", true, move |_| {
-                let this = t.imp();
-                let width = this.usage_graph.width() as f32;
-                let height = this.usage_graph.height() as f32;
-
-                let mut a = width;
-                let mut b = height;
-                if width > height {
-                    a = height;
-                    b = width;
-                }
-
-                this.usage_graph
-                    .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                None
-            });
-
             if let Some(interface_name_label) = this.interface_name_label.get() {
                 interface_name_label.set_text(&interface_name);
             }
@@ -332,13 +317,6 @@ mod imp {
 
             this.max_speed.set(connection.max_speed_bytes_ps);
 
-            if let Some(max_speed) = connection.max_speed_bytes_ps {
-                this.usage_graph.set_value_range_max(max_speed as f32);
-            } else {
-                this.usage_graph
-                    .set_scaling(GraphWidget::auto_pow2_scaling());
-            }
-
             true
         }
 
@@ -348,10 +326,10 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
-            this.usage_graph
-                .add_data_point(0, connection.tx_rate_bytes_ps);
-            this.usage_graph
-                .add_data_point(1, connection.rx_rate_bytes_ps);
+            this.usage_graph.add_data_point(vec![
+                vec![connection.tx_rate_bytes_ps],
+                vec![connection.rx_rate_bytes_ps],
+            ]);
 
             let send_speed = connection.tx_rate_bytes_ps;
             let rec_speed = connection.rx_rate_bytes_ps;
@@ -417,7 +395,7 @@ mod imp {
             }
 
             let max_y = crate::to_human_readable_nice(
-                this.usage_graph.value_range_max(),
+                this.usage_graph.get_dataset_max_scale(0),
                 &DataType::NetworkBytesPerSecond,
             );
             this.max_y.set_text(&max_y);
@@ -470,10 +448,10 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageNetwork) -> bool {
+        pub fn update_animations(this: &super::PerformancePageNetwork, new_ticks: f32) -> bool {
             let this = this.imp();
 
-            this.usage_graph.update_animation();
+            this.usage_graph.update_animation(new_ticks);
 
             true
         }
@@ -582,6 +560,21 @@ mod imp {
 
         fn constructed(&self) {
             self.parent_constructed();
+
+            let mut tx_dataset = DatasetGroup::new();
+            let rx_dataset = DatasetGroup::new();
+
+            // scaling will be set by settings
+            tx_dataset.dataset_settings.fill = false;
+            tx_dataset.dataset_settings.dashed = true;
+
+            self.usage_graph.add_dataset(tx_dataset);
+            self.usage_graph.add_dataset(rx_dataset);
+
+            self.usage_graph.connect_datasets(0, 1);
+            self.usage_graph.connect_datasets(1, 0);
+
+            self.usage_graph.connect_to_settings(&settings!());
 
             let obj = self.obj();
             let this = obj.upcast_ref::<super::PerformancePageNetwork>().clone();
@@ -721,8 +714,6 @@ impl PerformancePageNetwork {
             settings: &gio::Settings,
         ) {
             let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
             let delay = settings.uint64("app-update-interval-u64");
             let graph_max_duration =
                 (((delay as f64) * INTERVAL_STEP) * (data_points as f64)).round() as u32;
@@ -730,11 +721,6 @@ impl PerformancePageNetwork {
             let this = this.imp();
             this.graph_max_duration
                 .set_text(&to_short_human_readable_time(graph_max_duration));
-
-            this.usage_graph.set_data_points(data_points);
-            this.usage_graph.set_smooth_graphs(smooth);
-            this.usage_graph.set_do_animation(sliding);
-            this.usage_graph.set_expected_animation_ticks(delay as u32);
         }
         update_refresh_rate_sensitive_labels(&this, settings);
 
@@ -742,42 +728,22 @@ impl PerformancePageNetwork {
             .use_bytes
             .set(settings.boolean("performance-page-network-use-bytes"));
 
-        if let Some(max_speed) = this.imp().max_speed.get() {
-            let dynamic_scaling = settings.boolean("performance-page-network-dynamic-scaling");
-
-            if dynamic_scaling {
-                this.imp()
-                    .usage_graph
-                    .set_scaling(GraphWidget::auto_pow2_scaling());
-            } else {
-                this.imp()
-                    .usage_graph
-                    .set_scaling(GraphWidget::no_scaling());
-
-                this.imp().usage_graph.set_value_range_max(max_speed as f32);
-            }
-        }
+        this.update_graph_scaling(settings);
 
         settings.connect_changed(Some("performance-page-network-dynamic-scaling"), {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
-                    if let Some(max_speed) = this.imp().max_speed.get() {
-                        let dynamic_scaling =
-                            settings.boolean("performance-page-network-dynamic-scaling");
+                    this.update_graph_scaling(settings);
+                }
+            }
+        });
 
-                        if dynamic_scaling {
-                            this.imp()
-                                .usage_graph
-                                .set_scaling(GraphWidget::auto_pow2_scaling());
-                        } else {
-                            this.imp()
-                                .usage_graph
-                                .set_scaling(GraphWidget::no_scaling());
-
-                            this.imp().usage_graph.set_value_range_max(max_speed as f32);
-                        }
-                    }
+        settings.connect_changed(Some("performance-page-network-use-base2"), {
+            let this = this.downgrade();
+            move |settings, _| {
+                if let Some(this) = this.upgrade() {
+                    this.update_graph_scaling(settings);
                 }
             }
         });
@@ -786,36 +752,10 @@ impl PerformancePageNetwork {
             let this = this.downgrade();
             move |settings, _| {
                 if let Some(this) = this.upgrade() {
-                    let new_units = settings.boolean("performance-page-network-use-bytes");
-                    let old_units = this.imp().use_bytes.get();
-                    if old_units != new_units {
-                        let conversion_factor = if new_units { 1. / 8. } else { 8. };
-                        this.imp().usage_graph.set_data(
-                            0,
-                            this.imp()
-                                .usage_graph
-                                .data(0)
-                                .unwrap_or(vec![])
-                                .into_iter()
-                                .map(|it| it * conversion_factor)
-                                .collect(),
-                        );
-                        this.imp().usage_graph.set_data(
-                            1,
-                            this.imp()
-                                .usage_graph
-                                .data(1)
-                                .unwrap_or(vec![])
-                                .into_iter()
-                                .map(|it| it * conversion_factor)
-                                .collect(),
-                        );
-
-                        if let Some(max_speed) = this.imp().max_speed.get() {
-                            this.imp().usage_graph.set_value_range_max(max_speed as f32);
-                        }
-                    }
-                    this.imp().use_bytes.set(new_units);
+                    this.imp()
+                        .use_bytes
+                        .set(settings.boolean("performance-page-network-use-bytes"));
+                    this.update_graph_scaling(settings);
                 }
             }
         });
@@ -838,24 +778,6 @@ impl PerformancePageNetwork {
             }
         });
 
-        settings.connect_changed(Some("performance-smooth-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
-
-        settings.connect_changed(Some("performance-sliding-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
-
         this
     }
 
@@ -867,8 +789,8 @@ impl PerformancePageNetwork {
         imp::PerformancePageNetwork::update_readings(self, connection)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageNetwork::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageNetwork::update_animations(self, new_ticks)
     }
 
     pub fn infobar_collapsed(&self) {
@@ -887,5 +809,52 @@ impl PerformancePageNetwork {
 
     pub fn use_bytes(&self) -> bool {
         self.imp().use_bytes.get()
+    }
+
+    fn update_graph_scaling(&self, settings: &Settings) {
+        let this = self.imp();
+        let usage_graph = &this.usage_graph;
+
+        if let Some(max_speed) = this.max_speed.get() {
+            let dynamic_scaling = settings.boolean("performance-page-network-dynamic-scaling");
+
+            if dynamic_scaling {
+                let base2 = settings.boolean("performance-page-network-use-base2");
+
+                if base2 {
+                    usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
+                } else {
+                    usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2Base10);
+
+                    usage_graph.set_all_datasets_watermarking_multiplier(if this.use_bytes.get() {
+                        1.
+                    } else {
+                        8.
+                    });
+                }
+
+                usage_graph.reset_auto_scaling();
+            } else {
+                usage_graph.set_all_datasets_scaling(ScalingSettings::Fixed);
+
+                usage_graph.set_all_datasets_max_scale(max_speed as f32);
+            }
+        } else {
+            let base2 = settings.boolean("performance-page-network-use-base2");
+
+            if base2 {
+                usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2);
+            } else {
+                usage_graph.set_all_datasets_scaling(ScalingSettings::ScaleUpPow2Base10);
+
+                usage_graph.set_all_datasets_watermarking_multiplier(if this.use_bytes.get() {
+                    1.
+                } else {
+                    8.
+                });
+            }
+
+            usage_graph.reset_auto_scaling();
+        }
     }
 }

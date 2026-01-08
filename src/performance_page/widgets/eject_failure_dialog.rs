@@ -26,7 +26,6 @@ use adw::{prelude::*, subclass::prelude::*};
 use glib::{g_critical, g_warning};
 use gtk::glib;
 
-use magpie_types::apps::icon::Icon;
 use magpie_types::apps::App;
 use magpie_types::disks::error_eject_failed::Blocker;
 use magpie_types::disks::ErrorEjectFailed;
@@ -56,17 +55,15 @@ mod imp {
 
             let parsed_results = Self::parse_error(error);
 
+            let mcapp = app!();
+
             for (appname, (app_obj, blockers)) in parsed_results {
-                let icon = match app_obj.icon.as_ref().and_then(|i| i.icon.as_ref()) {
-                    Some(Icon::Id(id)) => id,
-                    Some(Icon::Path(path)) => path,
-                    None | Some(Icon::Empty(..)) | Some(Icon::Data(..)) => "",
-                };
+                let icon = mcapp.get_app_icon(&app_obj.id);
 
                 for blocker in blockers {
                     let row_builder = EjectFailureRowBuilder::new()
                         .id(disk_id)
-                        .icon(icon)
+                        .icon(icon.clone())
                         .pid(blocker.pid)
                         .name(&appname)
                         .dialog(&self.obj());

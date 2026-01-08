@@ -1,7 +1,6 @@
 /* performance_page/summary_graph.rs
  *
- * Copyright 2024 Romeo Calota
- * Copyright 2024 jojo2357
+ * Copyright 2024-2025 Mission Center Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,17 +19,16 @@
  */
 
 use std::collections::HashSet;
+use std::marker::PhantomData;
 
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gdk, glib, prelude::*};
 
-use super::widgets::{GraphWidget, SidebarDropHint};
+use crate::performance_page::widgets::{GraphWidget, SidebarDropHint};
 use crate::settings;
 
 mod imp {
-    use std::marker::PhantomData;
-
     use super::*;
 
     #[derive(Properties)]

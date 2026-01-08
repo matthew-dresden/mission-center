@@ -74,3 +74,7 @@ impl PreferencesDialog {
         this
     }
 }
+
+// this is a better place without fussing over visibility
+pub const MAX_POINTS: i32 = 600;
+pub const MIN_POINTS: i32 = 10;

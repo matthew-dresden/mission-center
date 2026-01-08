@@ -21,13 +21,11 @@
 use adw::{prelude::*, subclass::prelude::*, SpinRow, SwitchRow};
 use gtk::{gio, glib, Scale};
 
+use crate::preferences::{MAX_POINTS, MIN_POINTS};
 use crate::settings;
 
 const MAX_INTERVAL_TICKS: u64 = 200;
 const MIN_INTERVAL_TICKS: u64 = 10;
-
-const MAX_POINTS: i32 = 600;
-const MIN_POINTS: i32 = 10;
 
 macro_rules! connect_switch_to_setting {
     ($this: expr, $switch_row: expr, $setting: literal) => {
@@ -70,7 +68,6 @@ macro_rules! connect_toggle_pair_to_setting {
         });
     };
 }
-
 mod imp {
     use super::*;
 

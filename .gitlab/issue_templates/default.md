@@ -1,15 +1,8 @@
-## Description
-(What's up)
+Select a template above before filling this out.
 
-## Relevant Logs/Screenshots
-```
-(if relevant add command line output here)
-```
+We appreciate your reaching out.
+Help us help you by selecting the appropriate template above.
 
-## Other Info
-- OS: Some Wierd Linux Distro
-- DE: Plasma/Gnome/Other
-- Installation Type: OS/Flatpak/Appimage/Snap
+Some helpful information may be found at the wiki page
 
-- CPU: Intel 4004
-- GPU: Nvidia H100s
+ - https://gitlab.com/mission-center-devs/mission-center/-/wikis/home

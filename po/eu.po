@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-10-10 03:59+0000\n"
+"PO-Revision-Date: 2025-12-03 12:00+0000\n"
 "Last-Translator: Ibai Oihanguren Sala <ibaios@disroot.org>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/eu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -267,20 +267,16 @@ msgid "The order of columns in the Apps page view"
 msgstr "Aplikazioen orriko ikuspegiko zutabeen ordena"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
-msgstr ""
-"Aplikazioen orriko ikuspegia ordenatzeko erabiliko den zutabearen izena"
+msgstr "Zerbitzuen orriko ikuspegia ordenatzeko erabiliko den zutabearen izena"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "Aplikazioen orriko ikuspegia ordenatzeko noranzkoa"
+msgstr "Zerbitzuen orriko ikuspegia ordenatzeko noranzkoa"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "Aplikazioen orriko ikuspegiko zutabeen ordena"
+msgstr "Zerbitzuen orriko ikuspegiko zutabeen ordena"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -933,7 +929,7 @@ msgstr "Serie-zenbakia:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Biratze-abiadura"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1008,9 +1004,8 @@ msgid "Update Interval"
 msgstr "Eguneratze-tartea"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} segundo{}"
+msgstr "Segundotan"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1029,7 +1024,6 @@ msgid "Draw graphs as smooth line instead of jagged line"
 msgstr "Marraztu grafikoak lerro leun gisa, koskadun lerro gisa beharrean"
 
 #: resources/ui/preferences/page.blp:54
-#, fuzzy
 msgid "Sliding Graphs"
 msgstr "Grafiko irristariak"
 
@@ -1074,9 +1068,8 @@ msgid "Show Fan Information"
 msgstr "Erakutsi haizagailuaren informazioa"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "Zerbitzuen orria"
+msgstr "Aplikazioak eta Zerbitzuak orriak"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1087,11 +1080,8 @@ msgid "Remember Sorting"
 msgstr "Gogoratu ordenatze irizpideak"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
-msgstr ""
-"Gogoratu aplikazio eta prozesuen ordenatze irizpideak aplikazioa "
-"berrabiarazten denean"
+msgstr "Mantendu zutabeko ordenak aplikazioa berrabiarazten denean"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
@@ -1108,11 +1098,8 @@ msgid "Scale CPU Usage to Core Count"
 msgstr "Eskalatu PUZaren erabilera nukleo kopurura"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
-"Erakutsi aplikazio eta prozesuek erabilitako PUZa nukleo erabilgarri "
-"kopurura eskalatuta"
+msgstr "Erakutsi PUZaren erabilera nukleo erabilgarrien kopurura eskalatuta"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1219,27 +1206,24 @@ msgid "Use Base 2 for Network Interfaces"
 msgstr "Erabili 2 oinarria sareko interfazeentzat"
 
 #: resources/ui/services_page/page.blp:84
-#, fuzzy
 msgid "Collapse all expanded services"
-msgstr "Tolestu aplikazio eta prozesu guztiak"
+msgstr "Tolestu hedatutako zerbitzu guztiak"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "Zerbitzu {} martxan"
+msgstr "Iragazi martxan dauden zerbitzuak"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Prozesadore birtualak:"
+msgstr "Iragazi huts egindako prozesuak"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Iragazi gelditutako prozesuak"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Iragazi ezgaitutako prozesuak"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
@@ -1273,9 +1257,8 @@ msgid "Global"
 msgstr "Orokorra"
 
 #: resources/ui/keyboard_shortcuts.blp:21
-#, fuzzy
 msgid "Open Menu"
-msgstr "Menu nagusia"
+msgstr "Ireki menua"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
@@ -1283,14 +1266,12 @@ msgid "Close Window"
 msgstr "Itxi leihoa"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Hobespenak"
+msgstr "Ireki hobespenak"
 
 #: resources/ui/keyboard_shortcuts.blp:41
-#, fuzzy
 msgid "Show Keyboard Shortcuts"
-msgstr "Lasterbideak"
+msgstr "Erakutsi teklatuko lasterbideak"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1544,21 +1525,18 @@ msgid "Logs"
 msgstr "Erregistroak"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Sistemako diskoa:"
+msgstr "Sistemaren informazioa"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Kopiatu gailuaren informazioa"
+msgstr "Sistema eragilearen informazioa"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Vulkan bertsioa:"
+msgstr "Bertsioa"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
@@ -1569,27 +1547,24 @@ msgid "Package Manager Version"
 msgstr "Pakete-kudeatzailearen bertsioa"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Erakutsi haizagailuaren informazioa"
+msgstr "Kernelaren informazioa"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Kernelaren bertsioa"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Kopiatu gailuaren informazioa"
+msgstr "Mahaigain ingurunearen informazioa"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
 msgstr "Leiho-sistema"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Makina birtuala:"
+msgstr "Terminal birtuala"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1721,9 +1696,8 @@ msgid "Percent Used"
 msgstr "Erabilera ehunekoa"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:205
-#, fuzzy
 msgid "Available Spare"
-msgstr "Erabilgarri"
+msgstr "Libre erabilgarri"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
@@ -1969,11 +1943,11 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Abiarazi zerbitzua"
-msgstr[1] "Abiarazi zerbitzua"
+msgstr[0] "Zerbitzu {} guztira"
+msgstr[1] "{} zerbitzu guztira"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1991,34 +1965,31 @@ msgid "Stopped"
 msgstr "Geldituta"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "Ezgaitu guztiak"
+msgstr "Ezgaituta"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "Ez dago uneko iragazkiekin bat datorren zerbitzurik"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
 msgstr "Ez da iragazkirik aplikatu"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "{} zerbitzu martxan"
-msgstr[1] "{} zerbitzu martxan"
+msgstr[0] "Zerbitzu {} {}"
+msgstr[1] "{} {} zerbitzu"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Zerbitzuak"
+msgstr "Erabiltzailearen zerbitzuak"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Gelditu zerbitzua"
+msgstr "Sistemako zerbitzuak"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
@@ -2029,9 +2000,8 @@ msgid "Section Header"
 msgstr "Atalaren goiburua"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Zerbitzuak"
+msgstr "Zerbitzua"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"

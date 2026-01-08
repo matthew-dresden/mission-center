@@ -20,6 +20,8 @@
 
 pub use eject_failure_dialog::EjectFailureDialog;
 pub use graph_widget::GraphWidget;
+pub use graph_widget_utils::DatasetGroup;
+pub use graph_widget_utils::ScalingSettings;
 pub use mem_composition_widget::MemoryCompositionWidget;
 pub use partition_usage_item::PartitionUsageItem;
 pub use sidebar_drop_hint::SidebarDropHint;
@@ -33,6 +35,7 @@ const GRAPH_RADIUS: f32 = 7.;
 mod eject_failure_dialog;
 mod eject_failure_row;
 mod graph_widget;
+mod graph_widget_utils;
 mod mem_composition_widget;
 mod partition_usage_item;
 mod sidebar_drop_hint;

@@ -1,6 +1,6 @@
 /* performance_page/widgets/graph_widget.rs
  *
- * Copyright 2024 Romeo Calota
+ * Copyright 2025 Mission Center Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,250 +19,135 @@
  */
 
 use std::cell::Cell;
-use std::cmp::Ordering;
 
 use glib::{ParamSpec, Properties, Value};
-use gtk::{
-    gdk,
-    gdk::prelude::*,
-    glib::{
-        self,
-        subclass::{prelude::*, Signal},
-    },
-    graphene,
-    gsk::{self, FillRule, PathBuilder, Stroke},
-    prelude::*,
-    subclass::prelude::*,
-    Snapshot,
-};
+use gtk::gdk;
+use gtk::gdk::prelude::*;
+use gtk::gio;
+use gtk::glib;
+use gtk::glib::g_warning;
+use gtk::glib::subclass::prelude::*;
+use gtk::glib::subclass::Signal;
+use gtk::graphene;
+use gtk::gsk;
+use gtk::gsk::PathBuilder;
+use gtk::gsk::Stroke;
+use gtk::prelude::*;
+use gtk::subclass::prelude::*;
+use gtk::Snapshot;
+use gtk::TextDirection;
 
-pub use imp::DataSetDescriptor;
+use crate::performance_page::widgets::graph_widget_utils::{DatasetGroup, ScalingSettings};
 
-use super::GRAPH_RADIUS;
-
-/// Values are truncated to the minimum and maximum values
-const NO_SCALING: i32 = 0;
-/// The graph min and max values are adjusted to the incoming data
-const AUTO_SCALING: i32 = 1;
-/// The graph min and max values are adjusted to the next power of 2
-const AUTO_POW2_SCALING: i32 = 2;
-/// The graph min and max values are hardcoded to the range [0, 1], and all values are normalized to this range
-const NORMALIZED_SCALING: i32 = 3;
+// no faster than 200 Hz. if everything is going according to plan, we expect two animation frames in quick succession at the start of a new cycle and want to prevent rendering twice
+const ANIMATION_LOCKOUT: f32 = 0.005;
 
 mod imp {
     use super::*;
-
-    #[derive(Clone)]
-    pub struct DataSetDescriptor {
-        pub dashed: bool,
-        pub fill: bool,
-        pub visible: bool,
-
-        pub data_set: Vec<f32>,
-        pub max_all_time: f32,
-    }
+    use crate::performance_page::widgets::GRAPH_RADIUS;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::GraphWidget)]
     pub struct GraphWidget {
         #[property(get, set = Self::set_data_points)]
         data_points: Cell<u32>,
-        #[property(get, set = Self::set_data_sets)]
-        data_set_count: Cell<u32>,
-        #[property(get, set = Self::set_value_range_min)]
-        value_range_min: Cell<f32>,
-        #[property(get, set = Self::set_value_range_max)]
-        value_range_max: Cell<f32>,
-        #[property(get, set = Self::set_scaling)]
-        scaling: Cell<i32>,
-        #[property(get, set)]
-        only_scale_up: Cell<bool>,
-        #[property(get, set)]
-        minimum_upper_bound: Cell<f32>,
-        #[property(get, set)]
-        grid_visible: Cell<bool>,
-        #[property(get, set)]
-        scroll: Cell<bool>,
-        #[property(get, set = Self::set_smooth_graphs)]
-        smooth_graphs: Cell<bool>,
         #[property(get, set)]
         base_color: Cell<gdk::RGBA>,
         #[property(get, set = Self::set_horizontal_line_count)]
         horizontal_line_count: Cell<u32>,
         #[property(get, set = Self::set_vertical_line_count)]
         vertical_line_count: Cell<u32>,
+        #[property(get, set)]
+        animation_ticks: Cell<f32>,
+        #[property(get, set = Self::set_do_animation)]
+        do_animation: Cell<bool>,
+        #[property(get, set = Self::set_smooth_graphs)]
+        smooth_graphs: Cell<bool>,
+        #[property(get, set)]
+        scroll: Cell<bool>,
+        #[property(get, set)]
+        grid_visible: Cell<bool>,
 
-        pub data_sets: Cell<Vec<DataSetDescriptor>>,
-
+        pub settings_inited: Cell<bool>,
         scroll_offset: Cell<u32>,
         prev_size: Cell<(i32, i32)>,
 
-        #[property(get, set)]
-        animation_ticks: Cell<u32>,
-        #[property(get, set = Self::set_expected_animation_ticks)]
-        expected_animation_ticks: Cell<u32>,
-        #[property(get, set)]
-        do_animation: Cell<bool>,
+        pub(crate) need_redraw: Cell<bool>,
+        cached_snapshot: Cell<Option<gsk::RenderNode>>,
+
+        pub data_sets: Cell<Vec<DatasetGroup>>,
     }
 
     impl Default for GraphWidget {
         fn default() -> Self {
-            const DATA_SET_LEN_DEFAULT: usize = 60;
-
-            let mut data_set = vec![0.0; DATA_SET_LEN_DEFAULT];
-            data_set.reserve(1);
-
             Self {
-                data_points: Cell::new(DATA_SET_LEN_DEFAULT as _),
-                data_set_count: Cell::new(1),
-                value_range_min: Cell::new(0.),
-                value_range_max: Cell::new(100.),
-                scaling: Cell::new(NO_SCALING),
-                only_scale_up: Cell::new(false),
-                minimum_upper_bound: Cell::new(f32::NAN),
-                grid_visible: Cell::new(true),
-                scroll: Cell::new(false),
-                smooth_graphs: Cell::new(false),
+                data_points: Cell::new(0),
                 base_color: Cell::new(gdk::RGBA::new(0., 0., 0., 1.)),
                 horizontal_line_count: Cell::new(9),
                 vertical_line_count: Cell::new(6),
-
-                data_sets: Cell::new(vec![DataSetDescriptor {
-                    dashed: false,
-                    fill: true,
-                    visible: true,
-
-                    data_set,
-                    max_all_time: 0.,
-                }]),
-
+                animation_ticks: Cell::new(0.),
+                do_animation: Cell::new(false),
+                smooth_graphs: Cell::new(false),
+                scroll: Cell::new(true),
+                grid_visible: Cell::new(true),
+                settings_inited: Cell::new(false),
                 scroll_offset: Cell::new(0),
                 prev_size: Cell::new((0, 0)),
-                animation_ticks: Cell::new(0),
-                expected_animation_ticks: Cell::new(10),
-                do_animation: Cell::new(false),
+                need_redraw: Cell::new(true),
+                cached_snapshot: Cell::new(None),
+                data_sets: Cell::new(vec![]),
             }
         }
     }
 
     impl GraphWidget {
-        fn set_value_range_min(&self, min: f32) {
-            if self.scaling.get() == NORMALIZED_SCALING {
-                self.value_range_min.set(0.);
-                return;
-            }
-
-            self.value_range_min.set(min);
-        }
-
-        fn set_value_range_max(&self, max: f32) {
-            if self.scaling.get() == NORMALIZED_SCALING {
-                self.value_range_max.set(1.);
-                return;
-            }
-
-            self.value_range_max.set(max);
-        }
-
-        fn set_scaling(&self, scaling: i32) {
-            match scaling {
-                NO_SCALING => {
-                    self.scaling.set(NO_SCALING);
-                    let mut data_sets = self.data_sets.take();
-
-                    for values in data_sets.iter_mut() {
-                        for value in values.data_set.iter_mut() {
-                            *value =
-                                value.clamp(self.value_range_min.get(), self.value_range_max.get());
-                        }
-                    }
-
-                    self.data_sets.set(data_sets);
+        pub fn set_data_points(&self, count: u32) {
+            if self.data_points.get() != count {
+                let mut data_sets = self.data_sets.take();
+                for values in data_sets.iter_mut() {
+                    values.update_data_points(count as usize);
                 }
-                AUTO_SCALING..=AUTO_POW2_SCALING => {
-                    self.scaling.set(scaling);
+                self.data_sets.set(data_sets);
+                self.data_points.set(count);
 
-                    let mut data_sets = self.data_sets.take();
-
-                    for values in data_sets.iter_mut() {
-                        for value in values.data_set.iter_mut() {
-                            *value = value.max(self.value_range_min.get());
-                        }
-                    }
-
-                    self.data_sets.set(data_sets);
-                }
-                NORMALIZED_SCALING => {
-                    self.value_range_min.set(0.);
-                    self.value_range_max.set(1.);
-                    self.scaling.set(NORMALIZED_SCALING);
-                }
-                _ => self.scaling.set(NO_SCALING),
+                self.obj().force_redraw();
             }
         }
 
-        fn set_data_points(&self, count: u32) {
-            if self.data_points.take() != count {
-                let mut data_points = self.data_sets.take();
-                for values in data_points.iter_mut() {
-                    if count == (values.data_set.len() as u32) {
-                        continue;
-                    }
-                    // we need to truncate from the correct side
-                    values.data_set.reverse();
-                    values.data_set.resize(count as _, 0.);
-                    values.data_set.reverse();
-                }
-                self.data_sets.set(data_points);
-            }
-            self.data_points.set(count);
-        }
-
-        fn set_data_sets(&self, count: u32) {
-            let mut data_points = self.data_sets.take();
-            data_points.resize(
-                count as _,
-                DataSetDescriptor {
-                    dashed: false,
-                    fill: true,
-                    visible: true,
-
-                    data_set: vec![0.; self.data_points.get() as _],
-                    max_all_time: 0.,
-                },
-            );
-            self.data_sets.set(data_points);
-
-            self.data_set_count.set(count);
+        pub fn set_data_points_i32(&self, count: i32) {
+            self.set_data_points(count as u32)
         }
 
         fn set_horizontal_line_count(&self, count: u32) {
             if self.horizontal_line_count.get() != count {
                 self.horizontal_line_count.set(count);
-                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
+                self.obj().force_redraw();
             }
         }
 
         fn set_vertical_line_count(&self, count: u32) {
             if self.vertical_line_count.get() != count {
                 self.vertical_line_count.set(count);
-                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
+                self.obj().force_redraw();
             }
         }
 
-        fn set_smooth_graphs(&self, smooth: bool) {
+        pub fn set_smooth_graphs(&self, smooth: bool) {
             if self.smooth_graphs.get() != smooth {
                 self.smooth_graphs.set(smooth);
-                self.obj().upcast_ref::<super::GraphWidget>().queue_draw();
+                self.obj().force_redraw();
             }
         }
 
-        fn set_expected_animation_ticks(&self, ticks: u32) {
-            if ticks > 0 {
-                if self.expected_animation_ticks.get() != ticks {
-                    self.expected_animation_ticks.set(ticks);
-                }
+        pub fn set_do_animation(&self, smooth: bool) {
+            if self.do_animation.get() != smooth {
+                self.do_animation.set(smooth);
+                self.obj().force_redraw();
             }
+        }
+
+        pub fn set_animation_ticks(&self, ticks: f32) {
+            self.animation_ticks.set(ticks);
         }
 
         pub fn try_increment_scroll(&self) {
@@ -289,7 +174,6 @@ mod imp {
             width: f32,
             height: f32,
             scale_factor: f64,
-            data_point_count: usize,
             color: &gdk::RGBA,
         ) {
             let scale_factor = scale_factor as f32;
@@ -300,199 +184,43 @@ mod imp {
             // Draw horizontal lines
             let horizontal_line_count = self.obj().horizontal_line_count() + 1;
 
-            let col_width = width - scale_factor;
-            let col_height = height / horizontal_line_count as f32;
+            let frame_width = width - scale_factor;
+            let frame_height = height / horizontal_line_count as f32;
 
+            let point_spacing = width * self.obj().point_spacing_factor();
+
+            let path_builder = PathBuilder::new();
             for i in 1..horizontal_line_count {
-                let path_builder = PathBuilder::new();
-                path_builder.move_to(scale_factor / 2., col_height * i as f32);
-                path_builder.line_to(col_width, col_height * i as f32);
-                snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
+                path_builder.move_to(
+                    scale_factor / 2. - 2. * point_spacing,
+                    frame_height * i as f32,
+                );
+                path_builder.line_to(frame_width, frame_height * i as f32);
             }
 
             // Draw vertical lines
             let vertical_line_count = self.obj().vertical_line_count() + 1;
 
-            let animdist = if self.do_animation.get() {
-                width / (data_point_count - 2) as f32
-            } else {
-                width / (data_point_count - 1) as f32
-            };
-
-            let col_width = width / vertical_line_count as f32;
+            let col_width = (width + point_spacing) / vertical_line_count as f32;
             let col_height = height - scale_factor;
 
-            let anim_offset = if self.obj().scroll() {
-                ((animdist)
-                    * (-(self.scroll_offset.get() as f32) + 1f32
-                        - self.animation_ticks.get().saturating_sub(1) as f32
-                            / self.expected_animation_ticks.get() as f32))
-                    .rem_euclid(col_width)
+            let scroll_offset = if self.obj().scroll() {
+                ((point_spacing) * -(self.scroll_offset.get() as f32)).rem_euclid(col_width)
             } else {
                 0.
             };
 
-            for i in 0..vertical_line_count {
-                let path_builder = PathBuilder::new();
-                path_builder.move_to(col_width * i as f32 + anim_offset, scale_factor / 2.);
-                path_builder.line_to(col_width * i as f32 + anim_offset, col_height);
-                snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
+            for i in 0..vertical_line_count + 1 {
+                path_builder.move_to(
+                    col_width * (i as f32) + scroll_offset - point_spacing,
+                    scale_factor / 2.,
+                );
+                path_builder.line_to(
+                    col_width * (i as f32) + scroll_offset - point_spacing,
+                    col_height,
+                );
             }
-        }
-
-        #[inline]
-        fn plot_values(
-            &self,
-            snapshot: &Snapshot,
-            width: f32,
-            height: f32,
-            scale_factor: f64,
-            data_points: &mut DataSetDescriptor,
-            color: &gdk::RGBA,
-        ) {
-            let scale_factor = scale_factor as f32;
-            let stroke_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 1.);
-            let fill_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 100. / 256.);
-
-            let stroke = Stroke::new(1.);
-
-            let val_max = self.value_range_max.get() - self.value_range_min.get();
-            let val_min = 0.;
-
-            let spacing_x = if self.do_animation.get() {
-                width / (data_points.data_set.len() - 2) as f32
-            } else {
-                width / (data_points.data_set.len() - 1) as f32
-            };
-
-            let mut points: Vec<(f32, f32)> = if self.scaling.get() != NORMALIZED_SCALING {
-                (0..)
-                    .map(|x| x as f32)
-                    .zip(
-                        data_points
-                            .data_set
-                            .iter()
-                            .map(|x| *x - self.value_range_min.get()),
-                    )
-                    .skip_while(|(_, y)| *y <= scale_factor)
-                    .collect()
-            } else {
-                let mut min = self.value_range_min.get();
-                let mut max = self.value_range_max.get();
-                for value in data_points.data_set.iter() {
-                    if *value < min {
-                        min = *value;
-                    }
-                    if *value > max {
-                        max = *value;
-                    }
-                }
-
-                if data_points.max_all_time < max {
-                    data_points.max_all_time = max;
-                }
-
-                if self.only_scale_up.get() {
-                    max = data_points.max_all_time;
-                }
-
-                (0..)
-                    .map(|x| x as f32)
-                    .zip(data_points.data_set.iter().map(|x| {
-                        let downscale_factor = max - min;
-                        if downscale_factor == 0. {
-                            0.
-                        } else {
-                            (*x - min) / downscale_factor
-                        }
-                    }))
-                    .collect()
-            };
-
-            for (x, y) in &mut points {
-                *x = *x * spacing_x;
-                if self.do_animation.get() {
-                    *x -= spacing_x;
-                }
-                *y = height - ((y.clamp(val_min, val_max) / val_max) * (height));
-            }
-
-            if !points.is_empty() {
-                let anim_offset = if self.do_animation.get() {
-                    -spacing_x
-                        * (1f32
-                            - self.animation_ticks.get().saturating_sub(1) as f32
-                                / self.expected_animation_ticks.get() as f32)
-                } else {
-                    0.
-                };
-
-                let startindex;
-                let (mut x, mut y);
-                let pointlen = points.len();
-
-                if pointlen < data_points.data_set.len() {
-                    (x, y) = (
-                        ((data_points.data_set.len() as f32) - (pointlen + 2) as f32) * spacing_x,
-                        height,
-                    );
-                    startindex = 0;
-                } else {
-                    (x, y) = points[0];
-                    startindex = 1;
-                }
-
-                x -= anim_offset;
-
-                let path_builder = PathBuilder::new();
-                path_builder.move_to(x, y);
-
-                let smooth = self.smooth_graphs.get();
-
-                for i in startindex..pointlen {
-                    (x, y) = points[i];
-
-                    x -= anim_offset;
-                    if smooth {
-                        let (mut lastx, lasty);
-                        if i > 0 {
-                            (lastx, lasty) = points[i - 1];
-                        } else {
-                            (lastx, lasty) = (x - spacing_x + anim_offset, height);
-                        }
-
-                        lastx -= anim_offset;
-
-                        path_builder.cubic_to(
-                            lastx + spacing_x / 2f32,
-                            lasty,
-                            lastx + spacing_x / 2f32,
-                            y,
-                            x,
-                            y,
-                        );
-                    } else {
-                        path_builder.line_to(x, y);
-                    }
-                }
-
-                // Make sure to close out the path
-                path_builder.line_to(points[pointlen - 1].0, height);
-                path_builder.line_to(points[0].0, height);
-                path_builder.close();
-
-                let path = path_builder.to_path();
-
-                if data_points.fill {
-                    snapshot.append_fill(&path, FillRule::Winding, &fill_color);
-                }
-
-                if data_points.dashed {
-                    stroke.set_dash(&[5., 5.]);
-                }
-
-                snapshot.append_stroke(&path, &stroke, &stroke_color);
-            }
+            snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
         }
 
         fn render(&self, snapshot: &Snapshot, width: f32, height: f32, scale_factor: f64) {
@@ -507,28 +235,59 @@ mod imp {
                 radius,
             );
 
-            snapshot.push_rounded_clip(&bounds);
+            let cached_shot = self.cached_snapshot.take();
 
-            if self.obj().grid_visible() {
-                self.draw_grid(
-                    snapshot,
-                    width,
-                    height,
-                    scale_factor,
-                    self.obj().data_points() as _,
-                    &base_color,
-                );
-            }
+            let need_redraw =
+                !self.do_animation.get() || self.need_redraw.get() || cached_shot.is_none();
 
-            let mut data_sets = self.data_sets.take();
-            for values in &mut data_sets {
-                if !values.visible {
-                    continue;
+            let base_snapshot = if need_redraw {
+                self.need_redraw.set(false);
+
+                let snapshot = Snapshot::new();
+
+                if self.obj().grid_visible() {
+                    self.draw_grid(&snapshot, width, height, scale_factor, &base_color);
                 }
 
-                self.plot_values(snapshot, width, height, scale_factor, values, &base_color);
+                let mut data_sets = self.data_sets.take();
+                let object = self.obj();
+                for values in &mut data_sets {
+                    values.plot(&snapshot, width, height, &*object);
+                }
+                self.data_sets.set(data_sets);
+
+                snapshot.to_node()
+            } else {
+                cached_shot
+            };
+
+            let Some(baze) = base_snapshot else {
+                g_warning!("MissionCenter", "Drawing was empty");
+                return;
+            };
+
+            snapshot.push_rounded_clip(&bounds);
+
+            if self.obj().direction() == TextDirection::Rtl {
+                snapshot.scale(-1., 1.);
+                snapshot.translate(&graphene::Point::new(-width, 0.));
             }
-            self.data_sets.set(data_sets);
+
+            if self.do_animation.get() {
+                snapshot.save();
+                let spacing = width / (self.data_points.get() - 2) as f32;
+                snapshot.translate(&graphene::Point::new(
+                    spacing * (1. - self.animation_ticks.get()),
+                    0.,
+                ));
+                snapshot.append_node(baze.clone());
+
+                snapshot.restore();
+
+                self.cached_snapshot.set(Some(baze));
+            } else {
+                snapshot.append_node(baze);
+            }
 
             snapshot.pop();
 
@@ -566,6 +325,9 @@ mod imp {
     impl WidgetImpl for GraphWidget {
         fn realize(&self) {
             self.parent_realize();
+
+            // connection has to happen slightly later than GraphWidget::new and this works so that the initial resize is not lost in the void
+            self.obj().connect_signals();
         }
 
         fn snapshot(&self, snapshot: &Snapshot) {
@@ -595,11 +357,31 @@ mod imp {
             if prev_width != width || prev_height != height {
                 this.emit_by_name::<()>("resize", &[]);
                 self.prev_size.set((width, height));
+                self.obj().force_redraw();
             }
 
             self.render(snapshot, width as f32, height as f32, surface.scale());
         }
     }
+}
+
+macro_rules! connect_setting {
+    ($self: ident, $settings: ident, $setting_key: literal, $settings_method: ident, $set_fn: ident) => {
+        $settings.connect_changed(Some($setting_key), {
+            let this = $self.downgrade();
+
+            move |settings, _| {
+                if let Some(this) = this.upgrade() {
+                    this.imp().$set_fn(settings.$settings_method($setting_key));
+                    this.force_redraw();
+                }
+            }
+        });
+
+        $self
+            .imp()
+            .$set_fn($settings.$settings_method($setting_key));
+    };
 }
 
 glib::wrapper! {
@@ -609,14 +391,59 @@ glib::wrapper! {
 }
 
 impl GraphWidget {
-    pub fn new() -> Self {
-        glib::Object::new()
+    pub fn new(settings: Option<&gio::Settings>) -> Self {
+        let obj: Self = glib::Object::new();
+
+        {
+            if let Some(settings) = settings {
+                obj.connect_to_settings(settings);
+            }
+        }
+
+        obj
+    }
+
+    pub fn connect_signals(&self) {
+        let obj = self;
+        obj.connect_local("resize", true, {
+            let dcr = obj.downgrade();
+
+            move |_| {
+                let Some(obj) = dcr.upgrade() else {
+                    return None;
+                };
+
+                let width = obj.width() as f32;
+                let height = obj.height() as f32;
+
+                obj.set_vertical_line_count((width / 60.).round().max(6.) as u32);
+                obj.set_horizontal_line_count((height / 60.).round().max(9.) as u32);
+
+                None
+            }
+        });
+
+        obj.connect_visible_notify({
+            let dcr = obj.downgrade();
+
+            move |_| {
+                let Some(obj) = dcr.upgrade() else {
+                    return;
+                };
+
+                if !obj.is_visible() {
+                    return;
+                }
+
+                obj.force_redraw();
+            }
+        });
     }
 
     pub fn set_dashed(&self, index: usize, dashed: bool) {
         let mut data = self.imp().data_sets.take();
         if index < data.len() {
-            data[index].dashed = dashed;
+            data[index].dataset_settings.dashed = dashed;
         }
         self.imp().data_sets.set(data);
     }
@@ -624,7 +451,7 @@ impl GraphWidget {
     pub fn set_filled(&self, index: usize, filled: bool) {
         let mut data = self.imp().data_sets.take();
         if index < data.len() {
-            data[index].fill = filled;
+            data[index].dataset_settings.fill = filled;
         }
         self.imp().data_sets.set(data);
     }
@@ -632,213 +459,219 @@ impl GraphWidget {
     pub fn set_data_visible(&self, index: usize, visible: bool) {
         let mut data = self.imp().data_sets.take();
         if index < data.len() {
-            data[index].visible = visible;
+            data[index].dataset_settings.visible = visible;
         }
         self.imp().data_sets.set(data);
     }
 
-    pub fn add_data_point(&self, index: usize, mut value: f32) {
+    pub fn add_data_point(&self, datas: Vec<Vec<f32>>) {
+        let this = self.imp();
+        let mut data = this.data_sets.take();
+
+        assert_eq!(datas.len(), data.len());
+
+        for (idx, dataset) in data.iter_mut().enumerate() {
+            dataset.add_data(&datas[idx]);
+        }
+
+        Self::apply_followings(&mut data);
+
+        this.data_sets.set(data);
+    }
+
+    pub fn add_single_data_point(&self, idx: usize, datas: Vec<f32>) {
         let mut data = self.imp().data_sets.take();
 
-        self.set_animation_ticks(0);
+        data[idx].add_data(&datas);
 
-        if index == 0 {
-            self.imp().try_increment_scroll();
-        }
-
-        if index >= data.len() {
-            self.imp().data_sets.set(data);
-            return;
-        }
-
-        if value.is_infinite() || value.is_nan() {
-            value = self.value_range_min();
-        }
-
-        if value.is_subnormal() {
-            value = 0.;
-        }
-
-        if self.scaling() == NO_SCALING {
-            value = value.clamp(self.value_range_min(), self.value_range_max());
-        } else if self.scaling() == AUTO_SCALING || self.scaling() == AUTO_POW2_SCALING {
-            value = value.max(self.value_range_min());
-        }
-
-        data[index].data_set.push(value);
-        data[index].data_set.remove(0);
-
-        if self.scaling() == AUTO_SCALING || self.scaling() == AUTO_POW2_SCALING {
-            self.scale(&mut data, value);
-        }
+        Self::apply_followings(&mut data);
 
         self.imp().data_sets.set(data);
     }
 
-    pub fn update_animation(&self) -> bool {
-        if self.is_visible() {
-            if self.do_animation() {
-                self.set_animation_ticks(
-                    (self.animation_ticks() + 1).min(self.expected_animation_ticks()),
-                );
-            } else if self.animation_ticks() == 0 {
-                self.set_animation_ticks(self.expected_animation_ticks());
-            } else {
-                return true;
+    fn apply_followings(data: &mut Vec<DatasetGroup>) {
+        loop {
+            let mut breaking = true;
+
+            for i in 0..data.len() {
+                let dataset = &data[i];
+
+                let Some(other) = dataset
+                    .dataset_settings
+                    .following
+                    .map(|it| data[it].clone())
+                else {
+                    continue;
+                };
+
+                breaking &= !data[i].apply_following_rules(Some(&other));
             }
 
-            self.queue_draw();
+            if breaking {
+                break;
+            }
+        }
+    }
+
+    pub fn update_animation(&self, new_ticks: f32) -> bool {
+        if self.is_visible() {
+            if new_ticks == 0. {
+                self.set_animation_ticks(new_ticks);
+                self.force_redraw();
+                self.imp().try_increment_scroll();
+            } else if self.do_animation() {
+                if new_ticks > self.animation_ticks() + ANIMATION_LOCKOUT {
+                    self.set_animation_ticks(new_ticks);
+                    self.queue_draw();
+                }
+            }
         }
 
         true
     }
 
-    pub fn data(&self, index: usize) -> Option<Vec<f32>> {
-        let imp = self.imp();
+    pub fn add_dataset(&self, mut dataset: DatasetGroup) {
+        let mut sets = self.imp().data_sets.take();
 
-        let data = imp.data_sets.take();
-        let result = if index < data.len() {
-            Some(data[index].data_set.clone())
-        } else {
-            None
-        };
-        imp.data_sets.set(data);
+        dataset.update_data_points(self.data_points() as usize);
+        sets.push(dataset);
 
-        result
+        self.imp().data_sets.set(sets);
     }
 
-    pub fn set_data(&self, index: usize, mut values: Vec<f32>) {
-        let imp = self.imp();
-        let mut data = imp.data_sets.take();
+    pub fn set_dataset_scaling(&self, index: usize, scaler: ScalingSettings) {
+        let mut sets = self.imp().data_sets.take();
 
-        if index < data.len() {
-            values.truncate(data[index].data_set.len());
-            data[index].data_set = values;
+        sets[index].dataset_settings.scaling_settings = scaler;
 
-            for x in &mut data[index].data_set {
-                if x.is_infinite() || x.is_nan() {
-                    *x = self.value_range_min();
-                }
+        self.imp().data_sets.set(sets);
 
-                if x.is_subnormal() {
-                    *x = 0.;
-                }
-
-                if self.scaling() == NO_SCALING {
-                    *x = x.clamp(self.value_range_min(), self.value_range_max());
-                } else if self.scaling() == AUTO_SCALING || self.scaling() == AUTO_POW2_SCALING {
-                    *x = x.max(self.value_range_min());
-                }
-            }
-
-            if self.scaling() == AUTO_SCALING || self.scaling() == AUTO_POW2_SCALING {
-                if let Some(max) = data[index]
-                    .data_set
-                    .iter()
-                    .map(|x| *x)
-                    .max_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal))
-                {
-                    self.scale(&mut data, max);
-                }
-            }
-        }
-
-        imp.data_sets.set(data);
+        self.force_redraw();
     }
 
-    pub fn max_all_time(&self, index: usize) -> Option<f32> {
-        let imp = self.imp();
+    pub fn set_all_datasets_scaling(&self, scaler: ScalingSettings) {
+        let mut sets = self.imp().data_sets.take();
 
-        let mut result = None;
-
-        let data = imp.data_sets.take();
-        if index < data.len() {
-            result = Some(data[index].max_all_time);
+        for set in sets.iter_mut() {
+            set.dataset_settings.scaling_settings = scaler.clone();
         }
-        imp.data_sets.set(data);
 
-        result
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
     }
 
-    fn scale(&self, data: &mut Vec<DataSetDescriptor>, value: f32) {
-        fn round_up_to_next_power_of_two(num: u64) -> u64 {
-            if num == 0 {
-                return 0;
-            }
+    pub fn set_all_datasets_watermarking_multiplier(&self, offset: f32) {
+        let mut sets = self.imp().data_sets.take();
 
-            let mut n = num - 1;
-            n |= n >> 1;
-            n |= n >> 2;
-            n |= n >> 4;
-            n |= n >> 8;
-            n |= n >> 16;
-
-            n + 1
+        for set in sets.iter_mut() {
+            set.dataset_settings.watermarking_multiplier = offset;
         }
 
-        let min_value = self.value_range_min();
-        let max_norm = self.value_range_max() - min_value;
-        let value = value - min_value;
+        self.imp().data_sets.set(sets);
 
-        let mut max_y = value.max(max_norm);
-
-        let mut value_max = value;
-        for data_set in data.iter() {
-            for value in data_set.data_set.iter() {
-                if value_max < (*value - min_value) {
-                    value_max = *value;
-                }
-            }
-        }
-
-        while value_max < max_y {
-            max_y /= 2.;
-        }
-        if value_max > max_y {
-            max_y *= 2.;
-        }
-
-        max_y += min_value;
-        if self.scaling() == AUTO_POW2_SCALING {
-            max_y = max_y.round();
-            if max_y > 0. {
-                max_y = round_up_to_next_power_of_two(max_y as u64) as f32;
-            }
-        }
-
-        if max_y > self.value_range_min() {
-            if (max_y < self.value_range_max()) && self.only_scale_up() {
-                return;
-            }
-
-            let minimum_upper_bound = self.minimum_upper_bound();
-            if minimum_upper_bound.is_normal() && max_y < minimum_upper_bound {
-                max_y = minimum_upper_bound;
-            }
-
-            self.set_value_range_max(max_y);
-        }
+        self.force_redraw();
     }
-}
 
-impl GraphWidget {
-    #[inline]
-    pub fn no_scaling() -> i32 {
-        NO_SCALING
+    pub fn set_all_datasets_max_scale(&self, max: f32) {
+        let mut sets = self.imp().data_sets.take();
+
+        for set in sets.iter_mut() {
+            set.dataset_settings.high_watermark = max;
+        }
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+    }
+
+    pub fn set_dataset_max_scale(&self, index: usize, max: f32) {
+        let mut sets = self.imp().data_sets.take();
+
+        assert!(index < sets.len());
+
+        sets[index].dataset_settings.high_watermark = max;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+    }
+
+    pub fn get_dataset_max_scale(&self, index: usize) -> f32 {
+        let sets = self.imp().data_sets.take();
+
+        let it = sets[index].dataset_settings.high_watermark;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+
+        it
+    }
+
+    pub fn connect_to_settings(&self, settings: &gio::Settings) {
+        if self.imp().settings_inited.get() {
+            return;
+        }
+
+        self.imp().settings_inited.set(true);
+
+        connect_setting!(
+            self,
+            settings,
+            "performance-page-data-points",
+            int,
+            set_data_points_i32
+        );
+        connect_setting!(
+            self,
+            settings,
+            "performance-smooth-graphs",
+            boolean,
+            set_smooth_graphs
+        );
+        connect_setting!(
+            self,
+            settings,
+            "performance-sliding-graphs",
+            boolean,
+            set_do_animation
+        );
+    }
+
+    /**
+     *  "connecting" when used with the Follow scaling settings makes two datasets use the largest high watermark, and the smallest low watermark
+     */
+    pub fn connect_datasets(&self, idxa: usize, idxb: usize) {
+        let this = self.imp();
+
+        let mut sets = this.data_sets.take();
+
+        sets[idxa].dataset_settings.following = Some(idxb);
+        sets[idxb].dataset_settings.followed = Some(idxa);
+
+        this.data_sets.set(sets);
     }
 
     #[inline]
-    pub fn auto_scaling() -> i32 {
-        AUTO_SCALING
+    pub fn force_redraw(&self) {
+        self.imp().need_redraw.set(true);
+        self.queue_draw();
     }
 
-    #[inline]
-    pub fn auto_pow2_scaling() -> i32 {
-        AUTO_POW2_SCALING
+    pub fn point_spacing_factor(&self) -> f32 {
+        1. / (self.data_points() - (if self.do_animation() { 2 } else { 1 })) as f32
     }
 
-    #[inline]
-    pub fn normalized_scaling() -> i32 {
-        NORMALIZED_SCALING
+    pub fn reset_auto_scaling(&self) {
+        let mut datasets = self.imp().data_sets.take();
+
+        for dataset in datasets.iter_mut() {
+            dataset.reset_auto_scaling();
+        }
+
+        Self::apply_followings(&mut datasets);
+
+        self.imp().data_sets.set(datasets);
     }
 }
