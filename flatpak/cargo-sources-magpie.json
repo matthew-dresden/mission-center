@@ -1,9 +1,9 @@
 [
   {
     "type": "git",
-    "url": "https://github.com/jlo62/dbus-settings-bindings",
-    "commit": "9e124edb917d1135ca0248d1980267d8dac174c3",
-    "dest": "flatpak-cargo/git/dbus-settings-bindings-9e124ed"
+    "url": "https://github.com/pop-os/dbus-settings-bindings",
+    "commit": "87c3c35666b926a24a1e8045fd70be2db1145e34",
+    "dest": "flatpak-cargo/git/dbus-settings-bindings-87c3c35"
   },
   {
     "type": "archive",
@@ -3596,7 +3596,7 @@
   {
     "type": "shell",
     "commands": [
-      "cp -r --reflink=auto \"flatpak-cargo/git/dbus-settings-bindings-9e124ed/upower\" \"cargo/vendor/upower_dbus\""
+      "cp -r --reflink=auto \"flatpak-cargo/git/dbus-settings-bindings-87c3c35/upower\" \"cargo/vendor/upower_dbus\""
     ]
   },
   {
