@@ -24,11 +24,12 @@ use std::time::Duration;
 use gdk::pango::EllipsizeMode;
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
-use crate::apply_icon_to_image;
 use crate::table_view::row_model::{ContentType, RowModel};
 use crate::widgets::ListCell;
 
 mod imp {
+    use crate::app;
+    use crate::table_view::cached_icon::CachedIcon;
     use super::*;
 
     pub struct NameCell {
@@ -36,7 +37,8 @@ mod imp {
         name: gtk::Label,
 
         sig_id: Cell<Option<glib::SignalHandlerId>>,
-        sig_icon: Cell<Option<glib::SignalHandlerId>>,
+        sig_icon_name: Cell<Option<glib::SignalHandlerId>>,
+        sig_app_id: Cell<Option<glib::SignalHandlerId>>,
         sig_name: Cell<Option<glib::SignalHandlerId>>,
         sig_content_type: Cell<Option<glib::SignalHandlerId>>,
         sig_children_changed: Cell<Option<glib::SignalHandlerId>>,
@@ -52,7 +54,8 @@ mod imp {
                 name: gtk::Label::new(None),
 
                 sig_id: Cell::new(None),
-                sig_icon: Cell::new(None),
+                sig_app_id: Cell::new(None),
+                sig_icon_name: Cell::new(None),
                 sig_name: Cell::new(None),
                 sig_content_type: Cell::new(None),
                 sig_children_changed: Cell::new(None),
@@ -82,36 +85,32 @@ mod imp {
             self.sig_id.set(Some(sig_id));
             list_cell.set_item_id(model.id());
 
-            let sig_icon = model.connect_icon_changed_notify({
+            let sig_icon = model.connect_icon_name_changed_notify({
                 let this = this.clone();
                 move |model| {
                     let Some(this) = this.upgrade() else {
                         return;
                     };
                     let this = this.imp();
-                    // todo formalize this sizing.
-                    apply_icon_to_image(
-                        &this.icon,
-                        model.imp().neo_icon(),
-                        if model.content_type() == ContentType::Process {
-                            16
-                        } else {
-                            24
-                        },
-                    );
+
+                    this.apply_icon_by_name(model.icon_name().to_string().as_str());
                 }
             });
-            self.sig_icon.set(Some(sig_icon));
+            self.sig_icon_name.set(Some(sig_icon));
 
-            apply_icon_to_image(
-                &self.icon,
-                model.imp().neo_icon(),
-                if model.content_type() == ContentType::Process {
-                    16
-                } else {
-                    24
-                },
-            );
+            let sig_appid = model.connect_app_id_changed_notify({
+                let this = this.clone();
+                move |model| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let this = this.imp();
+                    this.apply_app_id_icon(model);
+                }
+            });
+            self.sig_app_id.set(Some(sig_appid));
+
+            self.apply_app_id_icon(model);
 
             let sig_name = model.connect_name_notify({
                 let this = this.clone();
@@ -162,7 +161,11 @@ mod imp {
                 model.disconnect(sig_id);
             }
 
-            if let Some(sig_id) = self.sig_icon.take() {
+            if let Some(sig_id) = self.sig_icon_name.take() {
+                model.disconnect(sig_id);
+            }
+
+            if let Some(sig_id) = self.sig_app_id.take() {
                 model.disconnect(sig_id);
             }
 
@@ -268,6 +271,24 @@ mod imp {
                     };
                 }
             };
+        }
+
+        fn apply_app_id_icon(&self, model: &RowModel) {
+            // todo formalize this sizing.
+            app!().apply_app_icon(
+                &self.icon,
+                model.imp().app_id().to_string(),
+                if model.content_type() == ContentType::Process {
+                    16
+                } else {
+                    24
+                }
+            );
+        }
+
+        pub fn apply_icon_by_name(&self, icon: &str) {
+            println!("Beansing {icon}");
+            CachedIcon::set_icon_from_stringlike(&self.icon, icon);
         }
     }
 

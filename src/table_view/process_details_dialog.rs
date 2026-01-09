@@ -25,11 +25,11 @@ use adw::PreferencesRow;
 use gtk::glib::{self};
 use gtk::prelude::{StaticTypeExt, WidgetExt};
 
-use crate::apply_icon_to_image;
 use crate::table_view::columns::*;
 use crate::table_view::row_model::{ContentType, RowModel};
 
 mod imp {
+    use crate::app;
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]
@@ -115,7 +115,7 @@ mod imp {
                 _ => {} // should never happen
             }
 
-            apply_icon_to_image(&self.icon, model.imp().neo_icon(), 48);
+            app!().apply_app_icon(&self.icon, model.imp().app_id().to_string(), 48);
 
             self.title.set_label(&model.name());
 

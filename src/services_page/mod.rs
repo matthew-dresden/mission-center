@@ -432,7 +432,7 @@ impl ServicesPage {
             &readings.user_services,
             &imp.user_section.children(),
             &HashMap::new(),
-            &Icon::default(),
+            &Default::default(),
             imp.table_view.imp().use_merged_stats.get(),
             SectionType::FirstSection,
         );
@@ -442,7 +442,7 @@ impl ServicesPage {
             &readings.system_services,
             &imp.system_section.children(),
             &HashMap::new(),
-            &Icon::default(),
+            &Default::default(),
             imp.table_view.imp().use_merged_stats.get(),
             SectionType::SecondSection,
         );

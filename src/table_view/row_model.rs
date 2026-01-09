@@ -25,8 +25,6 @@ use gtk::{
     glib::{prelude::*, subclass::prelude::*, ParamSpec, Properties, Value},
 };
 
-use magpie_types::apps::icon::Icon;
-
 use crate::i18n::i18n;
 
 mod imp {
@@ -89,9 +87,14 @@ mod imp {
         pub command_line: Cell<glib::GString>,
 
         #[property(get, set)]
-        pub icon_changed: Cell<bool>,
+        pub app_id_changed: Cell<bool>,
+        #[property(get, set)]
+        pub icon_name_changed: Cell<bool>,
 
-        pub neo_icon: Cell<Icon>,
+        #[property(get = Self::app_id, set = Self::set_app_id)]
+        pub app_id: Cell<glib::GString>,
+        #[property(get = Self::icon_name, set = Self::set_icon_name)]
+        pub icon_name: Cell<glib::GString>,
 
         pub children: RefCell<gio::ListStore>,
     }
@@ -100,6 +103,8 @@ mod imp {
         fn default() -> Self {
             Self {
                 id: Cell::new(glib::GString::default()),
+                app_id: Cell::new(glib::GString::default()),
+                icon_name: Cell::new(glib::GString::default()),
 
                 pid: Cell::new(0),
 
@@ -130,8 +135,8 @@ mod imp {
 
                 command_line: Cell::new(Default::default()),
 
-                icon_changed: Cell::new(false),
-                neo_icon: Cell::new(Icon::default()),
+                app_id_changed: Cell::new(false),
+                icon_name_changed: Cell::new(false),
 
                 children: RefCell::new(gio::ListStore::new::<super::RowModel>()),
             }
@@ -148,19 +153,6 @@ mod imp {
 
         pub fn set_id(&self, id: &str) {
             self.id.set(glib::GString::from(id));
-        }
-
-        pub fn neo_icon(&self) -> Icon {
-            let neo_icon = self.neo_icon.take();
-            self.neo_icon.set(neo_icon.clone());
-
-            neo_icon
-        }
-
-        pub fn set_icon(&self, icon: Icon) {
-            self.neo_icon.set(icon);
-
-            self.obj().set_icon_changed(!self.obj().icon_changed());
         }
 
         pub fn name(&self) -> glib::GString {
@@ -235,6 +227,32 @@ mod imp {
         pub fn set_command_line(&self, command_line: &str) {
             self.command_line.set(glib::GString::from(command_line));
         }
+
+        pub fn app_id(&self) -> glib::GString {
+            let app_id = self.app_id.take();
+            self.app_id.set(app_id.clone());
+
+            app_id
+        }
+
+        pub fn set_app_id(&self, app_id: &str) {
+            self.app_id_changed.set(!self.app_id_changed.get());
+
+            self.app_id.set(glib::GString::from(app_id));
+        }
+
+        pub fn icon_name(&self) -> glib::GString {
+            let icon_name = self.icon_name.take();
+            self.icon_name.set(icon_name.clone());
+
+            icon_name
+        }
+
+        pub fn set_icon_name(&self, icon_name: &str) {
+            self.icon_name_changed.set(!self.icon_name_changed.get());
+
+            self.icon_name.set(glib::GString::from(icon_name));
+        }
     }
 
     #[glib::object_subclass]
@@ -296,8 +314,8 @@ pub struct RowModelBuilder {
     pid: u32,
 
     service_id: u64,
+    app_id: glib::GString,
 
-    neo_icon: Icon,
     name: glib::GString,
     command_line: glib::GString,
 
@@ -333,8 +351,8 @@ impl RowModelBuilder {
             pid: 0,
 
             service_id: 0,
+            app_id: Default::default(),
 
-            neo_icon: Icon::default(),
             name: glib::GString::default(),
             command_line: Default::default(),
 
@@ -366,6 +384,11 @@ impl RowModelBuilder {
         self
     }
 
+    pub fn app_id(mut self, app_id: &str) -> Self {
+        self.app_id = app_id.into();
+        self
+    }
+
     pub fn pid(mut self, pid: u32) -> Self {
         self.pid = pid;
         self
@@ -373,11 +396,6 @@ impl RowModelBuilder {
 
     pub fn service_id(mut self, service_id: u64) -> Self {
         self.service_id = service_id;
-        self
-    }
-
-    pub fn neo_icon(mut self, neo_icon: Icon) -> Self {
-        self.neo_icon = neo_icon.into();
         self
     }
 
@@ -483,9 +501,9 @@ impl RowModelBuilder {
             let this = this.imp();
 
             this.id.set(self.id);
+            this.app_id.set(self.app_id);
             this.pid.set(self.pid);
             this.service_id.set(self.service_id);
-            this.neo_icon.set(self.neo_icon);
             this.name.set(self.name);
 
             this.section_type.set(self.section_type);

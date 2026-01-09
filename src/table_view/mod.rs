@@ -49,6 +49,7 @@ mod row_model;
 mod service_action_bar;
 mod service_details_dialog;
 mod settings;
+pub mod cached_icon;
 
 #[derive(Copy, Clone, Default)]
 pub enum SettingsNamespace {

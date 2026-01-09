@@ -58,12 +58,10 @@ mod imp {
             let mcapp = app!();
 
             for (appname, (app_obj, blockers)) in parsed_results {
-                let icon = mcapp.get_app_icon(&app_obj.id);
-
                 for blocker in blockers {
                     let row_builder = EjectFailureRowBuilder::new()
                         .id(disk_id)
-                        .icon(icon.clone())
+                        .app_id(app_obj.id.clone())
                         .pid(blocker.pid)
                         .name(&appname)
                         .dialog(&self.obj());

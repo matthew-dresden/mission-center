@@ -24,11 +24,9 @@ use gtk::prelude::WidgetExt;
 
 use magpie_types::about::about::OsInfo;
 use magpie_types::about::About;
-use magpie_types::apps::icon::Icon;
-
-use crate::apply_icon_to_image;
 
 mod imp {
+    use crate::table_view::cached_icon::CachedIcon;
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]
@@ -131,7 +129,7 @@ mod imp {
 
             if os_info
                 .logo
-                .map(|img| apply_icon_to_image(&self.logo, Icon::Data(img), 128))
+                .map(|img| CachedIcon::from(img).apply_to_image(&self.logo, 128))
                 .unwrap_or(false)
             {
                 self.logo.set_visible(true);

@@ -23,15 +23,13 @@ use std::collections::HashMap;
 
 use adw::glib::g_warning;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::{
-    gio,
-    glib::{self, g_critical, property::PropertySet},
-};
+use gtk::{gio, glib::{self, g_critical, property::PropertySet}, Image};
 
 use magpie_types::apps::icon::Icon;
 
 use crate::about_system_dialog::AboutSystemDialog;
 use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
+use crate::table_view::cached_icon::CachedIcon;
 
 pub const INTERVAL_STEP: f64 = 0.05;
 pub const BASE_INTERVAL: f64 = 1f64;
@@ -62,7 +60,7 @@ mod imp {
         pub sys_info: RefCell<Option<crate::magpie_client::MagpieClient>>,
         pub window: RefCell<Option<crate::MissionCenterWindow>>,
 
-        pub apps_icons_cache: Cell<Option<HashMap<String, Icon>>>,
+        pub apps_icons_cache: Cell<Option<HashMap<String, CachedIcon>>>,
     }
 
     impl Default for MissionCenterApplication {
@@ -225,6 +223,23 @@ glib::wrapper! {
 }
 
 impl MissionCenterApplication {
+    pub fn apply_app_icon(&self, image: &Image, app_id: String, width: i32) {
+        let this = self.imp();
+
+        // if it was default::default, then this has no side effects and we can safely return
+        let Some(mut icons) = this.apps_icons_cache.take() else { return };
+
+        if let Some(mut icon) = icons.remove(&app_id) {
+            icon.apply_to_image(image, width);
+
+            icons.insert(app_id, icon);
+        } else {
+            CachedIcon::apply_blank(image);
+        }
+
+        this.apps_icons_cache.set(Some(icons));
+    }
+
     pub fn new(application_id: &str, flags: &gio::ApplicationFlags) -> Self {
         use glib::g_message;
 
@@ -256,11 +271,11 @@ impl MissionCenterApplication {
         window.set_initial_readings(readings)
     }
 
-    pub fn set_app_icons(&self, icons: HashMap<String, Icon>) {
+    pub fn set_app_icons(&self, icons: HashMap<String, CachedIcon>) {
         self.imp().apps_icons_cache.set(Some(icons))
     }
 
-    pub fn merge_app_icons(&self, icons: HashMap<String, Icon>) {
+    pub fn merge_app_icons(&self, icons: HashMap<String, CachedIcon>) {
         let old = self.imp().apps_icons_cache.take();
 
         let Some(mut old) = old else {
@@ -301,18 +316,6 @@ impl MissionCenterApplication {
         } else {
             Some(out)
         }
-    }
-
-    pub fn get_app_icon(&self, app_id: &str) -> Icon {
-        let this = self.imp();
-        let icons = this.apps_icons_cache.take();
-
-        this.apps_icons_cache.set(icons.clone());
-
-        icons
-            .map(|map| map.get(app_id).cloned())
-            .flatten()
-            .unwrap_or_default()
     }
 
     pub fn setup_animations(&self) {

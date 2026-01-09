@@ -31,13 +31,14 @@ use magpie_types::processes::{Process, ProcessUsageStats};
 use magpie_types::services::Service;
 
 use crate::app;
+use crate::table_view::cached_icon::CachedIcon;
 use crate::table_view::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
 pub fn update_apps(
     app_map: &HashMap<String, App>,
     process_map: &HashMap<u32, Process>,
     process_model_map: &HashMap<u32, RowModel>,
-    app_icons: &mut HashMap<u32, Icon>,
+    app_icons: &mut HashMap<u32, String>,
     list: &gio::ListStore,
 ) {
     app_icons.clear();
@@ -72,6 +73,7 @@ pub fn update_apps(
             .content_type(ContentType::App)
             .section_type(SectionType::FirstSection)
             .id(&app.id)
+            .app_id(&app.id)
             .name(&app.name)
             .build();
         list.append(&row_model);
@@ -84,8 +86,8 @@ pub fn update_processes(
     process_map: &HashMap<u32, Process>,
     pids: HashSet<u32>,
     list: &gio::ListStore,
-    app_icons: &HashMap<u32, Icon>,
-    icon: &Icon,
+    app_icons: &HashMap<u32, String>,
+    icon: &Option<String>,
     use_merged_stats: bool,
     section_type: SectionType,
     parent_service: Option<&Service>,
@@ -195,8 +197,8 @@ pub fn update_services(
     process_map: &HashMap<u32, Process>,
     services: &HashMap<u64, Service>,
     list: &gio::ListStore,
-    app_icons: &HashMap<u32, Icon>,
-    icon: &Icon,
+    app_icons: &HashMap<u32, String>,
+    icon: &Option<String>,
     use_merged_stats: bool,
     section_type: SectionType,
 ) {
@@ -256,7 +258,7 @@ fn update_app(
     app: &App,
     process_map: &HashMap<u32, Process>,
     process_model_map: &HashMap<u32, RowModel>,
-    app_icons: &mut HashMap<u32, Icon>,
+    app_icons: &mut HashMap<u32, String>,
     row_model: RowModel,
 ) {
     let primary_processes = primary_processes(app, process_map);
@@ -275,9 +277,7 @@ fn update_app(
         return;
     }
 
-    let icon = app!().get_app_icon(&app.id);
-
-    row_model.imp().set_icon(icon.clone());
+    row_model.imp().set_icon_name(&app.id);
 
     let mut has_died = HashSet::new();
     let mut does_exist = HashSet::new();
@@ -304,7 +304,7 @@ fn update_app(
         .filter_map(|pid| process_map.get(pid))
     {
         usage_stats.merge(&process.merged_usage_stats(&process_map));
-        app_icons.insert(process.pid, icon.clone());
+        app_icons.insert(process.pid, app.id.clone());
 
         if !does_exist.contains(&process.pid) {
             if let Some(process_model) = process_model_map.get(&process.pid) {
@@ -320,8 +320,8 @@ fn update_process(
     process_map: &HashMap<u32, Process>,
     process: &Process,
     row_model: RowModel,
-    app_icons: &HashMap<u32, Icon>,
-    icon: &Icon,
+    app_icons: &HashMap<u32, String>,
+    icon: &Option<String>,
     use_merged_stats: bool,
     section_type: SectionType,
     parent_service: Option<&Service>,
@@ -333,13 +333,14 @@ fn update_process(
         &process.usage_stats
     };
 
-    let icon = if let Some(icon) = app_icons.get(&process.pid) {
-        icon
+    if let Some(icon) = app_icons.get(&process.pid) {
+        row_model.imp().set_app_id(&icon);
+    } else if let Some(icon) = icon {
+        row_model.imp().set_app_id(icon);
     } else {
-        icon
+        row_model.imp().set_icon_name("application-x-executable")
     };
 
-    row_model.imp().set_icon(icon.clone());
 
     set_stats(&row_model, usage_stats);
     if let Some(parent_service) = parent_service {
@@ -365,12 +366,13 @@ fn update_service(
     process_map: &HashMap<u32, Process>,
     row_model: &RowModel,
     service: &Service,
-    app_icons: &HashMap<u32, Icon>,
-    icon: &Icon,
+    app_icons: &HashMap<u32, String>,
+    icon: &Option<String>,
     use_merged_stats: bool,
 ) {
     set_service(&row_model, service);
-    row_model.imp().set_icon(service_icon(&service));
+
+    row_model.imp().set_icon_name(&service_icon(&service));
 
     row_model.set_pid(service.pid.clone().unwrap_or_default());
     row_model.set_user(service.user.clone().unwrap_or_default());
@@ -425,8 +427,8 @@ fn set_stats(row_model: &RowModel, usage_stats: &ProcessUsageStats) {
     row_model.set_gpu_memory_usage(usage_stats.gpu_memory_usage);
 }
 
-fn service_icon(service: &Service) -> Icon {
-    Icon::Id(if service.running {
+fn service_icon(service: &Service) -> String {
+    if service.running {
         "service-running".into()
     } else {
         if service.failed {
@@ -436,7 +438,7 @@ fn service_icon(service: &Service) -> Icon {
         } else {
             "service-disabled".into()
         }
-    })
+    }
 }
 
 fn set_service(row_model: &RowModel, service: &Service) {
