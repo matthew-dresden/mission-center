@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-06-29 17:01+0000\n"
-"Last-Translator: Klinton_ <korstanjequinten@gmail.com>\n"
+"PO-Revision-Date: 2026-01-10 11:04+0000\n"
+"Last-Translator: Luc van der Werf "
+"<143224880+pepperonijail77@users.noreply.github.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/nl/>\n"
 "Language: nl\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -166,7 +167,7 @@ msgstr "Interface­stĳl"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:52
 msgid "If light or dark interface style should be used"
-msgstr ""
+msgstr "Of lighte of donkere interface gebruiked moet worden"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:58
 msgid "DEPRECATED! NO LONGER IN USE!"
@@ -266,14 +267,12 @@ msgid "The column name by which the Services page view is sorted"
 msgstr "De naam van de kolom waarop de applicatielijst gesorteerd wordt"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "De sorteerrichting van de applicatielijst"
+msgstr "De sorteerrichting van de dienstpagina"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "De volgorde van de kolommen in de Apps weergave"
+msgstr "De volgorde van kolommen in de dienstpagina"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -336,9 +335,8 @@ msgid "Show the swap graph"
 msgstr "Toon de swap-grafiek"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
-#, fuzzy
 msgid "Show the gpu encode-decode graph"
-msgstr "Toon de encodeer-decodeergrafiek van de GPU"
+msgstr "Toon de encode-decodegrafiek van de GPU"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
