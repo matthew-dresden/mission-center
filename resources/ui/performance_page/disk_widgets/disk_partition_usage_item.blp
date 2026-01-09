@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
- using Gtk 4.0;
+using Gtk 4.0;
 using Adw 1;
 
 template $PartitionUsageItem: ListBoxRow {
@@ -36,18 +36,38 @@ template $PartitionUsageItem: ListBoxRow {
       spacing: 12;
 
       Label devname_label {
+        halign: start;
+        ellipsize: start;
+      }
+
+      Label filesystem_type {
+        hexpand: true;
+        halign: center;
       }
 
       Label mountdir {
-      }
-
-      Label usage_pct {
+        ellipsize: start;
         halign: end;
       }
     }
 
     ProgressBar usage_bar {
       hexpand: true;
+    }
+
+    Box {
+      Label used_amount {
+        halign: start;
+      }
+
+      Label usage_pct {
+        hexpand: true;
+        halign: center;
+      }
+
+      Label total_amount {
+        halign: end;
+      }
     }
   }
 }

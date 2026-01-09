@@ -337,7 +337,7 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
-            println!("{:?}", disk);
+            // println!("{:?}", disk);
 
             if index.is_some() {
                 this.disk_id.set_text(&i18n_f(
@@ -422,19 +422,16 @@ mod imp {
             let mut new_map = HashMap::new();
 
             'outer: for (existing_devname, existing_row) in existing_map {
-                for partition in &disk.partitions {
-                    if existing_devname == partition.devname {
-                        existing_row.update(partition);
+                if let Some(partition) = disk.partitions.get(&existing_devname) {
+                    existing_row.update(partition);
 
-                        new_map.insert(existing_devname, existing_row);
-                        continue 'outer;
-                    }
+                    new_map.insert(existing_devname, existing_row);
+                } else {
+                    stack.remove(&existing_row);
                 }
-
-                stack.remove(&existing_row);
             }
 
-            for partition in &disk.partitions {
+            for (_, partition) in &disk.partitions {
                 if !new_map.contains_key(&partition.devname) {
                     let new_item = PartitionUsageItem::from_part_info(partition);
 

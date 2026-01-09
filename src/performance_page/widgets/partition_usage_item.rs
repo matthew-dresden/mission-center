@@ -36,11 +36,17 @@ mod imp {
         #[template_child]
         pub devname_label: TemplateChild<gtk::Label>,
         #[template_child]
+        pub filesystem_type: TemplateChild<gtk::Label>,
+        #[template_child]
         pub mountdir: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub usage_bar: TemplateChild<gtk::ProgressBar>,
+        #[template_child]
+        pub used_amount: TemplateChild<gtk::Label>,
         #[template_child]
         pub usage_pct: TemplateChild<gtk::Label>,
         #[template_child]
-        pub usage_bar: TemplateChild<gtk::ProgressBar>,
+        pub total_amount: TemplateChild<gtk::Label>,
 
         moundir_name: Cell<Option<String>>,
 
@@ -106,15 +112,52 @@ impl PartitionUsageItem {
         let mountdir = &imp.mountdir;
 
         if let Some(dir) = info.mountpoint.as_ref() {
+            mountdir.set_visible(true);
             mountdir.set_label(dir)
         } else {
             mountdir.set_visible(false);
         }
 
+        imp
+            .filesystem_type
+            .set_text(&info.filesystem.clone().unwrap_or_default());
+
+        if let Some(used) = info.used {
+            imp
+                .used_amount
+                .set_visible(true);
+
+            imp
+                .used_amount
+                .set_text(&crate::to_human_readable_nice(used as f32, &crate::DataType::DriveBytes));
+        } else {
+            imp
+                .used_amount
+                .set_visible(false);
+        }
+
+        if let Some(size) = info.size {
+            imp
+                .total_amount
+                .set_visible(true);
+
+            imp
+                .total_amount
+                .set_text(&crate::to_human_readable_nice(size as f32, &crate::DataType::DriveBytes));
+        } else {
+            imp
+                .total_amount
+                .set_visible(false);
+        }
+
         match (info.size, info.used) {
             (Some(size), Some(used)) => {
+                let pct = ((used as f64) / (size as f64)).clamp(0., 1.);
+
                 imp.usage_bar
-                    .set_fraction(((used as f64) / (size as f64)).clamp(0., 1.));
+                    .set_fraction(pct);
+                imp.usage_pct
+                    .set_text(&format!("{:.0}%", pct * 100.));
             }
             _ => {}
         }
