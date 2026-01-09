@@ -522,13 +522,16 @@ mod imp {
             let mut tx_dataset = DatasetGroup::new();
             let mut rx_dataset = DatasetGroup::new();
 
+            rx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
+            rx_dataset.dataset_settings.fill = true;
+            rx_dataset.dataset_settings.dashed = false;
+
             tx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
             tx_dataset.dataset_settings.fill = false;
             tx_dataset.dataset_settings.dashed = true;
-            rx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
 
-            self.disk_transfer_rate_graph.add_dataset(tx_dataset);
             self.disk_transfer_rate_graph.add_dataset(rx_dataset);
+            self.disk_transfer_rate_graph.add_dataset(tx_dataset);
 
             self.disk_transfer_rate_graph.connect_datasets(0, 1);
 
