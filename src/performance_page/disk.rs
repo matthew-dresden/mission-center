@@ -421,7 +421,7 @@ mod imp {
 
             let mut new_map = HashMap::new();
 
-            'outer: for (existing_devname, existing_row) in existing_map {
+            for (existing_devname, existing_row) in existing_map {
                 if let Some(partition) = disk.partitions.get(&existing_devname) {
                     existing_row.update(partition);
 
@@ -431,13 +431,13 @@ mod imp {
                 }
             }
 
-            for (_, partition) in &disk.partitions {
-                if !new_map.contains_key(&partition.devname) {
+            for (devname, partition) in &disk.partitions {
+                if !new_map.contains_key(devname) {
                     let new_item = PartitionUsageItem::from_part_info(partition);
 
                     stack.insert(&new_item, new_map.len() as i32);
 
-                    new_map.insert(partition.devname.clone(), new_item);
+                    new_map.insert(devname.clone(), new_item);
                 }
             }
 
