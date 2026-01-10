@@ -55,8 +55,6 @@ mod imp {
 
             let parsed_results = Self::parse_error(error);
 
-            let mcapp = app!();
-
             for (appname, (app_obj, blockers)) in parsed_results {
                 for blocker in blockers {
                     let row_builder = EjectFailureRowBuilder::new()

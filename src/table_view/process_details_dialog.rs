@@ -29,7 +29,6 @@ use crate::table_view::columns::*;
 use crate::table_view::row_model::{ContentType, RowModel};
 
 mod imp {
-    use crate::app;
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]

@@ -91,6 +91,8 @@ mod imp {
                         return;
                     };
                     let this = this.imp();
+
+                    model.imp().light_icon().apply_to_image(&this.icon);
                 }
             });
             self.sig_light_icon.set(Some(sig_icon));

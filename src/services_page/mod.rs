@@ -26,8 +26,6 @@ use adw::prelude::*;
 use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
 
-use magpie_types::apps::icon::Icon;
-
 use crate::i18n::{i18n, ni18n_f};
 use crate::table_view::{
     update_services, ContentType, ProcessActionBar, RowModel, RowModelBuilder, SectionType,

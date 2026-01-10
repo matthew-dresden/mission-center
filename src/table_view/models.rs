@@ -25,13 +25,11 @@ use gtk::glib::g_critical;
 use gtk::prelude::*;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
 
-use magpie_types::apps::icon::Icon;
 use magpie_types::apps::App;
 use magpie_types::processes::{Process, ProcessUsageStats};
 use magpie_types::services::Service;
 
-use crate::app;
-use crate::table_view::cached_icon::{CachedIcon, LightCachedIcon};
+use crate::table_view::cached_icon::LightCachedIcon;
 use crate::table_view::row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 
 pub fn update_apps(

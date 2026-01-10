@@ -27,19 +27,17 @@ use adw::prelude::*;
 use arrayvec::ArrayString;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use magpie_types::apps::icon::Icon;
-
 use crate::i18n::{i18n, ni18n_f};
 use crate::magpie_client::App;
 use crate::table_view::{
     update_apps, update_processes, ContentType, ProcessActionBar, RowModel, RowModelBuilder,
     SectionType, SettingsNamespace, TableView,
 };
+use crate::table_view::cached_icon::{LightCachedIcon};
 
 pub mod actions;
 
 mod imp {
-    use crate::table_view::cached_icon::{CachedIcon, LightCachedIcon};
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]

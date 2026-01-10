@@ -67,7 +67,7 @@ impl CachedIcon {
     }
 
     pub fn apply_to_image(&mut self, image: &Image, width: i32) -> bool {
-
+        #[allow(deprecated)]
         fn apply_buf(image: &Image, buf: Option<&Pixbuf>) -> bool {
             image.set_from_pixbuf(buf);
 

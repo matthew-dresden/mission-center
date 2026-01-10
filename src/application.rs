@@ -277,11 +277,11 @@ impl MissionCenterApplication {
         window.set_initial_readings(readings)
     }
 
-    pub fn set_app_icons(&self, icons: HashMap<String, CachedIcon>) {
-        self.imp().apps_icons_cache.set(Some(icons))
+    pub fn set_app_icons(&self, icons: HashMap<String, Icon>) {
+        self.imp().apps_icons_cache.set(Some(CachedIcon::convert_hash_map(icons)))
     }
 
-    pub fn merge_app_icons(&self, icons: HashMap<String, CachedIcon>) {
+    pub fn merge_app_icons(&self, icons: HashMap<String, Icon>) {
         let old = self.imp().apps_icons_cache.take();
 
         let Some(mut old) = old else {
@@ -289,11 +289,13 @@ impl MissionCenterApplication {
             return;
         };
 
+        let icons = CachedIcon::convert_hash_map(icons);
+
         for (app_id, icon) in icons {
             old.insert(app_id, icon);
         }
 
-        self.set_app_icons(old);
+        self.imp().apps_icons_cache.set(Some(old));
     }
 
     pub fn missing_icons(&self, mut appids: Vec<&String>) -> Option<Vec<String>> {

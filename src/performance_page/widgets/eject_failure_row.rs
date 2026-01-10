@@ -27,7 +27,6 @@ use gtk::glib::{self, g_critical, WeakRef};
 
 use crate::performance_page::widgets::EjectFailureDialog;
 use crate::app;
-use crate::table_view::cached_icon::CachedIcon;
 
 mod imp {
     use super::*;

@@ -38,7 +38,6 @@ pub use client::{
 };
 use magpie_types::about::About;
 use magpie_types::processes::processes_response::process_map::NetworkStatsError;
-use crate::table_view::cached_icon::CachedIcon;
 
 macro_rules! cmd_flatpak_host {
     ($cmd: expr) => {{
@@ -738,7 +737,7 @@ impl MagpieClient {
             let initial_icons = std::mem::take(&mut app_icons);
 
             move || {
-                app!().set_app_icons(CachedIcon::convert_hash_map(initial_icons));
+                app!().set_app_icons(initial_icons);
                 app!().set_initial_readings(initial_readings);
                 app!().setup_animations();
             }
@@ -854,7 +853,7 @@ impl MagpieClient {
                 if !app_icons.is_empty() {
                     idle_add_once({
                         move || {
-                            app!().merge_app_icons(CachedIcon::convert_hash_map(app_icons));
+                            app!().merge_app_icons(app_icons);
                         }
                     });
                 }

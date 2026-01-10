@@ -17,16 +17,12 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-use adw::gdk;
-use adw::glib::Bytes;
 use application::MissionCenterApplication;
 use config::{GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain};
 use gtk::gio::Settings;
-use gtk::{gio, prelude::*, Image};
+use gtk::{gio, prelude::*};
 use i18n::{i18n, i18n_f};
-
-use magpie_types::apps::icon::Icon;
 
 use std::cmp::PartialEq;
 use std::collections::HashMap;
