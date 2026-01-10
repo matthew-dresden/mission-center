@@ -29,7 +29,6 @@ use crate::i18n::i18n;
 use crate::table_view::cached_icon::LightCachedIcon;
 
 mod imp {
-    use crate::table_view::cached_icon::LightCachedIcon;
     use super::*;
 
     #[derive(Properties)]

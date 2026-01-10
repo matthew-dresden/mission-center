@@ -25,8 +25,9 @@ use gtk::prelude::WidgetExt;
 use magpie_types::about::about::OsInfo;
 use magpie_types::about::About;
 
+use crate::table_view::cached_icon::CachedIcon;
+
 mod imp {
-    use crate::table_view::cached_icon::CachedIcon;
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]

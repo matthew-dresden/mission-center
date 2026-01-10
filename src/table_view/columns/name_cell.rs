@@ -26,11 +26,10 @@ use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
 use crate::table_view::row_model::{ContentType, RowModel};
 use crate::widgets::ListCell;
+use crate::app;
+use crate::table_view::cached_icon::{CachedIcon, LightCachedIcon};
 
 mod imp {
-    use gtk::Image;
-    use crate::app;
-    use crate::table_view::cached_icon::{CachedIcon, LightCachedIcon};
     use super::*;
 
     pub struct NameCell {
@@ -256,7 +255,7 @@ mod imp {
             };
         }
 
-        pub fn apply_light_icon(icon: &Image, cached_icon: LightCachedIcon) {
+        pub fn apply_light_icon(icon: &gtk::Image, cached_icon: LightCachedIcon) {
             match cached_icon {
                 LightCachedIcon::Empty => {
                     CachedIcon::apply_blank(icon);
