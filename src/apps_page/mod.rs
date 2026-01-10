@@ -209,6 +209,15 @@ mod imp {
             process_actions.add_action(&actions::action_details(&self.table_view));
             self.obj()
                 .insert_action_group("process", Some(&process_actions));
+
+            self.table_view.imp().setup(
+                SettingsNamespace::AppsPage,
+                &self.apps_section,
+                &self.processes_section,
+                Some(&self.process_action_bar),
+                None,
+                None::<[_; 0]>,
+            );
         }
     }
 
@@ -229,17 +238,6 @@ glib::wrapper! {
 
 impl AppsPage {
     pub fn set_initial_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
-        let imp = self.imp();
-
-        imp.table_view.imp().setup(
-            SettingsNamespace::AppsPage,
-            &imp.apps_section,
-            &imp.processes_section,
-            Some(&imp.process_action_bar),
-            None,
-            None::<[_; 0]>,
-        );
-
         self.update_common(readings);
 
         true
