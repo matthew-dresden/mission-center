@@ -52,6 +52,8 @@ mod imp {
         #[template_child]
         pub energy_rate_graph: TemplateChild<GraphWidget>,
         #[template_child]
+        pub energy_rate_label: TemplateChild<gtk::Label>,
+        #[template_child]
         pub energy_rate_max_y: TemplateChild<gtk::Label>,
         #[template_child]
         pub energy_rate_min_y: TemplateChild<gtk::Label>,
@@ -111,6 +113,7 @@ mod imp {
                 title_battery_model: Default::default(),
 
                 energy_rate_graph: Default::default(),
+                energy_rate_label: Default::default(),
                 energy_rate_max_y: Default::default(),
                 energy_rate_min_y: Default::default(),
                 energy_rate_max_duration: Default::default(),
@@ -339,7 +342,25 @@ mod imp {
                 }
             }
 
-            if battery.has_history && battery.history.len() >= 2 {
+            let mut energy_rate_graph;
+            if battery.power_supply.unwrap_or(false) && battery.state.is_some() {
+                energy_rate_graph = DatasetGroup::new_with_fill(0.0);
+                energy_rate_graph.dataset_settings.scaling_settings =
+                    ScalingSettings::StickyUpDownEqualMagnitude;
+                energy_rate_graph.dataset_settings.high_watermark = 0.;
+                energy_rate_graph.dataset_settings.low_watermark = 0.;
+                energy_rate_graph.dataset_settings.fill = FillingSettings::FillToZero;
+            } else {
+                energy_rate_graph = DatasetGroup::new();
+                energy_rate_graph.dataset_settings.high_watermark = 1.;
+
+                this.energy_rate_label.set_text("Percentage");
+                this.energy_rate_max_y.set_text("100%");
+                this.energy_rate_min_y.set_visible(false);
+            }
+            this.energy_rate_graph.add_dataset(energy_rate_graph);
+
+            if battery.power_supply.unwrap_or(false) && battery.has_history && battery.history.len() >= 2 {
                 update_history(this, battery)
             } else {
                 let mut history_graph = DatasetGroup::new();
@@ -448,18 +469,6 @@ mod imp {
                 }
             }
 
-            if let Some(v) = &battery.power {
-                if let Some(v2) = &battery.state {
-                    if *v2 == 2 {
-                        this.energy_rate_graph
-                            .add_data_point(vec![vec![-1. * (*v)]]);
-                    } else {
-                        this.energy_rate_graph.add_data_point(vec![vec![*v]]);
-                    }
-                } else {
-                    this.energy_rate_graph.add_data_point(vec![vec![*v]]);
-                }
-            }
             if battery.charge_threshold_supported != 0 {
                 if let Some(charge_threshold_enabled) = this.charge_threshold_enabled.get() {
                     if battery.charge_threshold_enabled {
@@ -500,15 +509,31 @@ mod imp {
                 }
             }
 
-            this.energy_rate_max_y.set_text(&i18n_f(
-                "{} W",
-                &[&this.energy_rate_graph.get_dataset_max_scale(0).to_string()],
-            ));
+            if battery.power_supply.unwrap_or(false) && battery.state.is_some() {
+                if let Some(v) = &battery.power {
+                    if let Some(v2) = &battery.state {
+                        if *v2 == 2 {
+                            this.energy_rate_graph
+                                .add_data_point(vec![vec![-1. * (*v)]]);
+                        } else {
+                            this.energy_rate_graph.add_data_point(vec![vec![*v]]);
+                        }
+                    } else {
+                        this.energy_rate_graph.add_data_point(vec![vec![*v]]);
+                    }
+                }
+                this.energy_rate_max_y.set_text(&i18n_f(
+                    "{} W",
+                    &[&this.energy_rate_graph.get_dataset_max_scale(0).to_string()],
+                ));
 
-            this.energy_rate_min_y.set_text(&i18n_f(
-                "{} W",
-                &[&this.energy_rate_graph.get_dataset_min_scale(0).to_string()],
-            ));
+                this.energy_rate_min_y.set_text(&i18n_f(
+                    "{} W",
+                    &[&this.energy_rate_graph.get_dataset_min_scale(0).to_string()],
+                ));
+            } else {
+                this.energy_rate_graph.add_data_point(vec![vec![battery.percentage]])
+            }
 
             if battery.history_changed && battery.history.len() >= 2 {
                 update_history(this, battery)
@@ -900,19 +925,8 @@ impl PerformancePageBattery {
             }
         });
 
-        let mut energy_rate_graph = DatasetGroup::new_with_fill(0.0);
-        energy_rate_graph.dataset_settings.scaling_settings =
-            ScalingSettings::StickyUpDownEqualMagnitude;
-        energy_rate_graph.dataset_settings.high_watermark = 0.;
-        energy_rate_graph.dataset_settings.low_watermark = 0.;
-        energy_rate_graph.dataset_settings.fill = FillingSettings::FillToZero;
-
-        this.imp().energy_rate_graph.add_dataset(energy_rate_graph);
         this.imp().energy_rate_graph.connect_to_settings(settings);
-
-        this.imp()
-            .history_graph
-            .connect_to_smooth_settings(settings);
+        this.imp().history_graph.connect_to_smooth_settings(settings);
 
         this
     }

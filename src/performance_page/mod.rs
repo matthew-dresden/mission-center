@@ -1652,7 +1652,7 @@ mod imp {
         fn battery_page_name(battery_info: &Battery) -> String {
             format!(
                 "battery-{}-{}",
-                battery_info.power_supply.map(|x| x as u8).unwrap_or(2),
+                battery_info.power_supply.map(|x| !x as u8).unwrap_or(2),
                 battery_info.name
             )
         }
