@@ -115,7 +115,7 @@ mod imp {
                 _ => {} // should never happen
             }
 
-            app!().apply_app_icon(&self.icon, model.imp().app_id().to_string(), 48);
+            model.imp().light_icon().apply_to_image_custom_size(&self.icon, 48);
 
             self.title.set_label(&model.name());
 

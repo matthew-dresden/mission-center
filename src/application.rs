@@ -223,21 +223,27 @@ glib::wrapper! {
 }
 
 impl MissionCenterApplication {
-    pub fn apply_app_icon(&self, image: &Image, app_id: String, width: i32) {
+    pub fn apply_app_icon(&self, image: &Image, app_id: String, width: i32) -> bool {
         let this = self.imp();
 
         // if it was default::default, then this has no side effects and we can safely return
-        let Some(mut icons) = this.apps_icons_cache.take() else { return };
+        let Some(mut icons) = this.apps_icons_cache.take() else { return false };
 
-        if let Some(mut icon) = icons.remove(&app_id) {
+        let retval = if let Some(mut icon) = icons.remove(&app_id) {
             icon.apply_to_image(image, width);
 
             icons.insert(app_id, icon);
+
+            true
         } else {
             CachedIcon::apply_blank(image);
-        }
+
+            false
+        };
 
         this.apps_icons_cache.set(Some(icons));
+
+        retval
     }
 
     pub fn new(application_id: &str, flags: &gio::ApplicationFlags) -> Self {

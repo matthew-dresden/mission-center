@@ -5,6 +5,7 @@ use adw::glib::Bytes;
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::Image;
 use magpie_types::apps::icon::Icon;
+use crate::app;
 
 #[derive(Default, Clone)]
 pub enum CachedIcon {
@@ -12,6 +13,18 @@ pub enum CachedIcon {
     Empty,
     Id(String),
     CachedData((Bytes, HashMap<i32, Option<Pixbuf>>)),
+}
+
+/// A light-weight version of CachedIcon that tells you where to find the real icon rather than
+/// passing around a heavy raw img
+#[derive(Clone, Default, Eq, PartialEq)]
+pub enum LightCachedIcon {
+    #[default]
+    Empty,
+    /// This contains the actual img, use `set_icon_from_stringlike`
+    StringPayload(String),
+    /// This value is the key in the apps_cache in the apps obj
+    AppCachedKey(String, i32),
 }
 
 impl From<Icon> for CachedIcon {
@@ -105,5 +118,32 @@ impl CachedIcon {
         map.drain()
             .map(|(k, v)| (k, CachedIcon::from(v)))
             .collect()
+    }
+
+    pub fn get_light_icon(&self, payload: Option<(String, i32)>) -> LightCachedIcon {
+        match self {
+            CachedIcon::Empty => { LightCachedIcon::Empty }
+            CachedIcon::Id(s) => { LightCachedIcon::StringPayload(s.clone()) }
+            // todo warn?
+            CachedIcon::CachedData(_) => { payload.map(|(key, size)| LightCachedIcon::AppCachedKey(key,size)).unwrap_or_default() }
+        }
+    }
+}
+
+impl LightCachedIcon {
+    pub fn apply_to_image(&self, image: &Image) -> bool {
+        match self {
+            LightCachedIcon::Empty => { CachedIcon::apply_blank(image) }
+            LightCachedIcon::StringPayload(p) => { CachedIcon::set_icon_from_stringlike(image, p) }
+            LightCachedIcon::AppCachedKey(k, v) => { app!().apply_app_icon(image, k.clone(), v.clone()) }
+        }
+    }
+
+    pub fn apply_to_image_custom_size(&self, image: &Image, w: i32) -> bool {
+        match self {
+            LightCachedIcon::Empty => { CachedIcon::apply_blank(image) }
+            LightCachedIcon::StringPayload(p) => { CachedIcon::set_icon_from_stringlike(image, p) }
+            LightCachedIcon::AppCachedKey(k, _) => { app!().apply_app_icon(image, k.clone(), w) }
+        }
     }
 }

@@ -26,8 +26,10 @@ use gtk::{
 };
 
 use crate::i18n::i18n;
+use crate::table_view::cached_icon::LightCachedIcon;
 
 mod imp {
+    use crate::table_view::cached_icon::LightCachedIcon;
     use super::*;
 
     #[derive(Properties)]
@@ -87,14 +89,9 @@ mod imp {
         pub command_line: Cell<glib::GString>,
 
         #[property(get, set)]
-        pub app_id_changed: Cell<bool>,
-        #[property(get, set)]
-        pub icon_name_changed: Cell<bool>,
+        pub light_icon_changed: Cell<bool>,
 
-        #[property(get = Self::app_id, set = Self::set_app_id)]
-        pub app_id: Cell<glib::GString>,
-        #[property(get = Self::icon_name, set = Self::set_icon_name)]
-        pub icon_name: Cell<glib::GString>,
+        pub light_icon: Cell<LightCachedIcon>,
 
         pub children: RefCell<gio::ListStore>,
     }
@@ -103,8 +100,7 @@ mod imp {
         fn default() -> Self {
             Self {
                 id: Cell::new(glib::GString::default()),
-                app_id: Cell::new(glib::GString::default()),
-                icon_name: Cell::new(glib::GString::default()),
+                light_icon: Cell::new(Default::default()),
 
                 pid: Cell::new(0),
 
@@ -135,8 +131,7 @@ mod imp {
 
                 command_line: Cell::new(Default::default()),
 
-                app_id_changed: Cell::new(false),
-                icon_name_changed: Cell::new(false),
+                light_icon_changed: Cell::new(false),
 
                 children: RefCell::new(gio::ListStore::new::<super::RowModel>()),
             }
@@ -228,30 +223,19 @@ mod imp {
             self.command_line.set(glib::GString::from(command_line));
         }
 
-        pub fn app_id(&self) -> glib::GString {
-            let app_id = self.app_id.take();
-            self.app_id.set(app_id.clone());
-
-            app_id
-        }
-
-        pub fn set_app_id(&self, app_id: &str) {
-            self.app_id_changed.set(!self.app_id_changed.get());
-
-            self.app_id.set(glib::GString::from(app_id));
-        }
-
-        pub fn icon_name(&self) -> glib::GString {
-            let icon_name = self.icon_name.take();
-            self.icon_name.set(icon_name.clone());
+        pub fn light_icon(&self) -> LightCachedIcon {
+            let icon_name = self.light_icon.take();
+            self.light_icon.set(icon_name.clone());
 
             icon_name
         }
 
-        pub fn set_icon_name(&self, icon_name: &str) {
-            self.icon_name_changed.set(!self.icon_name_changed.get());
+        pub fn set_light_icon(&self, icon_name: LightCachedIcon) {
+            let old = self.light_icon.replace(icon_name.clone());
 
-            self.icon_name.set(glib::GString::from(icon_name));
+            if old != icon_name {
+                self.light_icon_changed.set(!self.light_icon_changed.get());
+            }
         }
     }
 
@@ -311,10 +295,11 @@ pub enum SectionType {
 pub struct RowModelBuilder {
     id: glib::GString,
 
+    light_cached_icon: LightCachedIcon,
+
     pid: u32,
 
     service_id: u64,
-    app_id: glib::GString,
 
     name: glib::GString,
     command_line: glib::GString,
@@ -348,10 +333,11 @@ impl RowModelBuilder {
         Self {
             id: glib::GString::default(),
 
+            light_cached_icon: Default::default(),
+
             pid: 0,
 
             service_id: 0,
-            app_id: Default::default(),
 
             name: glib::GString::default(),
             command_line: Default::default(),
@@ -384,8 +370,8 @@ impl RowModelBuilder {
         self
     }
 
-    pub fn app_id(mut self, app_id: &str) -> Self {
-        self.app_id = app_id.into();
+    pub fn light_cached_icon(mut self, light_cached_icon: LightCachedIcon) -> Self {
+        self.light_cached_icon = light_cached_icon;
         self
     }
 
@@ -501,7 +487,7 @@ impl RowModelBuilder {
             let this = this.imp();
 
             this.id.set(self.id);
-            this.app_id.set(self.app_id);
+            this.light_icon.set(self.light_cached_icon);
             this.pid.set(self.pid);
             this.service_id.set(self.service_id);
             this.name.set(self.name);

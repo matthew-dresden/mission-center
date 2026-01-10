@@ -39,7 +39,7 @@ use crate::table_view::{
 pub mod actions;
 
 mod imp {
-    use crate::table_view::cached_icon::CachedIcon;
+    use crate::table_view::cached_icon::{CachedIcon, LightCachedIcon};
     use super::*;
 
     #[derive(gtk::CompositeTemplate)]
@@ -65,7 +65,7 @@ mod imp {
 
         pub row_sorter: OnceCell<gtk::TreeListRowSorter>,
 
-        pub app_icons: RefCell<HashMap<u32, String>>,
+        pub app_icons: RefCell<HashMap<u32, LightCachedIcon>>,
         pub selected_item: RefCell<RowModel>,
     }
 
@@ -298,7 +298,7 @@ impl AppsPage {
                 init.children.clone().drain(..).collect(),
                 &imp.processes_section.children(),
                 &imp.app_icons.borrow(),
-                &None,
+                &Default::default(),
                 imp.table_view.imp().use_merged_stats.get(),
                 SectionType::SecondSection,
                 None,
