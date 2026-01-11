@@ -251,7 +251,11 @@ mod imp {
 
             if let Some(power_supply) = this.power_supply.get() {
                 if let Some(v) = &battery.power_supply {
-                    power_supply.set_text(&v.to_string())
+                    if *v {
+                        power_supply.set_text(&i18n("Yes"))
+                    } else {
+                        power_supply.set_text(&i18n("No"))
+                    }
                 } else {
                     power_supply.set_visible(false)
                 }
