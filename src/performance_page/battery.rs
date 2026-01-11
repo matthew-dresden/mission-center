@@ -567,7 +567,7 @@ mod imp {
     Energy Empty            {}
     Voltage Max (design):   {}
     Voltage Min (design):   {}
-    Power Supply:           {}
+    Powering System:        {}
 
     Percentage:             {}
     State:                  {}{}
@@ -1007,9 +1007,7 @@ fn batterystate_to_str(state: &i32) -> String {
         1 => i18n("Charging"),
         2 => i18n("Discharging"),
         3 => i18n("Empty"),
-        4 => i18n("Fully charged"),
-        5 => i18n("Pending charge"),
-        6 => i18n("Pending discharge"),
+        4 | 5 | 6=> i18n("Full"),
         _ => String::new(),
     }
 }
