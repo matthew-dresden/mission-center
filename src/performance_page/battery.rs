@@ -364,7 +364,10 @@ mod imp {
             }
             this.energy_rate_graph.add_dataset(energy_rate_graph);
 
-            if battery.power_supply.unwrap_or(false) && battery.has_history && battery.history.len() >= 2 {
+            if battery.power_supply.unwrap_or(false)
+                && battery.has_history
+                && battery.history.len() >= 2
+            {
                 update_history(this, battery)
             } else {
                 let mut history_graph = DatasetGroup::new();
@@ -536,7 +539,8 @@ mod imp {
                     &[&this.energy_rate_graph.get_dataset_min_scale(0).to_string()],
                 ));
             } else {
-                this.energy_rate_graph.add_data_point(vec![vec![battery.percentage]])
+                this.energy_rate_graph
+                    .add_data_point(vec![vec![battery.percentage]])
             }
 
             if battery.history_changed && battery.history.len() >= 2 {
@@ -930,7 +934,9 @@ impl PerformancePageBattery {
         });
 
         this.imp().energy_rate_graph.connect_to_settings(settings);
-        this.imp().history_graph.connect_to_smooth_settings(settings);
+        this.imp()
+            .history_graph
+            .connect_to_smooth_settings(settings);
 
         this
     }
@@ -1011,7 +1017,7 @@ fn batterystate_to_str(state: &i32) -> String {
         1 => i18n("Charging"),
         2 => i18n("Discharging"),
         3 => i18n("Empty"),
-        4 | 5 | 6=> i18n("Full"),
+        4 | 5 | 6 => i18n("Full"),
         _ => String::new(),
     }
 }
