@@ -492,7 +492,6 @@ mod imp {
             let mut rx_dataset = DatasetGroup::new();
 
             rx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
-            rx_dataset.dataset_settings.fill = true;
             rx_dataset.dataset_settings.dashed = false;
 
             tx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
