@@ -379,6 +379,24 @@ mod imp {
             process_actions.add_action(&actions::apps::action_details(&self.table_view));
             self.obj()
                 .insert_action_group("process", Some(&process_actions));
+
+            let toggle_group = [
+                self.toggle_running.downgrade(),
+                self.toggle_failed.downgrade(),
+                self.toggle_stopped.downgrade(),
+                self.toggle_disabled.downgrade(),
+            ];
+
+            // Set up the models here since we need access to the main application window
+            // which is not yet available in the constructor.
+            self.table_view.imp().setup(
+                SettingsNamespace::ServicesPage,
+                &self.user_section,
+                &self.system_section,
+                Some(&self.process_action_bar),
+                Some(&self.service_action_bar),
+                Some(toggle_group),
+            );
         }
     }
 
@@ -399,26 +417,6 @@ glib::wrapper! {
 
 impl ServicesPage {
     pub fn set_initial_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
-        let imp = self.imp();
-
-        let toggle_group = [
-            imp.toggle_running.downgrade(),
-            imp.toggle_failed.downgrade(),
-            imp.toggle_stopped.downgrade(),
-            imp.toggle_disabled.downgrade(),
-        ];
-
-        // Set up the models here since we need access to the main application window
-        // which is not yet available in the constructor.
-        imp.table_view.imp().setup(
-            SettingsNamespace::ServicesPage,
-            &imp.user_section,
-            &imp.system_section,
-            Some(&imp.process_action_bar),
-            Some(&imp.service_action_bar),
-            Some(toggle_group),
-        );
-
         self.update_common(readings);
 
         true
