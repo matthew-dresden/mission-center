@@ -347,7 +347,8 @@ mod imp {
             }
 
             let mut energy_rate_graph;
-            if battery.power_supply.unwrap_or(false) && battery.state.is_some() {
+            let power_supply = battery.power_supply.unwrap_or(false);
+            if power_supply && battery.state.is_some() {
                 energy_rate_graph = DatasetGroup::new_with_fill(0.0);
                 energy_rate_graph.dataset_settings.scaling_settings =
                     ScalingSettings::StickyUpDownEqualMagnitude;
@@ -358,13 +359,13 @@ mod imp {
                 energy_rate_graph = DatasetGroup::new();
                 energy_rate_graph.dataset_settings.high_watermark = 1.;
 
-                this.energy_rate_label.set_text("Percentage");
+                this.energy_rate_label.set_text(&i18n("Percentage"));
                 this.energy_rate_max_y.set_text("100%");
                 this.energy_rate_min_y.set_visible(false);
             }
             this.energy_rate_graph.add_dataset(energy_rate_graph);
 
-            if battery.power_supply.unwrap_or(false) && battery.history.len() >= 2 {
+            if power_supply && battery.history.len() >= 2 {
                 update_history(this, battery)
             } else {
                 let mut history_graph = DatasetGroup::new();
@@ -474,7 +475,8 @@ mod imp {
             if battery.charge_threshold_supported != 0 {
                 if let Some(charge_threshold_enabled) = this.charge_threshold_enabled.get() {
                     if battery.charge_threshold_enabled {
-                        if (battery.charge_threshold_supported & 4) != 0 { // 2nd bit is firmware controlled
+                        if (battery.charge_threshold_supported & 4) != 0 {
+                            // 2nd bit is firmware controlled
                             charge_threshold_enabled.set_text(&i18n("Firmware"))
                         } else {
                             charge_threshold_enabled.set_text(&i18n("Yes"))
@@ -515,6 +517,7 @@ mod imp {
                 if let Some(v) = &battery.power {
                     if let Some(v2) = &battery.state {
                         if *v2 == 2 {
+                            // see batterystate_to_str(), discharging
                             this.energy_rate_graph
                                 .add_data_point(vec![vec![-1. * (*v)]]);
                         } else {

@@ -839,7 +839,7 @@ impl MagpieClient {
             readings.batteries = magpie.batteries_info();
             g_debug!(
                 "MissionCenter::Perf",
-                "Fans info load took: {:?}",
+                "Batteries info load took: {:?}",
                 timer.elapsed()
             );
 
