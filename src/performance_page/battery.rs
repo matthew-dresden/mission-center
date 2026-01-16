@@ -1022,6 +1022,8 @@ fn batterystate_to_str(state: &i32) -> String {
     }
 }
 
+// According to https://upower.freedesktop.org/docs/Device.html
+
 fn batterykind_to_str(kind: &i32) -> String {
     match kind {
         1 => i18n("LinePower"),
