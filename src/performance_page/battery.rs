@@ -365,7 +365,6 @@ mod imp {
             this.energy_rate_graph.add_dataset(energy_rate_graph);
 
             if battery.power_supply.unwrap_or(false)
-                && battery.has_history
                 && battery.history.len() >= 2
             {
                 update_history(this, battery)
