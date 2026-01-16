@@ -364,9 +364,7 @@ mod imp {
             }
             this.energy_rate_graph.add_dataset(energy_rate_graph);
 
-            if battery.power_supply.unwrap_or(false)
-                && battery.history.len() >= 2
-            {
+            if battery.power_supply.unwrap_or(false) && battery.history.len() >= 2 {
                 update_history(this, battery)
             } else {
                 let mut history_graph = DatasetGroup::new();
