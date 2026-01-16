@@ -1709,7 +1709,7 @@ mod imp {
                     g_critical!(
                         "MissionCenter::PerformancePage",
                         "Failed to wire up battery action for {}, logic bug?",
-                        battery_static_info.model.as_str()
+                        battery_static_info.name.as_str()
                     );
                 }
                 Some(action) => {
@@ -2459,7 +2459,9 @@ mod imp {
 
                                 let graph_widget = summary.graph_widget();
                                 graph_widget.add_data_point(vec![vec![battery.percentage * 100.]]);
-                                summary.set_info1(battery.model.as_str());
+                                summary.set_info1(
+                                    battery.model.as_ref().unwrap_or(&String::new()).as_str(),
+                                );
                                 summary.set_info2(format!(
                                     "{:.0}%{}",
                                     battery.percentage * 100.,

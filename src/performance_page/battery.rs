@@ -233,10 +233,14 @@ mod imp {
                 }
             }
 
-            let vendor_model = match (!battery.vendor.is_empty(), !battery.model.is_empty()) {
-                (true, true) => &format!("{} {}", &battery.vendor, &battery.model),
-                (true, false) => &battery.vendor,
-                (false, true) => &battery.model,
+            let vendor_model = match (battery.vendor.is_some(), battery.model.is_some()) {
+                (true, true) => &format!(
+                    "{} {}",
+                    battery.vendor.as_ref().unwrap(),
+                    battery.model.as_ref().unwrap()
+                ),
+                (true, false) => battery.vendor.as_ref().unwrap(),
+                (false, true) => battery.model.as_ref().unwrap(),
                 (false, false) => &i18n("Unknown"),
             };
             this.title_battery_model.set_text(vendor_model);
@@ -271,7 +275,7 @@ mod imp {
 
             if let Some(capacity) = this.capacity.get() {
                 if let Some(v) = &battery.capacity {
-                    capacity.set_text(&format!("{:.0}%", v * 100.))
+                    capacity.set_text(&i18n_f("{}%", &[&format!("{:.0}", v * 100.)]))
                 } else {
                     capacity.set_visible(false)
                 }
@@ -279,7 +283,7 @@ mod imp {
 
             if let Some(energy_empty) = this.energy_empty.get() {
                 if let Some(v) = &battery.energy_empty {
-                    energy_empty.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
+                    energy_empty.set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
                 } else {
                     energy_empty.set_visible(false)
                 }
@@ -287,7 +291,7 @@ mod imp {
 
             if let Some(energy_full) = this.energy_full.get() {
                 if let Some(v) = &battery.energy_full {
-                    energy_full.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
+                    energy_full.set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
                 } else {
                     energy_full.set_visible(false)
                 }
@@ -295,7 +299,8 @@ mod imp {
 
             if let Some(energy_full_design) = this.energy_full_design.get() {
                 if let Some(v) = &battery.energy_full_design {
-                    energy_full_design.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
+                    energy_full_design
+                        .set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
                 } else {
                     energy_full_design.set_visible(false)
                 }
@@ -303,7 +308,7 @@ mod imp {
 
             if let Some(voltage_min_design) = this.voltage_min_design.get() {
                 if let Some(v) = &battery.voltage_min_design {
-                    voltage_min_design.set_text(&format!("{:.1} V", v))
+                    voltage_min_design.set_text(&i18n_f("{} V", &[&format!("{:.1}", v)]))
                 } else {
                     voltage_min_design.set_visible(false)
                 }
@@ -311,7 +316,7 @@ mod imp {
 
             if let Some(voltage_max_design) = this.voltage_max_design.get() {
                 if let Some(v) = &battery.voltage_max_design {
-                    voltage_max_design.set_text(&format!("{:.1} V", v))
+                    voltage_max_design.set_text(&i18n_f("{} V", &[&format!("{:.1}", v)]))
                 } else {
                     voltage_max_design.set_visible(false)
                 }
@@ -360,7 +365,7 @@ mod imp {
                 energy_rate_graph.dataset_settings.high_watermark = 1.;
 
                 this.energy_rate_label.set_text(&i18n("Percentage"));
-                this.energy_rate_max_y.set_text("100%");
+                this.energy_rate_max_y.set_text(&i18n("100%"));
                 this.energy_rate_min_y.set_visible(false);
             }
             this.energy_rate_graph.add_dataset(energy_rate_graph);
@@ -408,18 +413,21 @@ mod imp {
             }
 
             if let Some(percentage) = this.percentage.get() {
-                percentage.set_text(&format!("{:.0}%", battery.percentage * 100.));
+                percentage.set_text(&i18n_f(
+                    "{}%",
+                    &[&format!("{:.0}", battery.percentage * 100.)],
+                ));
             }
 
             if let Some(voltage) = this.voltage.get() {
                 if let Some(v) = &battery.voltage {
-                    voltage.set_text(&format!("{:.1} V", v))
+                    voltage.set_text(&i18n_f("{} V", &[&format!("{:.1}", v)]))
                 }
             }
 
             if let Some(energy) = this.energy.get() {
                 if let Some(v) = &battery.energy {
-                    energy.set_text(&format!("{:.1} Wh", *v as f32 / 1000.))
+                    energy.set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
                 }
             }
 
@@ -428,12 +436,12 @@ mod imp {
                     power.set_visible(true);
                     if let Some(v2) = &battery.state {
                         if *v2 == 2 {
-                            power.set_text(&format!("-{:.1} W", v))
+                            power.set_text(&i18n_f("{} W", &[&format!("-{:.0}", v)]))
                         } else {
-                            power.set_text(&format!("{:.1} W", v))
+                            power.set_text(&i18n_f("{} W", &[&format!("{:.0}", v)]))
                         }
                     } else {
-                        power.set_text(&format!("{:.1} W", v))
+                        power.set_text(&i18n_f("{} W", &[&format!("{:.0}", v)]))
                     }
                 } else {
                     power.set_visible(false);
@@ -489,7 +497,7 @@ mod imp {
                 if let Some(charge_start_threshold) = this.charge_start_threshold.get() {
                     if let Some(v) = battery.charge_start_threshold {
                         if battery.charge_threshold_enabled {
-                            charge_start_threshold.set_text(&format!("{}%", v));
+                            charge_start_threshold.set_text(&i18n_f("{}%", &[&v.to_string()]));
                             charge_start_threshold.set_visible(true)
                         } else {
                             charge_start_threshold.set_visible(false)
@@ -502,7 +510,7 @@ mod imp {
                 if let Some(charge_end_threshold) = this.charge_end_threshold.get() {
                     if let Some(v) = battery.charge_end_threshold {
                         if battery.charge_threshold_enabled {
-                            charge_end_threshold.set_text(&format!("{}%", v));
+                            charge_end_threshold.set_text(&i18n_f("{}%", &[&v.to_string()]));
                             charge_end_threshold.set_visible(true)
                         } else {
                             charge_end_threshold.set_visible(false)
