@@ -424,16 +424,14 @@ mod imp {
 
             if let Some(power) = this.power.get() {
                 if let Some(v) = &battery.power {
+                    power.set_visible(true);
                     if let Some(v2) = &battery.state {
                         if *v2 == 2 {
-                            power.set_visible(true);
                             power.set_text(&format!("-{:.1} W", v))
                         } else {
-                            power.set_visible(true);
                             power.set_text(&format!("{:.1} W", v))
                         }
                     } else {
-                        power.set_visible(true);
                         power.set_text(&format!("{:.1} W", v))
                     }
                 } else {
