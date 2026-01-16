@@ -474,7 +474,7 @@ mod imp {
             if battery.charge_threshold_supported != 0 {
                 if let Some(charge_threshold_enabled) = this.charge_threshold_enabled.get() {
                     if battery.charge_threshold_enabled {
-                        if battery.charge_threshold_supported >= 4 {
+                        if battery.charge_threshold_supported & 4 != 0 { // 2nd bit is firmware controlled
                             charge_threshold_enabled.set_text(&i18n("Firmware"))
                         } else {
                             charge_threshold_enabled.set_text(&i18n("Yes"))
