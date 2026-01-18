@@ -799,7 +799,7 @@ impl Client {
         )
     }
 
-    pub fn network_connections(&self) -> Vec<Connection> {
+    pub fn network_connections(&self) -> HashMap<String, Connection> {
         let mut socket = self.socket.borrow_mut();
 
         let response = make_request(

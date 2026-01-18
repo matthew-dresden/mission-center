@@ -1225,7 +1225,7 @@ mod imp {
             readings: &crate::magpie_client::Readings,
         ) {
             let mut networks = HashMap::new();
-            for connection in &readings.network_connections {
+            for (_, connection) in &readings.network_connections {
                 let mut ret = self.create_network_page(connection, None);
                 networks.insert(std::mem::take(&mut ret.0), ret.1);
             }
@@ -1802,7 +1802,7 @@ mod imp {
                             if !readings
                                 .network_connections
                                 .iter()
-                                .any(|device| &Self::network_page_name(&device.id) == net_page_name)
+                                .any(|(_, device)| &Self::network_page_name(&device.id) == net_page_name)
                             {
                                 pages_to_destroy.push(net_page_name.clone());
                             }
@@ -2002,7 +2002,7 @@ mod imp {
 
                         let mut new_devices = Vec::new();
                         for (index, network_connection) in
-                            readings.network_connections.iter().enumerate()
+                            readings.network_connections.iter()
                         {
                             if let Some((summary, page)) =
                                 pages.get(&Self::network_page_name(&network_connection.id))
