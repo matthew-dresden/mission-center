@@ -24,7 +24,8 @@ use std::time::Duration;
 use gdk::pango::EllipsizeMode;
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
-use crate::apply_icon_to_image;
+use crate::app;
+use crate::table_view::cached_icon::{CachedIcon, LightCachedIcon};
 use crate::table_view::row_model::{ContentType, RowModel};
 use crate::widgets::ListCell;
 
@@ -36,7 +37,7 @@ mod imp {
         name: gtk::Label,
 
         sig_id: Cell<Option<glib::SignalHandlerId>>,
-        sig_icon: Cell<Option<glib::SignalHandlerId>>,
+        sig_light_icon: Cell<Option<glib::SignalHandlerId>>,
         sig_name: Cell<Option<glib::SignalHandlerId>>,
         sig_content_type: Cell<Option<glib::SignalHandlerId>>,
         sig_children_changed: Cell<Option<glib::SignalHandlerId>>,
@@ -52,7 +53,7 @@ mod imp {
                 name: gtk::Label::new(None),
 
                 sig_id: Cell::new(None),
-                sig_icon: Cell::new(None),
+                sig_light_icon: Cell::new(None),
                 sig_name: Cell::new(None),
                 sig_content_type: Cell::new(None),
                 sig_children_changed: Cell::new(None),
@@ -82,36 +83,20 @@ mod imp {
             self.sig_id.set(Some(sig_id));
             list_cell.set_item_id(model.id());
 
-            let sig_icon = model.connect_icon_changed_notify({
+            let sig_icon = model.connect_light_icon_changed_notify({
                 let this = this.clone();
                 move |model| {
                     let Some(this) = this.upgrade() else {
                         return;
                     };
                     let this = this.imp();
-                    // todo formalize this sizing.
-                    apply_icon_to_image(
-                        &this.icon,
-                        model.imp().neo_icon(),
-                        if model.content_type() == ContentType::Process {
-                            16
-                        } else {
-                            24
-                        },
-                    );
+
+                    model.imp().light_icon().apply_to_image(&this.icon);
                 }
             });
-            self.sig_icon.set(Some(sig_icon));
+            self.sig_light_icon.set(Some(sig_icon));
 
-            apply_icon_to_image(
-                &self.icon,
-                model.imp().neo_icon(),
-                if model.content_type() == ContentType::Process {
-                    16
-                } else {
-                    24
-                },
-            );
+            model.imp().light_icon().apply_to_image(&self.icon);
 
             let sig_name = model.connect_name_notify({
                 let this = this.clone();
@@ -162,7 +147,7 @@ mod imp {
                 model.disconnect(sig_id);
             }
 
-            if let Some(sig_id) = self.sig_icon.take() {
+            if let Some(sig_id) = self.sig_light_icon.take() {
                 model.disconnect(sig_id);
             }
 
@@ -268,6 +253,20 @@ mod imp {
                     };
                 }
             };
+        }
+
+        pub fn apply_light_icon(icon: &gtk::Image, cached_icon: LightCachedIcon) {
+            match cached_icon {
+                LightCachedIcon::Empty => {
+                    CachedIcon::apply_blank(icon);
+                }
+                LightCachedIcon::StringPayload(p) => {
+                    CachedIcon::set_icon_from_stringlike(icon, &p);
+                }
+                LightCachedIcon::AppCachedKey(k, w) => {
+                    app!().apply_app_icon(icon, k, w);
+                }
+            }
         }
     }
 
