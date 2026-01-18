@@ -25,9 +25,8 @@ use gtk::{
     glib::{prelude::*, subclass::prelude::*, ParamSpec, Properties, Value},
 };
 
-use magpie_types::apps::icon::Icon;
-
 use crate::i18n::i18n;
+use crate::table_view::cached_icon::LightCachedIcon;
 
 mod imp {
     use super::*;
@@ -89,9 +88,9 @@ mod imp {
         pub command_line: Cell<glib::GString>,
 
         #[property(get, set)]
-        pub icon_changed: Cell<bool>,
+        pub light_icon_changed: Cell<bool>,
 
-        pub neo_icon: Cell<Icon>,
+        pub light_icon: Cell<LightCachedIcon>,
 
         pub children: RefCell<gio::ListStore>,
     }
@@ -100,6 +99,7 @@ mod imp {
         fn default() -> Self {
             Self {
                 id: Cell::new(glib::GString::default()),
+                light_icon: Cell::new(Default::default()),
 
                 pid: Cell::new(0),
 
@@ -130,8 +130,7 @@ mod imp {
 
                 command_line: Cell::new(Default::default()),
 
-                icon_changed: Cell::new(false),
-                neo_icon: Cell::new(Icon::default()),
+                light_icon_changed: Cell::new(false),
 
                 children: RefCell::new(gio::ListStore::new::<super::RowModel>()),
             }
@@ -148,19 +147,6 @@ mod imp {
 
         pub fn set_id(&self, id: &str) {
             self.id.set(glib::GString::from(id));
-        }
-
-        pub fn neo_icon(&self) -> Icon {
-            let neo_icon = self.neo_icon.take();
-            self.neo_icon.set(neo_icon.clone());
-
-            neo_icon
-        }
-
-        pub fn set_icon(&self, icon: Icon) {
-            self.neo_icon.set(icon);
-
-            self.obj().set_icon_changed(!self.obj().icon_changed());
         }
 
         pub fn name(&self) -> glib::GString {
@@ -235,6 +221,21 @@ mod imp {
         pub fn set_command_line(&self, command_line: &str) {
             self.command_line.set(glib::GString::from(command_line));
         }
+
+        pub fn light_icon(&self) -> LightCachedIcon {
+            let icon_name = self.light_icon.take();
+            self.light_icon.set(icon_name.clone());
+
+            icon_name
+        }
+
+        pub fn set_light_icon(&self, icon_name: LightCachedIcon) {
+            let old = self.light_icon.replace(icon_name.clone());
+
+            if old != icon_name {
+                self.light_icon_changed.set(!self.light_icon_changed.get());
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -293,11 +294,12 @@ pub enum SectionType {
 pub struct RowModelBuilder {
     id: glib::GString,
 
+    light_cached_icon: LightCachedIcon,
+
     pid: u32,
 
     service_id: u64,
 
-    neo_icon: Icon,
     name: glib::GString,
     command_line: glib::GString,
 
@@ -330,11 +332,12 @@ impl RowModelBuilder {
         Self {
             id: glib::GString::default(),
 
+            light_cached_icon: Default::default(),
+
             pid: 0,
 
             service_id: 0,
 
-            neo_icon: Icon::default(),
             name: glib::GString::default(),
             command_line: Default::default(),
 
@@ -366,6 +369,11 @@ impl RowModelBuilder {
         self
     }
 
+    pub fn light_cached_icon(mut self, light_cached_icon: LightCachedIcon) -> Self {
+        self.light_cached_icon = light_cached_icon;
+        self
+    }
+
     pub fn pid(mut self, pid: u32) -> Self {
         self.pid = pid;
         self
@@ -373,11 +381,6 @@ impl RowModelBuilder {
 
     pub fn service_id(mut self, service_id: u64) -> Self {
         self.service_id = service_id;
-        self
-    }
-
-    pub fn neo_icon(mut self, neo_icon: Icon) -> Self {
-        self.neo_icon = neo_icon.into();
         self
     }
 
@@ -483,9 +486,9 @@ impl RowModelBuilder {
             let this = this.imp();
 
             this.id.set(self.id);
+            this.light_icon.set(self.light_cached_icon);
             this.pid.set(self.pid);
             this.service_id.set(self.service_id);
-            this.neo_icon.set(self.neo_icon);
             this.name.set(self.name);
 
             this.section_type.set(self.section_type);

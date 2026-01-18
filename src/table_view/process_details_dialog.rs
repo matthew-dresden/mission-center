@@ -25,7 +25,6 @@ use adw::PreferencesRow;
 use gtk::glib::{self};
 use gtk::prelude::{StaticTypeExt, WidgetExt};
 
-use crate::apply_icon_to_image;
 use crate::table_view::columns::*;
 use crate::table_view::row_model::{ContentType, RowModel};
 
@@ -115,7 +114,10 @@ mod imp {
                 _ => {} // should never happen
             }
 
-            apply_icon_to_image(&self.icon, model.imp().neo_icon(), 48);
+            model
+                .imp()
+                .light_icon()
+                .apply_to_image_custom_size(&self.icon, 48);
 
             self.title.set_label(&model.name());
 
