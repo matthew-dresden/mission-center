@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-10-20 04:51+0000\n"
+"PO-Revision-Date: 2025-11-24 16:51+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/fi/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -925,11 +925,11 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Sarjanumero:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Pyörimisnopeus"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1004,9 +1004,8 @@ msgid "Update Interval"
 msgstr "Päivitysväli"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} sekuntia{}"
+msgstr "Sekunneissa"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1081,11 +1080,8 @@ msgid "Remember Sorting"
 msgstr "Muista järjestys"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
-msgstr ""
-"Muista sovellus- ja prosessiluettelon järjestys sovelluksen "
-"uudelleenkäynnistysten välillä"
+msgstr "Säilytä sarakejärjestys sovelluksen uudelleenkäynnistysten välillä"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
@@ -1101,11 +1097,9 @@ msgid "Scale CPU Usage to Core Count"
 msgstr "Skaalaa suoritinkäyttö ydinmäärän mukaan"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
 msgstr ""
-"Näytä sovellusten ja prosessien suorittimen käyttö käytettävissä olevien "
-"ytimien määrään skaalatuna"
+"Näytä suorittimen käyttö käytettävissä olevien ytimien määrään skaalatuna"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1300,9 +1294,8 @@ msgid "Copy Device Information"
 msgstr "Näytä laitteen tiedot"
 
 #: resources/ui/keyboard_shortcuts.blp:84
-#, fuzzy
 msgid "Toggle Summary Mode"
-msgstr "Näytä/piilota sivupalkki"
+msgstr "Näytä/piilota yhteenveto"
 
 #: resources/ui/keyboard_shortcuts.blp:89
 msgid "Select a Device"
@@ -1692,7 +1685,7 @@ msgstr "RIKKOUTUU"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:147
 msgid "Failed in the past"
-msgstr ""
+msgstr "Epäonnistui menneisyydessä"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
@@ -1951,11 +1944,11 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Käynnistä palvelu"
-msgstr[1] "Käynnistä palvelu"
+msgstr[0] "{} palvelu yhteensä"
+msgstr[1] "{} palvelua yhteensä"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314

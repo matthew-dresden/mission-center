@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-10-26 15:53+0000\n"
+"PO-Revision-Date: 2025-11-13 16:25+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/cs/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.14.1-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -703,7 +703,7 @@ msgstr "Odesílání"
 
 #: resources/ui/performance_page/network_details.blp:130
 msgid "Total Received"
-msgstr "Staženo celkem"
+msgstr "Přijato celkem"
 
 #: resources/ui/performance_page/network_details.blp:159
 msgid "Total Sent"
@@ -735,7 +735,7 @@ msgstr "Frekvence:"
 
 #: resources/ui/performance_page/network_details.blp:272
 msgid "Hardware address:"
-msgstr "Hardwarová adresa:"
+msgstr "HW adresa:"
 
 #: resources/ui/performance_page/network_details.blp:401
 msgid "IPv4 address:"
@@ -989,7 +989,7 @@ msgstr "Obecné"
 
 #: resources/ui/preferences/page.blp:9
 msgid "Update Interval"
-msgstr "Interval obnovení"
+msgstr "Interval obnovování"
 
 #: resources/ui/preferences/page.blp:10
 msgid "In seconds"
@@ -1013,7 +1013,7 @@ msgstr "Vykreslovat grafy jako hladké čáry namísto zubatých"
 
 #: resources/ui/preferences/page.blp:54
 msgid "Sliding Graphs"
-msgstr "Posouvající se grafy"
+msgstr "Plynule se posouvající grafy"
 
 #: resources/ui/preferences/page.blp:55
 msgid "Animate graphs (may negatively impact performance)"
@@ -1028,7 +1028,7 @@ msgid ""
 "Set network graph to scale dynamically with actual usage or with channel max "
 "speed"
 msgstr ""
-"Nastavit graf sítě tak, aby bylo měřítko škálováno dynamicky na základě "
+"Nastavit graf sítě tak, aby bylo se měřítko průběžně měnilo na základě "
 "stávajícího využití nebo maximální rychlosti kanálu"
 
 #: resources/ui/preferences/page.blp:64

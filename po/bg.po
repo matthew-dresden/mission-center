@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-05-09 08:01+0000\n"
-"Last-Translator: Venelin Stoykov <venelin.stoykov@industria.tech>\n"
+"PO-Revision-Date: 2025-11-12 17:52+0000\n"
+"Last-Translator: Alexander Stoilov <sapetto@gmail.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/bg/>\n"
 "Language: bg\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
 msgid "Mission Center"
-msgstr "Център за задачи"
+msgstr "Mission Center"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:9
 msgid ""
@@ -35,18 +35,20 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:6
 msgid "Mission Center Developers"
-msgstr "Разработчици на центъра за мисии"
+msgstr "Разработчици на Mission Center"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:16
 msgid "Monitor system resource usage"
 msgstr "Наблюдавайте използването на системни ресурси"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:18
-#, fuzzy
 msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
-msgstr "Наблюдавайте използването на процесора, паметта, диска, мрежата и GPU"
+msgstr ""
+"Наблюдавайте зползването на процесора, паметта, диска, мрежата и графичния "
+"процесор, като получавате подробна разбивка на тези статистики по приложения "
+"и процеси"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 msgid "Features:"
@@ -54,8 +56,7 @@ msgstr "Характеристики:"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:21
 msgid "Monitor overall or per-thread CPU usage"
-msgstr ""
-"Наблюдавайте цялостното използване или използването на процесора за нишка"
+msgstr "Наблюдавайте общото или използването на процесора по нишки"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:22
 msgid ""
@@ -99,9 +100,8 @@ msgstr ""
 "консумацията на енергия, задвижвани от популярния проект NVTOP"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:33
-#, fuzzy
 msgid "Monitor system fans"
-msgstr "Наблюдавайте използването на системни ресурси"
+msgstr "Наблюдавайте използването на вентилаторите на системата"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:34
 msgid "See a breakdown of resource usage by app and process"
@@ -112,12 +112,11 @@ msgid "Supports a minified summary view for simple monitoring"
 msgstr "Поддържа минимизиран обобщен изглед за лесно наблюдение"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:36
-#, fuzzy
 msgid ""
 "Use hardware accelerated rendering for all the graphs in an effort to reduce "
 "CPU and overall resource usage"
 msgstr ""
-"Използвайте OpenGL изобразяване за всички графики в опит да намалите "
+"Използвайте хардуерно ускорено рендиране за всички графики, за да намалите "
 "използването на процесора и общите ресурси"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:39
@@ -137,6 +136,9 @@ msgid ""
 "Intel GPU monitoring is only supported for Broadwell and later GPUs; and "
 "does not support VRAM, power, or temperature monitoring"
 msgstr ""
+"Мониторингът на Intel GPU се поддържа само за графични процесори от "
+"поколението Broadwell и по-нови; не се поддържа наблюдение на VRAM, "
+"консумация на енергия или температура"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:47
 msgid ""
@@ -144,6 +146,9 @@ msgid ""
 "\"Applications\" section (Upstream issue: https://github.com/linuxmint/"
 "cinnamon/issues/12015)"
 msgstr ""
+"При използване на Linux Mint/Cinnamon, стартираните приложения може да не се "
+"показват в раздела \"Applications\" "
+"(Проблем с Upstream: https://github.com/linuxmint/cinnamon/issues/12015)"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:51
 msgid "Comments, suggestions, bug reports and contributions welcome"
@@ -154,58 +159,71 @@ msgid "Which page is shown on application startup"
 msgstr "Коя страница се показва при стартиране на приложението"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:51
-#, fuzzy
 msgid "Interface Style"
-msgstr "Име на интерфейса:"
+msgstr "Стил на интерфейса"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:52
 msgid "If light or dark interface style should be used"
-msgstr ""
+msgstr "Дали да се използва светъл или тъмен стил на интерфейса"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:58
 msgid "DEPRECATED! NO LONGER IN USE!"
-msgstr ""
+msgstr "ОСТАРЯЛО! ВЕЧЕ НЕ СЕ ИЗПОЛЗВА!"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:64
-#, fuzzy
 msgid ""
 "How fast should the data be refreshed and the UI updated (in increments of "
 "50ms)"
-msgstr "Колко бързо трябва да се опресняват данните и да се актуализира UI-a"
+msgstr ""
+"Колко бързо трябва да се обновяват данните и да се актуализира "
+"потребителският интерфейс (с интервали от 50 ms)"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:70
 msgid "How many points should be displayed on each chart?"
-msgstr ""
+msgstr "Колко точки трябва да се показват на всяка диаграма?"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:75
 msgid "Whether or not to use bits or bytes (default) for memory"
-msgstr ""
+msgstr "Да се използват ли битове или байтове (по подразбиране) за паметта"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:80
 msgid "Whether or not to use base-10 or base-2 (default) for memory"
 msgstr ""
+"Дали да се използва десетична (base-10) или двоична "
+"(base-2 — по подразбиране) бройна система за отчитане на паметта"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:85
 msgid "Whether or not to use bits or bytes (default) for drive speed + size"
 msgstr ""
+"Дали да се използват битове или байтове (по подразбиране) за измерване на "
+"скоростта и размера на дисковете"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:90
 msgid ""
 "Whether or not to use base-10 or base-2 (default) for drive speed + size"
 msgstr ""
+"Дали да се използва десетична (base-10) или двоична "
+"(base-2 — по подразбиране) бройна система за измерване на скоростта и "
+"размера на дисковете"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:95
 msgid "Whether or not to use bits (default) or Bytes for network speed"
 msgstr ""
+"Дали да се използват битове (по подразбиране) или байтове за измерване на "
+"скоростта на мрежата"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:100
 msgid "Whether or not to use base-10 (default) or base-2 for network speed"
 msgstr ""
+"Дали да се използва десетична (base-10 — по подразбиране) или двоична "
+"(base-2) бройна система за измерване на скоростта на мрежата"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:105
 msgid ""
 "Whether to set graph max to interface max (false) or the max observed (true)"
 msgstr ""
+"Дали да се зададе максималната стойност на графиката като максимума на "
+"интерфейса (false) или като максимално наблюдаваната стойност (true)"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:110
 #: resources/ui/preferences/page.blp:105
@@ -219,21 +237,21 @@ msgid "Column sorting is persisted across app restarts"
 msgstr "Сортирането на колони се запазва при рестартиране на приложението"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:120
-#, fuzzy
 msgid "Column order is persisted across app restarts"
-msgstr "Сортирането на колони се запазва при рестартиране на приложението"
+msgstr "Редът на колоните се запазва при рестартиране на приложението"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:125
 msgid ""
 "Show CPU usage for Apps and Processes scaled to the number of available cores"
 msgstr ""
+"Покажи използването на процесора за приложения и процеси, мащабирано според "
+"броя на наличните ядра"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:130
 msgid "Show a separator between each column in the Apps view"
-msgstr ""
+msgstr "Показвай разделител между всяка колона в изгледа \"Приложения\""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:135
-#, fuzzy
 msgid "The column name by which the Apps page view is sorted"
 msgstr ""
 "Идентификаторът на колоната, по който е сортиран изгледът на страницата с "
@@ -244,26 +262,22 @@ msgid "The sorting direction of the Apps page view"
 msgstr "Посоката на сортиране на изгледа на страницата с приложения"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:145
-#, fuzzy
 msgid "The order of columns in the Apps page view"
-msgstr "Посоката на сортиране на изгледа на страницата с приложения"
+msgstr "Редът на сортиране на изгледа на страницата с приложения"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
 msgstr ""
 "Идентификаторът на колоната, по който е сортиран изгледът на страницата с "
-"приложения"
+"услуги"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "Посоката на сортиране на изгледа на страницата с приложения"
+msgstr "Посоката на сортиране на изгледа на страницата с услуги"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "Посоката на сортиране на изгледа на страницата с приложения"
+msgstr "Редът на сортиране на изгледа на страницата с услуги"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -272,6 +286,8 @@ msgstr "Коя графика е показана на страницата за
 #: data/io.missioncenter.MissionCenter.gschema.xml:171
 msgid "Show kernel times in the CPU graphs"
 msgstr ""
+"Показвай времената на ядрото (kernel times) в графиките за използването на "
+"процесора"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:176
 msgid "Which page is shown on application startup, in the performance tab"
@@ -281,62 +297,62 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:182
 msgid "Should performance graphs be smooth or jagged"
-msgstr ""
+msgstr "Дали графиките за производителността да бъдат гладки или назъбени"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:187
 msgid "Should graphs be animated"
-msgstr ""
+msgstr "Дали графиките да бъдат анимирани"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:192
 #: resources/ui/preferences/page.blp:65
 msgid "Show CPU information by default"
-msgstr ""
+msgstr "Показване на информация за процесора по подразбиране"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:197
 #: resources/ui/preferences/page.blp:71
 msgid "Show memory information by default"
-msgstr ""
+msgstr "Показване на информация за паметта по подразбиране"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:202
 #: resources/ui/preferences/page.blp:77
 msgid "Show disk information by default"
-msgstr ""
+msgstr "Показване на информация за диска по подразбиране"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:207
 #: resources/ui/preferences/page.blp:83
 msgid "Show network information by default"
-msgstr ""
+msgstr "Показване на информация за мрежата по подразбиране"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:212
 #: resources/ui/preferences/page.blp:89
 msgid "Show GPU information by default"
-msgstr ""
+msgstr "Показване на информация за GPU по подразбиране"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:217
 #: resources/ui/preferences/page.blp:95
 msgid "Show fan information by default"
-msgstr ""
+msgstr "Показване на информация за вентилатора по подразбиране"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:222
-#, fuzzy
 msgid "Show the mem composition widget"
-msgstr "Състав на паметта"
+msgstr "Покажи джаджата за състава на паметта"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:227
 msgid "Show the swap graph"
-msgstr ""
+msgstr "Показвай графиката за swap паметта"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
 msgid "Show the gpu encode-decode graph"
-msgstr ""
+msgstr "Показвай графиката за GPU кодиране-декодиране"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
-msgstr ""
+msgstr "Подреждането на записите в страничната лента на приложението"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:242
 msgid "Graphs that should be hidden in the application sidebar"
 msgstr ""
+"Графики, които трябва да бъдат скрити в страничната лента на приложението"
 
 #: resources/ui/apps_page/details_dialog.blp:76
 #: resources/ui/process_column_view/column_view_frame.blp:48
@@ -379,20 +395,18 @@ msgstr "N/A"
 #: resources/ui/apps_page/details_dialog.blp:104
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:205
 #: resources/ui/process_column_view/process_details_dialog.blp:112
-#, fuzzy
 msgid "Type"
-msgstr "Тип:"
+msgstr "Тип"
 
 #: resources/ui/apps_page/details_dialog.blp:132
 #: resources/ui/process_column_view/process_details_dialog.blp:140
 msgid "Command Line"
-msgstr ""
+msgstr "Команден ред"
 
 #: resources/ui/apps_page/details_dialog.blp:154
 #: resources/ui/process_column_view/process_details_dialog.blp:162
-#, fuzzy
 msgid "Resource Usage"
-msgstr "Употреба на паметта"
+msgstr "Използване на ресурси"
 
 #: resources/ui/apps_page/details_dialog.blp:168
 #: resources/ui/performance_page/cpu.blp:45
@@ -412,24 +426,21 @@ msgstr "Памет"
 
 #: resources/ui/apps_page/details_dialog.blp:218
 #: resources/ui/process_column_view/process_details_dialog.blp:226
-#, fuzzy
 msgid "Shared Memory"
-msgstr "Памет"
+msgstr "Споделена памет"
 
 #: resources/ui/apps_page/details_dialog.blp:243
 #: resources/ui/process_column_view/process_details_dialog.blp:251
-#, fuzzy
 msgid "Drives"
-msgstr "Диск {} ({})"
+msgstr "Дискове"
 
 #: resources/ui/apps_page/details_dialog.blp:268
 #: resources/ui/process_column_view/column_view_frame.blp:78
 #: resources/ui/process_column_view/process_details_dialog.blp:276
 #: src/process_tree/column_view_frame.rs:579
 #: src/process_tree/column_view_frame.rs:588
-#, fuzzy
 msgid "Network"
-msgstr "_Мрежа"
+msgstr "Мрежа"
 
 #: resources/ui/apps_page/details_dialog.blp:293
 #: resources/ui/process_column_view/column_view_frame.blp:84
@@ -437,57 +448,54 @@ msgstr "_Мрежа"
 #: src/performance_page/gpu.rs:358 src/performance_page/mod.rs:1397
 #: src/performance_page/mod.rs:2159 src/process_tree/column_view_frame.rs:594
 #: src/process_tree/column_view_frame.rs:611
-#, fuzzy
 msgid "GPU"
-msgstr "_GPU"
+msgstr "GPU"
 
 #: resources/ui/apps_page/details_dialog.blp:318
 #: resources/ui/process_column_view/column_view_frame.blp:90
 #: resources/ui/process_column_view/process_details_dialog.blp:326
 #: src/process_tree/column_view_frame.rs:598
 #: src/process_tree/column_view_frame.rs:617
-#, fuzzy
 msgid "GPU Memory"
-msgstr "GPU {}"
+msgstr "GPU памет"
 
 #: resources/ui/apps_page/page.blp:75
 msgid "Collapse all apps and processes"
-msgstr ""
+msgstr "Свий всички приложения и процеси"
 
 #: resources/ui/apps_page/page.blp:87 resources/ui/services_page/page.blp:94
 #: resources/ui/keyboard_shortcuts.blp:112
 msgid "Collapse All"
-msgstr ""
+msgstr "Свий всички"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
-msgstr ""
+msgstr "Неуспешно изваждане"
 
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
-msgstr ""
+msgstr "Прекрати"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:31
 msgid "In Use:"
-msgstr ""
+msgstr "Използва се:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:36
 msgid "Modified:"
-msgstr ""
+msgstr "Модифицирано:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:41
 msgid "Standby:"
-msgstr ""
+msgstr "В режим на готовност:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:46
 msgid "Free:"
-msgstr ""
+msgstr "Свободно:"
 
 #: resources/ui/performance_page/cpu.blp:63
 #: resources/ui/performance_page/gpu.blp:72
-#, fuzzy
 msgid "Utilization over "
-msgstr "% използване за {} секунди"
+msgstr "Използване над "
 
 #: resources/ui/performance_page/cpu.blp:78
 #: resources/ui/performance_page/gpu.blp:86
@@ -509,7 +517,7 @@ msgstr "Логически _Процесори"
 
 #: resources/ui/performance_page/cpu.blp:120
 msgid "Show Kernel Times"
-msgstr ""
+msgstr "Показвай времената на ядрото (Kernel Times)"
 
 #: resources/ui/performance_page/cpu.blp:127
 #: resources/ui/performance_page/disk.blp:182
@@ -535,7 +543,6 @@ msgstr "_Изглед"
 #: resources/ui/performance_page/gpu.blp:223
 #: resources/ui/performance_page/memory.blp:215
 #: resources/ui/performance_page/network.blp:113
-#, fuzzy
 msgid "CP_U"
 msgstr "CP_U"
 
@@ -555,7 +562,7 @@ msgstr "_Памет"
 #: resources/ui/performance_page/memory.blp:225
 #: resources/ui/performance_page/network.blp:123
 msgid "_Drive"
-msgstr ""
+msgstr "_Диск"
 
 #: resources/ui/performance_page/cpu.blp:150
 #: resources/ui/performance_page/disk.blp:205
@@ -572,7 +579,6 @@ msgstr "_Мрежа"
 #: resources/ui/performance_page/gpu.blp:243
 #: resources/ui/performance_page/memory.blp:235
 #: resources/ui/performance_page/network.blp:133
-#, fuzzy
 msgid "_GPU"
 msgstr "_GPU"
 
@@ -583,7 +589,7 @@ msgstr "_GPU"
 #: resources/ui/performance_page/memory.blp:240
 #: resources/ui/performance_page/network.blp:138
 msgid "_Fan"
-msgstr ""
+msgstr "_Вентилатор"
 
 #: resources/ui/performance_page/cpu.blp:168
 #: resources/ui/performance_page/disk.blp:223
@@ -596,79 +602,69 @@ msgstr "_Копиране"
 
 #: resources/ui/performance_page/disk.blp:66
 msgid "Show SMART Data"
-msgstr ""
+msgstr "Покажи SMART данните"
 
 #: resources/ui/performance_page/disk.blp:77
 msgid "Eject Disk"
-msgstr ""
+msgstr "Извади диск"
 
 #: resources/ui/performance_page/disk.blp:99
-#, fuzzy
 msgid "Active time over "
-msgstr "Активно време"
+msgstr "Активно време над "
 
 #: resources/ui/performance_page/disk.blp:140
 #: resources/ui/performance_page/network.blp:61
-#, fuzzy
 msgid "Throughput over "
-msgstr "Пропускателна способност"
+msgstr "Пропускателна способност над "
 
 #: resources/ui/performance_page/fan.blp:61
-#, fuzzy
 msgid "Fan speed over "
-msgstr "Употреба на паметта"
+msgstr "Скорост на вентилатора "
 
 #: resources/ui/performance_page/fan.blp:112
-#, fuzzy
 msgid "Temperature over "
-msgstr "Температура"
+msgstr "Температура над "
 
 #: resources/ui/performance_page/fan_details.blp:59
-#, fuzzy
 msgid "Fan Speed"
-msgstr "Скорост"
+msgstr "Скорост на вентилатора"
 
 #: resources/ui/performance_page/fan_details.blp:98
 msgid "PWM Percentage"
-msgstr ""
+msgstr "PWM процент"
 
 #: resources/ui/performance_page/fan_details.blp:125
-#, fuzzy
 msgid "Current Temperature"
-msgstr "Температура"
+msgstr "Текуща температура"
 
 #: resources/ui/performance_page/gpu.blp:119
-#, fuzzy
 msgid "Video encode/decode utilization over "
-msgstr "Видео кодиране"
+msgstr "Използване на видео кодиране/декодиране над "
 
 #: resources/ui/performance_page/gpu.blp:162
 #: resources/ui/performance_page/memory.blp:76
-#, fuzzy
 msgid "Memory usage over "
-msgstr "Употреба на паметта"
+msgstr "Употреба на паметта над "
 
 #: resources/ui/performance_page/gpu.blp:208
 msgid "Show Encode/Decode Usage"
-msgstr ""
+msgstr "Показвай използването на кодиране/декодиране"
 
 #: resources/ui/performance_page/memory.blp:121
-#, fuzzy
 msgid "Swap usage over "
-msgstr "Употреба на паметта"
+msgstr "Използване на SWAP над "
 
 #: resources/ui/performance_page/memory.blp:172
 msgid "Memory composition"
 msgstr "Състав на паметта"
 
 #: resources/ui/performance_page/memory.blp:196
-#, fuzzy
 msgid "Show Memory Composition"
-msgstr "Състав на паметта"
+msgstr "Показване на състав на паметта"
 
 #: resources/ui/performance_page/memory.blp:200
 msgid "Show Swap Usage"
-msgstr ""
+msgstr "Показване на използването на Swap паметта"
 
 #: resources/ui/performance_page/memory_details.blp:58
 msgid "In use"
@@ -725,11 +721,11 @@ msgstr "Прати"
 
 #: resources/ui/performance_page/network_details.blp:130
 msgid "Total Received"
-msgstr ""
+msgstr "Общо получени"
 
 #: resources/ui/performance_page/network_details.blp:159
 msgid "Total Sent"
-msgstr ""
+msgstr "Общо изпратени"
 
 #: resources/ui/performance_page/network_details.blp:184
 msgid "Interface name:"
@@ -769,62 +765,57 @@ msgstr "IPv6 адрес:"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
-msgstr ""
+msgstr "Smart данни"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:48
 msgid "Last Updated"
-msgstr ""
+msgstr "Последно обновено"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:72
-#, fuzzy
 msgid "Powered On"
-msgstr "Консумация на ток"
+msgstr "Включен"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:96
 msgid "Drive Health"
-msgstr ""
+msgstr "Състояние на диска"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
-msgstr ""
+msgstr "Статус на SMART теста"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
 msgid "Attribute"
-msgstr ""
+msgstr "Атрибут"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
 msgid "Value"
-msgstr ""
+msgstr "Стойност"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
-#, fuzzy
 msgid "ID"
-msgstr "PID"
+msgstr "ID"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
-#, fuzzy
 msgid "Normalized"
-msgstr "Нормално"
+msgstr "Нормализирано"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:193
-#, fuzzy
 msgid "Threshold"
-msgstr "Нишки"
+msgstr "Праг"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:199
 msgid "Worst"
-msgstr ""
+msgstr "Най-лошо"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:211
-#, fuzzy
 msgid "Updates"
-msgstr "Скорост на актуализиране"
+msgstr "Актуализации"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:217
 msgid "Assessment"
-msgstr ""
+msgstr "Оценка"
 
 #: resources/ui/performance_page/gpu_details.blp:51
 #: resources/ui/performance_page/cpu_details.blp:46
@@ -837,36 +828,30 @@ msgstr "Тактова честота"
 
 #: resources/ui/performance_page/gpu_details.blp:132
 #: resources/ui/performance_page/cpu_details.blp:91
-#, fuzzy
 msgid "Power Draw"
 msgstr "Консумация на ток"
 
 #: resources/ui/performance_page/gpu_details.blp:200
 #: src/performance_page/gpu.rs:552
-#, fuzzy
 msgid "Memory Usage"
-msgstr "Употреба на паметта"
+msgstr "Използване на паметта"
 
 #: resources/ui/performance_page/gpu_details.blp:274
 #: src/performance_page/gpu.rs:629
-#, fuzzy
 msgid "Shared Memory Usage"
-msgstr "Употреба на паметта"
+msgstr "Използване на споделена памет"
 
 #: resources/ui/performance_page/gpu_details.blp:332
-#, fuzzy
 msgid "Memory Speed"
 msgstr "Скорост на паметта"
 
 #: resources/ui/performance_page/gpu_details.blp:407
-#, fuzzy
 msgid "Video encode"
 msgstr "Видео кодиране"
 
 #: resources/ui/performance_page/gpu_details.blp:453
-#, fuzzy
 msgid "Video decode"
-msgstr "Видео кодиране"
+msgstr "Видео декодиране"
 
 #: resources/ui/performance_page/gpu_details.blp:483
 msgid "Temperature"
@@ -885,9 +870,8 @@ msgid "PCI Express speed:"
 msgstr "PCI Express скорост:"
 
 #: resources/ui/performance_page/gpu_details.blp:566
-#, fuzzy
 msgid "Max PCI Express speed:"
-msgstr "PCI Express скорост:"
+msgstr "Максимална PCI Express скорост:"
 
 #: resources/ui/performance_page/gpu_details.blp:582
 msgid "PCI bus address:"
@@ -895,13 +879,15 @@ msgstr "Адрес на PCI шина:"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
 msgid "Failed To Get SMART Data"
-msgstr ""
+msgstr "Неуспешно извличане на SMART данни"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:31
 msgid ""
 "There was a problem fetching SMART data. Try running from the command line "
 "to get more information."
 msgstr ""
+"Възникна проблем при извличането на SMART данни. Опитайте да стартирате от "
+"командния ред, за да получите повече информация."
 
 #: resources/ui/performance_page/disk_details.blp:63
 msgid "Read speed"
@@ -913,18 +899,17 @@ msgstr "Скорост на писане"
 
 #: resources/ui/performance_page/disk_details.blp:130
 msgid "Total Read"
-msgstr ""
+msgstr "Общо прочетено"
 
 #: resources/ui/performance_page/disk_details.blp:159
 msgid "Total Written"
-msgstr ""
+msgstr "Общо написано"
 
 #: resources/ui/performance_page/disk_details.blp:188
 msgid "Active time"
 msgstr "Активно време"
 
 #: resources/ui/performance_page/disk_details.blp:217
-#, fuzzy
 msgid "Avg. response time"
 msgstr "Средно време за реакция"
 
@@ -942,15 +927,15 @@ msgstr "Системен диск:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Сериен номер:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Скорост на въртене"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1006,95 +991,91 @@ msgstr "L3 кеш:"
 
 #: resources/ui/performance_page/cpu_details.blp:319
 msgid "Cpufreq driver:"
-msgstr ""
+msgstr "Cpufreq драйвър:"
 
 #: resources/ui/performance_page/cpu_details.blp:333
 msgid "Cpufreq governor:"
-msgstr ""
+msgstr "Cpufreq регулатор:"
 
 #: resources/ui/performance_page/cpu_details.blp:347
-#, fuzzy
 msgid "Power preference:"
-msgstr "_Предпочитания"
+msgstr "Предпочитание за енергия:"
 
 #: resources/ui/preferences/page.blp:6
-#, fuzzy
 msgid "General"
 msgstr "Общи настройки"
 
 #: resources/ui/preferences/page.blp:9
 msgid "Update Interval"
-msgstr ""
+msgstr "Интервал на актуализация"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} секунди"
+msgstr "За секунди"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
-msgstr ""
+msgstr "Данни от диаграмата"
 
 #: resources/ui/preferences/page.blp:46 resources/ui/keyboard_shortcuts.blp:68
-#, fuzzy
 msgid "Performance Page"
-msgstr "Производителност"
+msgstr "Страница за производителност"
 
 #: resources/ui/preferences/page.blp:49
 msgid "Smooth Graphs"
-msgstr ""
+msgstr "Гладки графики"
 
 #: resources/ui/preferences/page.blp:50
 msgid "Draw graphs as smooth line instead of jagged line"
-msgstr ""
+msgstr "Чертай графиките като гладка линия, а не като назъбена линия"
 
 #: resources/ui/preferences/page.blp:54
 msgid "Sliding Graphs"
-msgstr ""
+msgstr "Плъзгащи се графики"
 
 #: resources/ui/preferences/page.blp:55
 msgid "Animate graphs (may negatively impact performance)"
-msgstr ""
+msgstr "Анимирани графики (може да повлияят негативно на производителността)"
 
 #: resources/ui/preferences/page.blp:59
 msgid "Scale Network Graphs Dynamically"
-msgstr ""
+msgstr "Мащабирай мрежовите графики динамично"
 
 #: resources/ui/preferences/page.blp:60
 msgid ""
 "Set network graph to scale dynamically with actual usage or with channel max "
 "speed"
 msgstr ""
+"Задай мрежовата графика да се мащабира динамично според реалното използване "
+"или според максималната скорост на канала"
 
 #: resources/ui/preferences/page.blp:64
 msgid "Show CPU Information"
-msgstr ""
+msgstr "Показване на информация за процесора"
 
 #: resources/ui/preferences/page.blp:70
-#, fuzzy
 msgid "Show Memory Information"
-msgstr "Състав на паметта"
+msgstr "Показване на информация за паметта"
 
 #: resources/ui/preferences/page.blp:76
 msgid "Show Disk Information"
-msgstr ""
+msgstr "Показване на информация за диска"
 
 #: resources/ui/preferences/page.blp:82
 msgid "Show Network Information"
-msgstr ""
+msgstr "Показване на информация за мрежата"
 
 #: resources/ui/preferences/page.blp:88
 msgid "Show GPU Information"
-msgstr ""
+msgstr "Показване на информация за GPU"
 
 #: resources/ui/preferences/page.blp:94
 msgid "Show Fan Information"
-msgstr ""
+msgstr "Показване на информация за вентилатора"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "Производителност"
+msgstr "Страници за приложения и услуги"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1105,278 +1086,263 @@ msgid "Remember Sorting"
 msgstr "Запомняне на сортиране"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
 msgstr ""
 "Запомняне на сортирането на списъка с приложения и процеси при рестартиране"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
-msgstr ""
+msgstr "Запомни реда на колоните"
 
 #: resources/ui/preferences/page.blp:115
-#, fuzzy
 msgid "Persist the order of the columns, across app restarts"
-msgstr ""
-"Запомняне на сортирането на списъка с приложения и процеси при рестартиране"
+msgstr "Запомняне на реда на списъка с приложения и процеси при рестартиране"
 
 #: resources/ui/preferences/page.blp:119
 msgid "Scale CPU Usage to Core Count"
-msgstr ""
+msgstr "Мащабирай използването на процесора спрямо броя ядра"
 
 #: resources/ui/preferences/page.blp:120
 msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
+msgstr "Показвай използването на процесора мащабирано спрямо броя налични ядра"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
-msgstr ""
+msgstr "Показвай разделители между колоните"
 
 #: resources/ui/preferences/page.blp:125
 msgid "Show a separator between each column"
-msgstr ""
+msgstr "Показвай разделител между всяка колона"
 
 #: resources/ui/preferences/page.blp:130
 msgid "Global Units"
-msgstr ""
+msgstr "Глобални единици"
 
 #: resources/ui/preferences/page.blp:133
-#, fuzzy
 msgid "Memory Usage Unit"
-msgstr "Употреба на паметта"
+msgstr "Единица за използване на паметта"
 
 #: resources/ui/preferences/page.blp:140
 msgid "Use Bytes as a Unit of Measurement for Memory"
-msgstr ""
+msgstr "Използвай байтове като единица за измерване на паметта"
 
 #: resources/ui/preferences/page.blp:141 resources/ui/preferences/page.blp:179
 #: resources/ui/preferences/page.blp:217
 msgid "Bytes"
-msgstr ""
+msgstr "Байтове"
 
 #: resources/ui/preferences/page.blp:145
 msgid "Use Bits as a Unit of Measurement for Memory"
-msgstr ""
+msgstr "Използвай битове като единица за измерване на паметта"
 
 #: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
 #: resources/ui/preferences/page.blp:222
 msgid "Bits"
-msgstr ""
+msgstr "Битове"
 
 #: resources/ui/preferences/page.blp:152
-#, fuzzy
 msgid "Memory Usage Base"
-msgstr "Употреба на паметта"
+msgstr "База за използване на паметта"
 
 #: resources/ui/preferences/page.blp:159
 msgid "Use Base 10 for Memory"
-msgstr ""
+msgstr "Използване на десетична система за паметта"
 
 #: resources/ui/preferences/page.blp:160 resources/ui/preferences/page.blp:198
 #: resources/ui/preferences/page.blp:236
 msgid "Base 10"
-msgstr ""
+msgstr "Десетична система"
 
 #: resources/ui/preferences/page.blp:164
 msgid "Use Base 2 for Memory"
-msgstr ""
+msgstr "Използване на двоична система за паметта"
 
 #: resources/ui/preferences/page.blp:165 resources/ui/preferences/page.blp:203
 #: resources/ui/preferences/page.blp:241
 msgid "Base 2"
-msgstr ""
+msgstr "Двоична система"
 
 #: resources/ui/preferences/page.blp:171
 msgid "Drive Usage Unit"
-msgstr ""
+msgstr "Единица за използване на дисковете"
 
 #: resources/ui/preferences/page.blp:178
 msgid "Use Bytes as a Unit of Measurement for Disk Drives"
-msgstr ""
+msgstr "Използвай байтове като единица за измерване на дисковете"
 
 #: resources/ui/preferences/page.blp:183
 msgid "Use Bits as a Unit of Measurement for Disk Drives"
-msgstr ""
+msgstr "Използвай битове като единица за измерване на дисковете"
 
 #: resources/ui/preferences/page.blp:190
 msgid "Drive Usage Base"
-msgstr ""
+msgstr "База за използване на дисковете"
 
 #: resources/ui/preferences/page.blp:197
 msgid "Use Base 10 for Disk Drives"
-msgstr ""
+msgstr "Използване на десетична система за дисковете"
 
 #: resources/ui/preferences/page.blp:202
 msgid "Use Base 2 for Disk Drives"
-msgstr ""
+msgstr "Използване на двоична система за дисковете"
 
 #: resources/ui/preferences/page.blp:209
 msgid "Network Usage Unit"
-msgstr ""
+msgstr "Единица за използване на мрежовите интерфейси"
 
 #: resources/ui/preferences/page.blp:216
 msgid "Use Bytes as a Unit of Measurement for Network Interfaces"
-msgstr ""
+msgstr "Използвай байтове като единица за измерване на мрежовите интерфейси"
 
 #: resources/ui/preferences/page.blp:221
 msgid "Use Bits as a Unit of Measurement for Network Interfaces"
-msgstr ""
+msgstr "Използвай битове като единица за измерване на мрежовите интерфейси"
 
 #: resources/ui/preferences/page.blp:228
 msgid "Network Usage Base"
-msgstr ""
+msgstr "База за използване на мрежовите интерфейси"
 
 #: resources/ui/preferences/page.blp:235
 msgid "Use Base 10 for Network Interfaces"
-msgstr ""
+msgstr "Използване на десетична система за мрежовите интерфейси"
 
 #: resources/ui/preferences/page.blp:240
 msgid "Use Base 2 for Network Interfaces"
-msgstr ""
+msgstr "Използване на двоична система за мрежовите интерфейси"
 
 #: resources/ui/services_page/page.blp:84
 msgid "Collapse all expanded services"
-msgstr ""
+msgstr "Свий всички разгънати услуги"
 
 #: resources/ui/services_page/page.blp:123
 msgid "Filter running processes"
-msgstr ""
+msgstr "Филтрирай работещите процеси"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "Виртуални процесори:"
+msgstr "Филтрирай неуспешни процеси"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Филтрирай спрени процеси"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Филтрирай деактивирани процеси"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "Премахни всички филтри"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "Премахни филтрите"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
 msgid "Follow system style"
-msgstr ""
+msgstr "Следвай системния стил"
 
 #: resources/ui/widgets/theme_selector.blp:35
 #: resources/ui/widgets/theme_selector.blp:38
 msgid "Light style"
-msgstr ""
+msgstr "Светъл стил"
 
 #: resources/ui/widgets/theme_selector.blp:53
 #: resources/ui/widgets/theme_selector.blp:56
 msgid "Dark style"
-msgstr ""
+msgstr "Тъмен стил"
 
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Клавишни комбинации"
 
 #: resources/ui/keyboard_shortcuts.blp:10
 msgid "Global"
-msgstr ""
+msgstr "Глобални"
 
 #: resources/ui/keyboard_shortcuts.blp:21
 msgid "Open Menu"
-msgstr ""
+msgstr "Отвори меню"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Затвори прозореца"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_Предпочитания"
+msgstr "Отвори настройките"
 
 #: resources/ui/keyboard_shortcuts.blp:41
 msgid "Show Keyboard Shortcuts"
-msgstr ""
+msgstr "Покажи клавишните комбинации"
 
 #: resources/ui/keyboard_shortcuts.blp:46
-#, fuzzy
 msgid "Show Performance Page"
-msgstr "Производителност"
+msgstr "Покажи страницата за производителност"
 
 #: resources/ui/keyboard_shortcuts.blp:51
-#, fuzzy
 msgid "Show Apps Page"
-msgstr "Настройки на страницата на приложението"
+msgstr "Покажи страницата с приложения"
 
 #: resources/ui/keyboard_shortcuts.blp:56
 msgid "Show Services Page"
-msgstr ""
+msgstr "Покажи страницата с услуги"
 
 #: resources/ui/keyboard_shortcuts.blp:61 resources/ui/window.blp:95
 msgid "Toggle Sidebar"
-msgstr ""
+msgstr "Превключи страничната лента"
 
 #: resources/ui/keyboard_shortcuts.blp:79
-#, fuzzy
 msgid "Copy Device Information"
-msgstr "Състав на паметта"
+msgstr "Копирай информацията за устройството"
 
 #: resources/ui/keyboard_shortcuts.blp:84
 msgid "Toggle Summary Mode"
-msgstr ""
+msgstr "Превключи в режим на обобщение"
 
 #: resources/ui/keyboard_shortcuts.blp:89
 msgid "Select a Device"
-msgstr ""
+msgstr "Избери устройство"
 
 #: resources/ui/keyboard_shortcuts.blp:96
-#, fuzzy
 msgid "Apps Page"
-msgstr "Настройки на страницата на приложението"
+msgstr "Страница с приложения"
 
 #: resources/ui/keyboard_shortcuts.blp:107
 #: resources/ui/keyboard_shortcuts.blp:145 resources/ui/window.blp:143
 msgid "Search"
-msgstr ""
+msgstr "Търсене"
 
 #: resources/ui/keyboard_shortcuts.blp:117
-#, fuzzy
 msgid "Stop App or Process"
-msgstr "Спиране на процеса"
+msgstr "Спри приложение или процес"
 
 #: resources/ui/keyboard_shortcuts.blp:122
-#, fuzzy
 msgid "Force Stop App or Process"
-msgstr "Принудително спиране на процеса"
+msgstr "Принудително спри приложение или процес"
 
 #: resources/ui/keyboard_shortcuts.blp:127
 #: resources/ui/keyboard_shortcuts.blp:165
 msgid "Show Details Dialog"
-msgstr ""
+msgstr "Покажи диалоговия прозорец с подробности"
 
 #: resources/ui/keyboard_shortcuts.blp:134
-#, fuzzy
 msgid "Services Page"
-msgstr "Производителност"
+msgstr "Страница с услуги"
 
 #: resources/ui/keyboard_shortcuts.blp:150
 msgid "Start Service"
-msgstr ""
+msgstr "Стартирай услуга"
 
 #: resources/ui/keyboard_shortcuts.blp:155
-#, fuzzy
 msgid "Stop Service"
-msgstr "Спиране на процеса"
+msgstr "Спри услуга"
 
 #: resources/ui/keyboard_shortcuts.blp:160
 msgid "Restart Service"
-msgstr ""
+msgstr "Рестартирай услуга"
 
 #. The `Name` column should be default aligned
 #. The column that contains the context menu button should be default aligned
@@ -1388,243 +1354,234 @@ msgid "Name"
 msgstr "Име"
 
 #: resources/ui/process_column_view/column_view_frame.blp:66
-#, fuzzy
 msgid ""
 "Shared\n"
 "Memory"
-msgstr "Памет"
+msgstr ""
+"Споделена\n"
+"памет"
 
 #: resources/ui/process_column_view/column_view_frame.blp:72
 #: src/performance_page/mod.rs:1131 src/process_tree/column_view_frame.rs:565
 #: src/process_tree/column_view_frame.rs:573
 msgid "Drive"
-msgstr ""
+msgstr "Диск"
 
 #: resources/ui/process_column_view/process_action_bar.blp:34
 msgid "Stop the selected app"
-msgstr ""
+msgstr "Спри избраното приложение"
 
 #: resources/ui/process_column_view/process_action_bar.blp:46
 #: resources/ui/process_column_view/process_action_bar.blp:98
 #: resources/ui/process_column_view/service_action_bar.blp:66
 #: resources/ui/process_column_view/service_action_bar.blp:123
 msgid "Stop"
-msgstr ""
+msgstr "Спри"
 
 #: resources/ui/process_column_view/process_action_bar.blp:53
 msgid "Force stop the selected app"
-msgstr ""
+msgstr "Принудително спри избраното приложение"
 
 #: resources/ui/process_column_view/process_action_bar.blp:65
 #: resources/ui/process_column_view/process_action_bar.blp:103
-#, fuzzy
 msgid "Force Stop"
-msgstr "Принудително спиране на процеса"
+msgstr "Принудително спиране"
 
 #: resources/ui/process_column_view/process_action_bar.blp:73
 msgid "Show details of the selected app"
-msgstr ""
+msgstr "Покажи подробности за избраното приложение"
 
 #: resources/ui/process_column_view/process_action_bar.blp:85
 #: resources/ui/process_column_view/process_action_bar.blp:154
 #: resources/ui/process_column_view/service_action_bar.blp:105
 #: resources/ui/process_column_view/service_action_bar.blp:135
 msgid "Details"
-msgstr ""
+msgstr "Подробности"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "Изпрати сигнал"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "Преустанови (STOP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "Продължи (CONT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "Затвори връзката (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "Прекъсни (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "Прекрати (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "Убий процеса (KILL)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "Потребител 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "Потребител 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "Идентификатор на приложение (App ID)"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
-msgstr ""
+msgstr "Стартирай избраната услуга"
 
 #: resources/ui/process_column_view/service_action_bar.blp:47
 #: resources/ui/process_column_view/service_action_bar.blp:118
 msgid "Start"
-msgstr ""
+msgstr "Стартирай"
 
 #: resources/ui/process_column_view/service_action_bar.blp:54
 msgid "Stop the selected service"
-msgstr ""
+msgstr "Спри избраната услуга"
 
 #: resources/ui/process_column_view/service_action_bar.blp:74
 msgid "Restart the selected service"
-msgstr ""
+msgstr "Рестартирай избраната услуга"
 
 #: resources/ui/process_column_view/service_action_bar.blp:86
 #: resources/ui/process_column_view/service_action_bar.blp:128
 msgid "Restart"
-msgstr ""
+msgstr "Рестартирай"
 
 #: resources/ui/process_column_view/service_action_bar.blp:93
 msgid "Show details of the selected service"
-msgstr ""
+msgstr "Покажи подробности за избраната услуга"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:33
 msgid "Service Details"
-msgstr ""
+msgstr "Подробности за услугата"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:57
 msgid "State"
-msgstr ""
+msgstr "Състояние"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:58
 msgid "The current state of the service"
-msgstr ""
+msgstr "Текущото състояние на услугата"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:75
 msgid "Start service"
-msgstr ""
+msgstr "Стартирай услугата"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:90
-#, fuzzy
 msgid "Stop service"
-msgstr "Спиране на процеса"
+msgstr "Спри услугата"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:106
 msgid "Restart service"
-msgstr ""
+msgstr "Рестартирай услугата"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:164
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:194
 msgid "Status"
-msgstr ""
+msgstr "Статус"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:213
 msgid "Enabled"
-msgstr ""
+msgstr "Активирана"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:220
 #: src/process_tree/row_model.rs:266
-#, fuzzy
 msgid "Process"
-msgstr "Процеси"
+msgstr "Процес"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:221
 msgid "Process and user information"
-msgstr ""
+msgstr "Информация за процеса и потребителя"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:237
-#, fuzzy
 msgid "Process ID"
-msgstr "Процеси"
+msgstr "Идентификационен номер на процеса"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:269
 msgid "User"
-msgstr ""
+msgstr "Потребител"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:301
 msgid "Group"
-msgstr ""
+msgstr "Група"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Местоположение на файла"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
-msgstr ""
+msgstr "Логове"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "Системен диск:"
+msgstr "Информация за системата"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "Състав на паметта"
+msgstr "Информация за операционната система"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "Vulkan версия:"
+msgstr "Версия"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "Мениджър на пакети"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Версия на мениджъра на пакети"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "Състав на паметта"
+msgstr "Информация за ядрото"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Издание на ядрото"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "Състав на паметта"
+msgstr "Информация за графичната среда (Desktop Environment)"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Система за управление на прозорци"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "Виртуална машина:"
+msgstr "Виртуален терминал"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
-msgstr ""
+msgstr "Активирай всички"
 
 #: resources/ui/window.blp:54
 msgid "Disable All"
-msgstr ""
+msgstr "Деактивирай всички"
 
 #: resources/ui/window.blp:59
 msgid "Reset to Default"
-msgstr ""
+msgstr "Възстанови по подразбиране"
 
 #: resources/ui/window.blp:64
 msgid "Devices"
@@ -1632,20 +1589,19 @@ msgstr "Устройства"
 
 #: resources/ui/window.blp:70
 msgid "Edit Sidebar"
-msgstr ""
+msgstr "Редактиране на страничната лента"
 
 #: resources/ui/window.blp:118
 msgid "Type a name or PID to search"
 msgstr "Въведете име или PID за търсене"
 
 #: resources/ui/window.blp:133
-#, fuzzy
 msgid "Toggle Device Information"
-msgstr "Състав на паметта"
+msgstr "Превключване на информация за устройството"
 
 #: resources/ui/window.blp:148
 msgid "Main Menu"
-msgstr ""
+msgstr "Главно меню"
 
 #: resources/ui/window.blp:178
 msgid "Loading..."
@@ -1661,7 +1617,7 @@ msgstr "Приложения"
 
 #: resources/ui/window.blp:212
 msgid "Services"
-msgstr ""
+msgstr "Услуги"
 
 #: resources/ui/window.blp:237
 msgid "_Preferences"
@@ -1669,35 +1625,34 @@ msgstr "_Предпочитания"
 
 #: resources/ui/window.blp:242
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "_Клавишни комбинации"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "_За системата"
 
 #: resources/ui/window.blp:256
-#, fuzzy
 msgid "_About Mission Center"
-msgstr "_Относно MissionCenter"
+msgstr "_Относно Mission Center"
 
 #: src/apps_page/mod.rs:259
 #, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} работещо приложение"
+msgstr[1] "{} работещи приложения"
 
 #: src/apps_page/mod.rs:269
 #, rust-format
 msgid "{} Running Process"
 msgid_plural "{} Running Processes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} работещ процес"
+msgstr[1] "{} работещи процеси"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:95
 #, rust-format
 msgid "{} ago"
-msgstr ""
+msgstr "преди {}"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:98
 #: src/performance_page/cpu.rs:321 src/performance_page/cpu.rs:332
@@ -1715,70 +1670,68 @@ msgstr "Неизвестно"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:130
 msgid "Pre-Fail"
-msgstr ""
+msgstr "Предварителен отказ"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:131
 msgid "Old-Age"
-msgstr ""
+msgstr "Старост"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:134
 msgid "Online"
-msgstr ""
+msgstr "Онлайн"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:135
 msgid "Offline"
-msgstr ""
+msgstr "Офлайн"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:142
 msgid "FAILING"
-msgstr ""
+msgstr "Отказва / В процес на отказ"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:147
 msgid "Failed in the past"
-msgstr ""
+msgstr "Отказал в миналото"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
-msgstr ""
+msgstr "Процент използвано"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:205
-#, fuzzy
 msgid "Available Spare"
-msgstr "Налично"
+msgstr "Наличен резерв"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
-msgstr ""
+msgstr "Праг на резерва"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:221
 msgid "Total Data Read"
-msgstr ""
+msgstr "Общо прочетени данни"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:229
 msgid "Total Data Written"
-msgstr ""
+msgstr "Общо записани данни"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:240
 msgid "Warning Temp Time"
-msgstr ""
+msgstr "Време на работа с предупреждение за температура"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:248
 msgid "Critical Temp Time"
-msgstr ""
+msgstr "Критично време на температурата"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:256
 #: src/performance_page/widgets/smart_data_dialog.rs:313
 msgid "Control Busy Time"
-msgstr ""
+msgstr "Време, което е заето с проверки"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:264
-#, fuzzy
 msgid "Warning Temperature"
-msgstr "Температура"
+msgstr "Предупреждение за температура"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:266
 #: src/performance_page/widgets/smart_data_dialog.rs:274
@@ -1786,86 +1739,85 @@ msgstr "Температура"
 #: src/performance_page/fan.rs:296
 #, rust-format
 msgid "{} °C"
-msgstr ""
+msgstr "{} °C"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:272
-#, fuzzy
 msgid "Critical Temperature"
-msgstr "Температура"
+msgstr "Критична температура"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:279
 msgid "Temps"
-msgstr ""
+msgstr "Температури"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:281
 msgid "Unsafe Shutdowns"
-msgstr ""
+msgstr "Небезопасни изключвания"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:289
 msgid "Media Errors"
-msgstr ""
+msgstr "Грешки в носителя"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:297
 msgid "Number Error Log Entries"
-msgstr ""
+msgstr "Брой записи в дневника за грешки"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:305
 msgid "Power Cycles"
-msgstr ""
+msgstr "Цикли на захранването"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:249
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "In use ({})\n"
 "\n"
 "Memory used by the operating system and running applications"
 msgstr ""
-"Използва се ({}B)\n"
+"Използвано ({})\n"
 "\n"
-"Паметта се ползва от операционната система и работещите приложения"
+"Памет, използвана от операционната система и работещите приложения"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:279
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Modified ({})\n"
 "\n"
 "Memory whose contents must be written to disk before it can be used by "
 "another process"
 msgstr ""
-"Променен ({}B)\n"
+"Променен ({})\n"
 "\n"
 "Памет, чието съдържание трябва да бъде записано на диска, преди да може да "
 "се използва от друг процес"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:303
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Standby ({})\n"
 "\n"
 "Memory that contains cached data and code that is not actively in use"
 msgstr ""
-"Готовност ({}B)\n"
+"Готовност ({})\n"
 "\n"
 "Памет, която съдържа кеширани данни и код, който не се използва активно"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:316
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Free ({})\n"
 "\n"
 "Memory that is not currently in use, and that will be repurposed first when "
 "the operating system, drivers, or applications need more memory"
 msgstr ""
-"Свободно ({}B)\n"
+"Свободно ({})\n"
 "\n"
 "Памет, която в момента не се използва и която първо ще бъде преназначена, "
 "когато операционната система, драйверите или приложенията имат нужда от "
 "повече памет"
 
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} sectors"
-msgstr "{} секунди"
+msgstr "{} сектори"
 
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
@@ -1886,9 +1838,9 @@ msgid "Disk {} ({})"
 msgstr "Диск {} ({})"
 
 #: src/performance_page/disk.rs:205 src/performance_page/disk.rs:359
-#, fuzzy, rust-format
+#, rust-format
 msgid "Drive ({})"
-msgstr "Диск {} ({})"
+msgstr "Диск ({})"
 
 #: src/performance_page/disk.rs:243 src/performance_page/mod.rs:1122
 msgid "HDD"
@@ -1907,9 +1859,8 @@ msgid "eMMC"
 msgstr "eMMC"
 
 #: src/performance_page/disk.rs:247 src/performance_page/mod.rs:1126
-#, fuzzy
 msgid "SD"
-msgstr "SSD"
+msgstr "SD"
 
 #: src/performance_page/disk.rs:248 src/performance_page/mod.rs:1127
 msgid "iSCSI"
@@ -1917,18 +1868,18 @@ msgstr "iSCSI"
 
 #: src/performance_page/disk.rs:249 src/performance_page/mod.rs:1128
 msgid "Optical"
-msgstr ""
+msgstr "Оптичен (диск/носител)"
 
 #: src/performance_page/disk.rs:250 src/performance_page/mod.rs:1129
 msgid "Floppy"
-msgstr ""
+msgstr "Флопи (дискета)"
 
 #: src/performance_page/disk.rs:251 src/performance_page/mod.rs:1130
 msgid "Thumb Drive"
-msgstr ""
+msgstr "Флашка"
 
 #: src/performance_page/disk.rs:355
-#, fuzzy, rust-format
+#, rust-format
 msgid "Drive {} ({})"
 msgstr "Диск {} ({})"
 
@@ -1936,28 +1887,27 @@ msgstr "Диск {} ({})"
 #: src/performance_page/fan.rs:315
 #, rust-format
 msgid "{} RPM"
-msgstr ""
+msgstr "{} Оборота в минута"
 
 #: src/performance_page/fan.rs:274 src/performance_page/mod.rs:1505
 #: src/performance_page/mod.rs:2236
 #, rust-format
 msgid "Fan {}"
-msgstr ""
+msgstr "Вентилатор {}"
 
 #: src/performance_page/fan.rs:276 src/performance_page/mod.rs:1507
 #: src/performance_page/mod.rs:2238
 msgid "Fan"
-msgstr ""
+msgstr "Вентилатор"
 
 #: src/performance_page/fan.rs:285
 #, rust-format
 msgid "{}%"
-msgstr ""
+msgstr "{}%"
 
 #: src/performance_page/gpu.rs:285
-#, fuzzy
 msgid "Video encode/decode"
-msgstr "Видео кодиране"
+msgstr "Видео кодиране/декодиране"
 
 #: src/performance_page/gpu.rs:356 src/performance_page/mod.rs:1395
 #: src/performance_page/mod.rs:2157
@@ -1966,87 +1916,84 @@ msgid "GPU {}"
 msgstr "GPU {}"
 
 #: src/performance_page/gpu.rs:570
-#, fuzzy
 msgid "Total Memory"
-msgstr "Памет"
+msgstr "ПаметОбща памет"
 
 #: src/performance_page/gpu.rs:599
 msgid "Dedicated and shared memory usage over "
-msgstr ""
+msgstr "Използване на отделена и споделена памет през "
 
 #: src/performance_page/gpu.rs:645
 msgid "Total Shared Memory"
-msgstr ""
+msgstr "Обща споделена памет"
 
 #: src/performance_page/memory.rs:376
 #, rust-format
 msgid "{} of {}"
-msgstr ""
+msgstr "{} от {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
-msgstr ""
+msgstr "Извличането на допълнителна информация за паметта се провали"
 
 #: src/performance_page/mod.rs:1136
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} ({})"
-msgstr "{} {}{}B/s"
+msgstr "{} {} ({})"
 
 #: src/performance_page/mod.rs:2097 src/performance_page/mod.rs:2098
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}: {}"
-msgstr "{} {}bps"
+msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "Спиране на процеса"
-msgstr[1] "Спиране на процеса"
+msgstr[0] "{} услуга общо"
+msgstr[1] "{} услуги общо"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
 msgid "Running"
-msgstr ""
+msgstr "Стартиран"
 
 #: src/services_page/mod.rs:116 src/process_tree/service_details_dialog.rs:241
 #: src/process_tree/service_details_dialog.rs:316
 msgid "Failed"
-msgstr ""
+msgstr "Неуспешен"
 
 #: src/services_page/mod.rs:125 src/process_tree/service_details_dialog.rs:243
 #: src/process_tree/service_details_dialog.rs:318
 msgid "Stopped"
-msgstr ""
+msgstr "Спрян"
 
 #: src/services_page/mod.rs:134
 msgid "Disabled"
-msgstr ""
+msgstr "Деактивиран"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "Няма услуги, които да отговарят на текущите филтри"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "Не са приложени филтри"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "Спиране на процеса"
-msgstr[1] "Спиране на процеса"
+msgstr[0] "{} услуга"
+msgstr[1] "{} услуги"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "Спиране на процеса"
+msgstr "Потребителски услуги"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "Спиране на процеса"
+msgstr "Системни услуги"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
@@ -2054,21 +2001,19 @@ msgstr ""
 
 #: src/process_tree/row_model.rs:263
 msgid "Section Header"
-msgstr ""
+msgstr "Заглавие на раздел"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "Спиране на процеса"
+msgstr "Услуга"
 
 #: src/process_tree/row_model.rs:265
-#, fuzzy
 msgid "App"
-msgstr "Приложения"
+msgstr "Приложение"
 
 #: src/process_tree/service_details_dialog.rs:203
 msgid "Copy logs to clipboard"
-msgstr ""
+msgstr "Копирай логовете в клипборда"
 
 #: src/application.rs:409
 msgid "translator-credits"
@@ -2078,49 +2023,49 @@ msgstr "преводачески-заслуги"
 #, rust-format
 msgid "{} year"
 msgid_plural "{} years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} година"
+msgstr[1] "{} години"
 
 #: src/main.rs:107
 #, rust-format
 msgid "{} month"
 msgid_plural "{} months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} месец"
+msgstr[1] "{} месеци"
 
 #: src/main.rs:111
 #, rust-format
 msgid "{} day"
 msgid_plural "{} days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} ден"
+msgstr[1] "{} дни"
 
 #: src/main.rs:115
 #, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} час"
+msgstr[1] "{} часа"
 
 #: src/main.rs:119 src/main.rs:184
 #, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} минута"
+msgstr[1] "{} минути"
 
 #: src/main.rs:123 src/main.rs:182
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
-msgstr[0] "{} секунди"
+msgstr[0] "{} секунда"
 msgstr[1] "{} секунди"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}, {} and {}"
-msgstr "{} {}bps"
+msgstr "{}, {} и {}"
 
 #. Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days
 #. Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours
@@ -2128,15 +2073,15 @@ msgstr "{} {}bps"
 #: src/main.rs:162 src/main.rs:165 src/main.rs:168
 #, rust-format
 msgid "{} and {}"
-msgstr ""
+msgstr "{} и {}"
 
 #: src/main.rs:174
 msgid "Less than a minute"
-msgstr ""
+msgstr "По-малко от минута"
 
 #: src/main.rs:404
 msgid "_Quit"
-msgstr ""
+msgstr "_Излез"
 
 #, fuzzy
 #~ msgid "App Page"

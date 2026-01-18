@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-05-12 08:01+0000\n"
-"Last-Translator: Angel Sherry <yohaneshiro@vivaldi.net>\n"
+"PO-Revision-Date: 2025-12-09 11:00+0000\n"
+"Last-Translator: 默想刃Mokuso YB <mokusoyb@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/mission-center/mission-center/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -42,11 +42,11 @@ msgid "Monitor system resource usage"
 msgstr "監控系統資源使用情況"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:18
-#, fuzzy
 msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
-msgstr "監控您的 CPU、記憶體、磁碟、網路和 GPU 使用情況"
+msgstr "監控您的 CPU、記憶體、磁碟、網路和 GPU 使用情況，並提供個別應用程式及處理程序"
+"的詳細統計資訊"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 #, fuzzy
@@ -99,9 +99,8 @@ msgstr ""
 "門的 NVTOP 專案提供支援"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:33
-#, fuzzy
 msgid "Monitor system fans"
-msgstr "監控系統資源使用情況"
+msgstr "監控系統風扇"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:34
 msgid "See a breakdown of resource usage by app and process"
@@ -155,13 +154,12 @@ msgid "Which page is shown on application startup"
 msgstr "應用程式啟動時顯示的頁面"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:51
-#, fuzzy
 msgid "Interface Style"
-msgstr "介面名稱："
+msgstr "介面風格："
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:52
 msgid "If light or dark interface style should be used"
-msgstr ""
+msgstr "是否應使用亮色或暗色介面風格"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:58
 msgid "DEPRECATED! NO LONGER IN USE!"
@@ -178,34 +176,29 @@ msgid "How many points should be displayed on each chart?"
 msgstr "每張圖表要顯示多少點？"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:75
-#, fuzzy
 msgid "Whether or not to use bits or bytes (default) for memory"
-msgstr "是否使用 bits（位元，預設）或 Bytes （位元組）表示網路速度"
+msgstr "是否使用 bits（位元）或 Bytes （位元組，預設）表示記憶體"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:80
-#, fuzzy
 msgid "Whether or not to use base-10 or base-2 (default) for memory"
-msgstr "是否使用 bits（位元，預設）或 Bytes （位元組）表示網路速度"
+msgstr "是否使用 10 進制或 2 進制（預設）表示記憶體"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:85
-#, fuzzy
 msgid "Whether or not to use bits or bytes (default) for drive speed + size"
-msgstr "是否使用 bits（位元，預設）或 Bytes （位元組）表示網路速度"
+msgstr "是否使用 bits（位元）或 Bytes （位元組，預設）表示磁碟速度及大小"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:90
-#, fuzzy
 msgid ""
 "Whether or not to use base-10 or base-2 (default) for drive speed + size"
-msgstr "是否使用 bits（位元，預設）或 Bytes （位元組）表示網路速度"
+msgstr "是否使用 10 進制或 2 進制（預設）表示磁碟速度及大小"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:95
 msgid "Whether or not to use bits (default) or Bytes for network speed"
 msgstr "是否使用 bits（位元，預設）或 Bytes （位元組）表示網路速度"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:100
-#, fuzzy
 msgid "Whether or not to use base-10 (default) or base-2 for network speed"
-msgstr "是否使用 bits（位元，預設）或 Bytes （位元組）表示網路速度"
+msgstr "是否使用 10 進制（預設）或 2 進制表示表示網路速度"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:105
 msgid ""
@@ -233,7 +226,7 @@ msgstr "顯示根據可用核心數量縮放的應用程式和進程的 CPU 使�
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:130
 msgid "Show a separator between each column in the Apps view"
-msgstr ""
+msgstr "於應用程式頁面中的每列之間顯示分隔線"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:135
 #, fuzzy
@@ -250,19 +243,16 @@ msgid "The order of columns in the Apps page view"
 msgstr "應用程式頁面檢視的排序方向"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
-msgstr "應用程式頁面檢視進行排序的欄位 ID"
+msgstr "服務頁面檢視排序依據的欄位名稱"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "應用程式頁面檢視的排序方向"
+msgstr "服務頁面檢視的排序方向"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "應用程式頁面檢視的排序方向"
+msgstr "服務頁面檢視的欄位排序"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -324,7 +314,6 @@ msgid "Show the swap graph"
 msgstr "顯示交換空間圖表"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
-#, fuzzy
 msgid "Show the gpu encode-decode graph"
 msgstr "顯示 GPU 編解碼圖表"
 
@@ -384,7 +373,7 @@ msgstr "類型："
 #: resources/ui/apps_page/details_dialog.blp:132
 #: resources/ui/process_column_view/process_details_dialog.blp:140
 msgid "Command Line"
-msgstr ""
+msgstr "命令列"
 
 #: resources/ui/apps_page/details_dialog.blp:154
 #: resources/ui/process_column_view/process_details_dialog.blp:162
@@ -449,36 +438,36 @@ msgstr "GPU 記憶體"
 
 #: resources/ui/apps_page/page.blp:75
 msgid "Collapse all apps and processes"
-msgstr ""
+msgstr "折疊所有已展開的應用程式及處理程序"
 
 #: resources/ui/apps_page/page.blp:87 resources/ui/services_page/page.blp:94
 #: resources/ui/keyboard_shortcuts.blp:112
 msgid "Collapse All"
-msgstr ""
+msgstr "全部折疊"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
-msgstr ""
+msgstr "退出失敗"
 
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
-msgstr ""
+msgstr "終止"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:31
 msgid "In Use:"
-msgstr ""
+msgstr "使用中："
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:36
 msgid "Modified:"
-msgstr ""
+msgstr "已修改："
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:41
 msgid "Standby:"
-msgstr ""
+msgstr "待機中："
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:46
 msgid "Free:"
-msgstr ""
+msgstr "閒置中："
 
 #: resources/ui/performance_page/cpu.blp:63
 #: resources/ui/performance_page/gpu.blp:72
@@ -590,11 +579,11 @@ msgstr "複製"
 
 #: resources/ui/performance_page/disk.blp:66
 msgid "Show SMART Data"
-msgstr ""
+msgstr "顯示 SMART 資料"
 
 #: resources/ui/performance_page/disk.blp:77
 msgid "Eject Disk"
-msgstr ""
+msgstr "退出磁碟"
 
 #: resources/ui/performance_page/disk.blp:99
 msgid "Active time over "
@@ -619,7 +608,7 @@ msgstr "風扇速度"
 
 #: resources/ui/performance_page/fan_details.blp:98
 msgid "PWM Percentage"
-msgstr ""
+msgstr "PWM 百分比"
 
 #: resources/ui/performance_page/fan_details.blp:125
 msgid "Current Temperature"
@@ -753,11 +742,11 @@ msgstr "IPv6 位址："
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:33
 msgid "Smart Data"
-msgstr ""
+msgstr "S.M.A.R.T. 資料"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:48
 msgid "Last Updated"
-msgstr ""
+msgstr "上次更新"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:72
 #, fuzzy
@@ -766,21 +755,21 @@ msgstr "功率消耗"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:96
 msgid "Drive Health"
-msgstr ""
+msgstr "硬碟健康狀態"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:120
 msgid "SMART Test Status"
-msgstr ""
+msgstr "S.M.A.R.T. 測試狀態"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
 msgid "Attribute"
-msgstr ""
+msgstr "屬性"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
 msgid "Value"
-msgstr ""
+msgstr "數值"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
 #, fuzzy
@@ -799,7 +788,7 @@ msgstr "執行緒"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:199
 msgid "Worst"
-msgstr ""
+msgstr "最差"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:211
 #, fuzzy
@@ -808,7 +797,7 @@ msgstr "更新速度"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:217
 msgid "Assessment"
-msgstr ""
+msgstr "評估"
 
 #: resources/ui/performance_page/gpu_details.blp:51
 #: resources/ui/performance_page/cpu_details.blp:46
@@ -877,13 +866,13 @@ msgstr "PCI 匯流排位址："
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:25
 msgid "Failed To Get SMART Data"
-msgstr ""
+msgstr "取得 S.M.A.R.T. 資料失敗"
 
 #: resources/ui/performance_page/disk_smart_failure_dialog.blp:31
 msgid ""
 "There was a problem fetching SMART data. Try running from the command line "
 "to get more information."
-msgstr ""
+msgstr "取得 S.M.A.R.T. 資料時出錯。請嘗試從終端機運行來取得更多資訊。"
 
 #: resources/ui/performance_page/disk_details.blp:63
 msgid "Read speed"
@@ -925,15 +914,15 @@ msgstr "系統磁碟："
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN："
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "序號："
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "轉速："
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1030,11 +1019,11 @@ msgstr "將圖表繪製為平滑線而不是鋸齒線"
 
 #: resources/ui/preferences/page.blp:54
 msgid "Sliding Graphs"
-msgstr ""
+msgstr "滑動式圖表"
 
 #: resources/ui/preferences/page.blp:55
 msgid "Animate graphs (may negatively impact performance)"
-msgstr ""
+msgstr "圖表動畫化（可能造成效能減損）"
 
 #: resources/ui/preferences/page.blp:59
 msgid "Scale Network Graphs Dynamically"
@@ -1090,7 +1079,7 @@ msgstr "排序狀態和進程列表將在程式關閉後保存"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
-msgstr ""
+msgstr "記住列排序"
 
 #: resources/ui/preferences/page.blp:115
 #, fuzzy
@@ -1108,38 +1097,37 @@ msgstr "顯示根據可用核心數量縮放的應用程式和進程的 CPU 使�
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
-msgstr ""
+msgstr "顯示每列分隔線"
 
 #: resources/ui/preferences/page.blp:125
 msgid "Show a separator between each column"
-msgstr ""
+msgstr "於每列顯示分隔線"
 
 #: resources/ui/preferences/page.blp:130
 msgid "Global Units"
-msgstr ""
+msgstr "全域單位"
 
 #: resources/ui/preferences/page.blp:133
-#, fuzzy
 msgid "Memory Usage Unit"
-msgstr "記憶體使用率"
+msgstr "記憶體使用量單位"
 
 #: resources/ui/preferences/page.blp:140
 msgid "Use Bytes as a Unit of Measurement for Memory"
-msgstr ""
+msgstr "使用位元組作為記憶體測量單位"
 
 #: resources/ui/preferences/page.blp:141 resources/ui/preferences/page.blp:179
 #: resources/ui/preferences/page.blp:217
 msgid "Bytes"
-msgstr ""
+msgstr "位元組"
 
 #: resources/ui/preferences/page.blp:145
 msgid "Use Bits as a Unit of Measurement for Memory"
-msgstr ""
+msgstr "使用位元作為記憶體測量單位"
 
 #: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
 #: resources/ui/preferences/page.blp:222
 msgid "Bits"
-msgstr ""
+msgstr "位元"
 
 #: resources/ui/preferences/page.blp:152
 #, fuzzy
@@ -1148,73 +1136,73 @@ msgstr "記憶體使用率"
 
 #: resources/ui/preferences/page.blp:159
 msgid "Use Base 10 for Memory"
-msgstr ""
+msgstr "為記憶體使用 10 進制"
 
 #: resources/ui/preferences/page.blp:160 resources/ui/preferences/page.blp:198
 #: resources/ui/preferences/page.blp:236
 msgid "Base 10"
-msgstr ""
+msgstr "10 進制"
 
 #: resources/ui/preferences/page.blp:164
 msgid "Use Base 2 for Memory"
-msgstr ""
+msgstr "為記憶體使用 2 進制"
 
 #: resources/ui/preferences/page.blp:165 resources/ui/preferences/page.blp:203
 #: resources/ui/preferences/page.blp:241
 msgid "Base 2"
-msgstr ""
+msgstr "2 進制"
 
 #: resources/ui/preferences/page.blp:171
 msgid "Drive Usage Unit"
-msgstr ""
+msgstr "硬碟使用量單位"
 
 #: resources/ui/preferences/page.blp:178
 msgid "Use Bytes as a Unit of Measurement for Disk Drives"
-msgstr ""
+msgstr "使用位元組作為磁碟測量單位"
 
 #: resources/ui/preferences/page.blp:183
 msgid "Use Bits as a Unit of Measurement for Disk Drives"
-msgstr ""
+msgstr "使用位元作為磁碟測量單位"
 
 #: resources/ui/preferences/page.blp:190
 msgid "Drive Usage Base"
-msgstr ""
+msgstr "磁碟使用量進制"
 
 #: resources/ui/preferences/page.blp:197
 msgid "Use Base 10 for Disk Drives"
-msgstr ""
+msgstr "為磁碟使用 10 進制"
 
 #: resources/ui/preferences/page.blp:202
 msgid "Use Base 2 for Disk Drives"
-msgstr ""
+msgstr "為磁碟使用 2 進制"
 
 #: resources/ui/preferences/page.blp:209
 msgid "Network Usage Unit"
-msgstr ""
+msgstr "網路使用量單位"
 
 #: resources/ui/preferences/page.blp:216
 msgid "Use Bytes as a Unit of Measurement for Network Interfaces"
-msgstr ""
+msgstr "使用位元組作為網路介面卡測量單位"
 
 #: resources/ui/preferences/page.blp:221
 msgid "Use Bits as a Unit of Measurement for Network Interfaces"
-msgstr ""
+msgstr "使用位元作為網路介面卡測量單位"
 
 #: resources/ui/preferences/page.blp:228
 msgid "Network Usage Base"
-msgstr ""
+msgstr "網路使用量進制"
 
 #: resources/ui/preferences/page.blp:235
 msgid "Use Base 10 for Network Interfaces"
-msgstr ""
+msgstr "為網路介面卡使用 10 進制"
 
 #: resources/ui/preferences/page.blp:240
 msgid "Use Base 2 for Network Interfaces"
-msgstr ""
+msgstr "為網路介面卡使用 2 進制"
 
 #: resources/ui/services_page/page.blp:84
 msgid "Collapse all expanded services"
-msgstr ""
+msgstr "折疊所有已展開的服務"
 
 #: resources/ui/services_page/page.blp:123
 #, fuzzy
@@ -1228,51 +1216,51 @@ msgstr "虛擬處理器："
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "篩選已停止的處理程序"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "篩選已停用的處理程序"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "移除所有篩選器"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "移除篩選器"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
 msgid "Follow system style"
-msgstr ""
+msgstr "使用系統主題"
 
 #: resources/ui/widgets/theme_selector.blp:35
 #: resources/ui/widgets/theme_selector.blp:38
 msgid "Light style"
-msgstr ""
+msgstr "亮色主題"
 
 #: resources/ui/widgets/theme_selector.blp:53
 #: resources/ui/widgets/theme_selector.blp:56
 msgid "Dark style"
-msgstr ""
+msgstr "暗色主題"
 
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "鍵盤快捷鍵"
 
 #: resources/ui/keyboard_shortcuts.blp:10
 msgid "Global"
-msgstr ""
+msgstr "全域"
 
 #: resources/ui/keyboard_shortcuts.blp:21
 msgid "Open Menu"
-msgstr ""
+msgstr "開啟選單"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "關閉視窗"
 
 #: resources/ui/keyboard_shortcuts.blp:36
 #, fuzzy
@@ -1281,7 +1269,7 @@ msgstr "偏好設定"
 
 #: resources/ui/keyboard_shortcuts.blp:41
 msgid "Show Keyboard Shortcuts"
-msgstr ""
+msgstr "顯示鍵盤快捷鍵"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 #, fuzzy
@@ -1314,7 +1302,7 @@ msgstr "切換側邊欄"
 
 #: resources/ui/keyboard_shortcuts.blp:89
 msgid "Select a Device"
-msgstr ""
+msgstr "選擇一個裝置"
 
 #: resources/ui/keyboard_shortcuts.blp:96
 #, fuzzy
@@ -1324,22 +1312,20 @@ msgstr "應用程式頁面"
 #: resources/ui/keyboard_shortcuts.blp:107
 #: resources/ui/keyboard_shortcuts.blp:145 resources/ui/window.blp:143
 msgid "Search"
-msgstr ""
+msgstr "搜尋"
 
 #: resources/ui/keyboard_shortcuts.blp:117
-#, fuzzy
 msgid "Stop App or Process"
-msgstr "終止進程"
+msgstr "終止應用程式或處理程序"
 
 #: resources/ui/keyboard_shortcuts.blp:122
-#, fuzzy
 msgid "Force Stop App or Process"
-msgstr "強制終止進程"
+msgstr "強制終止應用程式或處理程序"
 
 #: resources/ui/keyboard_shortcuts.blp:127
 #: resources/ui/keyboard_shortcuts.blp:165
 msgid "Show Details Dialog"
-msgstr ""
+msgstr "顯示詳細資訊彈出式視窗"
 
 #: resources/ui/keyboard_shortcuts.blp:134
 #, fuzzy
@@ -1352,9 +1338,8 @@ msgid "Start Service"
 msgstr "服務"
 
 #: resources/ui/keyboard_shortcuts.blp:155
-#, fuzzy
 msgid "Stop Service"
-msgstr "服務"
+msgstr "停止服務"
 
 #: resources/ui/keyboard_shortcuts.blp:160
 #, fuzzy
@@ -1371,11 +1356,12 @@ msgid "Name"
 msgstr "名稱"
 
 #: resources/ui/process_column_view/column_view_frame.blp:66
-#, fuzzy
 msgid ""
 "Shared\n"
 "Memory"
-msgstr "記憶體"
+msgstr ""
+"共享\n"
+"記憶體"
 
 #: resources/ui/process_column_view/column_view_frame.blp:72
 #: src/performance_page/mod.rs:1131 src/process_tree/column_view_frame.rs:565
@@ -1385,7 +1371,7 @@ msgstr "磁碟"
 
 #: resources/ui/process_column_view/process_action_bar.blp:34
 msgid "Stop the selected app"
-msgstr ""
+msgstr "停止選擇的應用程式"
 
 #: resources/ui/process_column_view/process_action_bar.blp:46
 #: resources/ui/process_column_view/process_action_bar.blp:98
@@ -1396,17 +1382,16 @@ msgstr "停止"
 
 #: resources/ui/process_column_view/process_action_bar.blp:53
 msgid "Force stop the selected app"
-msgstr ""
+msgstr "強制停止選擇的應用程式"
 
 #: resources/ui/process_column_view/process_action_bar.blp:65
 #: resources/ui/process_column_view/process_action_bar.blp:103
-#, fuzzy
 msgid "Force Stop"
-msgstr "強制終止進程"
+msgstr "強制停止"
 
 #: resources/ui/process_column_view/process_action_bar.blp:73
 msgid "Show details of the selected app"
-msgstr ""
+msgstr "顯示已選應用程式的詳細資訊"
 
 #: resources/ui/process_column_view/process_action_bar.blp:85
 #: resources/ui/process_column_view/process_action_bar.blp:154
@@ -1417,47 +1402,47 @@ msgstr "詳細資訊"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "發送訊號"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "暫停（STOP）"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "繼續（CONT）"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "掛斷（HUP）"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "中斷（INT）"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "終止（TERM）"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "殺死（KILL）"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "使用者自訂訊號 1（USR1）"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "使用者自訂訊號 2（USR2）"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "應用程式 ID"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
-msgstr ""
+msgstr "啟動選擇的服務"
 
 #: resources/ui/process_column_view/service_action_bar.blp:47
 #: resources/ui/process_column_view/service_action_bar.blp:118
@@ -1466,11 +1451,11 @@ msgstr "啟動"
 
 #: resources/ui/process_column_view/service_action_bar.blp:54
 msgid "Stop the selected service"
-msgstr ""
+msgstr "停止選擇的服務"
 
 #: resources/ui/process_column_view/service_action_bar.blp:74
 msgid "Restart the selected service"
-msgstr ""
+msgstr "重啟選擇的服務"
 
 #: resources/ui/process_column_view/service_action_bar.blp:86
 #: resources/ui/process_column_view/service_action_bar.blp:128
@@ -1479,7 +1464,7 @@ msgstr "重新啟動"
 
 #: resources/ui/process_column_view/service_action_bar.blp:93
 msgid "Show details of the selected service"
-msgstr ""
+msgstr "顯示已選服務的詳細資訊"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:33
 msgid "Service Details"
@@ -1543,7 +1528,7 @@ msgstr "群組"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "檔案位置"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
@@ -1568,11 +1553,11 @@ msgstr "Vulkan 版本："
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "套件管理器"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "套件管理器版本"
 
 #: resources/ui/about_system_dialog.blp:183
 #, fuzzy
@@ -1581,7 +1566,7 @@ msgstr "顯示風扇資訊"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "核心版本"
 
 #: resources/ui/about_system_dialog.blp:245
 #, fuzzy
@@ -1590,7 +1575,7 @@ msgstr "顯示磁碟資訊"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "視窗系統"
 
 #: resources/ui/about_system_dialog.blp:344
 #, fuzzy
@@ -1628,7 +1613,7 @@ msgstr "顯示磁碟資訊"
 
 #: resources/ui/window.blp:148
 msgid "Main Menu"
-msgstr ""
+msgstr "主選單"
 
 #: resources/ui/window.blp:178
 msgid "Loading..."
@@ -1652,11 +1637,11 @@ msgstr "偏好設定"
 
 #: resources/ui/window.blp:242
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "鍵盤快捷鍵(_K)"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "關於系統(_A)"
 
 #: resources/ui/window.blp:256
 #, fuzzy
@@ -1664,21 +1649,21 @@ msgid "_About Mission Center"
 msgstr "關於任務中心"
 
 #: src/apps_page/mod.rs:259
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
-msgstr[0] "{} 個運作中的服務"
+msgstr[0] "{} 個運作中的應用程式"
 
 #: src/apps_page/mod.rs:269
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Running Process"
 msgid_plural "{} Running Processes"
-msgstr[0] "{} 個運作中的服務"
+msgstr[0] "{} 個運作中的處理程序"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:95
 #, rust-format
 msgid "{} ago"
-msgstr ""
+msgstr "{} 前"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:98
 #: src/performance_page/cpu.rs:321 src/performance_page/cpu.rs:332
@@ -1695,36 +1680,40 @@ msgid "Unknown"
 msgstr "未知"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:130
+#, fuzzy
 msgid "Pre-Fail"
-msgstr ""
+msgstr "Pre-Fail"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:131
+#, fuzzy
 msgid "Old-Age"
-msgstr ""
+msgstr "Old-Age"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:134
 msgid "Online"
-msgstr ""
+msgstr "線上"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:135
 msgid "Offline"
-msgstr ""
+msgstr "離線"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:142
+#, fuzzy
 msgid "FAILING"
-msgstr ""
+msgstr "FAILING"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:147
 msgid "Failed in the past"
-msgstr ""
+msgstr "過去曾失效"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
+#, fuzzy
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
-msgstr ""
+msgstr "使用百分比"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:205
 #, fuzzy
@@ -1733,7 +1722,7 @@ msgstr "可用"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
-msgstr ""
+msgstr "備用區閾值"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:221
 #, fuzzy
@@ -1742,20 +1731,20 @@ msgstr "總接收"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:229
 msgid "Total Data Written"
-msgstr ""
+msgstr "總計寫入量"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:240
 msgid "Warning Temp Time"
-msgstr ""
+msgstr "過熱警告時間"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:248
 msgid "Critical Temp Time"
-msgstr ""
+msgstr "嚴重過熱時間"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:256
 #: src/performance_page/widgets/smart_data_dialog.rs:313
 msgid "Control Busy Time"
-msgstr ""
+msgstr "主控繁忙時間"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:264
 #, fuzzy
@@ -1777,74 +1766,74 @@ msgstr "目前溫度"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:279
 msgid "Temps"
-msgstr ""
+msgstr "溫度"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:281
 msgid "Unsafe Shutdowns"
-msgstr ""
+msgstr "不安全關機"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:289
 msgid "Media Errors"
-msgstr ""
+msgstr "介質錯誤"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:297
 msgid "Number Error Log Entries"
-msgstr ""
+msgstr "錯誤日誌數量"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:305
 msgid "Power Cycles"
-msgstr ""
+msgstr "通電循環數"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:249
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "In use ({})\n"
 "\n"
 "Memory used by the operating system and running applications"
 msgstr ""
-"使用中（{}B）\n"
+"使用中（{}）\n"
 "\n"
 "作業系統和正在執行的應用程式所使用的記憶體"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:279
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Modified ({})\n"
 "\n"
 "Memory whose contents must be written to disk before it can be used by "
 "another process"
 msgstr ""
-"已修改（{}B）\n"
+"已修改（{}）\n"
 "\n"
 "在其他處理程序可以使用之前，必須先將記憶體內容寫入磁碟"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:303
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Standby ({})\n"
 "\n"
 "Memory that contains cached data and code that is not actively in use"
 msgstr ""
-"待機（{}B）\n"
+"待機（{}）\n"
 "\n"
 "包含非活動使用的快取資料和程式碼的記憶體"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:316
-#, fuzzy, rust-format
+#, rust-format
 msgid ""
 "Free ({})\n"
 "\n"
 "Memory that is not currently in use, and that will be repurposed first when "
 "the operating system, drivers, or applications need more memory"
 msgstr ""
-"空閒（{}B）\n"
+"空閒（{}）\n"
 "\n"
 "當作業系統、驅動程式或應用程式需要更多記憶體時，優先重新分配的未使用的記憶體"
 
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} sectors"
-msgstr "{} 秒{}"
+msgstr "{} 個磁區"
 
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
@@ -1900,7 +1889,7 @@ msgstr "光碟機"
 
 #: src/performance_page/disk.rs:250 src/performance_page/mod.rs:1129
 msgid "Floppy"
-msgstr ""
+msgstr "軟碟"
 
 #: src/performance_page/disk.rs:251 src/performance_page/mod.rs:1130
 #, fuzzy
@@ -1952,30 +1941,30 @@ msgstr "記憶體"
 
 #: src/performance_page/gpu.rs:599
 msgid "Dedicated and shared memory usage over "
-msgstr ""
+msgstr "於以下期間內的獨占及共享記憶體使用量： "
 
 #: src/performance_page/gpu.rs:645
 msgid "Total Shared Memory"
-msgstr ""
+msgstr "共享記憶體總計"
 
 #: src/performance_page/memory.rs:376
 #, rust-format
 msgid "{} of {}"
-msgstr ""
+msgstr "{} 共 {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
 msgstr "無法獲取額外的記憶體資訊"
 
 #: src/performance_page/mod.rs:1136
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} ({})"
-msgstr "{} {}{}B"
+msgstr "{} {}（{}）"
 
 #: src/performance_page/mod.rs:2097 src/performance_page/mod.rs:2098
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}: {}"
-msgstr "{}: {} {}{}"
+msgstr "{}：{}"
 
 #: src/services_page/mod.rs:95
 #, fuzzy, rust-format
@@ -2005,11 +1994,11 @@ msgstr "全部停用"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "找不到目前篩選的服務"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "未套用篩選器"
 
 #: src/services_page/mod.rs:149
 #, fuzzy, rust-format
@@ -2033,7 +2022,7 @@ msgstr ""
 
 #: src/process_tree/row_model.rs:263
 msgid "Section Header"
-msgstr ""
+msgstr "分段表頭"
 
 #: src/process_tree/row_model.rs:264
 #, fuzzy
@@ -2047,7 +2036,7 @@ msgstr "應用程式"
 
 #: src/process_tree/service_details_dialog.rs:203
 msgid "Copy logs to clipboard"
-msgstr ""
+msgstr "複製日誌至剪貼簿"
 
 #: src/application.rs:409
 msgid "translator-credits"
@@ -2057,43 +2046,43 @@ msgstr "Peter Dave Hello <hsu@peterdavehello.org>"
 #, rust-format
 msgid "{} year"
 msgid_plural "{} years"
-msgstr[0] ""
+msgstr[0] "{} 年"
 
 #: src/main.rs:107
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} month"
 msgid_plural "{} months"
-msgstr[0] "{} 分鐘{} "
+msgstr[0] "{} 個月"
 
 #: src/main.rs:111
 #, rust-format
 msgid "{} day"
 msgid_plural "{} days"
-msgstr[0] ""
+msgstr[0] "{} 天"
 
 #: src/main.rs:115
 #, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
-msgstr[0] ""
+msgstr[0] "{} 小時"
 
 #: src/main.rs:119 src/main.rs:184
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
-msgstr[0] "{:} 分鐘"
+msgstr[0] "{} 分鐘"
 
 #: src/main.rs:123 src/main.rs:182
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
-msgstr[0] "{} 秒{}"
+msgstr[0] "{} 秒"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159
-#, fuzzy, rust-format
+#, rust-format
 msgid "{}, {} and {}"
-msgstr "{}: {} {}{}"
+msgstr "{}、{} 又 {}"
 
 #. Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days
 #. Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours
@@ -2101,11 +2090,11 @@ msgstr "{}: {} {}{}"
 #: src/main.rs:162 src/main.rs:165 src/main.rs:168
 #, rust-format
 msgid "{} and {}"
-msgstr ""
+msgstr "{} 又 {}"
 
 #: src/main.rs:174
 msgid "Less than a minute"
-msgstr ""
+msgstr "少於 1 分鐘"
 
 #: src/main.rs:404
 msgid "_Quit"

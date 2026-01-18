@@ -25,8 +25,10 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib::{self, g_critical, WeakRef};
 
-use crate::app;
+use magpie_types::apps::icon::Icon;
+
 use crate::performance_page::widgets::EjectFailureDialog;
+use crate::{app, apply_icon_to_image};
 
 mod imp {
     use super::*;
@@ -52,23 +54,8 @@ mod imp {
     }
 
     impl EjectFailureRow {
-        pub fn set_icon(&self, icon: &str) {
-            let icon_path = std::path::Path::new(icon);
-            if icon_path.exists() {
-                self.icon.get().set_from_file(Some(&icon_path));
-                return;
-            }
-
-            let display = gtk::gdk::Display::default().unwrap();
-            let icon_theme = gtk::IconTheme::for_display(&display);
-
-            if icon_theme.has_icon(icon) {
-                self.icon.get().set_icon_name(Some(icon));
-            } else {
-                self.icon
-                    .get()
-                    .set_icon_name(Some("application-x-executable"));
-            }
+        pub fn set_icon(&self, icon: Icon) {
+            apply_icon_to_image(&self.icon.get(), icon, 48);
         }
     }
 
@@ -116,7 +103,7 @@ mod imp {
 #[derive(Clone)]
 pub struct EjectFailureRowBuilder {
     pid: u32,
-    icon: glib::GString,
+    icon: Icon,
     name: glib::GString,
     id: String,
 
@@ -129,7 +116,7 @@ impl EjectFailureRowBuilder {
     pub fn new() -> Self {
         Self {
             pid: 0,
-            icon: "application-x-executable-symbolic".into(),
+            icon: Icon::default(),
             name: glib::GString::default(),
             id: String::from(""),
 
@@ -144,7 +131,7 @@ impl EjectFailureRowBuilder {
         self
     }
 
-    pub fn icon(mut self, icon: &str) -> Self {
+    pub fn icon(mut self, icon: Icon) -> Self {
         self.icon = icon.into();
         self
     }
@@ -174,7 +161,7 @@ impl EjectFailureRowBuilder {
         {
             let this = this.imp();
 
-            this.set_icon(self.icon.as_str());
+            this.set_icon(self.icon);
             this.pid.set_label(&self.pid.to_string());
             this.name.set_label(self.name.as_str());
             this.open_files

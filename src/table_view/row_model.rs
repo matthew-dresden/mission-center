@@ -20,11 +20,14 @@
 
 use std::cell::{Cell, RefCell};
 
-use crate::i18n::i18n;
 use gtk::{
     gio, glib,
     glib::{prelude::*, subclass::prelude::*, ParamSpec, Properties, Value},
 };
+
+use magpie_types::apps::icon::Icon;
+
+use crate::i18n::i18n;
 
 mod imp {
     use super::*;
@@ -41,8 +44,6 @@ mod imp {
         #[property(get, set)]
         pub service_id: Cell<u64>,
 
-        #[property(get = Self::icon, set = Self::set_icon)]
-        pub icon: Cell<glib::GString>,
         #[property(get = Self::name, set = Self::set_name)]
         pub name: Cell<glib::GString>,
 
@@ -87,6 +88,11 @@ mod imp {
         #[property(get = Self::command_line, set = Self::set_command_line)]
         pub command_line: Cell<glib::GString>,
 
+        #[property(get, set)]
+        pub icon_changed: Cell<bool>,
+
+        pub neo_icon: Cell<Icon>,
+
         pub children: RefCell<gio::ListStore>,
     }
 
@@ -99,8 +105,7 @@ mod imp {
 
                 service_id: Cell::new(0),
 
-                icon: Cell::new(glib::GString::default()),
-                name: Cell::new(glib::GString::default()),
+                name: Cell::new(Default::default()),
 
                 content_type: Cell::new(ContentType::SectionHeader),
                 section_type: Cell::new(SectionType::FirstSection),
@@ -125,6 +130,9 @@ mod imp {
 
                 command_line: Cell::new(Default::default()),
 
+                icon_changed: Cell::new(false),
+                neo_icon: Cell::new(Icon::default()),
+
                 children: RefCell::new(gio::ListStore::new::<super::RowModel>()),
             }
         }
@@ -142,15 +150,17 @@ mod imp {
             self.id.set(glib::GString::from(id));
         }
 
-        pub fn icon(&self) -> glib::GString {
-            let icon = self.icon.take();
-            self.icon.set(icon.clone());
+        pub fn neo_icon(&self) -> Icon {
+            let neo_icon = self.neo_icon.take();
+            self.neo_icon.set(neo_icon.clone());
 
-            icon
+            neo_icon
         }
 
-        pub fn set_icon(&self, icon: &str) {
-            self.icon.set(glib::GString::from(icon));
+        pub fn set_icon(&self, icon: Icon) {
+            self.neo_icon.set(icon);
+
+            self.obj().set_icon_changed(!self.obj().icon_changed());
         }
 
         pub fn name(&self) -> glib::GString {
@@ -287,7 +297,7 @@ pub struct RowModelBuilder {
 
     service_id: u64,
 
-    icon: glib::GString,
+    neo_icon: Icon,
     name: glib::GString,
     command_line: glib::GString,
 
@@ -324,7 +334,7 @@ impl RowModelBuilder {
 
             service_id: 0,
 
-            icon: "application-x-executable-symbolic".into(),
+            neo_icon: Icon::default(),
             name: glib::GString::default(),
             command_line: Default::default(),
 
@@ -366,8 +376,8 @@ impl RowModelBuilder {
         self
     }
 
-    pub fn icon(mut self, icon: &str) -> Self {
-        self.icon = icon.into();
+    pub fn neo_icon(mut self, neo_icon: Icon) -> Self {
+        self.neo_icon = neo_icon.into();
         self
     }
 
@@ -475,7 +485,7 @@ impl RowModelBuilder {
             this.id.set(self.id);
             this.pid.set(self.pid);
             this.service_id.set(self.service_id);
-            this.icon.set(self.icon);
+            this.neo_icon.set(self.neo_icon);
             this.name.set(self.name);
 
             this.section_type.set(self.section_type);

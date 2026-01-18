@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-05-31 10:03+0000\n"
-"Last-Translator: Norbert V <norbert@vassy.com>\n"
+"PO-Revision-Date: 2025-11-29 01:00+0000\n"
+"Last-Translator: Nota Inutilis <hugo@notainutilis.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/fr/>\n"
 "Language: fr\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
 msgid "Mission Center"
-msgstr "Centre de mission"
+msgstr "Mission Center"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:9
 msgid ""
@@ -35,7 +35,7 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:6
 msgid "Mission Center Developers"
-msgstr "Développeurs de Centre de Mission"
+msgstr "Développeurs de Mission Center"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:16
 msgid "Monitor system resource usage"
@@ -1297,7 +1297,7 @@ msgstr "Menu principal"
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "Fermer la fenêtre"
 
 #: resources/ui/keyboard_shortcuts.blp:36
 #, fuzzy
@@ -1580,12 +1580,14 @@ msgid "Version"
 msgstr "Version Vulkan :"
 
 #: resources/ui/about_system_dialog.blp:136
+#, fuzzy
 msgid "Package Manager"
-msgstr ""
+msgstr "Gestionnaire de paquets"
 
 #: resources/ui/about_system_dialog.blp:164
+#, fuzzy
 msgid "Package Manager Version"
-msgstr ""
+msgstr "Version du gestionnaire de paquets"
 
 #: resources/ui/about_system_dialog.blp:183
 #, fuzzy
@@ -1668,12 +1670,13 @@ msgid "_Keyboard Shortcuts"
 msgstr "_Raccourcis clavier"
 
 #: resources/ui/window.blp:249
+#, fuzzy
 msgid "_About System"
-msgstr ""
+msgstr "_À propos du système"
 
 #: resources/ui/window.blp:256
 msgid "_About Mission Center"
-msgstr "À propos du _Centre de mission"
+msgstr "À propos de _Mission Center"
 
 #: src/apps_page/mod.rs:259
 #, rust-format
@@ -1717,12 +1720,14 @@ msgid "Old-Age"
 msgstr ""
 
 #: src/performance_page/widgets/smart_data_dialog.rs:134
+#, fuzzy
 msgid "Online"
-msgstr ""
+msgstr "En ligne"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:135
+#, fuzzy
 msgid "Offline"
-msgstr ""
+msgstr "Hors ligne"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:142
 msgid "FAILING"
@@ -2122,7 +2127,7 @@ msgstr "{} : {} {}{}"
 #: src/main.rs:162 src/main.rs:165 src/main.rs:168
 #, rust-format
 msgid "{} and {}"
-msgstr ""
+msgstr "{} et {}"
 
 #: src/main.rs:174
 msgid "Less than a minute"

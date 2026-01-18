@@ -22,17 +22,21 @@ use std::cell::{Cell, OnceCell};
 
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
+use gtk::glib::g_critical;
 use gtk::{gio, glib, prelude::*};
 
-use super::{widgets::GraphWidget, PageExt};
+use super::PageExt;
+use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
+use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 
 mod imp {
     use super::*;
-    use crate::DataType;
 
     const GRAPH_SELECTION_OVERALL: i32 = 1;
     const GRAPH_SELECTION_ALL: i32 = 2;
+    const GRAPH_SELECTION_ALL_THREADS: i32 = 3;
+    const GRAPH_SELECTION_ALL_THREADS_STACKED: i32 = 4;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageCpu)]
@@ -60,6 +64,8 @@ mod imp {
 
         pub utilization: OnceCell<gtk::Label>,
         pub speed: OnceCell<gtk::Label>,
+        pub speed_label: OnceCell<gtk::Label>,
+        pub speed_indicator: OnceCell<gtk::Label>,
         pub power_draw: OnceCell<gtk::Label>,
         pub processes: OnceCell<gtk::Label>,
         pub threads: OnceCell<gtk::Label>,
@@ -81,6 +87,52 @@ mod imp {
         pub energy_performance_preference_label: OnceCell<gtk::Label>,
     }
 
+    macro_rules! update_selection_callback {
+        ($toggled_action: ident, $this: ident, $new_idx: ident, $($disabled_actions: ident),*) => {
+            let this = match $this.upgrade() {
+                Some(this) => this,
+                None => return,
+            };
+
+            let graph_widgets: Vec<GraphWidget> = this.imp().graph_widgets.take();
+
+            graph_widgets[0].set_visible($new_idx == GRAPH_SELECTION_OVERALL);
+
+            if $new_idx == GRAPH_SELECTION_ALL_THREADS {
+                graph_widgets[1].set_dataset_max_scale(0, 100.);
+                graph_widgets[1].set_dataset_scaling(0, ScalingSettings::Fixed);
+                graph_widgets[1].set_visible(true);
+                graph_widgets[1].set_filled(0, false);
+            } else if $new_idx == GRAPH_SELECTION_ALL_THREADS_STACKED {
+                graph_widgets[1].set_dataset_max_scale(0, 100. * (graph_widgets.len() - 2) as f32);
+                graph_widgets[1].set_dataset_scaling(0, ScalingSettings::Stacking);
+                graph_widgets[1].set_visible(true);
+                graph_widgets[1].set_filled(0, true);
+            } else {
+                graph_widgets[1].set_visible(false);
+            }
+
+            for graph_widget in graph_widgets.iter().skip(2) {
+                graph_widget.set_visible($new_idx == GRAPH_SELECTION_ALL);
+            }
+
+            $($disabled_actions.set_state(&glib::Variant::from(false)));*;
+
+            $toggled_action.set_state(&glib::Variant::from(true));
+
+            settings!()
+                .set_int("performance-page-cpu-graph", $new_idx)
+                .unwrap_or_else(|_| {
+                    g_critical!(
+                                "MissionCenter::PerformancePage",
+                                "Failed to save selected CPU graph"
+                            );
+                });
+
+            this.imp().graph_widgets.set(graph_widgets);
+        }
+    }
+
     impl Default for PerformancePageCpu {
         fn default() -> Self {
             Self {
@@ -98,6 +150,8 @@ mod imp {
 
                 utilization: Default::default(),
                 speed: Default::default(),
+                speed_label: Default::default(),
+                speed_indicator: Default::default(),
                 power_draw: Default::default(),
                 processes: Default::default(),
                 threads: Default::default(),
@@ -139,8 +193,6 @@ mod imp {
 
     impl PerformancePageCpu {
         fn configure_actions(this: &super::PerformancePageCpu) {
-            use gtk::glib::*;
-
             let settings = settings!();
             let graph_selection = settings.int("performance-page-cpu-graph");
             let show_kernel_times = settings.boolean("performance-page-kernel-times");
@@ -158,75 +210,85 @@ mod imp {
                 None,
                 &glib::Variant::from(graph_selection == GRAPH_SELECTION_ALL),
             );
+            let all_threads_action = gio::SimpleAction::new_stateful(
+                "all-threads",
+                None,
+                &glib::Variant::from(graph_selection == GRAPH_SELECTION_ALL_THREADS),
+            );
+            let stacked_threads_action = gio::SimpleAction::new_stateful(
+                "all-threads-stacked",
+                None,
+                &glib::Variant::from(graph_selection == GRAPH_SELECTION_ALL_THREADS_STACKED),
+            );
+
+            let ova = overall_action.clone();
+            let ata = all_threads_action.clone();
+            let sta = stacked_threads_action.clone();
+
+            all_processors_action.connect_activate({
+                let this = this.downgrade();
+                move |action, _| {
+                    update_selection_callback!(action, this, GRAPH_SELECTION_ALL, ova, ata, sta);
+                }
+            });
+            actions.add_action(&all_processors_action);
+
             let apa = all_processors_action.clone();
+            let ata = all_threads_action.clone();
+            let sta = stacked_threads_action.clone();
+
             overall_action.connect_activate({
                 let this = this.downgrade();
                 move |action, _| {
-                    use gtk::glib::*;
-
-                    let this = match this.upgrade() {
-                        Some(this) => this,
-                        None => return,
-                    };
-
-                    let graph_widgets = this.imp().graph_widgets.take();
-
-                    graph_widgets[0].set_visible(true);
-
-                    for graph_widget in graph_widgets.iter().skip(1) {
-                        graph_widget.set_visible(false);
-                    }
-
-                    action.set_state(&glib::Variant::from(true));
-                    apa.set_state(&glib::Variant::from(false));
-
-                    settings!()
-                        .set_int("performance-page-cpu-graph", GRAPH_SELECTION_OVERALL)
-                        .unwrap_or_else(|_| {
-                            g_critical!(
-                                "MissionCenter::PerformancePage",
-                                "Failed to save selected CPU graph"
-                            );
-                        });
-
-                    this.imp().graph_widgets.set(graph_widgets);
+                    update_selection_callback!(
+                        action,
+                        this,
+                        GRAPH_SELECTION_OVERALL,
+                        apa,
+                        ata,
+                        sta
+                    );
                 }
             });
             actions.add_action(&overall_action);
 
+            let apa = all_processors_action.clone();
             let ova = overall_action.clone();
-            all_processors_action.connect_activate({
+            let sta = stacked_threads_action.clone();
+
+            all_threads_action.connect_activate({
                 let this = this.downgrade();
                 move |action, _| {
-                    let this = match this.upgrade() {
-                        Some(this) => this,
-                        None => return,
-                    };
-
-                    let graph_widgets = this.imp().graph_widgets.take();
-
-                    graph_widgets[0].set_visible(false);
-
-                    for graph_widget in graph_widgets.iter().skip(1) {
-                        graph_widget.set_visible(true);
-                    }
-
-                    action.set_state(&glib::Variant::from(true));
-                    ova.set_state(&glib::Variant::from(false));
-
-                    settings!()
-                        .set_int("performance-page-cpu-graph", GRAPH_SELECTION_ALL)
-                        .unwrap_or_else(|_| {
-                            g_critical!(
-                                "MissionCenter::PerformancePage",
-                                "Failed to save selected CPU graph"
-                            );
-                        });
-
-                    this.imp().graph_widgets.set(graph_widgets);
+                    update_selection_callback!(
+                        action,
+                        this,
+                        GRAPH_SELECTION_ALL_THREADS,
+                        apa,
+                        ova,
+                        sta
+                    );
                 }
             });
-            actions.add_action(&all_processors_action);
+            actions.add_action(&all_threads_action);
+
+            let apa = all_processors_action.clone();
+            let ova = overall_action.clone();
+            let ata = all_threads_action.clone();
+
+            stacked_threads_action.connect_activate({
+                let this = this.downgrade();
+                move |action, _| {
+                    update_selection_callback!(
+                        action,
+                        this,
+                        GRAPH_SELECTION_ALL_THREADS_STACKED,
+                        apa,
+                        ova,
+                        ata
+                    );
+                }
+            });
+            actions.add_action(&stacked_threads_action);
 
             let action = gio::SimpleAction::new_stateful(
                 "kernel_times",
@@ -249,7 +311,7 @@ mod imp {
                         .unwrap_or(false);
 
                     graph_widgets[0].set_data_visible(1, visible);
-                    for graph_widget in graph_widgets.iter().skip(1) {
+                    for graph_widget in graph_widgets.iter().skip(2) {
                         graph_widget.set_data_visible(1, visible);
                     }
 
@@ -415,14 +477,19 @@ mod imp {
             }
 
             // Update global CPU graph
-            graph_widgets[0].add_data_point(0, dynamic_cpu_info.total_usage_percent);
-            graph_widgets[0].add_data_point(1, dynamic_cpu_info.kernel_usage_percent);
+            graph_widgets[0].add_data_point(vec![
+                vec![dynamic_cpu_info.total_usage_percent],
+                vec![dynamic_cpu_info.kernel_usage_percent],
+            ]);
+            graph_widgets[1].add_data_point(vec![dynamic_cpu_info.core_usage_percent.clone()]);
 
             // Update per-core graphs
             for i in 0..dynamic_cpu_info.core_usage_percent.len() {
-                let graph_widget = &mut graph_widgets[i + 1];
-                graph_widget.add_data_point(0, dynamic_cpu_info.core_usage_percent[i]);
-                graph_widget.add_data_point(1, dynamic_cpu_info.core_kernel_usage_percent[i]);
+                let graph_widget = &mut graph_widgets[i + 2];
+                graph_widget.add_data_point(vec![
+                    vec![dynamic_cpu_info.core_usage_percent[i]],
+                    vec![dynamic_cpu_info.core_kernel_usage_percent[i]],
+                ]);
             }
 
             this.graph_widgets.set(graph_widgets);
@@ -435,10 +502,51 @@ mod imp {
             }
 
             if let Some(speed) = this.speed.get() {
-                speed.set_text(&format!(
-                    "{:.2} GHz",
-                    dynamic_cpu_info.current_frequency_mhz as f32 / 1000.
-                ));
+                // Check if we're using BogoMIPS instead of real frequency
+                let is_bogomips = dynamic_cpu_info
+                    .frequency_driver
+                    .as_ref()
+                    .map(|d| d.as_str() == "bogomips")
+                    .unwrap_or(false);
+
+                let tooltip_text = i18n_f(
+                    "Real CPU frequency data is unavailable (common in VMs, containers, or cloud instances). Displaying BogoMIPS value as a fallback. BogoMIPS is a delay loop calibration metric, not a true frequency measurement.",
+                    &[]
+                );
+
+                if is_bogomips {
+                    // Display raw BogoMIPS value with tooltip explanation
+                    speed.set_text(&format!(
+                        "{:.2} BogoMIPS",
+                        dynamic_cpu_info.current_frequency_mhz as f32
+                    ));
+                    speed.set_tooltip_text(Some(&tooltip_text));
+
+                    // Show the "(?)" indicator and set tooltips on label and indicator
+                    if let Some(indicator) = this.speed_indicator.get() {
+                        indicator.set_visible(true);
+                        indicator.set_tooltip_text(Some(&tooltip_text));
+                    }
+                    if let Some(label) = this.speed_label.get() {
+                        label.set_tooltip_text(Some(&tooltip_text));
+                    }
+                } else {
+                    // Display frequency in GHz
+                    speed.set_text(&format!(
+                        "{:.2} GHz",
+                        dynamic_cpu_info.current_frequency_mhz as f32 / 1000.
+                    ));
+                    speed.set_tooltip_text(None);
+
+                    // Hide the "(?)" indicator and clear tooltips
+                    if let Some(indicator) = this.speed_indicator.get() {
+                        indicator.set_visible(false);
+                        indicator.set_tooltip_text(None);
+                    }
+                    if let Some(label) = this.speed_label.get() {
+                        label.set_tooltip_text(None);
+                    }
+                }
             }
 
             if let Some(power_draw) = this.power_draw.get() {
@@ -518,13 +626,13 @@ mod imp {
             true
         }
 
-        pub fn update_animations(this: &super::PerformancePageCpu) -> bool {
+        pub fn update_animations(this: &super::PerformancePageCpu, new_ticks: f32) -> bool {
             let this = this.imp();
 
             let widgets = this.graph_widgets.take();
 
             for widget in &widgets {
-                widget.update_animation();
+                widget.update_animation(new_ticks);
             }
 
             this.graph_widgets.set(widgets);
@@ -671,102 +779,77 @@ mod imp {
             let settings = settings!();
             let graph_selection = settings.int("performance-page-cpu-graph");
             let show_kernel_times = settings.boolean("performance-page-kernel-times");
-            let data_points = settings.int("performance-page-data-points") as u32;
-            let delay = settings.uint64("app-update-interval-u64") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
 
             // Add one for overall CPU utilization
             let mut graph_widgets = vec![];
 
-            graph_widgets.push(GraphWidget::new());
+            let overall = GraphWidget::new(Some(&settings));
+            overall.set_base_color(&base_color);
+            overall.set_visible(graph_selection == GRAPH_SELECTION_OVERALL);
+
+            let mut usage_group = DatasetGroup::new();
+            usage_group.dataset_settings.scaling_settings = ScalingSettings::Fixed;
+            usage_group.dataset_settings.high_watermark = 100.;
+            usage_group.set_datasets(cpu_count);
+            let mut kernel_group = DatasetGroup::new();
+            kernel_group.dataset_settings.fill = false;
+            kernel_group.dataset_settings.dashed = true;
+            kernel_group.dataset_settings.visible = show_kernel_times;
+            kernel_group.dataset_settings.high_watermark = 100.;
+
+            overall.add_dataset(usage_group);
+            overall.add_dataset(kernel_group);
+
+            graph_widgets.push(overall);
+
+            let thread_wise = GraphWidget::new(Some(&settings));
+            thread_wise.set_base_color(&base_color);
+            thread_wise.set_visible(
+                graph_selection == GRAPH_SELECTION_ALL_THREADS
+                    || graph_selection == GRAPH_SELECTION_ALL_THREADS_STACKED,
+            );
+
+            let mut usage_group = DatasetGroup::new();
+            if graph_selection == GRAPH_SELECTION_ALL_THREADS_STACKED {
+                usage_group.dataset_settings.scaling_settings = ScalingSettings::Stacking;
+                usage_group.dataset_settings.high_watermark = 100. * cpu_count as f32;
+            } else {
+                usage_group.dataset_settings.scaling_settings = ScalingSettings::Fixed;
+                usage_group.dataset_settings.high_watermark = 100.;
+                usage_group.dataset_settings.fill = false;
+            }
+            usage_group.set_datasets(cpu_count);
+
+            thread_wise.add_dataset(usage_group);
+
+            graph_widgets.push(thread_wise);
+
             self.usage_graphs.attach(&graph_widgets[0], 0, 0, 1, 1);
-            graph_widgets[0].set_data_points(data_points);
-            graph_widgets[0].set_smooth_graphs(smooth);
-            graph_widgets[0].set_do_animation(sliding);
-            graph_widgets[0].set_expected_animation_ticks(delay);
-            graph_widgets[0].set_scroll(true);
-            graph_widgets[0].set_data_set_count(2);
-            graph_widgets[0].set_filled(1, false);
-            graph_widgets[0].set_dashed(1, true);
-            graph_widgets[0].set_data_visible(1, show_kernel_times);
-            graph_widgets[0].set_base_color(&base_color);
-            graph_widgets[0].set_visible(graph_selection == GRAPH_SELECTION_OVERALL);
-
-            let this = self.obj().upcast_ref::<super::PerformancePageCpu>().clone();
-            graph_widgets[0].connect_local("resize", true, move |_| {
-                let graph_widgets = this.imp().graph_widgets.take();
-
-                let width = graph_widgets[0].width() as f32;
-                let height = graph_widgets[0].height() as f32;
-
-                let mut a = width;
-                let mut b = height;
-                if width > height {
-                    a = height;
-                    b = width;
-                }
-
-                graph_widgets[0]
-                    .set_vertical_line_count((width * (a / b) / 30.).round().max(5.) as u32);
-
-                this.imp().graph_widgets.set(graph_widgets);
-
-                None
-            });
+            self.usage_graphs.attach(&graph_widgets[1], 0, 0, 1, 1);
 
             for i in 0..cpu_count {
                 let row_idx = i / col_count;
                 let col_idx = i % col_count;
 
-                let graph_widget_index = graph_widgets.len();
+                let new_graph = GraphWidget::new(Some(&settings));
+                new_graph.set_base_color(&base_color);
+                new_graph.set_visible(graph_selection == GRAPH_SELECTION_ALL);
 
-                graph_widgets.push(GraphWidget::new());
-                if graph_widget_index == 1 {
-                    let this = self.obj().upcast_ref::<super::PerformancePageCpu>().clone();
-                    graph_widgets[graph_widget_index].connect_local("resize", true, move |_| {
-                        let graph_widgets = this.imp().graph_widgets.take();
+                let mut usage_group = DatasetGroup::new();
+                usage_group.dataset_settings.high_watermark = 100.;
+                let mut kernel_group = DatasetGroup::new();
+                kernel_group.dataset_settings.fill = false;
+                kernel_group.dataset_settings.dashed = true;
+                kernel_group.dataset_settings.visible = show_kernel_times;
+                kernel_group.dataset_settings.high_watermark = 100.;
 
-                        for graph_widget in graph_widgets.iter().skip(1) {
-                            let width = graph_widget.width() as f32;
-                            let height = graph_widget.height() as f32;
+                new_graph.add_dataset(usage_group);
+                new_graph.add_dataset(kernel_group);
 
-                            let mut a = width;
-                            let mut b = height;
-                            if width > height {
-                                a = height;
-                                b = width;
-                            }
+                self.usage_graphs
+                    .attach(&new_graph, col_idx as i32, row_idx as i32, 1, 1);
 
-                            graph_widget.set_vertical_line_count(
-                                (width * (a / b) / 30.).round().max(5.) as u32,
-                            );
-                        }
-
-                        this.imp().graph_widgets.set(graph_widgets);
-
-                        None
-                    });
-                }
-                graph_widgets[graph_widget_index].set_data_points(data_points);
-                graph_widgets[graph_widget_index].set_smooth_graphs(smooth);
-                graph_widgets[graph_widget_index].set_do_animation(sliding);
-                graph_widgets[graph_widget_index].set_expected_animation_ticks(delay);
-                graph_widgets[graph_widget_index].set_data_set_count(2);
-                graph_widgets[graph_widget_index].set_scroll(true);
-                graph_widgets[graph_widget_index].set_filled(1, false);
-                graph_widgets[graph_widget_index].set_dashed(1, true);
-                graph_widgets[graph_widget_index].set_data_visible(1, show_kernel_times);
-                graph_widgets[graph_widget_index].set_base_color(&base_color);
-                graph_widgets[graph_widget_index]
-                    .set_visible(graph_selection == GRAPH_SELECTION_ALL);
-                self.usage_graphs.attach(
-                    &graph_widgets[graph_widget_index],
-                    col_idx as i32,
-                    row_idx as i32,
-                    1,
-                    1,
-                );
+                graph_widgets.push(new_graph);
             }
 
             self.graph_widgets.set(graph_widgets);
@@ -843,6 +926,16 @@ mod imp {
                 sidebar_content_builder
                     .object::<gtk::Label>("speed")
                     .expect("Could not find `speed` object in details pane"),
+            );
+            let _ = self.speed_label.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("speed_label")
+                    .expect("Could not find `speed_label` object in details pane"),
+            );
+            let _ = self.speed_indicator.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("speed_indicator")
+                    .expect("Could not find `speed_indicator` object in details pane"),
             );
             let _ = self.power_draw.set(
                 sidebar_content_builder
@@ -987,23 +1080,12 @@ impl PerformancePageCpu {
             let this = this.imp();
 
             let data_points = settings.int("performance-page-data-points") as u32;
-            let smooth = settings.boolean("performance-smooth-graphs");
-            let sliding = settings.boolean("performance-sliding-graphs");
             let delay = settings.uint64("app-update-interval-u64");
             let graph_max_duration =
                 (((delay as f64) * INTERVAL_STEP) * (data_points as f64)).round() as u32;
 
             this.graph_max_duration
                 .set_text(&to_short_human_readable_time(graph_max_duration));
-
-            let widgets = this.graph_widgets.take();
-            for graph_widget in &widgets {
-                graph_widget.set_data_points(data_points);
-                graph_widget.set_smooth_graphs(smooth);
-                graph_widget.set_do_animation(sliding);
-                graph_widget.set_expected_animation_ticks(delay as u32);
-            }
-            this.graph_widgets.set(widgets);
         }
         update_refresh_rate_sensitive_labels(&this, settings);
 
@@ -1023,22 +1105,6 @@ impl PerformancePageCpu {
                 }
             }
         });
-        settings.connect_changed(Some("performance-smooth-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
-        settings.connect_changed(Some("performance-sliding-graphs"), {
-            let this = this.downgrade();
-            move |settings, _| {
-                if let Some(this) = this.upgrade() {
-                    update_refresh_rate_sensitive_labels(&this, settings);
-                }
-            }
-        });
 
         this
     }
@@ -1051,7 +1117,7 @@ impl PerformancePageCpu {
         imp::PerformancePageCpu::update_readings(self, readings)
     }
 
-    pub fn update_animations(&self) -> bool {
-        imp::PerformancePageCpu::update_animations(self)
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
+        imp::PerformancePageCpu::update_animations(self, new_ticks)
     }
 }

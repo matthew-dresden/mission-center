@@ -60,13 +60,26 @@ Box root {
         orientation: vertical;
         spacing: 3;
 
-        Label {
-          styles [
-            "caption",
-          ]
-
+        Box speed_label_box {
+          spacing: 3;
           halign: start;
-          label: _("Speed");
+
+          Label speed_label {
+            styles [
+              "caption",
+            ]
+
+            label: _("Speed");
+          }
+
+          Label speed_indicator {
+            styles [
+              "caption",
+            ]
+
+            label: "(?)";
+            visible: false;
+          }
         }
 
         Label speed {

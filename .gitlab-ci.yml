@@ -81,7 +81,8 @@ stages:
     - flatpak install -y org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 org.gnome.Platform//49 org.gnome.Sdk//49
 
   ready_to_merge:
-    - if: '$CI_MERGE_REQUEST_LABELS !~ /CI::Skip Build/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /CI::Skip Build/'
+      when: never
 
 check-fmt:
   stage: test
@@ -94,6 +95,7 @@ check-fmt:
     - ./support/check-cargo-fmt.sh
     - echo $CI_MERGE_REQUEST_LABELS
   rules:
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 build-job-x86:
@@ -110,6 +112,7 @@ build-job-x86:
     - ninja -C _build
     - glib-compile-schemas --strict data/
   rules:
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 build-job-arm:
@@ -128,6 +131,7 @@ build-job-arm:
     - ninja -C _build
     - glib-compile-schemas --strict data/
   rules:
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 flatpak-job-x86:
@@ -148,6 +152,7 @@ flatpak-job-x86:
   rules:
     - if: "'true' == '$[[ inputs.BUILD_FLATPAK ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 flatpak-job-arm:
   stage: package-build
@@ -165,8 +170,9 @@ flatpak-job-arm:
     paths:
       - flatpak/missioncenter-aarch64.flatpak
   rules:
-    - if: "'true' == '$[[ inputs.BUILD_FLATPAK ]]'"
+    - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && 'true' == '$[[ inputs.BUILD_FLATPAK ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 package-build-job-x86:
   stage: package-build
@@ -187,9 +193,9 @@ package-build-job-x86:
       - 'logs.txt'
       - 'portable-x86_64.tar.gz'
   rules:
-    - if: "'' != '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
+    - if: "'' == '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
     - !reference [ ".shared", "ready_to_merge" ]
-    - when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 package-build-job-arm:
   stage: package-build
@@ -210,8 +216,9 @@ package-build-job-arm:
       - 'logs.txt'
       - 'portable-aarch64.tar.gz'
   rules:
-    - if: "'' != '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
+    - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && '' == '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
     - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 snap-job-x86:
   stage: package
@@ -233,6 +240,7 @@ snap-job-x86:
   rules:
     - if: "'true' == '$[[ inputs.BUILD_SNAP ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 snap-job-arm:
   stage: package
@@ -255,8 +263,9 @@ snap-job-arm:
     paths:
       - '**/*.snap'
   rules:
-    - if: "'true' == '$[[ inputs.BUILD_SNAP ]]'"
+    - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && 'true' == '$[[ inputs.BUILD_SNAP ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 appimage-job-x86:
   stage: package
@@ -280,6 +289,7 @@ appimage-job-x86:
   rules:
     - if: "'true' == '$[[ inputs.BUILD_APPIMAGE ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 appimage-job-arm:
   stage: package
@@ -303,5 +313,7 @@ appimage-job-arm:
     paths:
       - '**/*.AppImage'
   rules:
-    - if: "'true' == '$[[ inputs.BUILD_APPIMAGE ]]'"
+    - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && 'true' == '$[[ inputs.BUILD_APPIMAGE ]]'"
     - !reference [ ".shared", "ready_to_merge" ]
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    

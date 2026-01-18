@@ -25,6 +25,7 @@ use adw::PreferencesRow;
 use gtk::glib::{self};
 use gtk::prelude::{StaticTypeExt, WidgetExt};
 
+use crate::apply_icon_to_image;
 use crate::table_view::columns::*;
 use crate::table_view::row_model::{ContentType, RowModel};
 
@@ -114,20 +115,7 @@ mod imp {
                 _ => {} // should never happen
             }
 
-            let icon = model.icon();
-            let icon_path = std::path::Path::new(icon.as_str());
-            if icon_path.exists() {
-                self.icon.set_from_file(Some(&icon_path));
-                return;
-            }
-
-            let display = gtk::gdk::Display::default().unwrap();
-            let icon_theme = gtk::IconTheme::for_display(&display);
-            if icon_theme.has_icon(&icon) {
-                self.icon.set_icon_name(Some(&icon));
-            } else {
-                self.icon.set_icon_name(None);
-            }
+            apply_icon_to_image(&self.icon, model.imp().neo_icon(), 48);
 
             self.title.set_label(&model.name());
 

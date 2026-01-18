@@ -25,9 +25,10 @@ use std::time::Duration;
 
 use adw::{prelude::*, subclass::prelude::*};
 use glib::{g_critical, idle_add_local_once, ParamSpec, Propagation, Properties, Value};
-use gtk::glib::ControlFlow;
+use gtk::glib::{g_info, ControlFlow};
 use gtk::{gdk, gio, glib};
 
+use crate::application::INTERVAL_STEP;
 use crate::widgets::ListCell;
 use crate::widgets::ThemeSelector;
 use crate::{app, magpie_client::Readings, settings};
@@ -77,10 +78,6 @@ fn special_shortcuts(
 
     fn select_device_8(window: &MissionCenterWindow) -> bool {
         select_device(window, 7)
-    }
-
-    fn select_device_9(window: &MissionCenterWindow) -> bool {
-        select_device(window, 8)
     }
 
     fn toggle_search(window: &MissionCenterWindow) -> bool {
@@ -224,7 +221,6 @@ fn special_shortcuts(
         no_modifier_shortcuts.insert(gdk::Key::F6, select_device_6);
         no_modifier_shortcuts.insert(gdk::Key::F7, select_device_7);
         no_modifier_shortcuts.insert(gdk::Key::F8, select_device_8);
-        no_modifier_shortcuts.insert(gdk::Key::F9, select_device_9);
         shortcuts.insert(gdk::ModifierType::NO_MODIFIER_MASK, no_modifier_shortcuts);
 
         let mut ctrl_shortcuts = HashMap::<gdk::Key, fn(&MissionCenterWindow) -> bool>::new();
@@ -323,6 +319,9 @@ mod imp {
         summary_mode: Cell<bool>,
         #[property(get, set)]
         collapse_threshold: Cell<i32>,
+
+        pub last_refresh: Cell<u128>,
+        pub cached_refresh_ticks: Cell<u64>,
     }
 
     impl Default for MissionCenterWindow {
@@ -361,6 +360,8 @@ mod imp {
 
                 summary_mode: Cell::new(false),
                 collapse_threshold: Cell::new(0),
+                last_refresh: Cell::new(0),
+                cached_refresh_ticks: Cell::new(1),
             }
         }
     }
@@ -528,7 +529,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.select-tab-performance", &["<Control>1"]);
+            app.set_accels_for_action("win.select-tab-performance", &["<Control>1", "<Alt>1"]);
 
             let action = gio::SimpleAction::new("select-tab-apps", None);
             action.connect_activate({
@@ -546,7 +547,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.select-tab-apps", &["<Control>2"]);
+            app.set_accels_for_action("win.select-tab-apps", &["<Control>2", "<Alt>2"]);
 
             let action = gio::SimpleAction::new("select-tab-services", None);
             action.connect_activate({
@@ -564,7 +565,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.select-tab-services", &["<Control>3"]);
+            app.set_accels_for_action("win.select-tab-services", &["<Control>3", "<Alt>3"]);
 
             let action =
                 gio::SimpleAction::new_stateful("toggle-sidebar", None, &true.to_variant());
@@ -603,7 +604,7 @@ mod imp {
                 }
             });
             self.obj().add_action(&action);
-            app.set_accels_for_action("win.toggle-sidebar", &["<Control>T"]);
+            app.set_accels_for_action("win.toggle-sidebar", &["<Control>T", "F9"]);
 
             let action = gio::SimpleAction::new("close", None);
             action.connect_activate({
@@ -1011,14 +1012,18 @@ impl MissionCenterWindow {
             .property("application", application)
             .build();
 
-        sys_info.set_update_speed(settings.uint64("app-update-interval-u64"));
+        let interval = settings.uint64("app-update-interval-u64");
+        sys_info.set_update_speed(interval);
         sys_info.set_core_count_affects_percentages(
             settings.boolean("apps-page-core-count-affects-percentages"),
         );
 
+        this.imp().cached_refresh_ticks.set(interval);
+
         settings.connect_changed(Some("app-update-interval-u64"), |settings, _| {
             let update_speed = settings.uint64("app-update-interval-u64");
-            match app!().sys_info() {
+            let app = app!();
+            match app.sys_info() {
                 Ok(sys_info) => {
                     sys_info.set_update_speed(update_speed);
                 }
@@ -1030,9 +1035,31 @@ impl MissionCenterWindow {
                     );
                 }
             };
+
+            match app.window() {
+                None => {
+                    g_critical!(
+                        "MissionCenter",
+                        "Failed to get window from MissionCenterApplication",
+                    );
+                }
+                Some(window) => {
+                    window.imp().cached_refresh_ticks.set(update_speed);
+                }
+            }
         });
 
         this
+    }
+
+    #[inline]
+    fn get_current_timestamp() -> u128 {
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("System time before Unix epoch")
+            .as_micros()
     }
 
     pub fn setup_animations(&self) {
@@ -1041,7 +1068,14 @@ impl MissionCenterWindow {
 
             move || {
                 if let Some(this) = this.upgrade() {
-                    this.update_animations();
+                    this.update_animations(
+                        ((Self::get_current_timestamp()
+                            .saturating_sub(this.imp().last_refresh.get())
+                            as f64
+                            / 1_000_000.)
+                            / (this.imp().cached_refresh_ticks.get() as f64 * INTERVAL_STEP))
+                            .clamp(0., 1.) as _,
+                    );
                 }
 
                 ControlFlow::Continue
@@ -1128,15 +1162,25 @@ impl MissionCenterWindow {
             this.services_stack_page.set_visible(false);
         }
 
+        this.last_refresh.set(Self::get_current_timestamp());
+
+        self.update_animations(0.);
+
         result
     }
 
-    pub fn update_animations(&self) -> bool {
+    pub fn update_animations(&self, new_ticks: f32) -> bool {
         let mut result = true;
 
         let this = self.imp();
 
-        result &= this.performance_page.update_animations();
+        g_info!(
+            "MissionCenter",
+            "Updating with {} animation ticks",
+            new_ticks
+        );
+
+        result &= this.performance_page.update_animations(new_ticks);
 
         result
     }
