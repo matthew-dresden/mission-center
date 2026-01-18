@@ -24,10 +24,10 @@ use std::time::Duration;
 use gdk::pango::EllipsizeMode;
 use gtk::{gdk, glib, prelude::*, subclass::prelude::*};
 
-use crate::table_view::row_model::{ContentType, RowModel};
-use crate::widgets::ListCell;
 use crate::app;
 use crate::table_view::cached_icon::{CachedIcon, LightCachedIcon};
+use crate::table_view::row_model::{ContentType, RowModel};
+use crate::widgets::ListCell;
 
 mod imp {
     use super::*;
@@ -260,8 +260,12 @@ mod imp {
                 LightCachedIcon::Empty => {
                     CachedIcon::apply_blank(icon);
                 }
-                LightCachedIcon::StringPayload(p) => { CachedIcon::set_icon_from_stringlike(icon, &p); }
-                LightCachedIcon::AppCachedKey(k, w) => { app!().apply_app_icon(icon, k, w); }
+                LightCachedIcon::StringPayload(p) => {
+                    CachedIcon::set_icon_from_stringlike(icon, &p);
+                }
+                LightCachedIcon::AppCachedKey(k, w) => {
+                    app!().apply_app_icon(icon, k, w);
+                }
             }
         }
     }

@@ -114,7 +114,10 @@ mod imp {
                 _ => {} // should never happen
             }
 
-            model.imp().light_icon().apply_to_image_custom_size(&self.icon, 48);
+            model
+                .imp()
+                .light_icon()
+                .apply_to_image_custom_size(&self.icon, 48);
 
             self.title.set_label(&model.name());
 

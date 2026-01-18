@@ -1,10 +1,33 @@
+/* table_view/cached_icon.rs
+ *
+ * Copyright 2026 Mission Center Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 use std::collections::HashMap;
 use std::hash::Hash;
-use adw::{gdk, gio};
+
 use adw::glib::Bytes;
+use adw::{gdk, gio};
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::Image;
+
 use magpie_types::apps::icon::Icon;
+
 use crate::app;
 
 #[derive(Default, Clone)]
@@ -30,9 +53,9 @@ pub enum LightCachedIcon {
 impl From<Icon> for CachedIcon {
     fn from(icon: Icon) -> Self {
         match icon {
-            Icon::Empty(_) => { Self::Empty }
-            Icon::Id(id) => { Self::Id(id) }
-            Icon::Data(v8) => { Self::CachedData((Bytes::from(&v8), Default::default()))}
+            Icon::Empty(_) => Self::Empty,
+            Icon::Id(id) => Self::Id(id),
+            Icon::Data(v8) => Self::CachedData((Bytes::from(&v8), Default::default())),
         }
     }
 }
@@ -77,13 +100,8 @@ impl CachedIcon {
         fn create_img_cache(bytes: &Bytes, width: i32) -> Option<Pixbuf> {
             let input_stream = gio::MemoryInputStream::from_bytes(bytes);
 
-            Pixbuf::from_stream_at_scale(
-                &input_stream,
-                width,
-                -1,
-                true,
-                None::<&gio::Cancellable>,
-            ).ok()
+            Pixbuf::from_stream_at_scale(&input_stream, width, -1, true, None::<&gio::Cancellable>)
+                .ok()
         }
 
         match self {
@@ -110,22 +128,25 @@ impl CachedIcon {
 
                     false
                 }
-            },
+            }
         }
     }
 
-    pub fn convert_hash_map<K>(mut map: HashMap<K, Icon>) -> HashMap<K, CachedIcon> where K: Hash + Eq + Clone {
-        map.drain()
-            .map(|(k, v)| (k, CachedIcon::from(v)))
-            .collect()
+    pub fn convert_hash_map<K>(mut map: HashMap<K, Icon>) -> HashMap<K, CachedIcon>
+    where
+        K: Hash + Eq + Clone,
+    {
+        map.drain().map(|(k, v)| (k, CachedIcon::from(v))).collect()
     }
 
     pub fn get_light_icon(&self, payload: Option<(String, i32)>) -> LightCachedIcon {
         match self {
-            CachedIcon::Empty => { LightCachedIcon::Empty }
-            CachedIcon::Id(s) => { LightCachedIcon::StringPayload(s.clone()) }
+            CachedIcon::Empty => LightCachedIcon::Empty,
+            CachedIcon::Id(s) => LightCachedIcon::StringPayload(s.clone()),
             // todo warn?
-            CachedIcon::CachedData(_) => { payload.map(|(key, size)| LightCachedIcon::AppCachedKey(key,size)).unwrap_or_default() }
+            CachedIcon::CachedData(_) => payload
+                .map(|(key, size)| LightCachedIcon::AppCachedKey(key, size))
+                .unwrap_or_default(),
         }
     }
 }
@@ -133,17 +154,19 @@ impl CachedIcon {
 impl LightCachedIcon {
     pub fn apply_to_image(&self, image: &Image) -> bool {
         match self {
-            LightCachedIcon::Empty => { CachedIcon::apply_blank(image) }
-            LightCachedIcon::StringPayload(p) => { CachedIcon::set_icon_from_stringlike(image, p) }
-            LightCachedIcon::AppCachedKey(k, v) => { app!().apply_app_icon(image, k.clone(), v.clone()) }
+            LightCachedIcon::Empty => CachedIcon::apply_blank(image),
+            LightCachedIcon::StringPayload(p) => CachedIcon::set_icon_from_stringlike(image, p),
+            LightCachedIcon::AppCachedKey(k, v) => {
+                app!().apply_app_icon(image, k.clone(), v.clone())
+            }
         }
     }
 
     pub fn apply_to_image_custom_size(&self, image: &Image, w: i32) -> bool {
         match self {
-            LightCachedIcon::Empty => { CachedIcon::apply_blank(image) }
-            LightCachedIcon::StringPayload(p) => { CachedIcon::set_icon_from_stringlike(image, p) }
-            LightCachedIcon::AppCachedKey(k, _) => { app!().apply_app_icon(image, k.clone(), w) }
+            LightCachedIcon::Empty => CachedIcon::apply_blank(image),
+            LightCachedIcon::StringPayload(p) => CachedIcon::set_icon_from_stringlike(image, p),
+            LightCachedIcon::AppCachedKey(k, _) => app!().apply_app_icon(image, k.clone(), w),
         }
     }
 }

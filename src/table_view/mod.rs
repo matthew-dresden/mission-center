@@ -41,6 +41,7 @@ pub use row_model::{ContentType, RowModel, RowModelBuilder, SectionType};
 pub use service_action_bar::ServiceActionBar;
 pub use service_details_dialog::ServiceDetailsDialog;
 
+pub mod cached_icon;
 pub mod columns;
 mod models;
 mod process_action_bar;
@@ -49,7 +50,6 @@ mod row_model;
 mod service_action_bar;
 mod service_details_dialog;
 mod settings;
-pub mod cached_icon;
 
 #[derive(Copy, Clone, Default)]
 pub enum SettingsNamespace {

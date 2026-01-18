@@ -25,8 +25,8 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib::{self, g_critical, WeakRef};
 
-use crate::performance_page::widgets::EjectFailureDialog;
 use crate::app;
+use crate::performance_page::widgets::EjectFailureDialog;
 
 mod imp {
     use super::*;
@@ -159,7 +159,9 @@ impl EjectFailureRowBuilder {
         {
             let this = this.imp();
 
-            if let Some(app_id) = self.app_id { this.set_icon(app_id); }
+            if let Some(app_id) = self.app_id {
+                this.set_icon(app_id);
+            }
             this.pid.set_label(&self.pid.to_string());
             this.name.set_label(self.name.as_str());
             this.open_files

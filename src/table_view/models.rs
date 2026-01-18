@@ -275,7 +275,9 @@ fn update_app(
         return;
     }
 
-    row_model.imp().set_light_icon(LightCachedIcon::AppCachedKey(app.id.clone(), 24));
+    row_model
+        .imp()
+        .set_light_icon(LightCachedIcon::AppCachedKey(app.id.clone(), 24));
 
     let mut has_died = HashSet::new();
     let mut does_exist = HashSet::new();
@@ -302,7 +304,10 @@ fn update_app(
         .filter_map(|pid| process_map.get(pid))
     {
         usage_stats.merge(&process.merged_usage_stats(&process_map));
-        app_icons.insert(process.pid, LightCachedIcon::AppCachedKey(app.id.clone(), 16));
+        app_icons.insert(
+            process.pid,
+            LightCachedIcon::AppCachedKey(app.id.clone(), 16),
+        );
 
         if !does_exist.contains(&process.pid) {
             if let Some(process_model) = process_model_map.get(&process.pid) {
@@ -369,7 +374,9 @@ fn update_service(
 ) {
     set_service(&row_model, service);
 
-    row_model.imp().set_light_icon(LightCachedIcon::StringPayload(service_icon(&service)));
+    row_model
+        .imp()
+        .set_light_icon(LightCachedIcon::StringPayload(service_icon(&service)));
 
     row_model.set_pid(service.pid.clone().unwrap_or_default());
     row_model.set_user(service.user.clone().unwrap_or_default());

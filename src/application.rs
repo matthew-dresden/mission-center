@@ -23,13 +23,17 @@ use std::collections::HashMap;
 
 use adw::glib::g_warning;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gio, glib::{self, g_critical, property::PropertySet}, Image};
+use gtk::{
+    gio,
+    glib::{self, g_critical, property::PropertySet},
+    Image,
+};
 
 use magpie_types::apps::icon::Icon;
 
 use crate::about_system_dialog::AboutSystemDialog;
-use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
 use crate::table_view::cached_icon::CachedIcon;
+use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
 
 pub const INTERVAL_STEP: f64 = 0.05;
 pub const BASE_INTERVAL: f64 = 1f64;
@@ -227,7 +231,9 @@ impl MissionCenterApplication {
         let this = self.imp();
 
         // if it was default::default, then this has no side effects and we can safely return
-        let Some(mut icons) = this.apps_icons_cache.take() else { return false };
+        let Some(mut icons) = this.apps_icons_cache.take() else {
+            return false;
+        };
 
         let retval = if let Some(mut icon) = icons.remove(&app_id) {
             icon.apply_to_image(image, width);
@@ -278,7 +284,9 @@ impl MissionCenterApplication {
     }
 
     pub fn set_app_icons(&self, icons: HashMap<String, Icon>) {
-        self.imp().apps_icons_cache.set(Some(CachedIcon::convert_hash_map(icons)))
+        self.imp()
+            .apps_icons_cache
+            .set(Some(CachedIcon::convert_hash_map(icons)))
     }
 
     pub fn merge_app_icons(&self, icons: HashMap<String, Icon>) {
