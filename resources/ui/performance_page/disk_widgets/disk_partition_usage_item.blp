@@ -1,4 +1,4 @@
-/* ui/performance_page/disk_eject_failure_row.blp
+/* ui/performance_page/disk_widgets/disk_smart_failure_dialog.blp
  *
  * Copyright 2025 Mission-Center-Devs
  *
@@ -21,36 +21,52 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $EjectFailureRow : Adw.Bin {
-  ListBoxRow {
+template $PartitionUsageItem: ListBoxRow {
+  activatable: false;
+
+  Box {
+    margin-start: 20;
+    margin-end: 20;
+    margin-top: 20;
+    margin-bottom: 20;
+
+    orientation: vertical;
+
     Box {
-      Image icon {
-      }
+      spacing: 12;
 
-      Label pid {
-        width-request: 50;
-        xalign: 0.0;
-      }
-
-      Label name {
-        width-request: 100;
+      Label devname_label {
         halign: start;
+        ellipsize: start;
       }
 
-      Label open_files {
+      Label filesystem_type {
         hexpand: true;
+        halign: center;
+      }
+
+      Label mountdir {
+        ellipsize: start;
+        halign: end;
+      }
+    }
+
+    ProgressBar usage_bar {
+      hexpand: true;
+    }
+
+    Box {
+      Label used_amount {
         halign: start;
       }
 
-      Button kill {
-        styles [
-          "destructive-action"
-        ]
-        child: Box {
-          Label {
-            label: _("Kill");
-          }
-        };
+      Label usage_pct {
+        hexpand: true;
+        halign: center;
+      }
+
+      Label total_amount {
+        halign: end;
       }
     }
   }

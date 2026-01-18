@@ -19,6 +19,7 @@
  */
 
 use std::cell::{Cell, OnceCell, RefCell};
+use std::collections::HashMap;
 
 use adw::gio::Settings;
 use adw::{prelude::AdwDialogExt, subclass::prelude::*};
@@ -32,7 +33,7 @@ use crate::i18n::*;
 use crate::performance_page::disk_details::DiskDetails;
 use crate::performance_page::widgets::{
     DatasetGroup, EjectFailureDialog, GraphWidget, ScalingSettings, SmartDataDialog,
-    SmartFailureDialog,
+    SmartFailureDialog, PartitionUsageItem,
 };
 use crate::{app, settings, to_short_human_readable_time, DataType};
 
@@ -336,6 +337,8 @@ mod imp {
         ) -> bool {
             let this = this.imp();
 
+            // println!("{:?}", disk);
+
             if index.is_some() {
                 this.disk_id.set_text(&i18n_f(
                     "Drive {} ({})",
@@ -410,6 +413,35 @@ mod imp {
                     disk.tx_bytes_total as f32,
                     &DataType::DriveBytes,
                 ));
+
+            let stack = this.infobar_content.partitions_stack();
+
+            let mut existing_map: HashMap<String, PartitionUsageItem> =
+                this.infobar_content.imp().partitions_map.take();
+
+            let mut new_map = HashMap::new();
+
+            for (existing_devname, existing_row) in existing_map {
+                if let Some(partition) = disk.partitions.get(&existing_devname) {
+                    existing_row.update(partition);
+
+                    new_map.insert(existing_devname, existing_row);
+                } else {
+                    stack.remove(&existing_row);
+                }
+            }
+
+            for (devname, partition) in &disk.partitions {
+                if !new_map.contains_key(devname) {
+                    let new_item = PartitionUsageItem::from_part_info(partition);
+
+                    stack.insert(&new_item, new_map.len() as i32);
+
+                    new_map.insert(devname.clone(), new_item);
+                }
+            }
+
+            this.infobar_content.imp().partitions_map.set(new_map);
 
             true
         }

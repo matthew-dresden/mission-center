@@ -23,7 +23,9 @@ use gtk::{gdk::prelude::*, glib, subclass::prelude::*};
 
 mod imp {
     use super::*;
+    use crate::performance_page::widgets::PartitionUsageItem;
     use std::cell::Cell;
+    use std::collections::HashMap;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::DiskDetails)]
@@ -63,6 +65,11 @@ mod imp {
         #[template_child]
         pub serial_number: TemplateChild<gtk::Label>,
 
+        #[template_child]
+        pub partitions_stack: TemplateChild<gtk::ListBox>,
+
+        pub partitions_map: Cell<HashMap<String, PartitionUsageItem>>,
+
         #[property(get, set)]
         rotation_visible: Cell<bool>,
         #[property(get, set)]
@@ -89,6 +96,8 @@ mod imp {
                 disk_type: Default::default(),
                 wwn: Default::default(),
                 serial_number: Default::default(),
+                partitions_stack: Default::default(),
+                partitions_map: Default::default(),
                 rotation_visible: Cell::new(false),
                 wwn_visible: Cell::new(false),
                 serial_number_visible: Cell::new(false),
@@ -209,5 +218,9 @@ impl DiskDetails {
 
     pub fn wwn(&self) -> &gtk::Label {
         &self.imp().wwn
+    }
+
+    pub fn partitions_stack(&self) -> &gtk::ListBox {
+        &self.imp().partitions_stack
     }
 }

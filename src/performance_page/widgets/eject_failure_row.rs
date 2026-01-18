@@ -1,4 +1,4 @@
-/* apps_page/widgets/eject_failure_row.rs
+/* performance_page/widgets/eject_failure_row.rs
  *
  * Copyright 2024 Mission Center Devs
  *
@@ -33,7 +33,7 @@ mod imp {
 
     #[derive(gtk::CompositeTemplate)]
     #[template(
-        resource = "/io/missioncenter/MissionCenter/ui/performance_page/disk_eject_failure_row.ui"
+        resource = "/io/missioncenter/MissionCenter/ui/performance_page/disk_widgets/disk_eject_failure_row.ui"
     )]
     pub struct EjectFailureRow {
         #[template_child]

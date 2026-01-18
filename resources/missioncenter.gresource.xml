@@ -43,11 +43,6 @@
         <file preprocess="xml-stripblanks">ui/performance_page/cpu_details.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/disk.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/disk_details.ui</file>
-        <file preprocess="xml-stripblanks">ui/performance_page/disk_eject_failure_dialog.ui</file>
-        <file preprocess="xml-stripblanks">ui/performance_page/disk_eject_failure_row.ui</file>
-        <file preprocess="xml-stripblanks">ui/performance_page/disk_smart_data_dialog.ui</file>
-        <file preprocess="xml-stripblanks">ui/performance_page/disk_smart_data_entry.ui</file>
-        <file preprocess="xml-stripblanks">ui/performance_page/disk_smart_failure_dialog.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/fan.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/fan_details.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/gpu.ui</file>
@@ -59,6 +54,13 @@
         <file preprocess="xml-stripblanks">ui/performance_page/network_details.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/page.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/summary_graph.ui</file>
+
+        <file preprocess="xml-stripblanks">ui/performance_page/disk_widgets/disk_eject_failure_dialog.ui</file>
+        <file preprocess="xml-stripblanks">ui/performance_page/disk_widgets/disk_eject_failure_row.ui</file>
+        <file preprocess="xml-stripblanks">ui/performance_page/disk_widgets/disk_partition_usage_item.ui</file>
+        <file preprocess="xml-stripblanks">ui/performance_page/disk_widgets/disk_smart_data_dialog.ui</file>
+        <file preprocess="xml-stripblanks">ui/performance_page/disk_widgets/disk_smart_data_entry.ui</file>
+        <file preprocess="xml-stripblanks">ui/performance_page/disk_widgets/disk_smart_failure_dialog.ui</file>
 
         <file preprocess="xml-stripblanks">ui/preferences/page.ui</file>
         <file preprocess="xml-stripblanks">ui/preferences/window.ui</file>
