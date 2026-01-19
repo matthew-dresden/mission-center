@@ -317,10 +317,8 @@ mod imp {
 
             if let Some(voltage_min_design) = this.voltage_min_design.get() {
                 if let Some(v) = &battery.voltage_min_design {
-                    voltage_min_design.set_text(&crate::to_human_readable_nice(
-                        *v,
-                        &DataType::Volts,
-                    ));
+                    voltage_min_design
+                        .set_text(&crate::to_human_readable_nice(*v, &DataType::Volts));
                 } else {
                     voltage_min_design.set_visible(false)
                 }
@@ -328,10 +326,8 @@ mod imp {
 
             if let Some(voltage_max_design) = this.voltage_max_design.get() {
                 if let Some(v) = &battery.voltage_max_design {
-                    voltage_max_design.set_text(&crate::to_human_readable_nice(
-                        *v,
-                        &DataType::Volts,
-                    ));
+                    voltage_max_design
+                        .set_text(&crate::to_human_readable_nice(*v, &DataType::Volts));
                 } else {
                     voltage_max_design.set_visible(false)
                 }
@@ -436,10 +432,7 @@ mod imp {
 
             if let Some(voltage) = this.voltage.get() {
                 if let Some(v) = &battery.voltage {
-                    voltage.set_text(&crate::to_human_readable_nice(
-                        *v,
-                        &DataType::Volts,
-                    ));
+                    voltage.set_text(&crate::to_human_readable_nice(*v, &DataType::Volts));
                 }
             }
 
@@ -459,10 +452,7 @@ mod imp {
                             v = -v
                         }
                     }
-                    power.set_text(&crate::to_human_readable_nice(
-                        v,
-                        &DataType::Watts,
-                    ));
+                    power.set_text(&crate::to_human_readable_nice(v, &DataType::Watts));
                     power.set_visible(true);
                 } else {
                     power.set_visible(false);
@@ -551,15 +541,17 @@ mod imp {
                     }
                     this.energy_rate_graph.add_data_point(vec![vec![v]]);
                 }
-                this.energy_rate_max_y.set_text(&crate::to_human_readable_nice(
-                    this.energy_rate_graph.get_dataset_max_scale(0),
-                    &DataType::Watts,
-                ));
+                this.energy_rate_max_y
+                    .set_text(&crate::to_human_readable_nice(
+                        this.energy_rate_graph.get_dataset_max_scale(0),
+                        &DataType::Watts,
+                    ));
 
-                this.energy_rate_min_y.set_text(&crate::to_human_readable_nice(
-                    this.energy_rate_graph.get_dataset_min_scale(0),
-                    &DataType::Watts,
-                ));
+                this.energy_rate_min_y
+                    .set_text(&crate::to_human_readable_nice(
+                        this.energy_rate_graph.get_dataset_min_scale(0),
+                        &DataType::Watts,
+                    ));
             } else {
                 this.energy_rate_graph
                     .add_data_point(vec![vec![battery.percentage]])
