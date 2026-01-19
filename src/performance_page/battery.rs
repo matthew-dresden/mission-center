@@ -35,6 +35,7 @@ use crate::performance_page::widgets::ScalingSettings;
 use crate::performance_page::PageExt;
 use crate::to_long_human_readable_time;
 use crate::to_short_human_readable_time;
+use crate::DataType;
 
 mod imp {
     use super::*;
@@ -283,7 +284,10 @@ mod imp {
 
             if let Some(energy_empty) = this.energy_empty.get() {
                 if let Some(v) = &battery.energy_empty {
-                    energy_empty.set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
+                    energy_empty.set_text(&crate::to_human_readable_nice(
+                        *v as f32 / 1000.,
+                        &DataType::Watthours,
+                    ));
                 } else {
                     energy_empty.set_visible(false)
                 }
@@ -291,7 +295,10 @@ mod imp {
 
             if let Some(energy_full) = this.energy_full.get() {
                 if let Some(v) = &battery.energy_full {
-                    energy_full.set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
+                    energy_full.set_text(&crate::to_human_readable_nice(
+                        *v as f32 / 1000.,
+                        &DataType::Watthours,
+                    ));
                 } else {
                     energy_full.set_visible(false)
                 }
@@ -299,8 +306,10 @@ mod imp {
 
             if let Some(energy_full_design) = this.energy_full_design.get() {
                 if let Some(v) = &battery.energy_full_design {
-                    energy_full_design
-                        .set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
+                    energy_full_design.set_text(&crate::to_human_readable_nice(
+                        *v as f32 / 1000.,
+                        &DataType::Watthours,
+                    ));
                 } else {
                     energy_full_design.set_visible(false)
                 }
@@ -308,7 +317,10 @@ mod imp {
 
             if let Some(voltage_min_design) = this.voltage_min_design.get() {
                 if let Some(v) = &battery.voltage_min_design {
-                    voltage_min_design.set_text(&i18n_f("{} V", &[&format!("{:.1}", v)]))
+                    voltage_min_design.set_text(&crate::to_human_readable_nice(
+                        *v,
+                        &DataType::Volts,
+                    ));
                 } else {
                     voltage_min_design.set_visible(false)
                 }
@@ -316,7 +328,10 @@ mod imp {
 
             if let Some(voltage_max_design) = this.voltage_max_design.get() {
                 if let Some(v) = &battery.voltage_max_design {
-                    voltage_max_design.set_text(&i18n_f("{} V", &[&format!("{:.1}", v)]))
+                    voltage_max_design.set_text(&crate::to_human_readable_nice(
+                        *v,
+                        &DataType::Volts,
+                    ));
                 } else {
                     voltage_max_design.set_visible(false)
                 }
@@ -421,13 +436,19 @@ mod imp {
 
             if let Some(voltage) = this.voltage.get() {
                 if let Some(v) = &battery.voltage {
-                    voltage.set_text(&i18n_f("{} V", &[&format!("{:.1}", v)]))
+                    voltage.set_text(&crate::to_human_readable_nice(
+                        *v,
+                        &DataType::Volts,
+                    ));
                 }
             }
 
             if let Some(energy) = this.energy.get() {
                 if let Some(v) = &battery.energy {
-                    energy.set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
+                    energy.set_text(&crate::to_human_readable_nice(
+                        *v as f32 / 1000.,
+                        &DataType::Watthours,
+                    ));
                 }
             }
 
@@ -438,13 +459,10 @@ mod imp {
                             v = -v
                         }
                     }
-                    let value = if v > 10. {
-                        format!("{:.0}", v)
-                    } else {
-                        format!("{:.1}", v)
-                    };
-
-                    power.set_text(&i18n_f("{} W", &[&value]));
+                    power.set_text(&crate::to_human_readable_nice(
+                        v,
+                        &DataType::Watts,
+                    ));
                     power.set_visible(true);
                 } else {
                     power.set_visible(false);
@@ -525,27 +543,22 @@ mod imp {
             }
 
             if battery.power_supply.unwrap_or(false) && battery.state.is_some() {
-                if let Some(v) = &battery.power {
+                if let Some(mut v) = &battery.power {
                     if let Some(v2) = &battery.state {
                         if *v2 == 2 {
-                            // see batterystate_to_str(), discharging
-                            this.energy_rate_graph
-                                .add_data_point(vec![vec![-1. * (*v)]]);
-                        } else {
-                            this.energy_rate_graph.add_data_point(vec![vec![*v]]);
+                            v = -v
                         }
-                    } else {
-                        this.energy_rate_graph.add_data_point(vec![vec![*v]]);
                     }
+                    this.energy_rate_graph.add_data_point(vec![vec![v]]);
                 }
-                this.energy_rate_max_y.set_text(&i18n_f(
-                    "{} W",
-                    &[&this.energy_rate_graph.get_dataset_max_scale(0).to_string()],
+                this.energy_rate_max_y.set_text(&crate::to_human_readable_nice(
+                    this.energy_rate_graph.get_dataset_max_scale(0),
+                    &DataType::Watts,
                 ));
 
-                this.energy_rate_min_y.set_text(&i18n_f(
-                    "{} W",
-                    &[&this.energy_rate_graph.get_dataset_min_scale(0).to_string()],
+                this.energy_rate_min_y.set_text(&crate::to_human_readable_nice(
+                    this.energy_rate_graph.get_dataset_min_scale(0),
+                    &DataType::Watts,
                 ));
             } else {
                 this.energy_rate_graph

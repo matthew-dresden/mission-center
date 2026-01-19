@@ -216,6 +216,8 @@ pub enum DataType {
     NetworkBytesPerSecond,
     Hertz,
     Watts,
+    Volts,
+    Watthours,
 }
 
 impl DataType {
@@ -247,6 +249,12 @@ const fn data_type_setting_byte_setting(data_type: &DataType) -> &'static str {
         DataType::Watts => {
             panic!("Watts data type not supported yet");
         }
+        DataType::Volts => {
+            panic!("Volts data type not supported yet");
+        }
+        DataType::Watthours => {
+            panic!("Watthours data type not supported yet");
+        }
     }
 }
 
@@ -268,6 +276,12 @@ const fn data_type_setting_base_setting(data_type: &DataType) -> &'static str {
         }
         DataType::Watts => {
             panic!("Watts data type not supported yet");
+        }
+        DataType::Volts => {
+            panic!("Volts data type not supported yet");
+        }
+        DataType::Watthours => {
+            panic!("Watthours data type not supported yet");
         }
     }
 }
@@ -308,9 +322,9 @@ pub fn to_human_readable_adv_str(
     // Only display fractional values for bit/byte numbers in the defined range and bigger
     // This sacrifices some precision for the sake of readability
     let dec_to_display = if exponent as isize > min_exponent {
-        if value < 10.0 {
+        if value.abs() < 10.0 {
             2
-        } else if value < 100.0 {
+        } else if value.abs() < 100.0 {
             1
         } else {
             0
@@ -360,6 +374,8 @@ pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String 
     let (label, min_dec) = match data_type {
         DataType::Hertz => ("Hz", 0),
         DataType::Watts => ("W", -1),
+        DataType::Volts => ("V", -1),
+        DataType::Watthours => ("Wh", -1),
         _ => {
             let dict_lock = BOOLEAN_DICT_CACHE.lock();
 
