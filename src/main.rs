@@ -278,7 +278,7 @@ pub fn to_human_readable_adv_str(
     use_binary: bool,
     per_second: bool,
     unit_label: &str,
-    min_exponent: usize,
+    min_exponent: isize,
 ) -> String {
     const UNITS: [&'static str; 9] = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
 
@@ -290,11 +290,11 @@ pub fn to_human_readable_adv_str(
         (value_bytes * 8., if per_second { "ps" } else { "" })
     };
 
-    let mut exponent = 0;
+    let mut exponent: usize = 0;
 
     // Only display bit/byte values in the given range or higher, not individual bits/bytes
     // This sacrifices some precision for the sake of readability
-    while exponent < min_exponent {
+    while (exponent as isize) < min_exponent {
         value /= divisor;
         exponent += 1;
     }
@@ -307,7 +307,7 @@ pub fn to_human_readable_adv_str(
     // Calculate number of decimals to display
     // Only display fractional values for bit/byte numbers in the defined range and bigger
     // This sacrifices some precision for the sake of readability
-    let dec_to_display = if exponent > min_exponent {
+    let dec_to_display = if exponent as isize > min_exponent {
         if value < 10.0 {
             2
         } else if value < 100.0 {
@@ -357,9 +357,9 @@ pub fn setup_readable_settings_cache(settings: &Settings) {
 }
 
 pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String {
-    let label = match data_type {
-        DataType::Hertz => "Hz",
-        DataType::Watts => "W",
+    let (label, min_dec) = match data_type {
+        DataType::Hertz => ("Hz", 0),
+        DataType::Watts => ("W", -1),
         _ => {
             let dict_lock = BOOLEAN_DICT_CACHE.lock();
 
@@ -405,7 +405,7 @@ pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String 
         }
     };
 
-    to_human_readable_adv_str(value_bytes, true, false, false, label, 0)
+    to_human_readable_adv_str(value_bytes, true, false, false, label, min_dec)
 }
 
 pub fn show_error_dialog_and_exit(message: &str) -> ! {
