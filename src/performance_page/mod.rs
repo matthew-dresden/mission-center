@@ -89,8 +89,8 @@ mod imp {
     const FAN_BASE_COLOR: [u8; 3] = [0x81, 0x3d, 0x9c];
     // GNOME color palette: Red 1
     const GPU_BASE_COLOR: [u8; 3] = [0xf6, 0x61, 0x51];
-    // REEEEEEEED
-    const BATTERY_BASE_COLOR: [u8; 3] = [0xff, 0x00, 0x00];
+    // GNOME color palette: Orange 4
+    const BATTERY_BASE_COLOR: [u8; 3] = [0xe6, 0x61, 0x00];
 
     enum Pages {
         Cpu((SummaryGraph, CpuPage)),
