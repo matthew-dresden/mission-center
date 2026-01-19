@@ -283,7 +283,7 @@ mod imp {
 
             if let Some(energy_empty) = this.energy_empty.get() {
                 if let Some(v) = &battery.energy_empty {
-                    energy_empty.set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
+                    energy_empty.set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
                 } else {
                     energy_empty.set_visible(false)
                 }
@@ -291,7 +291,7 @@ mod imp {
 
             if let Some(energy_full) = this.energy_full.get() {
                 if let Some(v) = &battery.energy_full {
-                    energy_full.set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
+                    energy_full.set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
                 } else {
                     energy_full.set_visible(false)
                 }
@@ -300,7 +300,7 @@ mod imp {
             if let Some(energy_full_design) = this.energy_full_design.get() {
                 if let Some(v) = &battery.energy_full_design {
                     energy_full_design
-                        .set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
+                        .set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
                 } else {
                     energy_full_design.set_visible(false)
                 }
@@ -427,22 +427,25 @@ mod imp {
 
             if let Some(energy) = this.energy.get() {
                 if let Some(v) = &battery.energy {
-                    energy.set_text(&i18n_f("{} Wh", &[&format!("{:.0}", *v as f32 / 1000.)]))
+                    energy.set_text(&i18n_f("{} Wh", &[&format!("{:.1}", *v as f32 / 1000.)]))
                 }
             }
 
             if let Some(power) = this.power.get() {
-                if let Some(v) = &battery.power {
-                    power.set_visible(true);
+                if let Some(mut v) = &battery.power {
                     if let Some(v2) = &battery.state {
-                        if *v2 == 2 {
-                            power.set_text(&i18n_f("{} W", &[&format!("-{:.0}", v)]))
-                        } else {
-                            power.set_text(&i18n_f("{} W", &[&format!("{:.0}", v)]))
+                        if *v2 == 2 && v != 0.0 {
+                            v = -v
                         }
-                    } else {
-                        power.set_text(&i18n_f("{} W", &[&format!("{:.0}", v)]))
                     }
+                    let value = if v > 10. {
+                        format!("{:.0}", v)
+                    } else {
+                        format!("{:.1}", v)
+                    };
+
+                    power.set_text(&i18n_f("{} W", &[&value]));
+                    power.set_visible(true);
                 } else {
                     power.set_visible(false);
                 }
