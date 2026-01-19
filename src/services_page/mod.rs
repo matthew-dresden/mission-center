@@ -26,8 +26,6 @@ use adw::prelude::*;
 use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
 
-use magpie_types::apps::icon::Icon;
-
 use crate::i18n::{i18n, ni18n_f};
 use crate::table_view::{
     update_services, ContentType, ProcessActionBar, RowModel, RowModelBuilder, SectionType,
@@ -430,7 +428,7 @@ impl ServicesPage {
             &readings.user_services,
             &imp.user_section.children(),
             &HashMap::new(),
-            &Icon::default(),
+            &Default::default(),
             imp.table_view.imp().use_merged_stats.get(),
             SectionType::FirstSection,
         );
@@ -440,7 +438,7 @@ impl ServicesPage {
             &readings.system_services,
             &imp.system_section.children(),
             &HashMap::new(),
-            &Icon::default(),
+            &Default::default(),
             imp.table_view.imp().use_merged_stats.get(),
             SectionType::SecondSection,
         );

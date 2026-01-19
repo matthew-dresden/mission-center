@@ -25,10 +25,8 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib::{self, g_critical, WeakRef};
 
-use magpie_types::apps::icon::Icon;
-
+use crate::app;
 use crate::performance_page::widgets::EjectFailureDialog;
-use crate::{app, apply_icon_to_image};
 
 mod imp {
     use super::*;
@@ -54,8 +52,8 @@ mod imp {
     }
 
     impl EjectFailureRow {
-        pub fn set_icon(&self, icon: Icon) {
-            apply_icon_to_image(&self.icon.get(), icon, 48);
+        pub fn set_icon(&self, app_id: String) {
+            app!().apply_app_icon(&self.icon.get(), app_id, 48);
         }
     }
 
@@ -103,7 +101,7 @@ mod imp {
 #[derive(Clone)]
 pub struct EjectFailureRowBuilder {
     pid: u32,
-    icon: Icon,
+    app_id: Option<String>,
     name: glib::GString,
     id: String,
 
@@ -116,7 +114,7 @@ impl EjectFailureRowBuilder {
     pub fn new() -> Self {
         Self {
             pid: 0,
-            icon: Icon::default(),
+            app_id: Default::default(),
             name: glib::GString::default(),
             id: String::from(""),
 
@@ -131,8 +129,8 @@ impl EjectFailureRowBuilder {
         self
     }
 
-    pub fn icon(mut self, icon: Icon) -> Self {
-        self.icon = icon.into();
+    pub fn app_id(mut self, app_id: String) -> Self {
+        self.app_id = Some(app_id);
         self
     }
 
@@ -161,7 +159,9 @@ impl EjectFailureRowBuilder {
         {
             let this = this.imp();
 
-            this.set_icon(self.icon);
+            if let Some(app_id) = self.app_id {
+                this.set_icon(app_id);
+            }
             this.pid.set_label(&self.pid.to_string());
             this.name.set_label(self.name.as_str());
             this.open_files

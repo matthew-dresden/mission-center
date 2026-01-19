@@ -17,16 +17,12 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-use adw::gdk;
-use adw::glib::Bytes;
 use application::MissionCenterApplication;
 use config::{GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain};
 use gtk::gio::Settings;
-use gtk::{gio, prelude::*, Image};
+use gtk::{gio, prelude::*};
 use i18n::{i18n, i18n_f};
-
-use magpie_types::apps::icon::Icon;
 
 use std::cmp::PartialEq;
 use std::collections::HashMap;
@@ -61,56 +57,6 @@ macro_rules! glib_clone {
 
 mod config {
     include!(concat!(env!("BUILD_ROOT"), "/src/config.rs"));
-}
-
-#[allow(deprecated)]
-pub fn apply_icon_to_image(image: &gtk::Image, icon: Icon, width: i32) -> bool {
-    #[inline]
-    fn apply_blank(image: &gtk::Image) -> bool {
-        image.set_icon_name(Some("application-x-executable"));
-
-        false
-    }
-
-    fn set_icon_from_stringlike(image: &gtk::Image, icon_name: &str) -> bool {
-        let display = gdk::Display::default().unwrap();
-        let icon_theme = gtk::IconTheme::for_display(&display);
-
-        if icon_theme.has_icon(icon_name) {
-            image.set_icon_name(Some(icon_name));
-
-            true
-        } else {
-            apply_blank(image);
-
-            false
-        }
-    }
-
-    fn apply_bytes(image: &Image, img: &Vec<u8>, width: i32) -> bool {
-        let input_stream = gio::MemoryInputStream::from_bytes(&Bytes::from(img));
-        let Ok(pixbuf) = gdk::gdk_pixbuf::Pixbuf::from_stream_at_scale(
-            &input_stream,
-            width,
-            -1,
-            true,
-            None::<&gio::Cancellable>,
-        ) else {
-            apply_blank(image);
-
-            return false;
-        };
-
-        image.set_from_pixbuf(Some(&pixbuf));
-
-        true
-    }
-
-    match icon {
-        Icon::Empty(_) => apply_blank(image),
-        Icon::Id(id) => set_icon_from_stringlike(image, &id),
-        Icon::Data(img) => apply_bytes(image, &img, width),
-    }
 }
 
 fn user_home() -> &'static Path {

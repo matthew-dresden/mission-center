@@ -27,10 +27,9 @@ use adw::prelude::*;
 use arrayvec::ArrayString;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use magpie_types::apps::icon::Icon;
-
 use crate::i18n::{i18n, ni18n_f};
 use crate::magpie_client::App;
+use crate::table_view::cached_icon::LightCachedIcon;
 use crate::table_view::{
     update_apps, update_processes, ContentType, ProcessActionBar, RowModel, RowModelBuilder,
     SectionType, SettingsNamespace, TableView,
@@ -64,7 +63,7 @@ mod imp {
 
         pub row_sorter: OnceCell<gtk::TreeListRowSorter>,
 
-        pub app_icons: RefCell<HashMap<u32, Icon>>,
+        pub app_icons: RefCell<HashMap<u32, LightCachedIcon>>,
         pub selected_item: RefCell<RowModel>,
     }
 
@@ -295,7 +294,7 @@ impl AppsPage {
                 init.children.clone().drain(..).collect(),
                 &imp.processes_section.children(),
                 &imp.app_icons.borrow(),
-                &Icon::default(),
+                &Default::default(),
                 imp.table_view.imp().use_merged_stats.get(),
                 SectionType::SecondSection,
                 None,
