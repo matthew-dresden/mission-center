@@ -81,16 +81,16 @@ mod imp {
     const CPU_BASE_COLOR: [u8; 3] = [0x1c, 0x71, 0xd8];
     // GNOME color palette: Blue 2
     const MEMORY_BASE_COLOR: [u8; 3] = [0x62, 0xa0, 0xea];
-    // GNOME color palette: Green 5
-    const DISK_BASE_COLOR: [u8; 3] = [0x26, 0xa2, 0x69];
+    // GNOME color palette: Orange 2
+    const DISK_BASE_COLOR: [u8; 3] = [0xff, 0xa3, 0x48];
     // GNOME color palette: Purple 1
     const NETWORK_BASE_COLOR: [u8; 3] = [0xdc, 0x8a, 0xdd];
     // GNOME color palette: Purple 4
     const FAN_BASE_COLOR: [u8; 3] = [0x81, 0x3d, 0x9c];
     // GNOME color palette: Red 1
     const GPU_BASE_COLOR: [u8; 3] = [0xf6, 0x61, 0x51];
-    // GNOME color palette: Orange 4
-    const BATTERY_BASE_COLOR: [u8; 3] = [0xe6, 0x61, 0x00];
+    // GNOME color palette: Green 5
+    const BATTERY_BASE_COLOR: [u8; 3] = [0x26, 0xa2, 0x69];
 
     enum Pages {
         Cpu((SummaryGraph, CpuPage)),
