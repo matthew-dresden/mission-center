@@ -29,18 +29,18 @@ use gtk::{gio, glib, prelude::*};
 use magpie_types::gpus::Gpu;
 use magpie_types::gpus::OpenGlVariant;
 
-use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::{
     application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time, DataType,
+};
+
+use crate::performance_page::widgets::{
+    DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
 };
 
 use super::{GpuDetails, PageExt};
 
 mod imp {
     use super::*;
-    use crate::performance_page::widgets::{
-        DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
-    };
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::PerformancePageGpu)]
@@ -572,7 +572,7 @@ mod imp {
                         this.memory_graph_label
                             .set_text(&i18n("Dedicated and shared memory usage over "));
                     } else {
-                        this.total_memory.set_text(&format!("{total_gtt}"));
+                        this.total_memory.set_text(&total_gtt);
 
                         this.memory_graph_label
                             .set_text(&i18n("Shared memory usage over "));

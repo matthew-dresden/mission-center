@@ -19,7 +19,6 @@
  */
 
 use std::collections::HashSet;
-use std::marker::PhantomData;
 
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};

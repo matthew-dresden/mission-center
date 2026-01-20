@@ -163,7 +163,7 @@ pub fn to_long_human_readable_time(seconds: u64) -> String {
         i18n_f("{} and {}", &[months_str, days_str])
     } else if days > 0 {
         /* Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours */
-        if days != 0 {
+        if hours != 0 {
             i18n_f("{} and {}", &[days_str, hours_str])
         } else {
             i18n_f("{}", &[days_str])
@@ -217,7 +217,7 @@ pub enum DataType {
     Hertz,
     Watts,
     Volts,
-    Watthours,
+    WattHours,
 }
 
 impl DataType {
@@ -252,8 +252,8 @@ const fn data_type_setting_byte_setting(data_type: &DataType) -> &'static str {
         DataType::Volts => {
             panic!("Volts data type not supported yet");
         }
-        DataType::Watthours => {
-            panic!("Watthours data type not supported yet");
+        DataType::WattHours => {
+            panic!("WattHours data type not supported yet");
         }
     }
 }
@@ -280,8 +280,8 @@ const fn data_type_setting_base_setting(data_type: &DataType) -> &'static str {
         DataType::Volts => {
             panic!("Volts data type not supported yet");
         }
-        DataType::Watthours => {
-            panic!("Watthours data type not supported yet");
+        DataType::WattHours => {
+            panic!("WattHours data type not supported yet");
         }
     }
 }
@@ -375,7 +375,7 @@ pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String 
         DataType::Hertz => ("Hz", 0),
         DataType::Watts => ("W", -1),
         DataType::Volts => ("V", -1),
-        DataType::Watthours => ("Wh", -1),
+        DataType::WattHours => ("Wh", -1),
         _ => {
             let dict_lock = BOOLEAN_DICT_CACHE.lock();
 

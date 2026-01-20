@@ -103,6 +103,7 @@ impl DatasetGroup {
             datas: vec![Dataset::default()],
         }
     }
+
     pub fn new_with_datas(d: Vec<Vec<(f32, f32)>>) -> Self {
         let mut datas = Vec::with_capacity(d.len());
         for v in d {
@@ -125,6 +126,7 @@ impl DatasetGroup {
             datas,
         }
     }
+
     pub fn new_with_fill(v: f32) -> Self {
         Self {
             dataset_settings: DatasetSettings {

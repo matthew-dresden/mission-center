@@ -234,17 +234,13 @@ mod imp {
                 }
             }
 
-            let vendor_model = match (battery.vendor.is_some(), battery.model.is_some()) {
-                (true, true) => &format!(
-                    "{} {}",
-                    battery.vendor.as_ref().unwrap(),
-                    battery.model.as_ref().unwrap()
-                ),
-                (true, false) => battery.vendor.as_ref().unwrap(),
-                (false, true) => battery.model.as_ref().unwrap(),
-                (false, false) => &i18n("Unknown"),
+            let vendor_model = match (battery.vendor.as_ref(), battery.model.as_ref()) {
+                (Some(vendor), Some(model)) => &format!("{} {}", vendor, model),
+                (Some(vendor), None) => vendor,
+                (None, Some(model)) => model,
+                (None, None) => &i18n("Unknown"),
             };
-            this.title_battery_model.set_text(vendor_model);
+            this.title_battery_model.set_text(&vendor_model);
 
             if let Some(serial) = this.serial.get() {
                 if let Some(v) = &battery.serial {
@@ -286,7 +282,7 @@ mod imp {
                 if let Some(v) = &battery.energy_empty {
                     energy_empty.set_text(&crate::to_human_readable_nice(
                         *v as f32 / 1000.,
-                        &DataType::Watthours,
+                        &DataType::WattHours,
                     ));
                 } else {
                     energy_empty.set_visible(false)
@@ -297,7 +293,7 @@ mod imp {
                 if let Some(v) = &battery.energy_full {
                     energy_full.set_text(&crate::to_human_readable_nice(
                         *v as f32 / 1000.,
-                        &DataType::Watthours,
+                        &DataType::WattHours,
                     ));
                 } else {
                     energy_full.set_visible(false)
@@ -308,7 +304,7 @@ mod imp {
                 if let Some(v) = &battery.energy_full_design {
                     energy_full_design.set_text(&crate::to_human_readable_nice(
                         *v as f32 / 1000.,
-                        &DataType::Watthours,
+                        &DataType::WattHours,
                     ));
                 } else {
                     energy_full_design.set_visible(false)
@@ -440,7 +436,7 @@ mod imp {
                 if let Some(v) = &battery.energy {
                     energy.set_text(&crate::to_human_readable_nice(
                         *v as f32 / 1000.,
-                        &DataType::Watthours,
+                        &DataType::WattHours,
                     ));
                 }
             }
