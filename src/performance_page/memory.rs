@@ -91,6 +91,8 @@ mod imp {
         pub cached: OnceCell<gtk::Label>,
         pub swap_available: OnceCell<gtk::Label>,
         pub swap_used: OnceCell<gtk::Label>,
+        pub compressed: OnceCell<gtk::Label>,
+        pub compression_savings: OnceCell<gtk::Label>,
         pub speed: OnceCell<gtk::Label>,
         pub slots_used: OnceCell<gtk::Label>,
         pub form_factor: OnceCell<gtk::Label>,
@@ -141,6 +143,8 @@ mod imp {
                 cached: Default::default(),
                 swap_available: Default::default(),
                 swap_used: Default::default(),
+                compressed: Default::default(),
+                compression_savings: Default::default(),
                 speed: Default::default(),
                 slots_used: Default::default(),
                 form_factor: Default::default(),
@@ -471,6 +475,42 @@ mod imp {
                 }
             }
 
+            // Memory compression statistics (zswap + zram combined)
+            let zswap_original = mem_info.zswapped;
+            let zswap_compressed = mem_info.zswap;
+            let zram_original = mem_info.zram_orig_size;
+            let zram_compressed = mem_info.zram_compr_size;
+
+            let total_original = zswap_original + zram_original;
+            let total_compressed = zswap_compressed + zram_compressed;
+
+            // Only show compression stats if there's meaningful compression (>= 1 MiB)
+            const MIN_COMPRESSION_THRESHOLD: u64 = 1024 * 1024;
+            if total_original >= MIN_COMPRESSION_THRESHOLD {
+                let compressed_str =
+                    crate::to_human_readable_nice(total_compressed as _, &DataType::MemoryBytes);
+                if let Some(c) = this.compressed.get() {
+                    c.set_visible(true);
+                    c.set_text(&compressed_str);
+                }
+
+                let savings = total_original.saturating_sub(total_compressed);
+                let savings_str =
+                    crate::to_human_readable_nice(savings as _, &DataType::MemoryBytes);
+                if let Some(cs) = this.compression_savings.get() {
+                    cs.set_visible(true);
+                    cs.set_text(&savings_str);
+                }
+            } else {
+                // Hide compression stats if no compression is active
+                if let Some(c) = this.compressed.get() {
+                    c.set_visible(false);
+                }
+                if let Some(cs) = this.compression_savings.get() {
+                    cs.set_visible(false);
+                }
+            }
+
             let free =
                 crate::to_human_readable_nice(mem_info.mem_free as _, &DataType::MemoryBytes);
             let dirty = crate::to_human_readable_nice(mem_info.dirty as _, &DataType::MemoryBytes);
@@ -513,6 +553,8 @@ mod imp {
         fn data_summary(&self) -> String {
             let unknown = i18n("Unknown");
             let unknown = unknown.as_str();
+            let na = i18n("N/A");
+            let na = na.as_str();
 
             format!(
                 r#"Memory
@@ -525,6 +567,8 @@ mod imp {
     Cached:         {}
     Swap available: {}
     Swap used:      {}
+    Compressed:     {}
+    Savings:        {}
 
     Speed:       {}
     Slots used:  {}
@@ -555,6 +599,14 @@ mod imp {
                     .get()
                     .map(|l| l.label())
                     .unwrap_or(unknown.into()),
+                self.compressed
+                    .get()
+                    .map(|l| if l.is_visible() { l.label() } else { na.into() })
+                    .unwrap_or(na.into()),
+                self.compression_savings
+                    .get()
+                    .map(|l| if l.is_visible() { l.label() } else { na.into() })
+                    .unwrap_or(na.into()),
                 self.speed
                     .get()
                     .map(|l| {
@@ -750,6 +802,16 @@ mod imp {
                 sidebar_content_builder
                     .object::<gtk::Label>("swap_used")
                     .expect("Could not find `swap_used` object in details pane"),
+            );
+            let _ = self.compressed.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("compressed")
+                    .expect("Could not find `compressed` object in details pane"),
+            );
+            let _ = self.compression_savings.set(
+                sidebar_content_builder
+                    .object::<gtk::Label>("compression_savings")
+                    .expect("Could not find `compression_savings` object in details pane"),
             );
             let _ = self.legend_used.set(
                 sidebar_content_builder
