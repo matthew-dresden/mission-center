@@ -236,10 +236,74 @@ Grid root {
     }
   }
 
-  Label {
+  Box {
     layout {
       column: '1';
       row: '3';
+    }
+
+    margin-top: 7;
+    width-request: 100;
+
+    orientation: vertical;
+    spacing: 3;
+
+    Label {
+      styles [
+        "caption",
+      ]
+
+      visible: bind compressed.visible;
+      halign: start;
+      label: _("Compressed");
+    }
+
+    Label compressed {
+      styles [
+        "title-4",
+      ]
+
+      halign: start;
+      selectable: true;
+    }
+  }
+
+  Box {
+    layout {
+      column: '3';
+      row: '3';
+    }
+
+    margin-top: 7;
+    width-request: 100;
+
+    orientation: vertical;
+    spacing: 3;
+
+    Label {
+      styles [
+        "caption",
+      ]
+
+      visible: bind compression_savings.visible;
+      halign: start;
+      label: _("Savings");
+    }
+
+    Label compression_savings {
+      styles [
+        "title-4",
+      ]
+
+      halign: start;
+      selectable: true;
+    }
+  }
+
+  Label {
+    layout {
+      column: '1';
+      row: '4';
     }
 
     margin-top: 20;
@@ -257,7 +321,7 @@ Grid root {
   Label {
     layout {
       column: '1';
-      row: '4';
+      row: '5';
     }
 
     styles [
@@ -274,7 +338,7 @@ Grid root {
   Label {
     layout {
       column: '1';
-      row: '5';
+      row: '6';
     }
 
     styles [
@@ -291,7 +355,7 @@ Grid root {
   Label {
     layout {
       column: '1';
-      row: '6';
+      row: '7';
     }
 
     styles [
@@ -308,7 +372,7 @@ Grid root {
   Label speed {
     layout {
       column: '3';
-      row: '3';
+      row: '4';
     }
 
     styles [
@@ -323,7 +387,7 @@ Grid root {
   Label slots_used {
     layout {
       column: '3';
-      row: '4';
+      row: '5';
     }
 
     styles [
@@ -337,7 +401,7 @@ Grid root {
   Label form_factor {
     layout {
       column: '3';
-      row: '5';
+      row: '6';
     }
 
     styles [
@@ -351,7 +415,7 @@ Grid root {
   Label ram_type {
     layout {
       column: '3';
-      row: '6';
+      row: '7';
     }
 
     styles [
