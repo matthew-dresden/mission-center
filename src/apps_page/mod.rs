@@ -21,7 +21,7 @@
 use std::cell::{Cell, OnceCell, RefCell};
 use std::collections::HashMap;
 use std::fmt::Write;
-
+use std::time::Instant;
 use adw::glib::g_critical;
 use adw::prelude::*;
 use arrayvec::ArrayString;
@@ -262,6 +262,9 @@ impl AppsPage {
     }
 
     fn update_common(&self, readings: &mut crate::magpie_client::Readings) {
+        let start = Instant::now();
+        println!("zzyzx Starting apps common update");
+
         let imp = self.imp();
 
         let mut buffer = ArrayString::<64>::new();
@@ -315,6 +318,8 @@ impl AppsPage {
             &mut *imp.running_apps.borrow_mut(),
             std::mem::take(&mut readings.running_apps),
         );
+
+        println!("zzyzx Apps update completed in {}ms", start.elapsed().as_millis());
     }
 
     #[inline]

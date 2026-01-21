@@ -21,7 +21,7 @@
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::fmt::Write;
-
+use std::time::Instant;
 use adw::prelude::*;
 use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
@@ -421,6 +421,9 @@ impl ServicesPage {
     }
 
     fn update_common(&self, readings: &mut crate::magpie_client::Readings) {
+        let start = Instant::now();
+        println!("zzyzx Starting services common update");
+
         let imp = self.imp();
 
         update_services(
@@ -470,6 +473,8 @@ impl ServicesPage {
         imp.disabled_services.set(disabled_services);
 
         imp.update_headers();
+
+        println!("zzyzx Services update completed in {}ms", start.elapsed().as_millis());
     }
 
     pub fn update_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
