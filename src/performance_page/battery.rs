@@ -20,7 +20,6 @@
 
 use std::cell::{Cell, OnceCell, RefCell};
 
-use adw;
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
