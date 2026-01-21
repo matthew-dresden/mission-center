@@ -19,7 +19,9 @@
  */
 
 use std::collections::{HashMap, HashSet};
-
+use std::fmt::{Display, Formatter};
+use std::ops::AddAssign;
+use std::time::Instant;
 use gtk::gio;
 use gtk::glib::g_critical;
 use gtk::prelude::*;
@@ -191,6 +193,26 @@ pub fn update_processes(
     }
 }
 
+#[derive(Default, Debug, Clone)]
+struct UpdateStats {
+    housekeeping: u128,
+    children_updating: u128,
+    construction: u128,
+}
+
+impl Display for UpdateStats {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Breakdown {{
+\t{:.3}ms Housekeeping
+\t{:.3}ms Children
+\t{:.3}ms Construction
+}}",
+               self.housekeeping as f64 / 1000f64,
+               self.children_updating as f64 / 1000f64,
+               self.construction as f64 / 1000f64)
+    }
+}
+
 pub fn update_services(
     process_map: &HashMap<u32, Process>,
     services: &HashMap<u64, Service>,
@@ -200,10 +222,19 @@ pub fn update_services(
     use_merged_stats: bool,
     section_type: SectionType,
 ) {
+    let start = Instant::now();
+    println!("\tzzyzx Starting services update");
+
     let mut has_died = HashSet::new();
     let mut does_exist = HashSet::new();
 
-    list.iter::<RowModel>().flatten().for_each(|row_model| {
+    let flatten = list.iter::<RowModel>().flatten();
+
+    println!("\tzzyzx Flattened {}.{}ms", start.elapsed().as_millis(), start.elapsed().as_micros() % 1000);
+
+    let mut stats = UpdateStats::default();
+
+    flatten.for_each(|row_model| {
         let service_id = row_model.service_id();
         if let Some(service) = services.get(&service_id) {
             update_service(
@@ -213,6 +244,7 @@ pub fn update_services(
                 app_icons,
                 icon,
                 use_merged_stats,
+                &mut stats,
             );
 
             does_exist.insert(service_id);
@@ -221,14 +253,22 @@ pub fn update_services(
         }
     });
 
+    println!("\tzzyzx Built {}.{}ms", start.elapsed().as_millis(), start.elapsed().as_micros() % 1000);
+
     list.retain(|object| {
         !has_died.contains(&object.downcast_ref::<RowModel>().unwrap().service_id())
     });
+
+    println!("\tzzyzx Starting services common update {}.{}ms", start.elapsed().as_millis(), start.elapsed().as_micros() % 1000);
+
+    let mut news: Vec<RowModel> = Default::default();
 
     for (_, service) in services
         .iter()
         .filter(|(_, serv)| !does_exist.contains(&serv.id))
     {
+        let beans = Instant::now();
+
         let row_model = RowModelBuilder::new()
             .id(&service.id.to_string())
             .content_type(ContentType::Service)
@@ -241,6 +281,8 @@ pub fn update_services(
             .build();
         list.append(&row_model);
 
+        // stats.construction += beans.elapsed().as_micros();
+
         update_service(
             process_map,
             &row_model,
@@ -248,8 +290,22 @@ pub fn update_services(
             app_icons,
             icon,
             use_merged_stats,
-        )
+            &mut stats,
+        );
+
+        news.push(row_model)
     }
+
+    let beans = Instant::now();
+
+    if !news.is_empty() {
+        list.extend_from_slice(&*news);
+    }
+
+    stats.construction += beans.elapsed().as_micros();
+
+    println!("{}", stats);
+    println!("\tzzyzx Completed services common update {}.{}ms ({})", start.elapsed().as_millis(), start.elapsed().as_micros() % 1000, news.len());
 }
 
 fn update_app(
@@ -371,7 +427,9 @@ fn update_service(
     app_icons: &HashMap<u32, LightCachedIcon>,
     icon: &LightCachedIcon,
     use_merged_stats: bool,
+    stats: &mut UpdateStats,
 ) {
+    let start = Instant::now();
     set_service(&row_model, service);
 
     row_model
@@ -381,6 +439,9 @@ fn update_service(
     row_model.set_pid(service.pid.clone().unwrap_or_default());
     row_model.set_user(service.user.clone().unwrap_or_default());
     row_model.set_group(service.group.clone().unwrap_or_default());
+
+    stats.housekeeping += start.elapsed().as_micros();
+    let start = Instant::now();
 
     if let Some(pid) = service.pid {
         if let Some(process) = process_map.get(&pid) {
@@ -414,6 +475,8 @@ fn update_service(
 
         set_empty_stats(&row_model);
     }
+
+    stats.children_updating += start.elapsed().as_micros();
 }
 
 #[inline]

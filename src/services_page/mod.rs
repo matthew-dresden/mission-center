@@ -25,7 +25,7 @@ use std::time::Instant;
 use adw::prelude::*;
 use glib::{g_critical, ParamSpec, Properties, Value, WeakRef};
 use gtk::{gio, glib, subclass::prelude::*};
-
+use gtk::gio::spawn_blocking;
 use crate::i18n::{i18n, ni18n_f};
 use crate::table_view::{
     update_services, ContentType, ProcessActionBar, RowModel, RowModelBuilder, SectionType,
@@ -474,7 +474,7 @@ impl ServicesPage {
 
         imp.update_headers();
 
-        println!("zzyzx Services update completed in {}ms", start.elapsed().as_millis());
+        println!("zzyzx Services update completed in {:.3}ms", start.elapsed().as_micros() as f64 / 1000.);
     }
 
     pub fn update_readings(&self, readings: &mut crate::magpie_client::Readings) -> bool {
