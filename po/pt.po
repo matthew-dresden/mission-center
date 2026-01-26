@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-12-07 17:00+0000\n"
-"Last-Translator: Jonathan Teixeira <teixjrt@gmail.com>\n"
+"PO-Revision-Date: 2026-01-27 03:17+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/mission-"
 "center/mission-center/pt/>\n"
 "Language: pt\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -156,7 +156,7 @@ msgstr ""
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:51
 msgid "Comments, suggestions, bug reports and contributions welcome"
 msgstr ""
-"Comentários, sugestões, reporte de PROBLEMAS e contribuições são bem-vindos"
+"Comentários, sugestões, reportes de erros e contribuições são bem-vindos."
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:46
 msgid "Which page is shown on application startup"
@@ -246,7 +246,8 @@ msgstr "Mostrar separador entre cada coluna na guia de apps"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:135
 msgid "The column name by which the Apps page view is sorted"
-msgstr "O nome da coluna pelo qual a visualização da página apps é ordenada"
+msgstr ""
+"O nome da coluna pelo qual a visualização da página Aplicações é ordenada"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:140
 msgid "The sorting direction of the Apps page view"
@@ -258,7 +259,8 @@ msgstr "A ordem das colunas na guia de apps"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
 msgid "The column name by which the Services page view is sorted"
-msgstr "O nome da coluna pelo qual a visualização da página apps é ordenada"
+msgstr ""
+"O nome da coluna pelo qual a visualização da página Aplicações é ordenada"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
 msgid "The sorting direction of the Services page view"
@@ -1550,9 +1552,8 @@ msgid "Desktop Environment Information"
 msgstr "Informações do Ambiente de Trabalho"
 
 #: resources/ui/about_system_dialog.blp:316
-#, fuzzy
 msgid "Windowing System"
-msgstr "Sistema de Janelagem"
+msgstr "Sistema de janelas"
 
 #: resources/ui/about_system_dialog.blp:344
 msgid "Virtual Terminal"
@@ -1960,9 +1961,8 @@ msgid "Disabled"
 msgstr "Desativado"
 
 #: src/services_page/mod.rs:140
-#, fuzzy
 msgid "No services match the current filters"
-msgstr "Nenhum serviço encaixa nos filtros escolhidos"
+msgstr "Nenhum serviço corresponde aos filtros atuais"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
@@ -1997,7 +1997,7 @@ msgstr "Serviço"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"
-msgstr "App"
+msgstr "Aplicação"
 
 #: src/process_tree/service_details_dialog.rs:203
 msgid "Copy logs to clipboard"
