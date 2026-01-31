@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2026-01-05 09:01+0000\n"
-"Last-Translator: ovl-1 <ovl-002@mailinator.com>\n"
+"PO-Revision-Date: 2026-02-01 16:33+0000\n"
+"Last-Translator: Telaneo <post@telaneo.net>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/mission-"
 "center/mission-center/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -36,15 +36,15 @@ msgstr "Mission Centers utviklere"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:16
 msgid "Monitor system resource usage"
-msgstr "Overvåk bruken av systemressurser"
+msgstr "Overvåk systemressursforbruk"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:18
 msgid ""
 "Monitor your CPU, Memory, Disk, Network and GPU usage, accompanied by a per "
 "app and process breakdown of these statistics"
 msgstr ""
-"Overvåk bruken av CPU, minne, disk, nettverk og GPU, med en "
-"statistikkoversikt over apper og prosesser"
+"Overvåk hvor mye CPU, minne, disk, nettverk og GPU som er i bruk, og hvor "
+"mye som brukes av hver app og prosess"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:19
 msgid "Features:"
@@ -52,7 +52,7 @@ msgstr "Funksjoner:"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:21
 msgid "Monitor overall or per-thread CPU usage"
-msgstr "Overvåk CPU-bruken totalt eller per tråd"
+msgstr "Overvåk totalt CPU-bruk eller bruk per tråd"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:22
 msgid ""
@@ -64,7 +64,7 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:23
 msgid "Monitor RAM and Swap usage"
-msgstr "Overvåk bruken av RAM og swap"
+msgstr "Overvåk av RAM- og swap-forbruk"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:24
 msgid "See a breakdown how the memory is being used by the system"
@@ -113,7 +113,7 @@ msgid ""
 "Use hardware accelerated rendering for all the graphs in an effort to reduce "
 "CPU and overall resource usage"
 msgstr ""
-"Bruk maskinvareakselerert gjengivelse for alle grafer for å redusere CPU- og "
+"Alle grafer vises gjennom maskinvareakselerering, som reduserer CPU- og "
 "annen ressursbruk"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:39
@@ -142,13 +142,13 @@ msgid ""
 "\"Applications\" section (Upstream issue: https://github.com/linuxmint/"
 "cinnamon/issues/12015)"
 msgstr ""
-"Når du bruker Linux Mint/Cinnamon, kan det hende at startede programmer ikke "
+"Når du bruker Linux Mint/Cinnamon, kan det hende at enkelte programmer ikke "
 "vises under «Applikasjoner» (Upstream-problem: https://github.com/linuxmint/"
 "cinnamon/issues/12015)"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:51
 msgid "Comments, suggestions, bug reports and contributions welcome"
-msgstr "Kommentarer, forslag, feilrapporter og bidrag ønskes"
+msgstr "Kommentarer, forslag, feilrapporter og bidrag er velkomne"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:46
 msgid "Which page is shown on application startup"
@@ -468,7 +468,7 @@ msgstr "Modifisert:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:41
 msgid "Standby:"
-msgstr ""
+msgstr "Tid i hvilemodus:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:46
 msgid "Free:"
@@ -678,7 +678,7 @@ msgstr "Hastighet:"
 
 #: resources/ui/performance_page/memory_details.blp:260
 msgid "Slots used:"
-msgstr "Plasser brukt:"
+msgstr "Spor i bruk:"
 
 #: resources/ui/performance_page/memory_details.blp:274
 msgid "Form factor:"
@@ -913,7 +913,7 @@ msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr "Seriell:"
+msgstr "Serienummer:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
