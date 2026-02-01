@@ -8,19 +8,21 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-03 08:59+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2026-02-02 17:01+0000\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <https://hosted.weblate.org/projects/mission-center/"
+"mission-center/ka/>\n"
 "Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
 msgid "Mission Center"
-msgstr ""
+msgstr "Mission Center"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:9
 msgid ""
@@ -44,7 +46,7 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:20
 msgid "Features:"
-msgstr ""
+msgstr "თვისებები:"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:22
 msgid "Monitor overall or per-thread CPU usage"
@@ -311,7 +313,7 @@ msgstr ""
 #: resources/ui/apps_page/page.blp:87 resources/ui/services_page/page.blp:94
 #: resources/ui/keyboard_shortcuts.blp:112
 msgid "Collapse All"
-msgstr ""
+msgstr "ყველას აკეცვა"
 
 #: resources/ui/performance_page/disk_eject_failure_dialog.blp:25
 msgid "Failed To Eject"
@@ -319,30 +321,30 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_eject_failure_row.blp:51
 msgid "Kill"
-msgstr ""
+msgstr "მოკვლა"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:31
 msgid "In Use:"
-msgstr ""
+msgstr "გამოიყენება:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:36
 msgid "Modified:"
-msgstr ""
+msgstr "შეცვლილია:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:41
 msgid "Standby:"
-msgstr ""
+msgstr "უქმე:"
 
 #: resources/ui/performance_page/memory_info_tooltip.blp:46
 msgid "Free:"
-msgstr ""
+msgstr "თავისუფალი:"
 
 #: resources/ui/performance_page/cpu.blp:45
 #: resources/ui/table_view/table_view.blp:53
 #: resources/ui/table_view/process_details_dialog.blp:176
 #: src/performance_page/mod.rs:980 src/table_view/mod.rs:659
 msgid "CPU"
-msgstr ""
+msgstr "პროცესორი"
 
 #: resources/ui/performance_page/cpu.blp:64
 #: resources/ui/performance_page/gpu.blp:73
@@ -353,7 +355,7 @@ msgstr ""
 #: resources/ui/performance_page/gpu.blp:87
 #: resources/ui/performance_page/gpu.blp:136
 msgid "100%"
-msgstr ""
+msgstr "100%"
 
 #: resources/ui/performance_page/cpu.blp:107
 msgid "Change G_raph To"
@@ -387,7 +389,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:213
 #: resources/ui/performance_page/network.blp:111
 msgid "_View"
-msgstr ""
+msgstr "_ხედი"
 
 #: resources/ui/performance_page/cpu.blp:136
 #: resources/ui/performance_page/disk.blp:191
@@ -396,7 +398,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:216
 #: resources/ui/performance_page/network.blp:114
 msgid "CP_U"
-msgstr ""
+msgstr "CP_U"
 
 #: resources/ui/performance_page/cpu.blp:141
 #: resources/ui/performance_page/disk.blp:196
@@ -405,7 +407,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:221
 #: resources/ui/performance_page/network.blp:119
 msgid "_Memory"
-msgstr ""
+msgstr "_მეხსიერება"
 
 #: resources/ui/performance_page/cpu.blp:146
 #: resources/ui/performance_page/disk.blp:201
@@ -414,7 +416,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:226
 #: resources/ui/performance_page/network.blp:124
 msgid "_Drive"
-msgstr ""
+msgstr "_დისკი"
 
 #: resources/ui/performance_page/cpu.blp:151
 #: resources/ui/performance_page/disk.blp:206
@@ -423,7 +425,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:231
 #: resources/ui/performance_page/network.blp:129
 msgid "_Network"
-msgstr ""
+msgstr "ქსელი"
 
 #: resources/ui/performance_page/cpu.blp:156
 #: resources/ui/performance_page/disk.blp:211
@@ -432,7 +434,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:236
 #: resources/ui/performance_page/network.blp:134
 msgid "_GPU"
-msgstr ""
+msgstr "_GPU"
 
 #: resources/ui/performance_page/cpu.blp:161
 #: resources/ui/performance_page/disk.blp:216
@@ -441,7 +443,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:241
 #: resources/ui/performance_page/network.blp:139
 msgid "_Fan"
-msgstr ""
+msgstr "_ვენტილატორი"
 
 #: resources/ui/performance_page/cpu.blp:169
 #: resources/ui/performance_page/disk.blp:224
@@ -450,7 +452,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:249
 #: resources/ui/performance_page/network.blp:152
 msgid "_Copy"
-msgstr ""
+msgstr "_კოპირება"
 
 #: resources/ui/performance_page/disk.blp:66
 msgid "Show SMART Data"
@@ -458,7 +460,7 @@ msgstr ""
 
 #: resources/ui/performance_page/disk.blp:77
 msgid "Eject Disk"
-msgstr ""
+msgstr "დისკის გამოღება"
 
 #: resources/ui/performance_page/disk.blp:100
 msgid "Active time over "
@@ -479,7 +481,7 @@ msgstr ""
 
 #: resources/ui/performance_page/fan_details.blp:59
 msgid "Fan Speed"
-msgstr ""
+msgstr "ვენტილატორის სიჩქარე"
 
 #: resources/ui/performance_page/fan_details.blp:99
 msgid "PWM Percentage"
@@ -487,7 +489,7 @@ msgstr ""
 
 #: resources/ui/performance_page/fan_details.blp:127
 msgid "Current Temperature"
-msgstr ""
+msgstr "მიმდინარე ტემპერატურა"
 
 #: resources/ui/performance_page/gpu.blp:120
 msgid "Video encode/decode utilization over "
@@ -507,7 +509,7 @@ msgstr ""
 #: resources/ui/table_view/process_details_dialog.blp:201
 #: src/performance_page/mod.rs:1044 src/table_view/mod.rs:680
 msgid "Memory"
-msgstr ""
+msgstr "მეხსიერება"
 
 #: resources/ui/performance_page/memory.blp:122
 msgid "Swap usage over "
@@ -527,19 +529,19 @@ msgstr ""
 
 #: resources/ui/performance_page/memory_details.blp:58
 msgid "In use"
-msgstr ""
+msgstr "გამოიყენება"
 
 #: resources/ui/performance_page/memory_details.blp:88
 msgid "Available"
-msgstr ""
+msgstr "ხელმისაწვდომია"
 
 #: resources/ui/performance_page/memory_details.blp:131
 msgid "Committed"
-msgstr ""
+msgstr "კომიტი დასრულებულია"
 
 #: resources/ui/performance_page/memory_details.blp:162
 msgid "Cached"
-msgstr ""
+msgstr "დაქეშილი"
 
 #: resources/ui/performance_page/memory_details.blp:194
 msgid "Swap used"
@@ -551,7 +553,7 @@ msgstr ""
 
 #: resources/ui/performance_page/memory_details.blp:253
 msgid "Speed:"
-msgstr ""
+msgstr "სიჩქარე:"
 
 #: resources/ui/performance_page/memory_details.blp:270
 msgid "Slots used:"
@@ -559,12 +561,12 @@ msgstr ""
 
 #: resources/ui/performance_page/memory_details.blp:287
 msgid "Form factor:"
-msgstr ""
+msgstr "ზომა:"
 
 #: resources/ui/performance_page/memory_details.blp:304
 #: resources/ui/performance_page/disk_details.blp:301
 msgid "Type:"
-msgstr ""
+msgstr "ტიპი:"
 
 #: resources/ui/performance_page/network.blp:145
 msgid "Network Se_ttings"
@@ -572,31 +574,31 @@ msgstr ""
 
 #: resources/ui/performance_page/network_details.blp:63
 msgid "Receive"
-msgstr ""
+msgstr "მიღება"
 
 #: resources/ui/performance_page/network_details.blp:102
 msgid "Send"
-msgstr ""
+msgstr "გაგზავნა"
 
 #: resources/ui/performance_page/network_details.blp:132
 msgid "Total Received"
-msgstr ""
+msgstr "სულ მიღებული"
 
 #: resources/ui/performance_page/network_details.blp:162
 msgid "Total Sent"
-msgstr ""
+msgstr "გაგზავნილი ჯამში"
 
 #: resources/ui/performance_page/network_details.blp:190
 msgid "Interface name:"
-msgstr ""
+msgstr "ინტერფეისის სახელი:"
 
 #: resources/ui/performance_page/network_details.blp:207
 msgid "Connection type:"
-msgstr ""
+msgstr "შეერთების ტიპი:"
 
 #: resources/ui/performance_page/network_details.blp:226
 msgid "SSID:"
-msgstr ""
+msgstr "SSID:"
 
 #: resources/ui/performance_page/network_details.blp:245
 msgid "Signal strength:"
@@ -608,11 +610,11 @@ msgstr ""
 
 #: resources/ui/performance_page/network_details.blp:283
 msgid "Frequency:"
-msgstr ""
+msgstr "სიხშირე:"
 
 #: resources/ui/performance_page/network_details.blp:300
 msgid "Hardware address:"
-msgstr ""
+msgstr "აპარატურული მისამართი:"
 
 #: resources/ui/performance_page/network_details.blp:429
 msgid "IPv4 address:"
@@ -628,11 +630,11 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:48
 msgid "Last Updated"
-msgstr ""
+msgstr "ბოლო განახლება"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:72
 msgid "Powered On"
-msgstr ""
+msgstr "ჩართულია"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:96
 msgid "Drive Health"
@@ -645,41 +647,41 @@ msgstr ""
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:149
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:174
 msgid "Attribute"
-msgstr ""
+msgstr "ატრიბუტი"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:156
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:181
 msgid "Value"
-msgstr ""
+msgstr "მნიშვნელობა"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:168
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:187
 msgid "Normalized"
-msgstr ""
+msgstr "ნორმალიზებულია"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:193
 msgid "Threshold"
-msgstr ""
+msgstr "ზღვარი"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:199
 msgid "Worst"
-msgstr ""
+msgstr "უარესი"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:205
 #: resources/ui/table_view/process_details_dialog.blp:112
 msgid "Type"
-msgstr ""
+msgstr "ტიპი"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:211
 msgid "Updates"
-msgstr ""
+msgstr "განახლებები"
 
 #: resources/ui/performance_page/disk_smart_data_dialog.blp:217
 msgid "Assessment"
-msgstr ""
+msgstr "შეფასება"
 
 #: resources/ui/performance_page/gpu_details.blp:51
 #: resources/ui/performance_page/cpu_details.blp:46
@@ -698,12 +700,12 @@ msgstr ""
 #: resources/ui/performance_page/gpu_details.blp:205
 #: src/performance_page/gpu.rs:552
 msgid "Memory Usage"
-msgstr ""
+msgstr "მეხსიერების გამოყენება"
 
 #: resources/ui/performance_page/gpu_details.blp:281
 #: src/performance_page/gpu.rs:629
 msgid "Shared Memory Usage"
-msgstr ""
+msgstr "გაზიარებული მეხსიერების დატვირთვა"
 
 #: resources/ui/performance_page/gpu_details.blp:341
 msgid "Memory Speed"
@@ -719,7 +721,7 @@ msgstr ""
 
 #: resources/ui/performance_page/gpu_details.blp:496
 msgid "Temperature"
-msgstr ""
+msgstr "ტემპერატურა"
 
 #: resources/ui/performance_page/gpu_details.blp:535
 msgid "OpenGL version:"
@@ -761,11 +763,11 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_details.blp:132
 msgid "Total Read"
-msgstr ""
+msgstr "სულ წაკითხული"
 
 #: resources/ui/performance_page/disk_details.blp:162
 msgid "Total Written"
-msgstr ""
+msgstr "სულ ჩაწერილი"
 
 #: resources/ui/performance_page/disk_details.blp:192
 msgid "Active time"
@@ -777,7 +779,7 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_details.blp:250
 msgid "Capacity:"
-msgstr ""
+msgstr "მოცულობა:"
 
 #: resources/ui/performance_page/disk_details.blp:267
 msgid "Formatted:"
@@ -793,7 +795,7 @@ msgstr ""
 
 #: resources/ui/performance_page/disk_details.blp:339
 msgid "Serial:"
-msgstr ""
+msgstr "სერიული:"
 
 #: resources/ui/performance_page/disk_details.blp:358
 msgid "Rotation Rate"
@@ -801,19 +803,19 @@ msgstr ""
 
 #: resources/ui/performance_page/cpu_details.blp:69
 msgid "Speed"
-msgstr ""
+msgstr "სიჩქარე"
 
 #: resources/ui/performance_page/cpu_details.blp:120 src/apps_page/mod.rs:84
 msgid "Processes"
-msgstr ""
+msgstr "პროცესები"
 
 #: resources/ui/performance_page/cpu_details.blp:143
 msgid "Threads"
-msgstr ""
+msgstr "ნაკადები"
 
 #: resources/ui/performance_page/cpu_details.blp:166
 msgid "Handles"
-msgstr ""
+msgstr "დამმუშავებლები"
 
 #: resources/ui/performance_page/cpu_details.blp:190
 msgid "Up time"
@@ -825,7 +827,7 @@ msgstr ""
 
 #: resources/ui/performance_page/cpu_details.blp:229
 msgid "Sockets:"
-msgstr ""
+msgstr "სოკეტები:"
 
 #: resources/ui/performance_page/cpu_details.blp:244
 msgid "Virtual processors:"
@@ -865,7 +867,7 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:6
 msgid "General"
-msgstr ""
+msgstr "ზოგადი"
 
 #: resources/ui/preferences/page.blp:9
 msgid "Update Interval"
@@ -873,7 +875,7 @@ msgstr ""
 
 #: resources/ui/preferences/page.blp:10
 msgid "In seconds"
-msgstr ""
+msgstr "წამებში"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -988,7 +990,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:141 resources/ui/preferences/page.blp:179
 #: resources/ui/preferences/page.blp:217
 msgid "Bytes"
-msgstr ""
+msgstr "ბაიტი"
 
 #: resources/ui/preferences/page.blp:145
 msgid "Use Bits as a Unit of Measurement for Memory"
@@ -997,7 +999,7 @@ msgstr ""
 #: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
 #: resources/ui/preferences/page.blp:222
 msgid "Bits"
-msgstr ""
+msgstr "ბიტი"
 
 #: resources/ui/preferences/page.blp:152
 msgid "Memory Usage Base"
@@ -1095,47 +1097,47 @@ msgstr ""
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "ფილტრების წაშლა"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
 msgid "Follow system style"
-msgstr ""
+msgstr "სისტემის სტილის მიყოლა"
 
 #: resources/ui/widgets/theme_selector.blp:35
 #: resources/ui/widgets/theme_selector.blp:38
 msgid "Light style"
-msgstr ""
+msgstr "ღია სტილი"
 
 #: resources/ui/widgets/theme_selector.blp:53
 #: resources/ui/widgets/theme_selector.blp:56
 msgid "Dark style"
-msgstr ""
+msgstr "მუქი სტილი"
 
 #: resources/ui/keyboard_shortcuts.blp:5
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "კლავიატურის მალსახმობები"
 
 #: resources/ui/keyboard_shortcuts.blp:10
 msgid "Global"
-msgstr ""
+msgstr "გლობალური"
 
 #: resources/ui/keyboard_shortcuts.blp:21
 msgid "Open Menu"
-msgstr ""
+msgstr "მენიუს გახსნა"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "ფანჯრის დახურვა"
 
 #: resources/ui/keyboard_shortcuts.blp:36
 msgid "Open Preferences"
-msgstr ""
+msgstr "მორგების ფანჯრის გახსნა"
 
 #: resources/ui/keyboard_shortcuts.blp:41
 msgid "Show Keyboard Shortcuts"
-msgstr ""
+msgstr "კლავიატურის მალსახმობების ჩვენება"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1151,7 +1153,7 @@ msgstr ""
 
 #: resources/ui/keyboard_shortcuts.blp:61 resources/ui/window.blp:95
 msgid "Toggle Sidebar"
-msgstr ""
+msgstr "გვერდითი პანელის ჩვენების გადართვა"
 
 #: resources/ui/keyboard_shortcuts.blp:79
 msgid "Copy Device Information"
@@ -1163,7 +1165,7 @@ msgstr ""
 
 #: resources/ui/keyboard_shortcuts.blp:89
 msgid "Select a Device"
-msgstr ""
+msgstr "აირჩიეთ მოწყობილობა"
 
 #: resources/ui/keyboard_shortcuts.blp:96
 msgid "Apps Page"
@@ -1172,7 +1174,7 @@ msgstr ""
 #: resources/ui/keyboard_shortcuts.blp:107
 #: resources/ui/keyboard_shortcuts.blp:145 resources/ui/window.blp:143
 msgid "Search"
-msgstr ""
+msgstr "ძებნა"
 
 #: resources/ui/keyboard_shortcuts.blp:117
 msgid "Stop App or Process"
@@ -1193,11 +1195,11 @@ msgstr ""
 
 #: resources/ui/keyboard_shortcuts.blp:150
 msgid "Start Service"
-msgstr ""
+msgstr "სერვისის გაშვება"
 
 #: resources/ui/keyboard_shortcuts.blp:155
 msgid "Stop Service"
-msgstr ""
+msgstr "სერვისის გაჩერება"
 
 #: resources/ui/keyboard_shortcuts.blp:160
 msgid "Restart Service"
@@ -1210,12 +1212,12 @@ msgstr ""
 #: resources/ui/about_system_dialog.blp:80
 #: resources/ui/about_system_dialog.blp:260 src/table_view/columns/mod.rs:208
 msgid "Name"
-msgstr ""
+msgstr "სახელი"
 
 #: resources/ui/table_view/table_view.blp:47
 #: resources/ui/table_view/process_details_dialog.blp:76
 msgid "PID"
-msgstr ""
+msgstr "PID"
 
 #: resources/ui/table_view/table_view.blp:65
 msgid ""
@@ -1226,13 +1228,13 @@ msgstr ""
 #: resources/ui/table_view/table_view.blp:71 src/performance_page/mod.rs:1131
 #: src/table_view/mod.rs:685 src/table_view/mod.rs:693
 msgid "Drive"
-msgstr ""
+msgstr "დისკი"
 
 #: resources/ui/table_view/table_view.blp:77
 #: resources/ui/table_view/process_details_dialog.blp:276
 #: src/table_view/mod.rs:699 src/table_view/mod.rs:708
 msgid "Network"
-msgstr ""
+msgstr "ქსელი"
 
 #: resources/ui/table_view/table_view.blp:83
 #: resources/ui/table_view/process_details_dialog.blp:301
@@ -1240,20 +1242,20 @@ msgstr ""
 #: src/performance_page/mod.rs:2159 src/table_view/mod.rs:714
 #: src/table_view/mod.rs:731
 msgid "GPU"
-msgstr ""
+msgstr "GPU"
 
 #: resources/ui/table_view/table_view.blp:89
 #: resources/ui/table_view/process_details_dialog.blp:326
 #: src/table_view/mod.rs:718 src/table_view/mod.rs:737
 msgid "GPU Memory"
-msgstr ""
+msgstr "GPU მეხსიერება"
 
 #: resources/ui/table_view/table_view.blp:103
 #: resources/ui/table_view/table_view.blp:173
 #: resources/ui/table_view/process_action_bar.blp:45
 #: resources/ui/table_view/service_action_bar.blp:65
 msgid "Stop"
-msgstr ""
+msgstr "გაჩერება"
 
 #: resources/ui/table_view/table_view.blp:108
 #: resources/ui/table_view/process_action_bar.blp:64
@@ -1262,56 +1264,56 @@ msgstr ""
 
 #: resources/ui/table_view/table_view.blp:113
 msgid "Send Signal"
-msgstr ""
+msgstr "სიგნალის გაგზავნა"
 
 #: resources/ui/table_view/table_view.blp:116
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "შეჩერება (STOP)"
 
 #: resources/ui/table_view/table_view.blp:121
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "გაგრძელება (CONT)"
 
 #: resources/ui/table_view/table_view.blp:126
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "გათიშვა (HUP)"
 
 #: resources/ui/table_view/table_view.blp:131
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "შეწყვეტა (INT)"
 
 #: resources/ui/table_view/table_view.blp:136
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "დასრულება (TERM)"
 
 #: resources/ui/table_view/table_view.blp:141
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "მოკვლა (KILL)"
 
 #: resources/ui/table_view/table_view.blp:146
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "მომხმ 1 (USR1)"
 
 #: resources/ui/table_view/table_view.blp:151
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "მომხმ 2 (USR2)"
 
 #: resources/ui/table_view/table_view.blp:159
 #: resources/ui/table_view/table_view.blp:185
 #: resources/ui/table_view/process_action_bar.blp:84
 #: resources/ui/table_view/service_action_bar.blp:104
 msgid "Details"
-msgstr ""
+msgstr "დეტალები"
 
 #: resources/ui/table_view/table_view.blp:168
 #: resources/ui/table_view/service_action_bar.blp:46
 msgid "Start"
-msgstr ""
+msgstr "დაწყება"
 
 #: resources/ui/table_view/table_view.blp:178
 #: resources/ui/table_view/service_action_bar.blp:85
 msgid "Restart"
-msgstr ""
+msgstr "გადატვირთვა"
 
 #: resources/ui/table_view/process_action_bar.blp:33
 msgid "Stop the selected app"
@@ -1327,7 +1329,7 @@ msgstr ""
 
 #: resources/ui/table_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "App ID"
 
 #: resources/ui/table_view/process_details_dialog.blp:95
 #: resources/ui/table_view/process_details_dialog.blp:123
@@ -1357,23 +1359,23 @@ msgstr ""
 #: src/table_view/service_details_dialog.rs:272
 #: src/table_view/service_details_dialog.rs:280
 msgid "N/A"
-msgstr ""
+msgstr "ა/მ"
 
 #: resources/ui/table_view/process_details_dialog.blp:140
 msgid "Command Line"
-msgstr ""
+msgstr "ბრძანების სტრიქონი"
 
 #: resources/ui/table_view/process_details_dialog.blp:162
 msgid "Resource Usage"
-msgstr ""
+msgstr "რესურსების გამოყენება"
 
 #: resources/ui/table_view/process_details_dialog.blp:226
 msgid "Shared Memory"
-msgstr ""
+msgstr "გაზიარებული მეხსიერება"
 
 #: resources/ui/table_view/process_details_dialog.blp:251
 msgid "Drives"
-msgstr ""
+msgstr "დისკები"
 
 #: resources/ui/table_view/service_action_bar.blp:34
 msgid "Start the selected service"
@@ -1397,7 +1399,7 @@ msgstr ""
 
 #: resources/ui/table_view/service_details_dialog.blp:57
 msgid "State"
-msgstr ""
+msgstr "მდგომარეობა"
 
 #: resources/ui/table_view/service_details_dialog.blp:58
 msgid "The current state of the service"
@@ -1405,7 +1407,7 @@ msgstr ""
 
 #: resources/ui/table_view/service_details_dialog.blp:75
 msgid "Start service"
-msgstr ""
+msgstr "სერვისის გაშვება"
 
 #: resources/ui/table_view/service_details_dialog.blp:90
 msgid "Stop service"
@@ -1417,20 +1419,20 @@ msgstr ""
 
 #: resources/ui/table_view/service_details_dialog.blp:164
 msgid "Description"
-msgstr ""
+msgstr "აღწერა"
 
 #: resources/ui/table_view/service_details_dialog.blp:194
 msgid "Status"
-msgstr ""
+msgstr "სტატუსი"
 
 #: resources/ui/table_view/service_details_dialog.blp:213
 msgid "Enabled"
-msgstr ""
+msgstr "ჩართულია"
 
 #: resources/ui/table_view/service_details_dialog.blp:220
 #: src/table_view/row_model.rs:271
 msgid "Process"
-msgstr ""
+msgstr "პროცესი"
 
 #: resources/ui/table_view/service_details_dialog.blp:221
 msgid "Process and user information"
@@ -1438,41 +1440,41 @@ msgstr ""
 
 #: resources/ui/table_view/service_details_dialog.blp:237
 msgid "Process ID"
-msgstr ""
+msgstr "პროცესის ID"
 
 #: resources/ui/table_view/service_details_dialog.blp:269
 msgid "User"
-msgstr ""
+msgstr "მომხმარებელი"
 
 #: resources/ui/table_view/service_details_dialog.blp:301
 msgid "Group"
-msgstr ""
+msgstr "ჯგუფი"
 
 #: resources/ui/table_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "ფაილის მდებარეობა"
 
 #: resources/ui/table_view/service_details_dialog.blp:356
 msgid "Logs"
-msgstr ""
+msgstr "ჟურნალი"
 
 #: resources/ui/about_system_dialog.blp:36
 msgid "System Info"
-msgstr ""
+msgstr "სისტემის ინფორმაცია"
 
 #: resources/ui/about_system_dialog.blp:65
 msgid "Operating System Information"
-msgstr ""
+msgstr "ინფორმაცია ოპერაციული სისტემის შესახებ"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
 msgid "Version"
-msgstr ""
+msgstr "ვერსია"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "პაკეტების მმართველი"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
@@ -1492,7 +1494,7 @@ msgstr ""
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "ფანჯრული სისტემა"
 
 #: resources/ui/about_system_dialog.blp:344
 msgid "Virtual Terminal"
@@ -1504,15 +1506,15 @@ msgstr ""
 
 #: resources/ui/window.blp:54
 msgid "Disable All"
-msgstr ""
+msgstr "ყველას გამორთვა"
 
 #: resources/ui/window.blp:59
 msgid "Reset to Default"
-msgstr ""
+msgstr "ნაგულისხმევ მნიშვნელობაზე ჩამოყრა"
 
 #: resources/ui/window.blp:64
 msgid "Devices"
-msgstr ""
+msgstr "მოწყობილობები"
 
 #: resources/ui/window.blp:70
 msgid "Edit Sidebar"
@@ -1528,31 +1530,31 @@ msgstr ""
 
 #: resources/ui/window.blp:148
 msgid "Main Menu"
-msgstr ""
+msgstr "მთავარი მენიუ"
 
 #: resources/ui/window.blp:178
 msgid "Loading..."
-msgstr ""
+msgstr "იტვირთება..."
 
 #: resources/ui/window.blp:192
 msgid "Performance"
-msgstr ""
+msgstr "წარმადობა"
 
 #: resources/ui/window.blp:204 src/apps_page/mod.rs:79
 msgid "Apps"
-msgstr ""
+msgstr "აპები"
 
 #: resources/ui/window.blp:212
 msgid "Services"
-msgstr ""
+msgstr "სერვისები"
 
 #: resources/ui/window.blp:237
 msgid "_Preferences"
-msgstr ""
+msgstr "_მორგება"
 
 #: resources/ui/window.blp:242
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "_კლავიატურის მალსახმობები"
 
 #: resources/ui/window.blp:249
 msgid "_About System"
@@ -1593,35 +1595,35 @@ msgstr ""
 #: src/performance_page/network.rs:393 src/performance_page/network.rs:482
 #: src/performance_page/network.rs:518
 msgid "Unknown"
-msgstr ""
+msgstr "უცნობი"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:130
 msgid "Pre-Fail"
-msgstr ""
+msgstr "ჩავარდნის-წინა"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:131
 msgid "Old-Age"
-msgstr ""
+msgstr "ბებერი"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:134
 msgid "Online"
-msgstr ""
+msgstr "ონლაინ"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:135
 msgid "Offline"
-msgstr ""
+msgstr "ინტერნეტგარეშე"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:142
 msgid "FAILING"
-msgstr ""
+msgstr "ჩავარდება"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:147
 msgid "Failed in the past"
-msgstr ""
+msgstr "ჩავარდა წარსულში"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
-msgstr ""
+msgstr "დიახ"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
@@ -1666,7 +1668,7 @@ msgstr ""
 #: src/performance_page/fan.rs:296
 #, rust-format
 msgid "{} °C"
-msgstr ""
+msgstr "{} °C"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:272
 msgid "Critical Temperature"
@@ -1729,62 +1731,62 @@ msgstr ""
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
 #, rust-format
 msgid "{} sectors"
-msgstr ""
+msgstr "{} სექტორი"
 
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
 msgid "Unsupported"
-msgstr ""
+msgstr "მხარდაჭერის გარეშე"
 
 #: src/performance_page/cpu.rs:351 src/performance_page/disk.rs:232
 msgid "Yes"
-msgstr ""
+msgstr "დიახ"
 
 #: src/performance_page/cpu.rs:353 src/performance_page/disk.rs:234
 msgid "No"
-msgstr ""
+msgstr "არა"
 
 #: src/performance_page/disk.rs:201
 #, rust-format
 msgid "Disk {} ({})"
-msgstr ""
+msgstr "დისკი {} ({})"
 
 #: src/performance_page/disk.rs:205 src/performance_page/disk.rs:367
 #, rust-format
 msgid "Drive ({})"
-msgstr ""
+msgstr "ამძრავი ({})"
 
 #: src/performance_page/disk.rs:243 src/performance_page/mod.rs:1122
 msgid "HDD"
-msgstr ""
+msgstr "HDD"
 
 #: src/performance_page/disk.rs:244 src/performance_page/mod.rs:1123
 msgid "SSD"
-msgstr ""
+msgstr "SSD"
 
 #: src/performance_page/disk.rs:245 src/performance_page/mod.rs:1124
 msgid "NVMe"
-msgstr ""
+msgstr "NVMe"
 
 #: src/performance_page/disk.rs:246 src/performance_page/mod.rs:1125
 msgid "eMMC"
-msgstr ""
+msgstr "eMMC"
 
 #: src/performance_page/disk.rs:247 src/performance_page/mod.rs:1126
 msgid "SD"
-msgstr ""
+msgstr "SD"
 
 #: src/performance_page/disk.rs:248 src/performance_page/mod.rs:1127
 msgid "iSCSI"
-msgstr ""
+msgstr "iSCSI"
 
 #: src/performance_page/disk.rs:249 src/performance_page/mod.rs:1128
 msgid "Optical"
-msgstr ""
+msgstr "ოპტიკური"
 
 #: src/performance_page/disk.rs:250 src/performance_page/mod.rs:1129
 msgid "Floppy"
-msgstr ""
+msgstr "დისკეტა"
 
 #: src/performance_page/disk.rs:251 src/performance_page/mod.rs:1130
 msgid "Thumb Drive"
@@ -1793,29 +1795,29 @@ msgstr ""
 #: src/performance_page/disk.rs:363
 #, rust-format
 msgid "Drive {} ({})"
-msgstr ""
+msgstr "ამძრავი {} ({})"
 
 #: src/performance_page/disk.rs:393 src/performance_page/fan.rs:280
 #: src/performance_page/fan.rs:315
 #, rust-format
 msgid "{} RPM"
-msgstr ""
+msgstr "{} ბრ/წმ"
 
 #: src/performance_page/fan.rs:274 src/performance_page/mod.rs:1505
 #: src/performance_page/mod.rs:2236
 #, rust-format
 msgid "Fan {}"
-msgstr ""
+msgstr "ვენტილატორი {}"
 
 #: src/performance_page/fan.rs:276 src/performance_page/mod.rs:1507
 #: src/performance_page/mod.rs:2238
 msgid "Fan"
-msgstr ""
+msgstr "ვენტილატორი"
 
 #: src/performance_page/fan.rs:285
 #, rust-format
 msgid "{}%"
-msgstr ""
+msgstr "{}%"
 
 #: src/performance_page/gpu.rs:285
 msgid "Video encode/decode"
@@ -1829,7 +1831,7 @@ msgstr ""
 
 #: src/performance_page/gpu.rs:570
 msgid "Total Memory"
-msgstr ""
+msgstr "ჯამური მეხსიერება"
 
 #: src/performance_page/gpu.rs:599
 msgid "Dedicated and shared memory usage over "
@@ -1868,21 +1870,21 @@ msgstr[1] ""
 #: src/services_page/mod.rs:106 src/table_view/service_details_dialog.rs:249
 #: src/table_view/service_details_dialog.rs:324
 msgid "Running"
-msgstr ""
+msgstr "გაშვებულია"
 
 #: src/services_page/mod.rs:115 src/table_view/service_details_dialog.rs:251
 #: src/table_view/service_details_dialog.rs:326
 msgid "Failed"
-msgstr ""
+msgstr "ჩავარდა"
 
 #: src/services_page/mod.rs:124 src/table_view/service_details_dialog.rs:253
 #: src/table_view/service_details_dialog.rs:328
 msgid "Stopped"
-msgstr ""
+msgstr "გაჩერებულია"
 
 #: src/services_page/mod.rs:133
 msgid "Disabled"
-msgstr ""
+msgstr "გამორთულია"
 
 #: src/services_page/mod.rs:139
 msgid "No services match the current filters"
@@ -1905,7 +1907,7 @@ msgstr ""
 
 #: src/services_page/mod.rs:181
 msgid "System Services"
-msgstr ""
+msgstr "სისტემური სერვისები"
 
 #: src/table_view/row_model.rs:268
 msgid "Section Header"
@@ -1913,11 +1915,11 @@ msgstr ""
 
 #: src/table_view/row_model.rs:269
 msgid "Service"
-msgstr ""
+msgstr "სერვისი"
 
 #: src/table_view/row_model.rs:270
 msgid "App"
-msgstr ""
+msgstr "აპი"
 
 #: src/table_view/service_details_dialog.rs:203
 msgid "Copy logs to clipboard"
@@ -1925,7 +1927,7 @@ msgstr ""
 
 #: src/application.rs:409
 msgid "translator-credits"
-msgstr ""
+msgstr "ეკატერინე პაპავა"
 
 #: src/main.rs:103
 #, rust-format
@@ -1945,29 +1947,29 @@ msgstr[1] ""
 #, rust-format
 msgid "{} day"
 msgid_plural "{} days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} დღე"
+msgstr[1] "{} დღე"
 
 #: src/main.rs:115
 #, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} საათი"
+msgstr[1] "{} საათი"
 
 #: src/main.rs:119 src/main.rs:184
 #, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} წუთი"
+msgstr[1] "{} წუთი"
 
 #: src/main.rs:123 src/main.rs:182
 #, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{} წამი"
+msgstr[1] "{} წამი"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159
@@ -1985,8 +1987,8 @@ msgstr ""
 
 #: src/main.rs:174
 msgid "Less than a minute"
-msgstr ""
+msgstr "წუთზე ნაკლები"
 
 #: src/main.rs:404
 msgid "_Quit"
-msgstr ""
+msgstr "გასვ_ლა"
