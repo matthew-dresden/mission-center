@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2026-02-01 16:33+0000\n"
-"Last-Translator: Telaneo <post@telaneo.net>\n"
+"PO-Revision-Date: 2026-02-06 14:01+0000\n"
+"Last-Translator: ovl-1 <ovl-002@mailinator.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/mission-"
 "center/mission-center/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -36,7 +36,7 @@ msgstr "Mission Centers utviklere"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:16
 msgid "Monitor system resource usage"
-msgstr "Overvåk systemressursforbruk"
+msgstr "Overvåk systemressursbruk"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:18
 msgid ""
@@ -52,7 +52,7 @@ msgstr "Funksjoner:"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:21
 msgid "Monitor overall or per-thread CPU usage"
-msgstr "Overvåk totalt CPU-bruk eller bruk per tråd"
+msgstr "Overvåk total CPU-bruk eller bruk per tråd"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:22
 msgid ""
@@ -64,7 +64,7 @@ msgstr ""
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:23
 msgid "Monitor RAM and Swap usage"
-msgstr "Overvåk av RAM- og swap-forbruk"
+msgstr "Overvåk bruken av RAM og veksleminne"
 
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:24
 msgid "See a breakdown how the memory is being used by the system"
