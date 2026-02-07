@@ -89,7 +89,7 @@ mod imp {
     const FAN_BASE_COLOR: [u8; 3] = [0x81, 0x3d, 0x9c];
     // GNOME color palette: Red 1
     const GPU_BASE_COLOR: [u8; 3] = [0xf6, 0x61, 0x51];
-    // GNOME color palette: Green 5
+    // GNOME color palette: Green 2
     const BATTERY_BASE_COLOR: [u8; 3] = [0x57, 0xe3, 0x89];
 
     enum Pages {
