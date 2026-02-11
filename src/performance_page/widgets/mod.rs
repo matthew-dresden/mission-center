@@ -23,6 +23,7 @@ pub use graph_widget::GraphWidget;
 pub use graph_widget_utils::DatasetGroup;
 pub use graph_widget_utils::FillingSettings;
 pub use graph_widget_utils::ScalingSettings;
+pub use graph_widget_utils::RoundingSettings;
 pub use mem_composition_widget::MemoryCompositionWidget;
 pub use sidebar_drop_hint::SidebarDropHint;
 pub use smart_data_dialog::SmartDataDialog;
