@@ -20,10 +20,8 @@
 
 use std::cell::RefCell;
 use std::cell::{Cell, OnceCell};
-use std::fmt::Write;
 
 use adw::prelude::*;
-use arrayvec::ArrayString;
 use gtk::glib::translate::from_glib_full;
 use gtk::glib::{g_critical, gobject_ffi, Object, ParamSpec, Properties, Value};
 use gtk::glib::{g_warning, VariantTy, WeakRef};

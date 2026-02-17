@@ -393,6 +393,10 @@ pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String 
 }
 
 pub fn to_percentage(v: f32) -> String {
+    format!("{0:.0}%", v)
+}
+
+pub fn to_percentage_exact(v: f32) -> String {
     let p = if v == 0.0 || v >= 100.0 {
         0
     } else if v >= 10.0 {
@@ -401,7 +405,7 @@ pub fn to_percentage(v: f32) -> String {
         2
     };
 
-    i18n_f("{}%", &[&format!("{0:.1$}", v, p)])
+    format!("{0:.1$}%", v, p)
 }
 
 pub fn show_error_dialog_and_exit(message: &str) -> ! {

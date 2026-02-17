@@ -19,9 +19,7 @@
  */
 
 use std::cmp::Ordering;
-use std::fmt::Write;
 
-use arrayvec::ArrayString;
 use gtk::glib;
 use gtk::prelude::*;
 

@@ -18,7 +18,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use std::fmt::Write;
 use std::marker::PhantomData;
 use std::{
     cell::{Cell, RefCell},
@@ -26,7 +25,6 @@ use std::{
 };
 
 use adw::{prelude::*, subclass::prelude::*};
-use arrayvec::ArrayString;
 use glib::{ParamSpec, Properties, Value};
 use gtk::{
     gdk, gio,
@@ -2097,8 +2095,12 @@ mod imp {
                                     summary.set_heading(i18n("GPU"));
                                 }
 
-                                let mut info2 =
-                                    to_percentage(gpu.utilization_percent.unwrap_or(0.0));
+                                let mut info2 = if let Some(v) = gpu.utilization_percent {
+                                    graph_widget.add_data_point(vec![vec![v]]);
+                                    to_percentage(gpu.utilization_percent.unwrap_or(0.0))
+                                } else {
+                                    String::new()
+                                };
                                 if let Some(v) = gpu.temperature_c {
                                     info2.push_str(&format!(" ({v:.1} °C)"));
                                 }
