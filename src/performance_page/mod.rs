@@ -42,7 +42,7 @@ use crate::magpie_client::DiskKind;
 use crate::performance_page::widgets::{
     DatasetGroup, GraphWidget, ScalingSettings, SidebarDropHint,
 };
-use crate::{settings, DataType};
+use crate::{settings, to_percentage, DataType};
 
 mod cpu;
 mod disk;
@@ -980,7 +980,7 @@ mod imp {
             summary.set_widget_name("cpu");
 
             summary.set_heading(i18n("CPU"));
-            summary.set_info1("0% 0.00 GHz");
+            summary.set_info1(format!("{} 0.00GHz", to_percentage(0.0)));
             match readings.cpu.temperature_celsius.as_ref() {
                 Some(v) => summary.set_info2(format!("{:.0} °C", *v)),
                 _ => {}
@@ -1051,7 +1051,7 @@ mod imp {
 
             summary.set_heading(i18n("Memory"));
             summary.set_info1("0/0 GiB");
-            summary.set_info2("0%");
+            summary.set_info2(to_percentage(0.0));
 
             summary.set_base_color(gdk::RGBA::new(
                 MEMORY_BASE_COLOR[0] as f32 / 255.,
@@ -1164,8 +1164,8 @@ mod imp {
                 summary.set_info1(model.as_ref());
             }
             summary.set_info2(format!(
-                "{:.0}%{}",
-                disk.busy_percent,
+                "{}{}",
+                to_percentage(disk.busy_percent),
                 if let Some(temp_mk) = disk.temperature_milli_k {
                     format!(" ({:.0} °C)", (temp_mk as i32 + MK_TO_0_C) as f64 / 1000.)
                 } else {
@@ -1380,14 +1380,11 @@ mod imp {
                     .as_str(),
             );
 
-            let mut info2 = ArrayString::<256>::new();
-            if let Some(v) = gpu.utilization_percent {
-                let _ = write!(&mut info2, "{v}%");
-            }
+            let mut info2 = to_percentage(gpu.utilization_percent.unwrap_or(0.0));
             if let Some(v) = gpu.temperature_c {
-                let _ = write!(&mut info2, " ({v:.2}°C)");
+                info2.push_str(&format!(" ({v:.1} °C)"));
             }
-            summary.set_info2(info2.as_str());
+            summary.set_info2(info2);
 
             summary.set_base_color(gdk::RGBA::new(
                 GPU_BASE_COLOR[0] as f32 / 255.,
@@ -1875,10 +1872,9 @@ mod imp {
                     Pages::Cpu((summary, page)) => {
                         let graph_widget = summary.graph_widget();
 
-                        let mut info2 = ArrayString::<256>::new();
-                        let _ = write!(&mut info2, "{}%", readings.cpu.total_usage_percent.round());
+                        let mut info2 = to_percentage(readings.cpu.total_usage_percent);
                         if let Some(temp) = readings.cpu.temperature_celsius.as_ref() {
-                            let _ = write!(&mut info2, " ({:.0} °C)", temp);
+                            info2.push_str(&format!(" ({:.0} °C)", temp));
                         }
 
                         graph_widget.add_data_point(vec![vec![readings.cpu.total_usage_percent]]);
@@ -1914,10 +1910,8 @@ mod imp {
                             crate::to_human_readable_nice(used_raw as _, &DataType::MemoryBytes);
 
                         summary.set_info1(format!("{} {}", used, total,));
-                        summary.set_info2(format!(
-                            "{}%",
-                            ((used_raw as f32 / total_raw as f32) * 100.).round()
-                        ));
+                        summary
+                            .set_info2(to_percentage((used_raw as f32 / total_raw as f32) * 100.));
 
                         result &= page.update_readings(readings);
                     }
@@ -1958,8 +1952,8 @@ mod imp {
                                 graph_widget.add_data_point(vec![vec![disk.busy_percent]]);
                                 if let Some(temp_mk) = disk.temperature_milli_k {
                                     summary.set_info2(format!(
-                                        "{:.0}% ({:.0} °C)",
-                                        disk.busy_percent,
+                                        "{} ({:.0} °C)",
+                                        to_percentage(disk.busy_percent),
                                         (temp_mk as i32 + MK_TO_0_C) as f64 / 1000.
                                     ));
                                 } else {
@@ -2103,15 +2097,12 @@ mod imp {
                                     summary.set_heading(i18n("GPU"));
                                 }
 
-                                let mut info2 = ArrayString::<256>::new();
-                                if let Some(v) = gpu.utilization_percent {
-                                    graph_widget.add_data_point(vec![vec![v]]);
-                                    let _ = write!(&mut info2, "{v}%");
+                                let mut info2 =
+                                    to_percentage(gpu.utilization_percent.unwrap_or(0.0));
+                                if let Some(v) = gpu.temperature_c {
+                                    info2.push_str(&format!(" ({v:.1} °C)"));
                                 }
-                                if let Some(v) = gpu.temperature_c.map(|v| v.round() as u32) {
-                                    let _ = write!(&mut info2, " ({v} °C)");
-                                }
-                                summary.set_info2(info2.as_str());
+                                summary.set_info2(info2);
 
                                 result &= page.update_readings(gpu, index);
                             } else {
@@ -2178,20 +2169,21 @@ mod imp {
                                     summary.set_heading(i18n("Fan"));
                                 }
 
-                                let temp_str = if let Some(temp_amount) = fan.temp_amount {
-                                    format!(
-                                        " ({:.0} °C)",
-                                        (temp_amount as i32 + MK_TO_0_C) as f32 / 1000.0
-                                    )
+                                let mut info2 = if let Some(pwm_percent) = fan.pwm_percent {
+                                    to_percentage(pwm_percent * 100.)
                                 } else {
-                                    String::new()
+                                    format!("{} RPM", fan.rpm)
                                 };
 
-                                summary.set_info2(if let Some(pwm_percent) = fan.pwm_percent {
-                                    format!("{:.0}%{}", pwm_percent * 100., temp_str)
-                                } else {
-                                    format!("{} RPM{}", fan.rpm, temp_str)
-                                });
+                                if let Some(temp_amount) = fan.temp_amount {
+                                    info2.push_str(&format!(
+                                        " ({:.0} °C)",
+                                        (temp_amount as i32 + MK_TO_0_C) as f32 / 1000.0
+                                    ));
+                                };
+
+                                summary.set_info2(info2);
+
                                 result &= page.update_readings(fan, index);
                             } else {
                                 new_devices.push(index);

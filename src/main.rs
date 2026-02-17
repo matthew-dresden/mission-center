@@ -392,6 +392,18 @@ pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String 
     to_human_readable_adv_str(value_bytes, true, false, false, label, 0)
 }
 
+pub fn to_percentage(v: f32) -> String {
+    let p = if v == 0.0 || v >= 100.0 {
+        0
+    } else if v >= 10.0 {
+        1
+    } else {
+        2
+    };
+
+    i18n_f("{}%", &[&format!("{0:.1$}", v, p)])
+}
+
 pub fn show_error_dialog_and_exit(message: &str) -> ! {
     use crate::i18n::*;
     use adw::prelude::*;

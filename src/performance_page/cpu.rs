@@ -28,7 +28,9 @@ use gtk::{gio, glib, prelude::*};
 use super::PageExt;
 use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::DataType;
-use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
+use crate::{
+    application::INTERVAL_STEP, i18n::*, settings, to_percentage, to_short_human_readable_time,
+};
 
 mod imp {
     use super::*;
@@ -495,10 +497,7 @@ mod imp {
             this.graph_widgets.set(graph_widgets);
 
             if let Some(utilization) = this.utilization.get() {
-                utilization.set_text(&format!(
-                    "{}%",
-                    dynamic_cpu_info.total_usage_percent.round()
-                ));
+                utilization.set_text(&to_percentage(dynamic_cpu_info.total_usage_percent));
             }
 
             if let Some(speed) = this.speed.get() {

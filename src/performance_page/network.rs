@@ -29,7 +29,7 @@ use magpie_types::network::{Connection, ConnectionKind};
 
 use crate::i18n::*;
 use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
-use crate::{application::INTERVAL_STEP, to_short_human_readable_time};
+use crate::{application::INTERVAL_STEP, to_percentage, to_short_human_readable_time};
 use crate::{settings, DataType};
 
 use super::PageExt;
@@ -493,7 +493,7 @@ mod imp {
                         self.ssid.get().map(|l| l.label()).unwrap_or(unknown.into()),
                         self.signal_strength_percent
                             .get()
-                            .map_or(i18n("Unknown"), |percent| format!("{}%", percent)),
+                            .map_or(i18n("Unknown"), |percent| to_percentage(percent as f32)),
                         self.max_bitrate
                             .get()
                             .map(|l| l.label())

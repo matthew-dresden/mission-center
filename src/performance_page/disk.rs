@@ -34,7 +34,7 @@ use crate::performance_page::widgets::{
     DatasetGroup, EjectFailureDialog, GraphWidget, ScalingSettings, SmartDataDialog,
     SmartFailureDialog,
 };
-use crate::{app, settings, to_short_human_readable_time, DataType};
+use crate::{app, settings, to_percentage, to_short_human_readable_time, DataType};
 
 use super::PageExt;
 
@@ -364,7 +364,7 @@ mod imp {
 
             this.infobar_content
                 .active_time()
-                .set_text(&format!("{}%", disk.busy_percent.round() as u8));
+                .set_text(&to_percentage(disk.busy_percent));
 
             if let Some(rotation_rate) = disk.rotation_rate {
                 this.infobar_content

@@ -31,7 +31,7 @@ use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::performance_page::{PageExt, MK_TO_0_C};
-use crate::to_short_human_readable_time;
+use crate::{to_percentage, to_short_human_readable_time};
 
 mod imp {
     use super::*;
@@ -244,12 +244,8 @@ mod imp {
             }
 
             if let Some(pwm) = this.pwm.get() {
-                pwm.set_text(&i18n_f(
-                    "{}%",
-                    &[&format!(
-                        "{:.0}",
-                        fan.pwm_percent.clone().unwrap_or(0.) * 100.0
-                    )],
+                pwm.set_text(&to_percentage(
+                    fan.pwm_percent.clone().unwrap_or(0.) * 100.0,
                 ));
             }
 

@@ -23,6 +23,7 @@ use std::cmp::Ordering;
 
 use crate::i18n::i18n;
 use crate::table_view::row_model::RowModel;
+use crate::to_percentage;
 
 pub use cpu::label_formatter as cpu_label_formatter;
 pub use cpu::list_item_factory as cpu_list_item_factory;

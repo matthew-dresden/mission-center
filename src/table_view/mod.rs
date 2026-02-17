@@ -31,7 +31,7 @@ use gtk::{gdk, gio, glib, subclass::prelude::*};
 use textdistance::{Algorithm, Levenshtein};
 
 use crate::i18n::i18n;
-use crate::{app, settings, DataType};
+use crate::{app, settings, to_percentage, DataType};
 
 use columns::*;
 pub use models::*;
@@ -654,13 +654,11 @@ mod imp {
         }
 
         pub fn update_column_titles(&self, readings: &crate::magpie_client::Readings) {
-            let mut buffer = ArrayString::<128>::new();
-
-            let cpu_usage = readings.cpu.total_usage_percent.round() as u32;
-            let _ = write!(&mut buffer, "{}\n{}%", i18n("CPU"), cpu_usage);
-            self.cpu_column.set_title(Some(buffer.as_str()));
-
-            buffer.clear();
+            self.cpu_column.set_title(Some(&format!(
+                "{}\n{}",
+                i18n("CPU"),
+                to_percentage(readings.cpu.total_usage_percent)
+            )));
 
             let mem_total = if readings.mem_info.mem_total > 0 {
                 readings.mem_info.mem_total
@@ -677,27 +675,34 @@ mod imp {
 
             let memory_used = mem_total.saturating_sub(mem_avail);
             let memory_usage = memory_used as f32 * 100. / mem_total as f32;
-            let memory_usage = memory_usage.round() as u32;
-            let _ = write!(&mut buffer, "{}\n{}%", i18n("Memory"), memory_usage);
-            self.memory_column.set_title(Some(buffer.as_str()));
+            self.memory_column.set_title(Some(&format!(
+                "{}\n{}",
+                i18n("Memory"),
+                to_percentage(memory_usage)
+            )));
 
-            buffer.clear();
             if readings.disks_info.is_empty() {
-                let _ = write!(&mut buffer, "{}\n0%", i18n("Drive"));
+                self.drive_column.set_title(Some(&format!(
+                    "{}\n{}",
+                    i18n("Drive"),
+                    to_percentage(0.0)
+                )));
             } else {
                 let mut sum = 0.;
                 for disk in &readings.disks_info {
                     sum += disk.busy_percent
                 }
                 let drive_usage = sum / readings.disks_info.len() as f32;
-                let drive_usage = drive_usage.round() as u32;
-                let _ = write!(&mut buffer, "{}\n{}%", i18n("Drive"), drive_usage);
+                self.drive_column.set_title(Some(&format!(
+                    "{}\n{}",
+                    i18n("Drive"),
+                    to_percentage(drive_usage)
+                )));
             }
-            self.drive_column.set_title(Some(buffer.as_str()));
 
-            buffer.clear();
             if readings.running_processes.is_empty() {
-                let _ = write!(&mut buffer, "{}\n0", i18n("Network"));
+                self.network_usage_column
+                    .set_title(Some(&format!("{}\n0", i18n("Network"))));
             } else {
                 let mut sum = 0.;
                 for proc in readings.running_processes.values() {
@@ -706,18 +711,24 @@ mod imp {
 
                 let label = crate::to_human_readable_nice(sum, &DataType::NetworkBytesPerSecond);
 
-                let _ = write!(&mut buffer, "{}\n{}", i18n("Network"), label);
+                self.network_usage_column.set_title(Some(&format!(
+                    "{}\n{}",
+                    i18n("Network"),
+                    label
+                )));
             }
-            self.network_usage_column.set_title(Some(buffer.as_str()));
 
-            buffer.clear();
             if readings.gpus.is_empty() {
-                let _ = write!(&mut buffer, "{}\n0%", i18n("GPU"));
-                self.gpu_usage_column.set_title(Some(buffer.as_str()));
-
-                buffer.clear();
-                let _ = write!(&mut buffer, "{}\n0%", i18n("GPU Memory"));
-                self.gpu_memory_column.set_title(Some(buffer.as_str()));
+                self.gpu_usage_column.set_title(Some(&format!(
+                    "{}\n{}",
+                    i18n("GPU"),
+                    to_percentage(0.0)
+                )));
+                self.gpu_memory_column.set_title(Some(&format!(
+                    "{}\n{}",
+                    i18n("GPU Memory"),
+                    to_percentage(0.0)
+                )));
             } else {
                 let mut sum_util = 0.;
                 let mut sum_mem_used = 0.;
@@ -728,15 +739,18 @@ mod imp {
                     sum_mem_total += gpu.total_memory.unwrap_or(0) as f32;
                 }
                 let gpu_usage = sum_util / readings.gpus.len() as f32;
-                let gpu_usage = gpu_usage.round() as u32;
-                let _ = write!(&mut buffer, "{}\n{}%", i18n("GPU"), gpu_usage);
-                self.gpu_usage_column.set_title(Some(buffer.as_str()));
+                self.gpu_usage_column.set_title(Some(&format!(
+                    "{}\n{}",
+                    i18n("GPU"),
+                    to_percentage(gpu_usage)
+                )));
 
-                buffer.clear();
                 let gpu_mem_usage = sum_mem_used * 100. / sum_mem_total;
-                let gpu_mem_usage = gpu_mem_usage.round() as u32;
-                let _ = write!(&mut buffer, "{}\n{}%", i18n("GPU Memory"), gpu_mem_usage);
-                self.gpu_memory_column.set_title(Some(buffer.as_str()));
+                self.gpu_memory_column.set_title(Some(&format!(
+                    "{}\n{}",
+                    i18n("GPU Memory"),
+                    to_percentage(gpu_mem_usage)
+                )));
             }
         }
 

@@ -31,7 +31,8 @@ use magpie_types::gpus::OpenGlVariant;
 
 use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::{
-    application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time, DataType,
+    application::INTERVAL_STEP, i18n::*, settings, to_percentage, to_short_human_readable_time,
+    DataType,
 };
 
 use super::{GpuDetails, PageExt};
@@ -413,7 +414,7 @@ mod imp {
                 .add_data_point(vec![vec![overall_usage]]);
             self.infobar_content
                 .utilization()
-                .set_text(&format!("{}%", overall_usage));
+                .set_text(&to_percentage(overall_usage));
         }
 
         fn update_clock_speed(&self, gpu: &Gpu) {
@@ -681,7 +682,7 @@ mod imp {
 
                 self.infobar_content
                     .encode_percent()
-                    .set_text(&format!("{}%", encoder_percent));
+                    .set_text(&to_percentage(encoder_percent));
             }
 
             if !gpu.encode_decode_shared {
@@ -693,7 +694,7 @@ mod imp {
 
                     self.infobar_content
                         .decode_percent()
-                        .set_text(&format!("{}%", decoder_percent));
+                        .set_text(&to_percentage(decoder_percent));
                 }
             }
 

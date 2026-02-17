@@ -25,7 +25,7 @@ use arrayvec::ArrayString;
 use gtk::glib;
 use gtk::prelude::*;
 
-use super::{compare_column_entries_by, sort_order, LabelCell};
+use super::{compare_column_entries_by, sort_order, to_percentage, LabelCell};
 use crate::label_cell_factory;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
@@ -51,7 +51,5 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
 
 pub fn label_formatter(label: &LabelCell, value: glib::Value) {
     let cpu_usage: f32 = value.get().unwrap();
-    let mut buffer = ArrayString::<128>::new();
-    let _ = write!(&mut buffer, "{}%", cpu_usage.round() as u32);
-    label.set_label(buffer.as_str());
+    label.set_label(&to_percentage(cpu_usage));
 }
