@@ -24,7 +24,9 @@ use adw::{self, subclass::prelude::*};
 use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
-use crate::performance_page::widgets::{DatasetGroup, GraphWidget, MemoryCompositionWidget};
+use crate::performance_page::widgets::{
+    DatasetGroup, FillingSettings, GraphWidget, MemoryCompositionWidget,
+};
 use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
 
@@ -684,11 +686,11 @@ mod imp {
             let this = self.obj().clone();
 
             let mut dataset_a = DatasetGroup::new();
-            dataset_a.dataset_settings.fill = false;
+            dataset_a.dataset_settings.fill = FillingSettings::None;
             dataset_a.dataset_settings.dashed = true;
 
             let mut dataset_b = DatasetGroup::new();
-            dataset_b.dataset_settings.fill = false;
+            dataset_b.dataset_settings.fill = FillingSettings::None;
 
             let dataset_c = DatasetGroup::new();
 

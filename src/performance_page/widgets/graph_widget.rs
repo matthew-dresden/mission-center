@@ -37,7 +37,9 @@ use gtk::subclass::prelude::*;
 use gtk::Snapshot;
 use gtk::TextDirection;
 
-use crate::performance_page::widgets::graph_widget_utils::{DatasetGroup, ScalingSettings};
+use crate::performance_page::widgets::graph_widget_utils::{
+    DatasetGroup, FillingSettings, ScalingSettings,
+};
 
 // no faster than 200 Hz. if everything is going according to plan, we expect two animation frames in quick succession at the start of a new cycle and want to prevent rendering twice
 const ANIMATION_LOCKOUT: f32 = 0.005;
@@ -448,7 +450,7 @@ impl GraphWidget {
         self.imp().data_sets.set(data);
     }
 
-    pub fn set_filled(&self, index: usize, filled: bool) {
+    pub fn set_filled(&self, index: usize, filled: FillingSettings) {
         let mut data = self.imp().data_sets.take();
         if index < data.len() {
             data[index].dataset_settings.fill = filled;
@@ -530,6 +532,12 @@ impl GraphWidget {
         true
     }
 
+    pub fn clear_datasets(&self) {
+        let mut sets = self.imp().data_sets.take();
+        sets.clear();
+        self.imp().data_sets.set(sets);
+    }
+
     pub fn add_dataset(&self, mut dataset: DatasetGroup) {
         let mut sets = self.imp().data_sets.take();
 
@@ -543,6 +551,16 @@ impl GraphWidget {
         let mut sets = self.imp().data_sets.take();
 
         sets[index].dataset_settings.scaling_settings = scaler;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+    }
+
+    pub fn set_dataset_opacity(&self, index: usize, opacity: f32) {
+        let mut sets = self.imp().data_sets.take();
+
+        sets[index].dataset_settings.opacity = opacity;
 
         self.imp().data_sets.set(sets);
 
@@ -609,6 +627,30 @@ impl GraphWidget {
         it
     }
 
+    pub fn set_dataset_min_scale(&self, index: usize, min: f32) {
+        let mut sets = self.imp().data_sets.take();
+
+        assert!(index < sets.len());
+
+        sets[index].dataset_settings.low_watermark = min;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+    }
+
+    pub fn get_dataset_min_scale(&self, index: usize) -> f32 {
+        let sets = self.imp().data_sets.take();
+
+        let it = sets[index].dataset_settings.low_watermark;
+
+        self.imp().data_sets.set(sets);
+
+        self.force_redraw();
+
+        it
+    }
+
     pub fn connect_to_settings(&self, settings: &gio::Settings) {
         if self.imp().settings_inited.get() {
             return;
@@ -630,6 +672,19 @@ impl GraphWidget {
             boolean,
             set_smooth_graphs
         );
+        connect_setting!(
+            self,
+            settings,
+            "performance-sliding-graphs",
+            boolean,
+            set_do_animation
+        );
+    }
+
+    pub fn connect_to_smooth_settings(&self, settings: &gio::Settings) {
+        // create a lock to prevent re-connectiong?
+        self.imp().settings_inited.set(true);
+
         connect_setting!(
             self,
             settings,

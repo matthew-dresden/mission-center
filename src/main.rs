@@ -157,16 +157,36 @@ pub fn to_long_human_readable_time(seconds: u64) -> String {
 
     if years > 0 {
         /* Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days */
-        i18n_f("{}, {} and {}", &[years_str, months_str, days_str])
+        if days != 0 {
+            i18n_f("{}, {} and {}", &[years_str, months_str, days_str])
+        } else {
+            if months != 0 {
+                i18n_f("{} and {}", &[years_str, months_str])
+            } else {
+                years_str.to_string()
+            }
+        }
     } else if months > 0 {
         /* Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days */
-        i18n_f("{} and {}", &[months_str, days_str])
+        if days != 0 {
+            i18n_f("{} and {}", &[months_str, days_str])
+        } else {
+            months_str.to_string()
+        }
     } else if days > 0 {
         /* Translators: Used for durations less than one month but greater than one day. First %s is number of days, second %s is hours */
-        i18n_f("{} and {}", &[days_str, hours_str])
+        if hours != 0 {
+            i18n_f("{} and {}", &[days_str, hours_str])
+        } else {
+            days_str.to_string()
+        }
     } else if hours > 0 {
         /* Translators: Used for durations less than one day but greater than one hour. First %s is number of hours, second %s is minutes */
-        i18n_f("{} and {}", &[hours_str, minutes_str])
+        if minutes != 0 {
+            i18n_f("{} and {}", &[hours_str, minutes_str])
+        } else {
+            hours_str.to_string()
+        }
     } else if minutes > 0 {
         String::from(minutes_str)
     } else if seconds == 0 {
@@ -185,7 +205,15 @@ pub fn to_short_human_readable_time(seconds: u32) -> String {
     let mins_string = ni18n_f("{} minute", "{} minutes", mins, &[&(mins).to_string()]);
 
     if mins > 0 {
-        format!("{} {}", mins_string, seconds_string)
+        format!(
+            "{}{}",
+            mins_string,
+            if seconds != 0 {
+                format!(" {}", seconds_string)
+            } else {
+                String::new()
+            }
+        )
     } else {
         format!("{}", seconds_string)
     }
@@ -200,6 +228,8 @@ pub enum DataType {
     NetworkBytesPerSecond,
     Hertz,
     Watts,
+    Volts,
+    WattHours,
 }
 
 impl DataType {
@@ -231,6 +261,12 @@ const fn data_type_setting_byte_setting(data_type: &DataType) -> &'static str {
         DataType::Watts => {
             panic!("Watts data type not supported yet");
         }
+        DataType::Volts => {
+            panic!("Volts data type not supported yet");
+        }
+        DataType::WattHours => {
+            panic!("WattHours data type not supported yet");
+        }
     }
 }
 
@@ -253,6 +289,12 @@ const fn data_type_setting_base_setting(data_type: &DataType) -> &'static str {
         DataType::Watts => {
             panic!("Watts data type not supported yet");
         }
+        DataType::Volts => {
+            panic!("Volts data type not supported yet");
+        }
+        DataType::WattHours => {
+            panic!("WattHours data type not supported yet");
+        }
     }
 }
 
@@ -262,7 +304,7 @@ pub fn to_human_readable_adv_str(
     use_binary: bool,
     per_second: bool,
     unit_label: &str,
-    min_exponent: usize,
+    min_exponent: isize,
 ) -> String {
     const UNITS: [&'static str; 9] = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
 
@@ -274,11 +316,11 @@ pub fn to_human_readable_adv_str(
         (value_bytes * 8., if per_second { "ps" } else { "" })
     };
 
-    let mut exponent = 0;
+    let mut exponent: usize = 0;
 
     // Only display bit/byte values in the given range or higher, not individual bits/bytes
     // This sacrifices some precision for the sake of readability
-    while exponent < min_exponent {
+    while (exponent as isize) < min_exponent {
         value /= divisor;
         exponent += 1;
     }
@@ -291,10 +333,10 @@ pub fn to_human_readable_adv_str(
     // Calculate number of decimals to display
     // Only display fractional values for bit/byte numbers in the defined range and bigger
     // This sacrifices some precision for the sake of readability
-    let dec_to_display = if exponent > min_exponent {
-        if value < 10.0 {
+    let dec_to_display = if exponent as isize > min_exponent {
+        if value.abs() < 10.0 {
             2
-        } else if value < 100.0 {
+        } else if value.abs() < 100.0 {
             1
         } else {
             0
@@ -341,9 +383,11 @@ pub fn setup_readable_settings_cache(settings: &Settings) {
 }
 
 pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String {
-    let label = match data_type {
-        DataType::Hertz => "Hz",
-        DataType::Watts => "W",
+    let (label, min_dec) = match data_type {
+        DataType::Hertz => ("Hz", 0),
+        DataType::Watts => ("W", -1),
+        DataType::Volts => ("V", -1),
+        DataType::WattHours => ("Wh", -1),
         _ => {
             let dict_lock = BOOLEAN_DICT_CACHE.lock();
 
@@ -389,7 +433,7 @@ pub fn to_human_readable_nice(value_bytes: f32, data_type: &DataType) -> String 
         }
     };
 
-    to_human_readable_adv_str(value_bytes, true, false, false, label, 0)
+    to_human_readable_adv_str(value_bytes, true, false, false, label, min_dec)
 }
 
 pub fn show_error_dialog_and_exit(message: &str) -> ! {

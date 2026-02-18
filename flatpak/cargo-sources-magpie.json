@@ -1,5 +1,11 @@
 [
   {
+    "type": "git",
+    "url": "https://github.com/pop-os/dbus-settings-bindings",
+    "commit": "87c3c35666b926a24a1e8045fd70be2db1145e34",
+    "dest": "flatpak-cargo/git/dbus-settings-bindings-87c3c35"
+  },
+  {
     "type": "archive",
     "archive-type": "tar-gzip",
     "url": "https://static.crates.io/crates/addr2line/addr2line-0.25.1.crate",
@@ -3585,6 +3591,24 @@
     "type": "inline",
     "contents": "{\"package\": \"6d49784317cd0d1ee7ec5c716dd598ec5b4483ea832a2dced265471cc0f690ae\", \"files\": {}}",
     "dest": "cargo/vendor/unty-0.0.4",
+    "dest-filename": ".cargo-checksum.json"
+  },
+  {
+    "type": "shell",
+    "commands": [
+      "cp -r --reflink=auto \"flatpak-cargo/git/dbus-settings-bindings-87c3c35/upower\" \"cargo/vendor/upower_dbus\""
+    ]
+  },
+  {
+    "type": "inline",
+    "contents": "[package]\nname = \"upower_dbus\"\nversion = \"0.3.2\"\nauthors = [ \"Michael Murphy <mmstick@pm.me>\",]\nrepository = \"https://github.com/pop-os/dbus-settings-bindings\"\ndescription = \"a dbus client (using zbus) for upower\"\nreadme = \"README.md\"\nlicense = \"MIT\"\ncategories = [ \"os::unix-apis\",]\nkeywords = [ \"linux\", \"systemd\", \"logind\", \"dbus\", \"zbus\",]\nedition = \"2024\"\n\n[dependencies]\nserde_repr = \"0.1.20\"\n\n[dev-dependencies]\nfutures = \"0.3.31\"\n\n[dependencies.serde]\nversion = \"1.0\"\nfeatures = [ \"derive\",]\n\n[dependencies.zbus]\nversion = \"5.11.0\"\n",
+    "dest": "cargo/vendor/upower_dbus",
+    "dest-filename": "Cargo.toml"
+  },
+  {
+    "type": "inline",
+    "contents": "{\"package\": null, \"files\": {}}",
+    "dest": "cargo/vendor/upower_dbus",
     "dest-filename": ".cargo-checksum.json"
   },
   {

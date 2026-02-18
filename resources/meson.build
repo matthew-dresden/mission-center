@@ -6,6 +6,8 @@ blueprints = custom_target('blueprints',
   input: files(
     'ui/apps_page/page.blp',
 
+    'ui/performance_page/battery.blp',
+    'ui/performance_page/battery_details.blp',
     'ui/performance_page/cpu.blp',
     'ui/performance_page/cpu_details.blp',
     'ui/performance_page/disk.blp',

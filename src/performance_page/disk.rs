@@ -31,8 +31,8 @@ use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::disk_details::DiskDetails;
 use crate::performance_page::widgets::{
-    DatasetGroup, EjectFailureDialog, GraphWidget, ScalingSettings, SmartDataDialog,
-    SmartFailureDialog,
+    DatasetGroup, EjectFailureDialog, FillingSettings, GraphWidget, ScalingSettings,
+    SmartDataDialog, SmartFailureDialog,
 };
 use crate::{app, settings, to_short_human_readable_time, DataType};
 
@@ -190,7 +190,8 @@ mod imp {
             }
 
             this.disk_transfer_rate_graph.set_dashed(1, true);
-            this.disk_transfer_rate_graph.set_filled(1, false);
+            this.disk_transfer_rate_graph
+                .set_filled(1, FillingSettings::None);
 
             this.infobar_content
                 .legend_read()
@@ -491,11 +492,10 @@ mod imp {
             let mut rx_dataset = DatasetGroup::new();
 
             rx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
-            rx_dataset.dataset_settings.fill = true;
             rx_dataset.dataset_settings.dashed = false;
 
             tx_dataset.dataset_settings.scaling_settings = ScalingSettings::ScaleUpPow2;
-            tx_dataset.dataset_settings.fill = false;
+            tx_dataset.dataset_settings.fill = FillingSettings::None;
             tx_dataset.dataset_settings.dashed = true;
 
             self.disk_transfer_rate_graph.add_dataset(rx_dataset);
@@ -507,10 +507,9 @@ mod imp {
 
             self.usage_graph.add_dataset(usage_dataset);
 
-            let settings = settings!();
-
-            self.disk_transfer_rate_graph.connect_to_settings(&settings);
-            self.usage_graph.connect_to_settings(&settings);
+            self.disk_transfer_rate_graph
+                .connect_to_settings(&settings!());
+            self.usage_graph.connect_to_settings(&settings!());
 
             let obj = self.obj();
             let this = obj.upcast_ref::<super::PerformancePageDisk>().clone();

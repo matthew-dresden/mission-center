@@ -29,9 +29,12 @@ use gtk::{gio, glib, prelude::*};
 use magpie_types::gpus::Gpu;
 use magpie_types::gpus::OpenGlVariant;
 
-use crate::performance_page::widgets::{DatasetGroup, GraphWidget, ScalingSettings};
 use crate::{
     application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time, DataType,
+};
+
+use crate::performance_page::widgets::{
+    DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
 };
 
 use super::{GpuDetails, PageExt};
@@ -777,7 +780,7 @@ mod imp {
             let settings = settings!();
 
             let mut encode = DatasetGroup::new();
-            encode.dataset_settings.fill = false;
+            encode.dataset_settings.fill = FillingSettings::None;
             encode.dataset_settings.dashed = true;
             let decode = DatasetGroup::new();
 
@@ -795,7 +798,7 @@ mod imp {
             self.usage_graph_memory.add_dataset(mem);
             let mut idk = DatasetGroup::new();
             idk.dataset_settings.dashed = true;
-            idk.dataset_settings.fill = false;
+            idk.dataset_settings.fill = FillingSettings::None;
             self.usage_graph_memory.add_dataset(idk);
             self.usage_graph_memory.connect_to_settings(&settings);
 

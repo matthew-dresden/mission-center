@@ -19,7 +19,6 @@
  */
 
 use std::collections::HashSet;
-use std::marker::PhantomData;
 
 use adw::subclass::prelude::*;
 use glib::{ParamSpec, Properties, Value};
@@ -30,6 +29,8 @@ use crate::settings;
 
 mod imp {
     use super::*;
+    use crate::performance_page::widgets::GraphWidget;
+    use std::marker::PhantomData;
 
     #[derive(Properties)]
     #[properties(wrapper_type = super::SummaryGraph)]

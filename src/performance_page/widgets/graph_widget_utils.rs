@@ -44,21 +44,33 @@ pub enum ScalingSettings {
     StickyUp,
     StickyDown,
     StickyUpDown,
+    StickyUpDownEqualMagnitude,
     Stacking,
+}
+
+#[derive(Default, Clone, PartialEq)]
+pub enum FillingSettings {
+    #[default]
+    FillToBottom,
+    FillToTop,
+    FillToZero,
+    None,
 }
 
 #[derive(Clone)]
 pub struct DatasetSettings {
     pub dashed: bool,
-    pub fill: bool,
     pub visible: bool,
+    pub fill: FillingSettings,
+    pub opacity: f32,
+    pub vertical_dropoff_lines: bool,
 
     pub scaling_settings: ScalingSettings,
     pub low_watermark: f32,
     pub high_watermark: f32,
 
     // for example, when using pow2base10 scaling, we want to ensure we are using the correct reference point to calculate that nearest thousand.
-    // we keep this as a float to no exclude other uses
+    // we keep this as a float to not exclude other uses
     pub watermarking_multiplier: f32,
 
     pub following: Option<usize>,
@@ -77,8 +89,10 @@ impl DatasetGroup {
         Self {
             dataset_settings: DatasetSettings {
                 dashed: false,
-                fill: true,
+                fill: Default::default(),
                 visible: true,
+                opacity: 100. / 255.,
+                vertical_dropoff_lines: true,
                 scaling_settings: Default::default(),
                 low_watermark: 0.0,
                 high_watermark: 100.0,
@@ -89,11 +103,54 @@ impl DatasetGroup {
             datas: vec![Dataset::default()],
         }
     }
+
+    pub fn new_with_datas(d: Vec<Vec<(f32, f32)>>) -> Self {
+        let mut datas = Vec::with_capacity(d.len());
+        for v in d {
+            datas.push(Dataset::new_with_data(v));
+        }
+        Self {
+            dataset_settings: DatasetSettings {
+                dashed: false,
+                fill: Default::default(),
+                visible: true,
+                opacity: 100. / 255.,
+                vertical_dropoff_lines: true,
+                scaling_settings: Default::default(),
+                low_watermark: 0.0,
+                high_watermark: 100.0,
+                watermarking_multiplier: 1.,
+                following: None,
+                followed: None,
+            },
+            datas,
+        }
+    }
+
+    pub fn new_with_fill(v: f32) -> Self {
+        Self {
+            dataset_settings: DatasetSettings {
+                dashed: false,
+                fill: Default::default(),
+                visible: true,
+                opacity: 100. / 255.,
+                vertical_dropoff_lines: true,
+                scaling_settings: Default::default(),
+                low_watermark: 0.0,
+                high_watermark: 100.0,
+                watermarking_multiplier: 1.,
+                following: None,
+                followed: None,
+            },
+            datas: vec![Dataset::new_with_fill(v)],
+        }
+    }
 }
 
 #[derive(Clone)]
 pub struct Dataset {
     data: Vec<f32>,
+    x_points: Vec<f32>,
     pub used_data: usize,
 }
 
@@ -197,6 +254,7 @@ impl DatasetGroup {
             ScalingSettings::StickyUp => {}
             ScalingSettings::StickyDown => {}
             ScalingSettings::StickyUpDown => {}
+            ScalingSettings::StickyUpDownEqualMagnitude => {}
             ScalingSettings::Stacking => {}
             ScalingSettings::Fixed => {}
         }
@@ -273,6 +331,19 @@ impl DatasetGroup {
                     self.dataset_settings.low_watermark = point
                 }
             }
+            ScalingSettings::StickyUpDownEqualMagnitude => {
+                if point > self.dataset_settings.high_watermark {
+                    self.dataset_settings.low_watermark -=
+                        point - self.dataset_settings.high_watermark;
+                    self.dataset_settings.high_watermark = point;
+                }
+
+                if point < self.dataset_settings.low_watermark {
+                    self.dataset_settings.high_watermark +=
+                        self.dataset_settings.low_watermark - point;
+                    self.dataset_settings.low_watermark = point;
+                }
+            }
             ScalingSettings::Stacking => {}
             ScalingSettings::Fixed => {}
         }
@@ -295,7 +366,7 @@ impl DatasetGroup {
             .map(|pts| pts.plot(width, height, &self.dataset_settings, parent))
             .collect();
 
-        let dataset_points = match self.dataset_settings.scaling_settings {
+        dataset_points = match self.dataset_settings.scaling_settings {
             ScalingSettings::Stacking => {
                 // First, we pop the first dataset
                 let mut stacked_points: Vec<Vec<DatasetPoints>> =
@@ -326,7 +397,12 @@ impl DatasetGroup {
         let color = parent.base_color();
 
         let stroke_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 1.);
-        let fill_color = gdk::RGBA::new(color.red(), color.green(), color.blue(), 100. / 256.);
+        let fill_color = gdk::RGBA::new(
+            color.red(),
+            color.green(),
+            color.blue(),
+            self.dataset_settings.opacity,
+        );
 
         let stroke = Stroke::new(1.);
 
@@ -335,54 +411,170 @@ impl DatasetGroup {
         }
 
         for (set_index, set) in dataset_points.iter().enumerate() {
-            let path_builder = PathBuilder::new();
+            let set_split = set.split(|set| set.y.is_nan());
 
-            let (Some(first_point), Some(last_point)) = (set.first(), set.last()) else {
-                continue;
-            };
+            for set in set_split {
+                let path_builder = PathBuilder::new();
 
-            path_builder.move_to(first_point.x, first_point.y);
+                let (Some(first_point), Some(last_point)) = (set.first(), set.last()) else {
+                    continue;
+                };
 
-            let (mut lastx, mut lasty) = (first_point.x, first_point.y);
+                path_builder.move_to(first_point.x, first_point.y);
 
-            for point in set.iter().skip(1) {
-                if parent.smooth_graphs() {
-                    let deltax = point.x - lastx;
-                    path_builder.cubic_to(
-                        lastx + deltax / 2f32,
-                        lasty,
-                        lastx + deltax / 2f32,
-                        point.y,
-                        point.x,
-                        point.y,
-                    );
+                let (mut lastx, mut lasty) = (first_point.x, first_point.y);
 
-                    lastx = point.x;
-                    lasty = point.y;
+                for point in set.iter().skip(1) {
+                    if parent.smooth_graphs() {
+                        let deltax = point.x - lastx;
+                        path_builder.cubic_to(
+                            lastx + deltax / 2f32,
+                            lasty,
+                            lastx + deltax / 2f32,
+                            point.y,
+                            point.x,
+                            point.y,
+                        );
+
+                        lastx = point.x;
+                        lasty = point.y;
+                    } else {
+                        path_builder.line_to(point.x, point.y);
+                    }
+                }
+
+                if self.dataset_settings.vertical_dropoff_lines {
+                    match self.dataset_settings.fill {
+                        FillingSettings::FillToBottom | FillingSettings::None => {
+                            path_builder.line_to(last_point.x, height);
+                            path_builder.line_to(first_point.x, height);
+                        }
+                        FillingSettings::FillToTop => {
+                            path_builder.line_to(last_point.x, 0.);
+                            path_builder.line_to(first_point.x, 0.);
+                        }
+                        FillingSettings::FillToZero => {
+                            if self.dataset_settings.low_watermark >= 0.
+                                || self.dataset_settings.low_watermark
+                                    >= self.dataset_settings.high_watermark
+                            {
+                                path_builder.line_to(last_point.x, height);
+                                path_builder.line_to(first_point.x, height);
+                            } else {
+                                let zeroheight = height * (self.dataset_settings.high_watermark)
+                                    / (self.dataset_settings.high_watermark
+                                        - self.dataset_settings.low_watermark);
+                                path_builder.line_to(last_point.x, zeroheight);
+                                path_builder.line_to(first_point.x, zeroheight);
+                            }
+                        }
+                    }
+
+                    path_builder.close();
+
+                    let path = path_builder.to_path();
+
+                    if self.dataset_settings.fill != FillingSettings::None
+                        && (self.dataset_settings.scaling_settings != ScalingSettings::Stacking
+                            || set_index == dataset_points.len() - 1)
+                    {
+                        snapshot.append_fill(&path, FillRule::Winding, &fill_color);
+                    }
+
+                    snapshot.append_stroke(&path, &stroke, &stroke_color);
                 } else {
-                    path_builder.line_to(point.x, point.y);
+                    let line = path_builder.to_path();
+
+                    let path_builder = PathBuilder::new();
+
+                    path_builder.move_to(first_point.x, first_point.y);
+
+                    // builder.add_path(&line) doesn't work with the fill
+
+                    let (mut lastx, mut lasty) = (first_point.x, first_point.y);
+
+                    for point in set.iter().skip(1) {
+                        if parent.smooth_graphs() {
+                            let deltax = point.x - lastx;
+                            path_builder.cubic_to(
+                                lastx + deltax / 2f32,
+                                lasty,
+                                lastx + deltax / 2f32,
+                                point.y,
+                                point.x,
+                                point.y,
+                            );
+
+                            lastx = point.x;
+                            lasty = point.y;
+                        } else {
+                            path_builder.line_to(point.x, point.y);
+                        }
+                    }
+
+                    match self.dataset_settings.fill {
+                        FillingSettings::FillToBottom | FillingSettings::None => {
+                            path_builder.line_to(last_point.x, height);
+                            path_builder.line_to(first_point.x, height);
+                        }
+                        FillingSettings::FillToTop => {
+                            path_builder.line_to(last_point.x, 0.);
+                            path_builder.line_to(first_point.x, 0.);
+                        }
+                        FillingSettings::FillToZero => {
+                            if self.dataset_settings.low_watermark >= 0.
+                                || self.dataset_settings.low_watermark
+                                    >= self.dataset_settings.high_watermark
+                            {
+                                path_builder.line_to(last_point.x, height);
+                                path_builder.line_to(first_point.x, height);
+                            } else {
+                                let zeroheight = height * (self.dataset_settings.high_watermark)
+                                    / (self.dataset_settings.high_watermark
+                                        - self.dataset_settings.low_watermark);
+                                path_builder.line_to(last_point.x, zeroheight);
+                                path_builder.line_to(first_point.x, zeroheight);
+                            }
+                        }
+                    }
+
+                    path_builder.close();
+
+                    let path = path_builder.to_path();
+
+                    if self.dataset_settings.fill != FillingSettings::None
+                        && (self.dataset_settings.scaling_settings != ScalingSettings::Stacking
+                            || set_index == dataset_points.len() - 1)
+                    {
+                        snapshot.append_fill(&path, FillRule::Winding, &fill_color);
+                    }
+
+                    snapshot.append_stroke(&line, &stroke, &stroke_color);
                 }
             }
-
-            path_builder.line_to(last_point.x, height);
-            path_builder.line_to(first_point.x, height);
-            path_builder.close();
-
-            let path = path_builder.to_path();
-
-            if self.dataset_settings.fill
-                && (self.dataset_settings.scaling_settings != ScalingSettings::Stacking
-                    || set_index == dataset_points.len() - 1)
-            {
-                snapshot.append_fill(&path, FillRule::Winding, &fill_color);
-            }
-
-            snapshot.append_stroke(&path, &stroke, &stroke_color);
         }
     }
 }
 
 impl Dataset {
+    pub fn new_with_data(d: Vec<(f32, f32)>) -> Self {
+        let (x_points, data) = d.into_iter().unzip();
+        Dataset {
+            data,
+            x_points,
+            used_data: 0,
+        }
+    }
+
+    pub fn new_with_fill(v: f32) -> Self {
+        let data = vec![v; MAX_POINTS as usize];
+        Self {
+            data,
+            x_points: (0..MAX_POINTS as usize).map(|x| x as f32).collect(),
+            used_data: MIN_POINTS as usize,
+        }
+    }
+
     pub fn update_data_points(&mut self, new_points: usize) {
         self.used_data = new_points;
     }
@@ -409,7 +601,7 @@ impl Dataset {
             .iter()
             .take(self.used_data)
             .map(|v| {
-                if !v.is_normal() {
+                if !v.is_normal() && !(v.is_nan() || v == &0.0) {
                     low_watermark
                 } else {
                     v.clone()
@@ -430,8 +622,9 @@ impl Dataset {
 
         let spacing = width * parent.point_spacing_factor();
 
-        let points: Vec<_> = (0..)
-            .map(|x| x as f32)
+        let points: Vec<_> = self
+            .x_points
+            .iter()
             .zip(
                 self.get_data_sanitized(val_min)
                     .iter()
@@ -447,8 +640,14 @@ impl Dataset {
 
 impl Default for Dataset {
     fn default() -> Self {
+        let mut data = vec![f32::NAN; MAX_POINTS as usize];
+        if let Some(v) = data.first_mut() {
+            // so there's no vertical drop on first refresh
+            *v = 0.0
+        }
         Self {
-            data: vec![f32::NAN; MAX_POINTS as usize],
+            data,
+            x_points: (0..MAX_POINTS as usize).map(|x| x as f32).collect(),
             used_data: MIN_POINTS as usize,
         }
     }
