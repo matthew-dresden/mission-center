@@ -108,6 +108,8 @@ mod imp {
         pub core_count_affects_percentages: TemplateChild<SwitchRow>,
         #[template_child]
         pub show_column_separators: TemplateChild<SwitchRow>,
+        #[template_child]
+        pub hide_is_zero: TemplateChild<SwitchRow>,
 
         #[template_child]
         pub toggle_group_memory_unit: TemplateChild<adw::ToggleGroup>,
@@ -273,6 +275,7 @@ mod imp {
                 self.show_column_separators,
                 "apps-page-show-column-separators"
             );
+            connect_switch_to_setting!(self, self.hide_is_zero, "apps-page-hide-is-zero");
 
             connect_toggle_pair_to_setting!(
                 self,
@@ -362,6 +365,8 @@ impl PreferencesPage {
             .set_active(settings.boolean("apps-page-core-count-affects-percentages"));
         imp.show_column_separators
             .set_active(settings.boolean("apps-page-show-column-separators"));
+        imp.hide_is_zero
+            .set_active(settings.boolean("apps-page-hide-is-zero"));
 
         imp.toggle_group_memory_unit
             .set_active(!settings.boolean("performance-page-memory2-use-bytes") as u32);

@@ -6,6 +6,9 @@ use gtk::{gio, glib};
 use crate::settings;
 use crate::table_view::SettingsValues::*;
 use crate::table_view::TableView;
+use std::sync::atomic::{AtomicBool, Ordering};
+
+static HIDE_IS_ZERO: AtomicBool = AtomicBool::new(false);
 
 pub fn configure(table_view: &TableView) {
     let settings = settings!();
@@ -30,7 +33,23 @@ pub fn configure(table_view: &TableView) {
         }
     });
 
+    HIDE_IS_ZERO.store(
+        settings.boolean("apps-page-hide-is-zero"),
+        Ordering::Relaxed,
+    );
+
+    settings.connect_changed(Some("apps-page-hide-is-zero"), move |settings, _| {
+        HIDE_IS_ZERO.store(
+            settings.boolean("apps-page-hide-is-zero"),
+            Ordering::Relaxed,
+        );
+    });
+
     configure_sorting(table_view, &settings);
+}
+
+pub fn get_hide_is_zero() -> bool {
+    HIDE_IS_ZERO.load(Ordering::Relaxed)
 }
 
 fn configure_sorting(table_view: &TableView, settings: &gio::Settings) {

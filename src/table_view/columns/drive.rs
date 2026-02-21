@@ -23,7 +23,7 @@ use std::cmp::Ordering;
 use gtk::glib;
 use gtk::prelude::*;
 
-use super::{compare_column_entries_by, sort_order, LabelCell};
+use super::{compare_column_entries_by, set_label_zero, sort_order, LabelCell};
 use crate::{label_cell_factory, DataType};
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
@@ -53,4 +53,5 @@ pub fn label_formatter(label: &LabelCell, value: glib::Value) {
         disk_usage,
         &DataType::DriveBytesPerSecond,
     ));
+    set_label_zero(label, disk_usage);
 }

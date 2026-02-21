@@ -21,6 +21,7 @@ use gtk::glib;
 use gtk::prelude::*;
 use std::cmp::Ordering;
 
+use super::settings::get_hide_is_zero;
 use crate::i18n::i18n;
 use crate::table_view::row_model::RowModel;
 
@@ -63,6 +64,8 @@ mod name_cell;
 mod network;
 mod pid;
 mod shared_memory;
+
+pub const IS_ZERO_OPACITY: f64 = 0.3;
 
 #[macro_export]
 macro_rules! label_cell_factory {
@@ -279,4 +282,12 @@ fn sort_order(column_view: &gtk::ColumnView) -> gtk::SortType {
         .and_downcast_ref::<gtk::ColumnViewSorter>()
         .and_then(|sorter| Some(sorter.primary_sort_order()))
         .unwrap_or(gtk::SortType::Ascending)
+}
+
+pub fn set_label_zero(label: &LabelCell, usage: f32) {
+    if get_hide_is_zero() && usage.abs() == 0.0 {
+        label.set_opacity(IS_ZERO_OPACITY)
+    } else {
+        label.set_opacity(1.0)
+    }
 }

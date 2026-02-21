@@ -130,6 +130,11 @@
             <summary>Show a separator between each column in the Apps view</summary>
         </key>
 
+        <key name="apps-page-hide-is-zero" type="b">
+            <default>false</default>
+            <summary>Gray out values that equal zero in the Apps view</summary>
+        </key>
+
         <key name="apps-page-sorting-column-name" type="s">
             <default>""</default>
             <summary>The column name by which the Apps page view is sorted</summary>
@@ -159,7 +164,7 @@
             <default>""</default>
             <summary>The order of columns in the Services page view</summary>
         </key>
-        
+
         <key name="performance-page-cpu-graph" type="i">
             <range min="1" max="4"/>
             <default>1</default>
