@@ -229,15 +229,9 @@ fn magpie_command(socket_addr: &str) -> std::process::Command {
             .arg(executable());
         cmd
     } else {
-        let mut cmd = std::process::Command::new(executable());
-
-        if let Some(mut appdir) = std::env::var_os("APPDIR") {
-            appdir.push("/runtime/default");
-            cmd.current_dir(appdir);
-        }
-
-        cmd
+        std::process::Command::new(executable())
     };
+
     command
         .env_remove("LD_PRELOAD")
         .stdout(std::process::Stdio::inherit())

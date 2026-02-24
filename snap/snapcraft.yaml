@@ -1,5 +1,5 @@
 name: mission-center
-base: core20
+base: core24
 version: '1.1.0'
 summary: Monitor your CPU, Memory, Disk, Network and GPU usage
 description: |
@@ -62,7 +62,7 @@ apps:
       - process-control
       - system-observe
       - udisks2
-    extensions: [ gnome-3-38 ]
+    extensions: [ gnome ]
     command: usr/bin/missioncenter
     common-id: io.missioncenter.MissionCenter
     desktop: usr/share/applications/io.missioncenter.MissionCenter.desktop
@@ -72,6 +72,5 @@ parts:
     plugin: nil
     source: .
     override-prime: |
-      cp -r $SNAPCRAFT_PART_SRC/snap/local/usr        $SNAPCRAFT_PRIME/
-      rm -v $SNAPCRAFT_PRIME/usr/bin/{gdk-pixbuf-query-loaders,glib-compile-schemas,gtk-update-icon-cache}
+      cp -r $SNAPCRAFT_PART_SRC/snap/local/usr $SNAPCRAFT_PRIME/
       sed -i 's|Icon=.*|Icon=usr/share/icons/hicolor/scalable/apps/io.missioncenter.MissionCenter.svg|g' $SNAPCRAFT_PRIME/usr/share/applications/io.missioncenter.MissionCenter.desktop
