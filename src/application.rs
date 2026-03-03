@@ -20,6 +20,7 @@
 
 use std::cell::{BorrowError, Cell, Ref, RefCell};
 use std::collections::HashMap;
+use std::process::Command;
 
 use adw::glib::g_warning;
 use adw::{prelude::*, subclass::prelude::*};
@@ -32,6 +33,7 @@ use gtk::{
 use magpie_types::apps::icon::Icon;
 
 use crate::about_system_dialog::AboutSystemDialog;
+use crate::first_run_dialog::FirstRunDialog;
 use crate::table_view::cached_icon::CachedIcon;
 use crate::{config::VERSION, i18n::i18n, magpie_client::Readings};
 
@@ -269,6 +271,27 @@ impl MissionCenterApplication {
         this
     }
 
+    pub fn restart(&self) {
+        #[cfg(unix)]
+        use std::os::unix::process::CommandExt;
+
+        let exe = std::env::current_exe().expect("Failed to get exe");
+
+        #[cfg(unix)]
+        {
+            let _ = Command::new(exe).exec();
+        }
+
+        #[cfg(windows)]
+        {
+            Command::new(&exe)
+                .spawn()
+                .expect("Failed to spawn new process");
+
+            std::process::exit(0);
+        }
+    }
+
     pub fn set_initial_readings(&self, readings: Readings) {
         use gtk::glib::*;
 
@@ -400,6 +423,23 @@ impl MissionCenterApplication {
         let keyboard_shortcuts_action = gio::ActionEntry::builder("keyboard-shortcuts")
             .activate(move |app: &Self, _, _| app.show_keyboard_shortcuts())
             .build();
+        let open_wiki_action = gio::ActionEntry::builder("open-wiki")
+            .activate(move |_, _, _| {
+                gio::AppInfo::launch_default_for_uri(
+                    "https://gitlab.com/mission-center-devs/mission-center/-/wikis/home",
+                    None::<&gio::AppLaunchContext>,
+                )
+                .unwrap_or_else(|_| {
+                    g_critical!(
+                        "MissionCenter::Application",
+                        "Failed to open Mission Center Wiki"
+                    );
+                });
+            })
+            .build();
+        let first_run_dialog_action = gio::ActionEntry::builder("first-run-dialog")
+            .activate(move |app: &Self, _, _| app.show_first_run_dialog())
+            .build();
 
         self.add_action_entries([
             quit_action,
@@ -407,6 +447,8 @@ impl MissionCenterApplication {
             about_action,
             about_system_action,
             keyboard_shortcuts_action,
+            open_wiki_action,
+            first_run_dialog_action,
         ]);
 
         self.set_accels_for_action("app.preferences", &["<Control>comma"]);
@@ -460,6 +502,10 @@ impl MissionCenterApplication {
         };
 
         dialog.present(Some(&window));
+    }
+
+    pub fn show_first_run_dialog(&self) {
+        FirstRunDialog::run()
     }
 
     fn show_about(&self) {

@@ -1145,6 +1145,18 @@ impl MissionCenterWindow {
                 "Failed to get sys_info from MissionCenterApplication"
             );
         }
+
+        if settings!().boolean("first-time-running") {
+            app!().show_first_run_dialog();
+            settings!()
+                .set_boolean("first-time-running", false)
+                .unwrap_or_else(|_| {
+                    g_critical!(
+                        "MissionCenter::Application",
+                        "Failed to save first-time-running setting"
+                    )
+                })
+        }
     }
 
     pub fn update_readings(&self, readings: &mut Readings) -> bool {

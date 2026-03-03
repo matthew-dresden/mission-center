@@ -231,7 +231,7 @@ menu primary_menu {
       custom: 'theme-selector';
     }
   }
-  
+
   section {
     item {
       label: _("_Preferences");
@@ -246,8 +246,21 @@ menu primary_menu {
 
   section {
     item {
-      label: _("_About System");
+      label: _("_System Information");
       action: "app.system-about";
+    }
+  }
+
+  section {
+    item {
+      label: _("Open _Wiki");
+      verb-icon: "external-link-symbolic";
+      action: "app.open-wiki";
+    }
+
+    item {
+      label: _("Show _First Run Dialog");
+      action: "app.first-run-dialog";
     }
   }
 

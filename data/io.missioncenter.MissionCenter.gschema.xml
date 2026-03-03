@@ -246,5 +246,10 @@
             <default>""</default>
             <summary>Graphs that should be hidden in the application sidebar</summary>
         </key>
+
+        <key name="first-time-running" type="b">
+            <default>true</default>
+            <summary>If it's your first time running Mission Center</summary>
+        </key>
     </schema>
 </schemalist>

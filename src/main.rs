@@ -39,6 +39,7 @@ use crate::i18n::ni18n_f;
 mod about_system_dialog;
 mod application;
 mod apps_page;
+mod first_run_dialog;
 mod i18n;
 mod magpie_client;
 mod performance_page;

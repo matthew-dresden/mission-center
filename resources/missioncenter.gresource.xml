@@ -7,6 +7,7 @@
         <file preprocess="xml-stripblanks">cross-small-circle-filled-symbolic.svg</file>
         <file preprocess="xml-stripblanks">details-symbolic.svg</file>
         <file preprocess="xml-stripblanks">edit-symbolic.svg</file>
+        <file preprocess="xml-stripblanks">external-link-symbolic.svg</file>
         <file preprocess="xml-stripblanks">info-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-collapse-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-disable-all-symbolic.svg</file>
@@ -25,6 +26,7 @@
         <file preprocess="xml-stripblanks">sidebar-toggle-left-symbolic.svg</file>
         <file preprocess="xml-stripblanks">sidebar-toggle-right-symbolic.svg</file>
         <file preprocess="xml-stripblanks">speedometer-symbolic.svg</file>
+        <file preprocess="xml-stripblanks">padlock2-symbolic.svg</file>
     </gresource>
 
     <gresource prefix="/io/missioncenter/MissionCenter">
@@ -76,6 +78,7 @@
         <file preprocess="xml-stripblanks">ui/widgets/theme_selector.ui</file>
 
         <file preprocess="xml-stripblanks">ui/about_system_dialog.ui</file>
+        <file preprocess="xml-stripblanks">ui/first_run_dialog.ui</file>
         <file preprocess="xml-stripblanks">ui/keyboard_shortcuts.ui</file>
         <file preprocess="xml-stripblanks">ui/window.ui</file>
     </gresource>

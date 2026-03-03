@@ -37,6 +37,7 @@ pub use client::{
     MemoryDevice, Process, Service, SmartData,
 };
 use magpie_types::about::About;
+
 use magpie_types::processes::processes_response::process_map::NetworkStatsError;
 
 macro_rules! cmd_flatpak_host {
@@ -102,6 +103,10 @@ enum Message {
     EjectDisk(String),
     SmartData(String),
     AboutSystem,
+    ScriptName,
+    ScriptRun,
+    ScriptRunRevert,
+    ScriptOpen,
 }
 
 enum Response {
@@ -109,6 +114,8 @@ enum Response {
     EjectResult(Result<(), ErrorEjectFailed>),
     SmartData(Option<SmartData>),
     AboutResult(About),
+    ScriptResult(Result<(), String>),
+    ScriptNameResult(Option<(String, String)>),
 }
 
 #[derive(Debug)]
@@ -583,6 +590,134 @@ impl MagpieClient {
             }
         }
     }
+
+    pub fn setup_script_name(&self) -> Option<(String, String)> {
+        match self.sender.send(Message::ScriptName) {
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error sending ScriptName to gatherer: {e}",
+                );
+
+                return None;
+            }
+            _ => {}
+        }
+
+        match self.receiver.recv() {
+            Ok(Response::ScriptNameResult(v)) => v,
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptName response: {e}",
+                );
+                None
+            }
+            _ => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptName response. Wrong type"
+                );
+                None
+            }
+        }
+    }
+
+    pub fn setup_script_run(&self) -> Result<(), String> {
+        match self.sender.send(Message::ScriptRun) {
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error sending ScriptRun to gatherer: {e}",
+                );
+
+                return Err("Error sending ScriptRun to gatherer".to_string());
+            }
+            _ => {}
+        }
+
+        match self.receiver.recv() {
+            Ok(Response::ScriptResult(v)) => v,
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptRun response: {e}",
+                );
+                Err("Error receiving ScriptRun to gatherer".to_string())
+            }
+            _ => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptRun response. Wrong type"
+                );
+                Err("Error receiving ScriptRun to gatherer. Wrong type".to_string())
+            }
+        }
+    }
+
+    pub fn setup_script_run_revert(&self) -> Result<(), String> {
+        match self.sender.send(Message::ScriptRunRevert) {
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error sending ScriptRunRevert to gatherer: {e}",
+                );
+
+                return Err("Error sending ScriptRunRevert to gatherer".to_string());
+            }
+            _ => {}
+        }
+
+        match self.receiver.recv() {
+            Ok(Response::ScriptResult(v)) => v,
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptRunRevert response: {e}",
+                );
+                Err("Error receiving ScriptRunRevert to gatherer".to_string())
+            }
+            _ => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptRunRevert response. Wrong type"
+                );
+                Err("Error receiving ScriptRunRevert to gatherer. Wrong type".to_string())
+            }
+        }
+    }
+
+    pub fn setup_script_open(&self) -> Result<(), String> {
+        match self.sender.send(Message::ScriptOpen) {
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error sending ScriptOpen to gatherer: {e}",
+                );
+
+                return Err("Error sending ScriptOpen to gatherer".to_string());
+            }
+            _ => {}
+        }
+
+        match self.receiver.recv() {
+            Ok(Response::ScriptResult(v)) => v,
+            Err(e) => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptOpen response: {e}",
+                );
+                Err("Error receiving ScriptOpen to gatherer".to_string())
+            }
+            _ => {
+                g_critical!(
+                    "MissionCenter::Application",
+                    "Error receiving ScriptOpen response. Wrong type"
+                );
+                Err("Error receiving ScriptOpen to gatherer. Wrong type".to_string())
+            }
+        }
+    }
 }
 
 impl MagpieClient {
@@ -674,6 +809,45 @@ impl MagpieClient {
                         g_critical!(
                             "MissionCenter::SysInfo",
                             "Error sending AboutResult response: {}",
+                            e
+                        );
+                    }
+                }
+                Message::ScriptName => {
+                    if let Err(e) = tx.send(Response::ScriptNameResult(magpie.setup_script_name()))
+                    {
+                        g_critical!(
+                            "MissionCenter::SysInfo",
+                            "Error sending ScriptName response: {}",
+                            e
+                        );
+                    }
+                }
+                Message::ScriptRun => {
+                    if let Err(e) = tx.send(Response::ScriptResult(magpie.setup_script_run())) {
+                        g_critical!(
+                            "MissionCenter::SysInfo",
+                            "Error sending ScriptRun response: {}",
+                            e
+                        );
+                    }
+                }
+                Message::ScriptRunRevert => {
+                    if let Err(e) =
+                        tx.send(Response::ScriptResult(magpie.setup_script_run_revert()))
+                    {
+                        g_critical!(
+                            "MissionCenter::SysInfo",
+                            "Error sending ScriptRunRevert response: {}",
+                            e
+                        );
+                    }
+                }
+                Message::ScriptOpen => {
+                    if let Err(e) = tx.send(Response::ScriptResult(magpie.setup_script_open())) {
+                        g_critical!(
+                            "MissionCenter::SysInfo",
+                            "Error sending ScriptOpen response: {}",
                             e
                         );
                     }

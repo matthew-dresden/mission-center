@@ -63,6 +63,7 @@ use magpie_types::prost::Message;
 use magpie_types::services::services_response;
 use magpie_types::services::services_response::ServiceList;
 pub use magpie_types::services::Service;
+use magpie_types::setup_script::script_response;
 
 use crate::magpie_client::flatpak_app_path;
 use crate::{flatpak_data_dir, is_flatpak, show_error_dialog_and_exit};
@@ -84,6 +85,7 @@ type MemoryResponse = memory_response::Response;
 type ConnectionsResponse = connections_response::Response;
 type ProcessesResponse = processes_response::Response;
 type ServicesResponse = services_response::Response;
+type ScriptResponse = script_response::Response;
 
 const ENV_MC_DEBUG_MAGPIE_PROCESS_SOCK: &str = "MC_DEBUG_MAGPIE_PROCESS_SOCK";
 
@@ -1247,5 +1249,104 @@ impl Client {
             ServicesResponse::Error,
             |_| {}
         )
+    }
+
+    pub fn setup_script_name(&self) -> Option<(String, String)> {
+        let mut socket = self.socket.borrow_mut();
+
+        let response = make_request(
+            ipc::req_script_name(),
+            &mut socket,
+            self.socket_addr.as_ref(),
+        )
+        .and_then(|response| response.body);
+
+        let result = parse_response_with_err!(
+            response,
+            ResponseBody::Script,
+            ScriptResponse::Name,
+            ScriptResponse::None,
+            |value| value
+        );
+
+        match result {
+            Some(Ok(v)) => Some((v.file, v.elevation_command)),
+            _ => None,
+        }
+    }
+
+    pub fn setup_script_run(&self) -> Result<(), String> {
+        let mut socket = self.socket.borrow_mut();
+
+        let response = make_request(
+            ipc::req_script_run(),
+            &mut socket,
+            self.socket_addr.as_ref(),
+        )
+        .and_then(|response| response.body);
+
+        let result = parse_response_with_err!(
+            response,
+            ResponseBody::Script,
+            ScriptResponse::RunSuccess,
+            ScriptResponse::Error,
+            |value| value
+        );
+
+        match result {
+            Some(Ok(_)) => Ok(()),
+            Some(Err(e)) => Err(e),
+            None => Err("Error receiving result from magpie".to_string()),
+        }
+    }
+
+    pub fn setup_script_run_revert(&self) -> Result<(), String> {
+        let mut socket = self.socket.borrow_mut();
+
+        let response = make_request(
+            ipc::req_script_run_revert(),
+            &mut socket,
+            self.socket_addr.as_ref(),
+        )
+        .and_then(|response| response.body);
+
+        let result = parse_response_with_err!(
+            response,
+            ResponseBody::Script,
+            ScriptResponse::RunSuccess,
+            ScriptResponse::Error,
+            |value| value
+        );
+
+        match result {
+            Some(Ok(_)) => Ok(()),
+            Some(Err(e)) => Err(e),
+            None => Err("Error receiving result from magpie".to_string()),
+        }
+    }
+
+    pub fn setup_script_open(&self) -> Result<(), String> {
+        let mut socket = self.socket.borrow_mut();
+
+        let response = make_request(
+            ipc::req_script_open(),
+            &mut socket,
+            self.socket_addr.as_ref(),
+        )
+        .and_then(|response| response.body);
+
+        let result = parse_response_with_err!(
+            response,
+            ResponseBody::Script,
+            ScriptResponse::RunSuccess,
+            ScriptResponse::Error,
+            |value| value
+        );
+
+        match result {
+            Some(Ok(_)) => Ok(()),
+            Some(Err(e)) => Err(e),
+            None => Err("Error receiving result from magpie".to_string()),
+        }
     }
 }

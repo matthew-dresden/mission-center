@@ -43,6 +43,7 @@ blueprints = custom_target('blueprints',
     'ui/widgets/theme_selector.blp',
 
     'ui/about_system_dialog.blp',
+    'ui/first_run_dialog.blp',
     'ui/keyboard_shortcuts.blp',
     'ui/window.blp',
   ),

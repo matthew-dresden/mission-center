@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 09:21+0100\n"
+"POT-Creation-Date: 2026-02-23 21:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -213,97 +213,105 @@ msgid "Show a separator between each column in the Apps view"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:135
-msgid "The column name by which the Apps page view is sorted"
+msgid "Gray out values that equal zero in the Apps view"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:140
-msgid "The sorting direction of the Apps page view"
+msgid "The column name by which the Apps page view is sorted"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:145
-msgid "The order of columns in the Apps page view"
+msgid "The sorting direction of the Apps page view"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-msgid "The column name by which the Services page view is sorted"
+msgid "The order of columns in the Apps page view"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-msgid "The sorting direction of the Services page view"
+msgid "The column name by which the Services page view is sorted"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
+msgid "The sorting direction of the Services page view"
+msgstr ""
+
+#: data/io.missioncenter.MissionCenter.gschema.xml:165
 msgid "The order of columns in the Services page view"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:166
+#: data/io.missioncenter.MissionCenter.gschema.xml:171
 msgid "Which graph is shown on the CPU performance page"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:171
+#: data/io.missioncenter.MissionCenter.gschema.xml:176
 msgid "Show kernel times in the CPU graphs"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:176
+#: data/io.missioncenter.MissionCenter.gschema.xml:181
 msgid "Which page is shown on application startup, in the performance tab"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:182
+#: data/io.missioncenter.MissionCenter.gschema.xml:187
 msgid "Should performance graphs be smooth or jagged"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:187
+#: data/io.missioncenter.MissionCenter.gschema.xml:192
 msgid "Should graphs be animated"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:192
+#: data/io.missioncenter.MissionCenter.gschema.xml:197
 #: resources/ui/preferences/page.blp:65
 msgid "Show CPU information by default"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:197
+#: data/io.missioncenter.MissionCenter.gschema.xml:202
 #: resources/ui/preferences/page.blp:71
 msgid "Show memory information by default"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:202
+#: data/io.missioncenter.MissionCenter.gschema.xml:207
 #: resources/ui/preferences/page.blp:77
 msgid "Show disk information by default"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:207
+#: data/io.missioncenter.MissionCenter.gschema.xml:212
 #: resources/ui/preferences/page.blp:83
 msgid "Show network information by default"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:212
+#: data/io.missioncenter.MissionCenter.gschema.xml:217
 #: resources/ui/preferences/page.blp:89
 msgid "Show GPU information by default"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:217
+#: data/io.missioncenter.MissionCenter.gschema.xml:222
 #: resources/ui/preferences/page.blp:95
 msgid "Show fan information by default"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:222
+#: data/io.missioncenter.MissionCenter.gschema.xml:227
 msgid "Show the mem composition widget"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:227
+#: data/io.missioncenter.MissionCenter.gschema.xml:232
 msgid "Show the swap graph"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:232
+#: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "Show the gpu encode-decode graph"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:237
+#: data/io.missioncenter.MissionCenter.gschema.xml:242
 msgid "The ordering of entries in the application sidebar"
 msgstr ""
 
-#: data/io.missioncenter.MissionCenter.gschema.xml:242
+#: data/io.missioncenter.MissionCenter.gschema.xml:247
 msgid "Graphs that should be hidden in the application sidebar"
+msgstr ""
+
+#: data/io.missioncenter.MissionCenter.gschema.xml:252
+msgid "If it's your first time running mission center'"
 msgstr ""
 
 #: resources/ui/apps_page/page.blp:75
@@ -1001,99 +1009,107 @@ msgstr ""
 msgid "Show a separator between each column"
 msgstr ""
 
+#: resources/ui/preferences/page.blp:129
+msgid "Grey Out Zeroes"
+msgstr ""
+
 #: resources/ui/preferences/page.blp:130
+msgid "Gray out values that equal zero"
+msgstr ""
+
+#: resources/ui/preferences/page.blp:135
 msgid "Global Units"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:133
+#: resources/ui/preferences/page.blp:138
 msgid "Memory Usage Unit"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:140
-msgid "Use Bytes as a Unit of Measurement for Memory"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:141 resources/ui/preferences/page.blp:179
-#: resources/ui/preferences/page.blp:217
-msgid "Bytes"
-msgstr ""
-
 #: resources/ui/preferences/page.blp:145
-msgid "Use Bits as a Unit of Measurement for Memory"
+msgid "Use Bytes as a Unit of Measurement for Memory"
 msgstr ""
 
 #: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
 #: resources/ui/preferences/page.blp:222
+msgid "Bytes"
+msgstr ""
+
+#: resources/ui/preferences/page.blp:150
+msgid "Use Bits as a Unit of Measurement for Memory"
+msgstr ""
+
+#: resources/ui/preferences/page.blp:151 resources/ui/preferences/page.blp:189
+#: resources/ui/preferences/page.blp:227
 msgid "Bits"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:152
+#: resources/ui/preferences/page.blp:157
 msgid "Memory Usage Base"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:159
-msgid "Use Base 10 for Memory"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:160 resources/ui/preferences/page.blp:198
-#: resources/ui/preferences/page.blp:236
-msgid "Base 10"
-msgstr ""
-
 #: resources/ui/preferences/page.blp:164
-msgid "Use Base 2 for Memory"
+msgid "Use Base 10 for Memory"
 msgstr ""
 
 #: resources/ui/preferences/page.blp:165 resources/ui/preferences/page.blp:203
 #: resources/ui/preferences/page.blp:241
+msgid "Base 10"
+msgstr ""
+
+#: resources/ui/preferences/page.blp:169
+msgid "Use Base 2 for Memory"
+msgstr ""
+
+#: resources/ui/preferences/page.blp:170 resources/ui/preferences/page.blp:208
+#: resources/ui/preferences/page.blp:246
 msgid "Base 2"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:171
+#: resources/ui/preferences/page.blp:176
 msgid "Drive Usage Unit"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:178
+#: resources/ui/preferences/page.blp:183
 msgid "Use Bytes as a Unit of Measurement for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:183
+#: resources/ui/preferences/page.blp:188
 msgid "Use Bits as a Unit of Measurement for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:190
+#: resources/ui/preferences/page.blp:195
 msgid "Drive Usage Base"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:197
+#: resources/ui/preferences/page.blp:202
 msgid "Use Base 10 for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:202
+#: resources/ui/preferences/page.blp:207
 msgid "Use Base 2 for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:209
+#: resources/ui/preferences/page.blp:214
 msgid "Network Usage Unit"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:216
+#: resources/ui/preferences/page.blp:221
 msgid "Use Bytes as a Unit of Measurement for Network Interfaces"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:221
+#: resources/ui/preferences/page.blp:226
 msgid "Use Bits as a Unit of Measurement for Network Interfaces"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:228
+#: resources/ui/preferences/page.blp:233
 msgid "Network Usage Base"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:235
+#: resources/ui/preferences/page.blp:240
 msgid "Use Base 10 for Network Interfaces"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:240
+#: resources/ui/preferences/page.blp:245
 msgid "Use Base 2 for Network Interfaces"
 msgstr ""
 
@@ -1236,7 +1252,7 @@ msgstr ""
 #: resources/ui/table_view/table_view.blp:40
 #: resources/ui/table_view/service_details_dialog.blp:136
 #: resources/ui/about_system_dialog.blp:80
-#: resources/ui/about_system_dialog.blp:260 src/table_view/columns/mod.rs:208
+#: resources/ui/about_system_dialog.blp:260 src/table_view/columns/mod.rs:211
 msgid "Name"
 msgstr ""
 
@@ -1588,6 +1604,14 @@ msgid "_About System"
 msgstr ""
 
 #: resources/ui/window.blp:256
+msgid "Open Wiki"
+msgstr ""
+
+#: resources/ui/window.blp:262
+msgid "Show First Run Dialog"
+msgstr ""
+
+#: resources/ui/window.blp:269
 msgid "_About Mission Center"
 msgstr ""
 
@@ -1986,73 +2010,66 @@ msgstr ""
 msgid "Copy logs to clipboard"
 msgstr ""
 
-#: src/application.rs:479
+#: src/application.rs:507
 msgid "translator-credits"
 msgstr ""
 
-#: src/main.rs:104
+#: src/main.rs:105
 #, rust-format
 msgid "{} year"
 msgid_plural "{} years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:108
+#: src/main.rs:109
 #, rust-format
 msgid "{} month"
 msgid_plural "{} months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:112
+#: src/main.rs:113
 #, rust-format
 msgid "{} day"
 msgid_plural "{} days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:116
+#: src/main.rs:117
 #, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:120 src/main.rs:193
+#: src/main.rs:121 src/main.rs:206
 #, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:124 src/main.rs:191
+#: src/main.rs:125 src/main.rs:204
 #, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
-#: src/main.rs:160
+#: src/main.rs:162
 #, rust-format
 msgid "{}, {} and {}"
 msgstr ""
 
-#. Translators: Used for durations less than one year but greater than one month. First %s is number of months, second %s is days
-#: src/main.rs:163 src/main.rs:167 src/main.rs:174
+#: src/main.rs:165 src/main.rs:173 src/main.rs:180 src/main.rs:187
 #, rust-format
 msgid "{} and {}"
 msgstr ""
 
-#: src/main.rs:169 src/main.rs:176
-#, rust-format
-msgid "{}"
-msgstr ""
-
-#: src/main.rs:183
+#: src/main.rs:196
 msgid "Less than a minute"
 msgstr ""
 
-#: src/main.rs:437
+#: src/main.rs:450
 msgid "_Quit"
 msgstr ""
