@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-11-29 01:00+0000\n"
-"Last-Translator: Nota Inutilis <hugo@notainutilis.fr>\n"
+"PO-Revision-Date: 2026-03-06 14:09+0000\n"
+"Last-Translator: ziyad arif <ziyarif91@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -938,15 +938,15 @@ msgstr "Disque système :"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN :"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "Serial :"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "Vitesse de rotation"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -1252,19 +1252,19 @@ msgstr "Processeurs virtuels :"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "Filtrer les processus arrêtés"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "Filtrer les processus désactivés"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "Retirer tous les filtres"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "Retirer le filtre"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
@@ -1432,43 +1432,43 @@ msgstr "Détails"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "Envoyer un signal"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "Suspendre (STOP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "Continuer (CONT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "Arrêter (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "Interrompre (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "Terminer (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "Tuer (KILL)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "Utilisateur 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "Utilisateur 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "ID de l'application"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1555,7 +1555,7 @@ msgstr "Groupe"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "Emplacement du fichier"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
@@ -1596,7 +1596,7 @@ msgstr "Afficher les informations de ventilation"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "Version du Kernel"
 
 #: resources/ui/about_system_dialog.blp:245
 #, fuzzy
@@ -1606,7 +1606,7 @@ msgstr ""
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "Système de fenêtrage"
 
 #: resources/ui/about_system_dialog.blp:344
 #, fuzzy
@@ -1717,7 +1717,7 @@ msgstr ""
 
 #: src/performance_page/widgets/smart_data_dialog.rs:131
 msgid "Old-Age"
-msgstr ""
+msgstr "Vieux-Age"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:134
 #, fuzzy
@@ -1731,19 +1731,19 @@ msgstr "Hors ligne"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:142
 msgid "FAILING"
-msgstr ""
+msgstr "Défaillant"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:147
 msgid "Failed in the past"
-msgstr ""
+msgstr "a eu un échec dans le passé"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:149
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:197
 msgid "Percent Used"
-msgstr ""
+msgstr "pour-cent utilisé"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:205
 #, fuzzy
@@ -1752,7 +1752,7 @@ msgstr "Disponible"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:213
 msgid "Spare Threshold"
-msgstr ""
+msgstr "Seuil de réserve"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:221
 #, fuzzy
@@ -1761,7 +1761,7 @@ msgstr "Total reçu"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:229
 msgid "Total Data Written"
-msgstr ""
+msgstr "Total des données écrites"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:240
 msgid "Warning Temp Time"
@@ -1798,19 +1798,19 @@ msgstr "Températures"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:281
 msgid "Unsafe Shutdowns"
-msgstr ""
+msgstr "Arrêt dangereux"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:289
 msgid "Media Errors"
-msgstr ""
+msgstr "Erreur du média"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:297
 msgid "Number Error Log Entries"
-msgstr ""
+msgstr "Entrées du journal des erreurs numériques"
 
 #: src/performance_page/widgets/smart_data_dialog.rs:305
 msgid "Power Cycles"
-msgstr ""
+msgstr "cycles d'alimentation"
 
 #: src/performance_page/widgets/mem_composition_widget.rs:249
 #, fuzzy, rust-format
@@ -1971,7 +1971,7 @@ msgstr "Mémoire totale"
 
 #: src/performance_page/gpu.rs:599
 msgid "Dedicated and shared memory usage over "
-msgstr ""
+msgstr "Utilisation de mémoire dédiée et partagée sur "
 
 #: src/performance_page/gpu.rs:645
 msgid "Total Shared Memory"
@@ -2025,11 +2025,11 @@ msgstr "Tout désactiver"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "Aucun service ne correspond au filtres présents"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "Aucun filtre appliqués"
 
 #: src/services_page/mod.rs:149
 #, fuzzy, rust-format
