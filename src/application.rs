@@ -62,7 +62,7 @@ mod imp {
     use crate::setup_readable_settings_cache;
 
     pub struct MissionCenterApplication {
-        pub settings: Cell<Option<gio::Settings>>,
+        pub settings: gio::Settings,
         pub sys_info: RefCell<Option<crate::magpie_client::MagpieClient>>,
         pub window: RefCell<Option<crate::MissionCenterWindow>>,
 
@@ -72,7 +72,7 @@ mod imp {
     impl Default for MissionCenterApplication {
         fn default() -> Self {
             Self {
-                settings: Cell::new(None),
+                settings: gio::Settings::new("io.missioncenter.MissionCenter"),
                 sys_info: RefCell::new(None),
                 window: RefCell::new(None),
                 apps_icons_cache: Cell::new(None),
@@ -94,9 +94,6 @@ mod imp {
 
             obj.set_default();
 
-            self.settings
-                .set(Some(gio::Settings::new("io.missioncenter.MissionCenter")));
-
             obj.setup_gactions();
             obj.set_accels_for_action("app.quit", &["<primary>q"]);
         }
@@ -111,8 +108,7 @@ mod imp {
             let window = if let Some(window) = application.window() {
                 window
             } else {
-                let settings = unsafe { self.settings.take().unwrap_unchecked() };
-                self.settings.set(Some(settings.clone()));
+                let settings = &self.settings;
 
                 let sys_info = crate::magpie_client::MagpieClient::new();
 
@@ -386,7 +382,7 @@ impl MissionCenterApplication {
     }
 
     pub fn settings(&self) -> gio::Settings {
-        unsafe { (&*self.imp().settings.as_ptr()).as_ref().unwrap_unchecked() }.clone()
+        self.imp().settings.clone()
     }
 
     pub fn sys_info(&self) -> Result<Ref<'_, crate::magpie_client::MagpieClient>, BorrowError> {
@@ -402,7 +398,7 @@ impl MissionCenterApplication {
     }
 
     pub fn window(&self) -> Option<crate::MissionCenterWindow> {
-        unsafe { &*self.imp().window.as_ptr() }.clone()
+        self.imp().window.borrow().clone()
     }
 
     fn setup_gactions(&self) {

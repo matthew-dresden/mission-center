@@ -25,7 +25,7 @@ use std::fmt::Write;
 use adw::prelude::*;
 use arrayvec::ArrayString;
 use gtk::glib::translate::from_glib_full;
-use gtk::glib::{g_critical, gobject_ffi, Object, ParamSpec, Properties, Value};
+use gtk::glib::{g_critical, g_debug, gobject_ffi, Object, ParamSpec, Properties, Value};
 use gtk::glib::{g_warning, VariantTy, WeakRef};
 use gtk::{gdk, gio, glib, subclass::prelude::*};
 use textdistance::{Algorithm, Levenshtein};
@@ -141,6 +141,8 @@ mod imp {
         pub settings_namespace: Cell<SettingsNamespace>,
 
         service_state_connections: RefCell<[Option<glib::SignalHandlerId>; 2]>,
+
+        filter: RefCell<gtk::CustomFilter>,
     }
 
     impl Default for TableView {
@@ -172,6 +174,8 @@ mod imp {
                 settings_namespace: Cell::new(Default::default()),
 
                 service_state_connections: RefCell::new([const { None }; 2]),
+
+                filter: RefCell::new(gtk::CustomFilter::new(|_| true)),
             }
         }
     }
@@ -313,6 +317,26 @@ mod imp {
         fn realize(&self) {
             self.parent_realize();
 
+            // Delay connecting to the search field until Widget::realize to make reasonably sure
+            // that the window exists.
+            if let Some(window) = app!().window() {
+                let filter = self.filter.borrow().downgrade();
+                window
+                    .imp()
+                    .header_search_entry
+                    .connect_search_changed(move |_| {
+                        if let Some(filter) = filter.upgrade() {
+                            filter.changed(gtk::FilterChange::Different);
+                        }
+                    });
+            } else {
+                g_warning!(
+                    "MissionCenter::TableView",
+                    "Failed to get MissionCenterWindow instance; searching and filtering will not \
+                    function."
+                );
+            }
+
             let column_view_title = self.column_view.first_child();
             adjust_view_header_alignment(column_view_title);
         }
@@ -373,135 +397,119 @@ mod imp {
             tree_list_model: impl IsA<gio::ListModel>,
             group: Option<[WeakRef<gtk::ToggleButton>; TOGGLE_COUNT]>,
         ) -> gtk::FilterListModel {
-            let Some(window) = app!().window() else {
-                g_critical!(
-                    "MissionCenter::ProcessTree",
-                    "Failed to get MissionCenterWindow instance; searching and filtering will not function"
-                );
-                return gtk::FilterListModel::new(Some(tree_list_model), None::<gtk::CustomFilter>);
-            };
-
             let group_clone = group.clone();
-            let filter = gtk::CustomFilter::new({
-                let window = window.downgrade();
-                move |obj| {
-                    let Some(row_model) = obj
-                        .downcast_ref::<gtk::TreeListRow>()
-                        .and_then(|row| row.item())
-                        .and_then(|item| item.downcast::<RowModel>().ok())
-                    else {
-                        return false;
-                    };
+            let filter = gtk::CustomFilter::new(move |obj| {
+                let Some(row_model) = obj
+                    .downcast_ref::<gtk::TreeListRow>()
+                    .and_then(|row| row.item())
+                    .and_then(|item| item.downcast::<RowModel>().ok())
+                else {
+                    return false;
+                };
 
-                    let search = || {
-                        let Some(window) = window.upgrade() else {
-                            return true;
-                        };
+                let Some(window) = app!().window() else {
+                    g_debug!(
+                        "MissionCenter::ProcessTree",
+                        "Failed to get window after initiating search. Where did the search come from then?"
+                    );
+                    return true;
+                };
 
-                        let window = window.imp();
+                let search = || {
+                    let window = window.imp();
 
-                        if !window.search_button.is_active() {
-                            return true;
-                        }
-
-                        if window.header_search_entry.text().is_empty() {
-                            return true;
-                        }
-
-                        if row_model.content_type() == ContentType::SectionHeader {
-                            return true;
-                        }
-
-                        let entry_name = row_model.name().to_lowercase();
-                        let pid = row_model.pid().to_string();
-                        let search_query = window.header_search_entry.text().to_lowercase();
-
-                        if entry_name.contains(&search_query) || pid.contains(&search_query) {
-                            return true;
-                        }
-
-                        if search_query.contains(&entry_name) || search_query.contains(&pid) {
-                            return true;
-                        }
-
-                        let str_distance = Levenshtein::default()
-                            .for_str(&entry_name, &search_query)
-                            .ndist();
-                        if str_distance <= 0.6 {
-                            return true;
-                        }
-
-                        false
-                    };
-
-                    let group = group_clone.clone();
-                    let row_model_clone = row_model.clone();
-                    let filter = move || {
-                        let Some(group) = group else {
-                            return true;
-                        };
-
-                        if row_model_clone.content_type() == ContentType::SectionHeader {
-                            return true;
-                        }
-
-                        if group.iter().all(|toggle| {
-                            toggle
-                                .upgrade()
-                                .map(|toggle| !toggle.is_active())
-                                .unwrap_or(true)
-                        }) {
-                            return true;
-                        }
-
-                        let mut visible = [false; TOGGLE_COUNT];
-                        for (i, toggle) in group.iter().enumerate() {
-                            if let Some(toggle) = toggle.upgrade() {
-                                let name = toggle.widget_name();
-                                match name.as_str() {
-                                    "toggle_running" => {
-                                        visible[i] =
-                                            toggle.is_active() && row_model_clone.service_running()
-                                    }
-                                    "toggle_failed" => {
-                                        visible[i] =
-                                            toggle.is_active() && row_model_clone.service_failed()
-                                    }
-                                    "toggle_stopped" => {
-                                        visible[i] =
-                                            toggle.is_active() && row_model_clone.service_stopped()
-                                    }
-                                    "toggle_disabled" => {
-                                        visible[i] = toggle.is_active()
-                                            && !row_model_clone.service_enabled()
-                                            && !row_model_clone.service_running()
-                                            && !row_model_clone.service_failed();
-                                    }
-                                    _ => {
-                                        g_warning!(
-                                            "MissionCenter::TableView",
-                                            "Unknown toggle button: {}",
-                                            name
-                                        );
-                                    }
-                                };
-                            }
-                        }
-
-                        visible.iter().any(|b| *b)
-                    };
-
-                    search() && filter()
-                }
-            });
-
-            window.imp().header_search_entry.connect_search_changed({
-                let filter = filter.downgrade();
-                move |_| {
-                    if let Some(filter) = filter.upgrade() {
-                        filter.changed(gtk::FilterChange::Different);
+                    if !window.search_button.is_active() {
+                        return true;
                     }
-                }
+
+                    if window.header_search_entry.text().is_empty() {
+                        return true;
+                    }
+
+                    if row_model.content_type() == ContentType::SectionHeader {
+                        return true;
+                    }
+
+                    let entry_name = row_model.name().to_lowercase();
+                    let pid = row_model.pid().to_string();
+                    let search_query = window.header_search_entry.text().to_lowercase();
+
+                    if entry_name.contains(&search_query) || pid.contains(&search_query) {
+                        return true;
+                    }
+
+                    if search_query.contains(&entry_name) || search_query.contains(&pid) {
+                        return true;
+                    }
+
+                    let str_distance = Levenshtein::default()
+                        .for_str(&entry_name, &search_query)
+                        .ndist();
+                    if str_distance <= 0.6 {
+                        return true;
+                    }
+
+                    false
+                };
+
+                let group = group_clone.clone();
+                let row_model_clone = row_model.clone();
+                let filter = move || {
+                    let Some(group) = group else {
+                        return true;
+                    };
+
+                    if row_model_clone.content_type() == ContentType::SectionHeader {
+                        return true;
+                    }
+
+                    if group.iter().all(|toggle| {
+                        toggle
+                            .upgrade()
+                            .map(|toggle| !toggle.is_active())
+                            .unwrap_or(true)
+                    }) {
+                        return true;
+                    }
+
+                    let mut visible = [false; TOGGLE_COUNT];
+                    for (i, toggle) in group.iter().enumerate() {
+                        if let Some(toggle) = toggle.upgrade() {
+                            let name = toggle.widget_name();
+                            match name.as_str() {
+                                "toggle_running" => {
+                                    visible[i] =
+                                        toggle.is_active() && row_model_clone.service_running()
+                                }
+                                "toggle_failed" => {
+                                    visible[i] =
+                                        toggle.is_active() && row_model_clone.service_failed()
+                                }
+                                "toggle_stopped" => {
+                                    visible[i] =
+                                        toggle.is_active() && row_model_clone.service_stopped()
+                                }
+                                "toggle_disabled" => {
+                                    visible[i] = toggle.is_active()
+                                        && !row_model_clone.service_enabled()
+                                        && !row_model_clone.service_running()
+                                        && !row_model_clone.service_failed();
+                                }
+                                _ => {
+                                    g_warning!(
+                                        "MissionCenter::TableView",
+                                        "Unknown toggle button: {}",
+                                        name
+                                    );
+                                }
+                            };
+                        }
+                    }
+
+                    visible.iter().any(|b| *b)
+                };
+
+                search() && filter()
             });
 
             if let Some(group) = group {
@@ -518,6 +526,8 @@ mod imp {
                     }
                 }
             }
+
+            self.filter.replace(filter.clone());
 
             gtk::FilterListModel::new(Some(tree_list_model), Some(filter))
         }
