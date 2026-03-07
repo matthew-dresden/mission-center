@@ -8,9 +8,6 @@ authors = [
 ]
 edition = "2021"
 
-[features]
-skip-codegen = ["magpie-types/skip-codegen"]
-
 [dependencies]
 arrayvec = "0.7"
 nng-c = "1.11"

@@ -17,16 +17,11 @@ configure_file(
 
 cargo_bin = find_program('cargo')
 cargo_env = get_option('cargo_env')
+cargo_opt  = []
 rustflags = []
+
 if get_option('flatpak') == false
     cargo_env += [ 'CARGO_HOME=' + meson.project_build_root()  / 'cargo-home' ]
-    cargo_opt  = []
-else
-    cargo_opt  = [ '--features=skip-codegen' ]
-endif
-
-if get_option('skip-codegen')
-    cargo_opt += [ '--features=skip-codegen' ]
 endif
 
 cargo_opt += [ '--manifest-path', meson.project_source_root() / 'Cargo.toml' ]

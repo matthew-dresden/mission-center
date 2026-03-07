@@ -88,30 +88,30 @@ check-fmt:
   interruptible: true
   allow_failure: true
   before_script:
-    - !reference [".shared", "setup_apt"]
-    - !reference [".shared", "install_rust"]
+    - !reference [ ".shared", "setup_apt" ]
+    - !reference [ ".shared", "install_rust" ]
   script:
     - ./support/check-cargo-fmt.sh
     - echo $CI_MERGE_REQUEST_LABELS
   rules:
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 build-job-x86:
   stage: package-build
   interruptible: true
   before_script:
-    - !reference [".shared", "setup_apt"]
-    - !reference [".shared", "install_rust"]
-    - !reference [".shared", "checkout_submodule"]
+    - !reference [ ".shared", "setup_apt" ]
+    - !reference [ ".shared", "install_rust" ]
+    - !reference [ ".shared", "checkout_submodule" ]
 
     - pip install meson ninja --break-system-packages
   script:
-    - meson setup _build -Dbuildtype=release -Dskip-codegen=true
+    - meson setup _build -Dbuildtype=release
     - ninja -C _build
     - glib-compile-schemas --strict data/
   rules:
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 build-job-arm:
@@ -120,17 +120,17 @@ build-job-arm:
   tags:
     - saas-linux-medium-arm64
   before_script:
-    - !reference [".shared", "setup_apt_ports"]
-    - !reference [".shared", "install_rust"]
-    - !reference [".shared", "checkout_submodule"]
+    - !reference [ ".shared", "setup_apt_ports" ]
+    - !reference [ ".shared", "install_rust" ]
+    - !reference [ ".shared", "checkout_submodule" ]
 
     - pip install meson ninja --break-system-packages
   script:
-    - meson setup _build -Dbuildtype=release -Dskip-codegen=true
+    - meson setup _build -Dbuildtype=release
     - ninja -C _build
     - glib-compile-schemas --strict data/
   rules:
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 flatpak-job-x86:
@@ -139,9 +139,9 @@ flatpak-job-x86:
   tags:
     - saas-linux-large-amd64
   before_script:
-    - !reference [".shared", "setup_apt"]
-    - !reference [".shared", "install_flatpak"]
-    - !reference [".shared", "checkout_submodule"]
+    - !reference [ ".shared", "setup_apt" ]
+    - !reference [ ".shared", "install_flatpak" ]
+    - !reference [ ".shared", "checkout_submodule" ]
   script:
     - cd flatpak && flatpak-builder --repo=repo --ccache --force-clean build io.missioncenter.MissionCenter.json
     - flatpak build-bundle repo missioncenter-$(arch).flatpak io.missioncenter.MissionCenter
@@ -150,7 +150,7 @@ flatpak-job-x86:
       - flatpak/missioncenter-x86_64.flatpak
   rules:
     - if: "'true' == '$[[ inputs.BUILD_FLATPAK ]]'"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 flatpak-job-arm:
@@ -159,9 +159,9 @@ flatpak-job-arm:
   tags:
     - saas-linux-large-arm64
   before_script:
-    - !reference [".shared", "setup_apt_ports"]
-    - !reference [".shared", "install_flatpak"]
-    - !reference [".shared", "checkout_submodule"]
+    - !reference [ ".shared", "setup_apt_ports" ]
+    - !reference [ ".shared", "install_flatpak" ]
+    - !reference [ ".shared", "checkout_submodule" ]
   script:
     - cd flatpak && flatpak-builder --repo=repo --ccache --force-clean build io.missioncenter.MissionCenter.json
     - flatpak build-bundle repo missioncenter-$(arch).flatpak io.missioncenter.MissionCenter
@@ -170,7 +170,7 @@ flatpak-job-arm:
       - flatpak/missioncenter-aarch64.flatpak
   rules:
     - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && 'true' == '$[[ inputs.BUILD_FLATPAK ]]'"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 package-build-job-x86:
@@ -180,8 +180,8 @@ package-build-job-x86:
   tags:
     - saas-linux-large-amd64
   before_script:
-    - !reference [".shared", "setup_apt_noble"]
-    - !reference [".shared", "checkout_submodule"]
+    - !reference [ ".shared", "setup_apt_noble" ]
+    - !reference [ ".shared", "checkout_submodule" ]
   script:
     - SRC_PATH=$PWD OUT_PATH=$PWD/portable bash support/build-with-gtk-libadwaita.sh &> logs.txt || (tail -n 500 logs.txt && exit 1)
     - cd portable && tar zcf ../portable-x86_64.tar.gz *
@@ -193,7 +193,7 @@ package-build-job-x86:
       - "portable-x86_64.tar.gz"
   rules:
     - if: "'' == '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 package-build-job-arm:
@@ -203,8 +203,8 @@ package-build-job-arm:
   tags:
     - saas-linux-large-arm64
   before_script:
-    - !reference [".shared", "setup_apt_noble_ports"]
-    - !reference [".shared", "checkout_submodule"]
+    - !reference [ ".shared", "setup_apt_noble_ports" ]
+    - !reference [ ".shared", "checkout_submodule" ]
   script:
     - SRC_PATH=$PWD OUT_PATH=$PWD/portable bash support/build-with-gtk-libadwaita.sh &> logs.txt || (tail -n 500 logs.txt && exit 1)
     - cd portable && tar zcf ../portable-aarch64.tar.gz *
@@ -216,7 +216,7 @@ package-build-job-arm:
       - "portable-aarch64.tar.gz"
   rules:
     - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && '' == '$[[ inputs.PORTABLE_TARBALL ]]' && ('true' == '$[[ inputs.BUILD_APPIMAGE ]]' || 'true' == '$[[ inputs.BUILD_SNAP ]]')"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 snap-job-x86:
@@ -240,7 +240,7 @@ snap-job-x86:
       - "**/*.snap"
   rules:
     - if: "'true' == '$[[ inputs.BUILD_SNAP ]]'"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 snap-job-arm:
@@ -266,7 +266,7 @@ snap-job-arm:
       - "**/*.snap"
   rules:
     - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && 'true' == '$[[ inputs.BUILD_SNAP ]]'"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 appimage-job-x86:
@@ -288,7 +288,7 @@ appimage-job-x86:
       - "**/*.AppImage"
   rules:
     - if: "'true' == '$[[ inputs.BUILD_APPIMAGE ]]'"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 appimage-job-arm:
@@ -312,5 +312,5 @@ appimage-job-arm:
       - "**/*.AppImage"
   rules:
     - if: "'true' == '$[[ inputs.BUILD_ARM ]]' && 'true' == '$[[ inputs.BUILD_APPIMAGE ]]'"
-    - !reference [".shared", "ready_to_merge"]
+    - !reference [ ".shared", "ready_to_merge" ]
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
