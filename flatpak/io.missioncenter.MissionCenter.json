@@ -132,18 +132,18 @@
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.90.0-x86_64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.94.0-x86_64.tar.zst",
           "dest": "rust-toolchain-glibc",
-          "sha256": "938257b991c6617634fdd1b25cabcfded8f4d4d10b9b5693f4f05c2b8f0e0cf9",
+          "sha256": "a200a89c9084ef9a7aa2a921cc380a573655de24f12bee970b452d9bfd2cfd53",
           "only-arches": [
             "x86_64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.90.0-x86_64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.94.0-x86_64.tar.zst",
           "dest": "rust-toolchain-musl",
-          "sha256": "8110f9709554a3d1e8de94951025a1d02e0f88c35d1dbf4f1f6312cc241e0b97",
+          "sha256": "76874d9a826736b753e72033b72147704250baf808a3de4a0c37438a7feac44d",
           "only-arches": [
             "x86_64"
           ]
@@ -184,18 +184,18 @@
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.90.0-aarch64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-glibc-1.94.0-aarch64.tar.zst",
           "dest": "rust-toolchain-glibc",
-          "sha256": "0e01b77a28cc529a5fffca4816c909931fa06a0a6c222f65c371781aab539843",
+          "sha256": "250a651eac1b55e3c0872017105b533bdf277b27978e82d4594f91ee3cc8b89c",
           "only-arches": [
             "aarch64"
           ]
         },
         {
           "type": "archive",
-          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.90.0-aarch64.tar.zst",
+          "url": "https://missioncenter.io/build-tools/rust-toolchain-musl-1.94.0-aarch64.tar.zst",
           "dest": "rust-toolchain-musl",
-          "sha256": "2c5d5a81b8f721e0932a389219b5e17eccbde35b49a09e5ddf45fe3bcb426a92",
+          "sha256": "d4e86c59362f35b4bb42b5bcc2f865bdaa5f5fc6da6c45a4ea2a37c392990b04",
           "only-arches": [
             "aarch64"
           ]

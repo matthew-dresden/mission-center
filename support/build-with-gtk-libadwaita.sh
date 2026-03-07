@@ -19,7 +19,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
 dpkg-reconfigure --frontend noninteractive tzdata
 
 apt-get install -y curl
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile=minimal --default-toolchain=1.90.0 -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile=minimal --default-toolchain=1.94.0 -y
 
 apt install -y build-essential curl desktop-file-utils bison flex glslc gettext git libadwaita-1-dev libdbus-1-dev libdrm-dev libgbm-dev libgraphviz-dev libssl-dev libudev-dev libxml2-dev pkg-config python3-gi python3-pip zstd
 
