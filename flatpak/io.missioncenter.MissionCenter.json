@@ -224,20 +224,6 @@
       ]
     },
     {
-      "name": "blueprint-compiler",
-      "buildsystem": "meson",
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://github.com/GNOME/blueprint-compiler/archive/refs/tags/0.18.0.tar.gz",
-          "sha256": "51aa472ecd7bd4b32b8baa7ae6768b19810793d4a2a1aba39c5b31b0170cb258"
-        }
-      ],
-      "cleanup": [
-        "*"
-      ]
-    },
-    {
       "name": "missioncenter",
       "buildsystem": "meson",
       "builddir": true,
@@ -350,25 +336,6 @@
                 }
               ],
               "modules": [
-                {
-                  "name": "libarchive",
-                  "buildsystem": "autotools",
-                  "config-opts": [
-                    "--disable-bsdcat",
-                    "--disable-bsdcpio",
-                    "--disable-bsdtar"
-                  ],
-                  "sources": [
-                    {
-                      "type": "archive",
-                      "url": "https://github.com/libarchive/libarchive/releases/download/v3.6.2/libarchive-3.6.2.tar.xz",
-                      "sha256": "9e2c1b80d5fbe59b61308fdfab6c79b5021d7ff4ff2489fb12daf0a96a83551d"
-                    }
-                  ],
-                  "cleanup": [
-                    "*"
-                  ]
-                },
                 {
                   "name": "libtalloc",
                   "buildsystem": "autotools",
