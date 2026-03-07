@@ -333,27 +333,27 @@
   {
     "type": "archive",
     "archive-type": "tar-gzip",
-    "url": "https://static.crates.io/crates/bincode/bincode-2.0.1.crate",
-    "sha256": "36eaf5d7b090263e8150820482d5d93cd964a81e4019913c972f4edcc6edb740",
-    "dest": "cargo/vendor/bincode-2.0.1"
+    "url": "https://static.crates.io/crates/bitcode/bitcode-0.6.9.crate",
+    "sha256": "0a6ed1b54d8dc333e7be604d00fa9262f4635485ffea923647b6521a5fff045d",
+    "dest": "cargo/vendor/bitcode-0.6.9"
   },
   {
     "type": "inline",
-    "contents": "{\"package\": \"36eaf5d7b090263e8150820482d5d93cd964a81e4019913c972f4edcc6edb740\", \"files\": {}}",
-    "dest": "cargo/vendor/bincode-2.0.1",
+    "contents": "{\"package\": \"0a6ed1b54d8dc333e7be604d00fa9262f4635485ffea923647b6521a5fff045d\", \"files\": {}}",
+    "dest": "cargo/vendor/bitcode-0.6.9",
     "dest-filename": ".cargo-checksum.json"
   },
   {
     "type": "archive",
     "archive-type": "tar-gzip",
-    "url": "https://static.crates.io/crates/bincode_derive/bincode_derive-2.0.1.crate",
-    "sha256": "bf95709a440f45e986983918d0e8a1f30a9b1df04918fc828670606804ac3c09",
-    "dest": "cargo/vendor/bincode_derive-2.0.1"
+    "url": "https://static.crates.io/crates/bitcode_derive/bitcode_derive-0.6.9.crate",
+    "sha256": "238b90427dfad9da4a9abd60f3ec1cdee6b80454bde49ed37f1781dd8e9dc7f9",
+    "dest": "cargo/vendor/bitcode_derive-0.6.9"
   },
   {
     "type": "inline",
-    "contents": "{\"package\": \"bf95709a440f45e986983918d0e8a1f30a9b1df04918fc828670606804ac3c09\", \"files\": {}}",
-    "dest": "cargo/vendor/bincode_derive-2.0.1",
+    "contents": "{\"package\": \"238b90427dfad9da4a9abd60f3ec1cdee6b80454bde49ed37f1781dd8e9dc7f9\", \"files\": {}}",
+    "dest": "cargo/vendor/bitcode_derive-0.6.9",
     "dest-filename": ".cargo-checksum.json"
   },
   {
@@ -1420,6 +1420,19 @@
     "type": "inline",
     "contents": "{\"package\": \"4ea859ab0dd7e70ff823032b3e077d03d39c965d68c6c10775add60e999d8ee9\", \"files\": {}}",
     "dest": "cargo/vendor/gettext-sys-0.26.0",
+    "dest-filename": ".cargo-checksum.json"
+  },
+  {
+    "type": "archive",
+    "archive-type": "tar-gzip",
+    "url": "https://static.crates.io/crates/glam/glam-0.32.1.crate",
+    "sha256": "f70749695b063ecbf6b62949ccccde2e733ec3ecbbd71d467dca4e5c6c97cca0",
+    "dest": "cargo/vendor/glam-0.32.1"
+  },
+  {
+    "type": "inline",
+    "contents": "{\"package\": \"f70749695b063ecbf6b62949ccccde2e733ec3ecbbd71d467dca4e5c6c97cca0\", \"files\": {}}",
+    "dest": "cargo/vendor/glam-0.32.1",
     "dest-filename": ".cargo-checksum.json"
   },
   {
@@ -3620,19 +3633,6 @@
     "dest-filename": ".cargo-checksum.json"
   },
   {
-    "type": "archive",
-    "archive-type": "tar-gzip",
-    "url": "https://static.crates.io/crates/unty/unty-0.0.4.crate",
-    "sha256": "6d49784317cd0d1ee7ec5c716dd598ec5b4483ea832a2dced265471cc0f690ae",
-    "dest": "cargo/vendor/unty-0.0.4"
-  },
-  {
-    "type": "inline",
-    "contents": "{\"package\": \"6d49784317cd0d1ee7ec5c716dd598ec5b4483ea832a2dced265471cc0f690ae\", \"files\": {}}",
-    "dest": "cargo/vendor/unty-0.0.4",
-    "dest-filename": ".cargo-checksum.json"
-  },
-  {
     "type": "shell",
     "commands": [
       "cp -r --reflink=auto \"flatpak-cargo/git/dbus-settings-bindings-87c3c35/upower\" \"cargo/vendor/upower_dbus\""
@@ -3778,19 +3778,6 @@
     "type": "inline",
     "contents": "{\"package\": \"05a32c8fc4ec0ac2c4ea05d765c2a492cd4ebceb3c030aa587b3bdc3c1f79d6c\", \"files\": {}}",
     "dest": "cargo/vendor/virtual-terminal-0.1.5",
-    "dest-filename": ".cargo-checksum.json"
-  },
-  {
-    "type": "archive",
-    "archive-type": "tar-gzip",
-    "url": "https://static.crates.io/crates/virtue/virtue-0.0.18.crate",
-    "sha256": "051eb1abcf10076295e815102942cc58f9d5e3b4560e46e53c21e8ff6f3af7b1",
-    "dest": "cargo/vendor/virtue-0.0.18"
-  },
-  {
-    "type": "inline",
-    "contents": "{\"package\": \"051eb1abcf10076295e815102942cc58f9d5e3b4560e46e53c21e8ff6f3af7b1\", \"files\": {}}",
-    "dest": "cargo/vendor/virtue-0.0.18",
     "dest-filename": ".cargo-checksum.json"
   },
   {
