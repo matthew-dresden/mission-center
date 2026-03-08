@@ -300,10 +300,19 @@ mod imp {
                         if tree_row.is_expandable() && !tree_row.is_expanded() {
                             tree_row.set_expanded(true);
                         } else if tree_row.is_expanded() {
-                            // Move to first child
-                            selection.set_selected(selected + 1);
+                            // Move to first child. Use scroll_to with SELECT|FOCUS
+                            // so the ColumnView's internal keyboard cursor is also
+                            // updated — set_selected alone only updates the selection
+                            // model, leaving the cursor behind so Down needs two presses.
+                            column_view.scroll_to(
+                                selected + 1,
+                                None::<&gtk::ColumnViewColumn>,
+                                gtk::ListScrollFlags::SELECT | gtk::ListScrollFlags::FOCUS,
+                                None::<gtk::ScrollInfo>,
+                            );
                         }
-                        // If not expandable and not expanded, do nothing
+                        // Leaf node: do nothing, but still Stop so GTK's
+                        // ColumnView doesn't enter column-navigation mode.
                     } else {
                         // Left arrow
                         if tree_row.is_expanded() {
@@ -322,12 +331,19 @@ mod imp {
                                 }
                             }
                         }
+                        // Root-level leaf: do nothing, but still Stop.
                     }
 
                     glib::Propagation::Stop
                 }
             });
-            self.column_view.add_controller(key_controller);
+            // Attach to the TableView Box (parent of ColumnView) so the
+            // Capture phase truly fires before ColumnView processes the key.
+            // If the controller were on ColumnView itself (the event target),
+            // GTK would still run ColumnView's own column-focus navigation
+            // before our handler, causing spurious "column nav mode" that
+            // breaks subsequent Up/Down navigation.
+            self.obj().add_controller(key_controller);
 
             let action_group = gio::SimpleActionGroup::new();
 
