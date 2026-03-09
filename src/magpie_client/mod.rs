@@ -922,7 +922,7 @@ impl MagpieClient {
         });
 
         loop {
-            match rx.recv() {
+            match rx.recv_timeout(Duration::from_secs(30)) {
                 Ok(message) => match message {
                     Message::ContinueReading => {
                         break;
@@ -932,7 +932,14 @@ impl MagpieClient {
                     }
                     _ => {}
                 },
-                Err(_) => {
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                    g_critical!(
+                        "MissionCenter::SysInfo",
+                        "Timed out waiting for ContinueReading after 30s — main thread may be hung",
+                    );
+                    return;
+                }
+                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
                     g_warning!(
                         "MissionCenter::SysInfo",
                         "No more messages in the buffer and channel closed",

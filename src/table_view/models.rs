@@ -63,6 +63,8 @@ pub fn update_apps(
             .unwrap_or(false)
     });
 
+    let mut new_items: Vec<RowModel> = Vec::new();
+
     for (_, app) in app_map
         .iter()
         .filter(|(id, _)| !does_exist.contains(id.as_str()))
@@ -74,9 +76,15 @@ pub fn update_apps(
             .id(&app.id)
             .name(&app.name)
             .build();
-        list.append(&row_model);
 
-        update_app(app, process_map, process_model_map, app_icons, row_model);
+        // Populate children offline before adding to live model.
+        update_app(app, process_map, process_model_map, app_icons, row_model.clone());
+
+        new_items.push(row_model);
+    }
+
+    if !new_items.is_empty() {
+        list.splice(list.n_items(), 0, &new_items);
     }
 }
 
@@ -125,6 +133,11 @@ pub fn update_processes(
             .map(|rm| !has_died.contains(&rm.pid()))
             .unwrap_or(false)
     });
+
+    // Collect new items, populate their children offline, then splice
+    // in one shot. This avoids O(n²) signal cascading through the
+    // TreeListModel→FilterListModel→SortListModel→ColumnView chain.
+    let mut new_items: Vec<RowModel> = Vec::new();
 
     for process in pids
         .iter()
@@ -175,12 +188,14 @@ pub fn update_processes(
             .name(pretty_name)
             .command_line(&command_line)
             .build();
-        list.append(&row_model);
 
+        // Populate children BEFORE the row enters the live model tree.
+        // Since row_model isn't connected to the TreeListModel yet,
+        // appending to its children() store is O(1) with no cascading.
         update_process(
             process_map,
             &process,
-            row_model,
+            row_model.clone(),
             app_icons,
             icon,
             use_merged_stats,
@@ -188,6 +203,13 @@ pub fn update_processes(
             parent_service,
             model_map,
         );
+
+        new_items.push(row_model);
+    }
+
+    // Single splice emits one items-changed signal for all new items.
+    if !new_items.is_empty() {
+        list.splice(list.n_items(), 0, &new_items);
     }
 }
 
@@ -225,6 +247,8 @@ pub fn update_services(
         !has_died.contains(&object.downcast_ref::<RowModel>().unwrap().service_id())
     });
 
+    let mut new_items: Vec<RowModel> = Vec::new();
+
     for (_, service) in services
         .iter()
         .filter(|(_, serv)| !does_exist.contains(&serv.id))
@@ -239,7 +263,6 @@ pub fn update_services(
             .user(&service.user.clone().unwrap_or("".to_string()))
             .group(&service.group.clone().unwrap_or("".to_string()))
             .build();
-        list.append(&row_model);
 
         update_service(
             process_map,
@@ -248,7 +271,13 @@ pub fn update_services(
             app_icons,
             icon,
             use_merged_stats,
-        )
+        );
+
+        new_items.push(row_model);
+    }
+
+    if !new_items.is_empty() {
+        list.splice(list.n_items(), 0, &new_items);
     }
 }
 
@@ -298,6 +327,7 @@ fn update_app(
     });
 
     let mut usage_stats = ProcessUsageStats::default();
+    let mut new_children: Vec<RowModel> = Vec::new();
 
     for process in primary_processes
         .iter()
@@ -311,9 +341,13 @@ fn update_app(
 
         if !does_exist.contains(&process.pid) {
             if let Some(process_model) = process_model_map.get(&process.pid) {
-                list.append(process_model);
+                new_children.push(process_model.clone());
             }
         }
+    }
+
+    if !new_children.is_empty() {
+        list.splice(list.n_items(), 0, &new_children);
     }
 
     set_stats(&row_model, &usage_stats);

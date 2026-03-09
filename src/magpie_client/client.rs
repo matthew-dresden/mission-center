@@ -24,7 +24,7 @@ use std::time::Duration;
 use std::{cell::RefCell, collections::HashMap, sync::Arc};
 
 use arrayvec::ArrayString;
-use gtk::glib::{g_critical, g_debug};
+use gtk::glib::{g_critical, g_debug, g_warning};
 
 use magpie_types::about::{about_response, About};
 use magpie_types::apps::apps_icon_response::AppsIconResponseValue;
@@ -262,6 +262,16 @@ fn connect_socket(socket: &mut nng_c::Socket, socket_addr: &str) -> bool {
     };
 
     *socket = new_socket;
+
+    // Set a recv timeout so recv_msg() never blocks forever.
+    // Without this, a hung magpie process causes an infinite block.
+    if let Err(e) = socket.set_opt(nng_c::options::RecvTimeout(Duration::from_secs(10))) {
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "Failed to set recv timeout on socket: {:?}",
+            e
+        );
+    }
 
     match socket
         .connect(nng_c::str::String::new(socket_addr.as_bytes()))
@@ -588,8 +598,8 @@ impl Client {
                 start_magpie_process_thread(self.socket_addr.clone(), self.stop_requested.clone());
         }
 
-        const START_WAIT_TIME_MS: u64 = 300;
-        const RETRY_COUNT: i32 = 50;
+        const START_WAIT_TIME_MS: u64 = 40;
+        const RETRY_COUNT: i32 = 500;
 
         // Let the child process start up
         for _ in 0..RETRY_COUNT {

@@ -45,6 +45,15 @@ pub fn configure(table_view: &TableView) {
         );
     });
 
+    settings.connect_changed(Some("hidden-columns"), {
+        let this = table_view.downgrade();
+        move |_, _| {
+            if let Some(this) = this.upgrade() {
+                this.imp().apply_column_visibility();
+            }
+        }
+    });
+
     configure_sorting(table_view, &settings);
 }
 
