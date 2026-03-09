@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2025-06-23 04:03+0000\n"
-"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
+"PO-Revision-Date: 2026-03-10 20:09+0000\n"
+"Last-Translator: தமிழ்நேரம் <tamilneram247@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/ta/>\n"
 "Language: ta\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: data/io.missioncenter.MissionCenter.desktop.in:2
 #: data/io.missioncenter.MissionCenter.metainfo.xml.in:4
@@ -333,7 +333,7 @@ msgstr "இடமாற்று வரைபடத்தைக் காட்�
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
 msgid "Show the gpu encode-decode graph"
-msgstr "GPU குறியாக்கம்-டெகோட் வரைபடத்தைக் காட்டு"
+msgstr "வசெஅ குறியாக்கம்-டெகோட் வரைபடத்தைக் காட்டு"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
@@ -494,7 +494,7 @@ msgstr "100%"
 
 #: resources/ui/performance_page/cpu.blp:106
 msgid "Change G_raph To"
-msgstr "G_RAPH ஐ மாற்றவும்"
+msgstr "வரைப்படத்தை மாற்று"
 
 #: resources/ui/performance_page/cpu.blp:109
 msgid "Overall U_tilization"
