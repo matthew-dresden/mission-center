@@ -18,10 +18,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 use application::MissionCenterApplication;
-use config::{GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
+use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain};
 use gtk::gio::Settings;
-use gtk::{gio, prelude::*};
+use gtk::{gio, glib, prelude::*};
 use i18n::{i18n, i18n_f};
 
 use std::cmp::PartialEq;
@@ -459,11 +459,54 @@ pub fn show_error_dialog_and_exit(message: &str) -> ! {
     loop {}
 }
 
+/// Pre-scan command-line arguments for `--app-id` / `-a` so we can use the
+/// value before constructing the GApplication (which needs the ID at
+/// creation time). The option is also registered via `add_main_option` so
+/// that GLib shows it in `--help`.
+fn parse_app_id() -> String {
+    let args: Vec<String> = std::env::args().collect();
+    let mut custom_id: Option<String> = None;
+    let mut i = 1;
+    while i < args.len() {
+        // Handle --app-id=VALUE form
+        if let Some(id) = args[i].strip_prefix("--app-id=") {
+            custom_id = Some(id.to_owned());
+            break;
+        }
+
+        // Handle --app-id VALUE or -a VALUE form
+        if args[i] == "--app-id" || args[i] == "-a" {
+            if i + 1 < args.len() {
+                custom_id = Some(args[i + 1].clone());
+                break;
+            }
+        }
+
+        i += 1;
+    }
+
+    let app_id = custom_id.unwrap_or_else(|| APP_ID.to_owned());
+
+    if !gio::Application::id_is_valid(&app_id) {
+        eprintln!(
+            "Error: '{}' is not a valid application ID.\n\
+             A valid ID must contain at least one dot (e.g. 'io.missioncenter.MissionCenter-float').\n\
+             See https://docs.gtk.org/gio/type_func.Application.id_is_valid.html for details.",
+            app_id
+        );
+        std::process::exit(1);
+    }
+
+    app_id
+}
+
 fn main() {
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Unable to bind the text domain");
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
         .expect("Unable to set the text domain encoding");
     textdomain(GETTEXT_PACKAGE).expect("Unable to switch to the text domain");
+
+    let app_id = parse_app_id();
 
     let gresource_dir = if let Ok(gresource_dir) = std::env::var("MC_RESOURCE_DIR") {
         gresource_dir
@@ -475,12 +518,24 @@ fn main() {
         .expect("Could not load resources");
     gio::resources_register(&resources);
 
-    let app = MissionCenterApplication::new(
-        "io.missioncenter.MissionCenter",
-        &gio::ApplicationFlags::empty(),
+    let app = MissionCenterApplication::new(&app_id, &gio::ApplicationFlags::empty());
+
+    // Keep the resource base path fixed so that icons bundled in the
+    // GResource file are still found when a custom app-id is used.
+    app.set_resource_base_path(Some("/io/missioncenter/MissionCenter"));
+
+    app.add_main_option(
+        "app-id",
+        glib::Char::from(b'a'),
+        glib::OptionFlags::IN_MAIN,
+        glib::OptionArg::String,
+        "Set a custom application ID",
+        Some("ID"),
     );
+
     gtk::Application::set_default(app.upcast_ref::<gtk::Application>());
 
     let exit_code = app.run();
     std::process::exit(exit_code.get() as _);
 }
+
