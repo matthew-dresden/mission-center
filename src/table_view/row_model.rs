@@ -90,6 +90,9 @@ mod imp {
         #[property(get, set)]
         pub light_icon_changed: Cell<bool>,
 
+        #[property(get, set)]
+        pub is_flat: Cell<bool>,
+
         pub light_icon: Cell<LightCachedIcon>,
 
         pub children: RefCell<gio::ListStore>,
@@ -131,6 +134,8 @@ mod imp {
                 command_line: Cell::new(Default::default()),
 
                 light_icon_changed: Cell::new(false),
+
+                is_flat: Cell::new(false),
 
                 children: RefCell::new(gio::ListStore::new::<super::RowModel>()),
             }
@@ -324,6 +329,8 @@ pub struct RowModelBuilder {
     group: glib::GString,
     file_path: glib::GString,
     description: glib::GString,
+
+    is_flat: bool,
 }
 
 #[allow(unused)]
@@ -361,6 +368,8 @@ impl RowModelBuilder {
             group: Default::default(),
             file_path: Default::default(),
             description: Default::default(),
+
+            is_flat: false,
         }
     }
 
@@ -479,6 +488,11 @@ impl RowModelBuilder {
         self
     }
 
+    pub fn is_flat(mut self, is_flat: bool) -> Self {
+        self.is_flat = is_flat;
+        self
+    }
+
     pub fn build(self) -> RowModel {
         let this = RowModel::new(self.content_type);
 
@@ -510,6 +524,8 @@ impl RowModelBuilder {
             this.group.set(self.group);
             this.file_path.set(self.file_path);
             this.description.set(self.description);
+
+            this.is_flat.set(self.is_flat);
         }
 
         this

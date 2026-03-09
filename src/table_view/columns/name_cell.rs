@@ -135,6 +135,15 @@ mod imp {
             });
             self.sig_children_changed.set(Some(sig_children_changed));
             expander.set_hide_expander(model.children().n_items() == 0);
+
+            // In flat mode, items sit under a section header (depth 1) but
+            // should appear without tree indentation or expand arrows.
+            if model.is_flat() {
+                expander.set_indent_for_depth(false);
+                expander.set_hide_expander(true);
+            } else {
+                expander.set_indent_for_depth(true);
+            }
         }
 
         pub fn unbind(&self) {

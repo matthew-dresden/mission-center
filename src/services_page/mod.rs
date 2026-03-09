@@ -50,6 +50,13 @@ mod imp {
         pub h2: TemplateChild<gtk::Label>,
 
         #[template_child]
+        pub collapse_button: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub collapse_icon: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub collapse_label: TemplateChild<gtk::Label>,
+
+        #[template_child]
         pub toggle_running: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub toggle_failed: TemplateChild<gtk::ToggleButton>,
@@ -161,6 +168,10 @@ mod imp {
 
                 h1: Default::default(),
                 h2: Default::default(),
+
+                collapse_button: Default::default(),
+                collapse_icon: Default::default(),
+                collapse_label: Default::default(),
 
                 toggle_running: Default::default(),
                 toggle_failed: Default::default(),
@@ -302,19 +313,21 @@ mod imp {
                         .and_then(|model| model.downcast::<gtk::SingleSelection>().ok())
                     else {
                         g_critical!(
-                            "MissionCenter::AppsPage",
+                            "MissionCenter::ServicesPage",
                             "Failed to get model for `collapse-all` action"
                         );
                         return;
                     };
 
-                    let mut count = 0;
+                    // Collect section header rows first to avoid index shifting
+                    // while mutating the model.
+                    let mut section_rows = Vec::with_capacity(2);
                     for i in 0..selection_model.n_items() {
                         let Some(row) = selection_model
                             .item(i)
                             .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
                         else {
-                            return;
+                            continue;
                         };
 
                         let Some(row_model) =
@@ -323,16 +336,28 @@ mod imp {
                             continue;
                         };
 
-                        if row_model.content_type() != ContentType::SectionHeader {
-                            continue;
+                        if row_model.content_type() == ContentType::SectionHeader {
+                            section_rows.push(row);
+                            if section_rows.len() >= 2 {
+                                break;
+                            }
                         }
+                    }
 
-                        row.set_expanded(false);
-                        count += 1;
+                    // Toggle: if any section is expanded, collapse all; otherwise expand all.
+                    let any_expanded = section_rows.iter().any(|r| r.is_expanded());
+                    let target_expanded = !any_expanded;
 
-                        if count >= 2 {
-                            break;
-                        }
+                    for row in &section_rows {
+                        row.set_expanded(target_expanded);
+                    }
+
+                    if any_expanded {
+                        imp.collapse_label.set_label(&i18n("Expand All"));
+                        imp.collapse_icon.set_icon_name(Some("list-expand-symbolic"));
+                    } else {
+                        imp.collapse_label.set_label(&i18n("Collapse All"));
+                        imp.collapse_icon.set_icon_name(Some("list-collapse-symbolic"));
                     }
                 }
             });

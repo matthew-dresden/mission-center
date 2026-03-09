@@ -138,11 +138,13 @@ mod imp {
 
         pub use_merged_stats: Cell<bool>,
 
+        pub filter: RefCell<gtk::CustomFilter>,
+
+        pub root_model: OnceCell<gio::ListStore>,
+
         pub settings_namespace: Cell<SettingsNamespace>,
 
         service_state_connections: RefCell<[Option<glib::SignalHandlerId>; 2]>,
-
-        filter: RefCell<gtk::CustomFilter>,
     }
 
     impl Default for TableView {
@@ -171,11 +173,13 @@ mod imp {
 
                 use_merged_stats: Cell::new(false),
 
+                filter: RefCell::new(gtk::CustomFilter::new(|_| true)),
+
+                root_model: OnceCell::new(),
+
                 settings_namespace: Cell::new(Default::default()),
 
                 service_state_connections: RefCell::new([const { None }; 2]),
-
-                filter: RefCell::new(gtk::CustomFilter::new(|_| true)),
             }
         }
     }
@@ -317,8 +321,7 @@ mod imp {
         fn realize(&self) {
             self.parent_realize();
 
-            // Delay connecting to the search field until Widget::realize to make reasonably sure
-            // that the window exists.
+            // Connect search-changed here (after realize) so the window exists.
             if let Some(window) = app!().window() {
                 let filter = self.filter.borrow().downgrade();
                 window
@@ -332,8 +335,7 @@ mod imp {
             } else {
                 g_warning!(
                     "MissionCenter::TableView",
-                    "Failed to get MissionCenterWindow instance; searching and filtering will not \
-                    function."
+                    "Failed to get MissionCenterWindow instance; searching and filtering will not function."
                 );
             }
 
@@ -361,6 +363,8 @@ mod imp {
             let model = gio::ListStore::new::<RowModel>();
             model.append(section_item_1);
             model.append(section_item_2);
+
+            let _ = self.root_model.set(model.clone());
 
             let tree_model = Self::create_tree_model(model);
             let filter_list_model = self.configure_filter(tree_model, service_toggle_group);
@@ -407,6 +411,14 @@ mod imp {
                     return false;
                 };
 
+                // In flat mode section headers have their name cleared;
+                // hide them so the list is truly flat.
+                if row_model.content_type() == ContentType::SectionHeader
+                    && row_model.name().is_empty()
+                {
+                    return false;
+                }
+
                 let Some(window) = app!().window() else {
                     g_debug!(
                         "MissionCenter::ProcessTree",
@@ -427,7 +439,9 @@ mod imp {
                     }
 
                     if row_model.content_type() == ContentType::SectionHeader {
-                        return true;
+                        // In flat mode names are empty (already filtered above);
+                        // named headers are visible when searching.
+                        return !row_model.name().is_empty();
                     }
 
                     let entry_name = row_model.name().to_lowercase();
@@ -460,7 +474,7 @@ mod imp {
                     };
 
                     if row_model_clone.content_type() == ContentType::SectionHeader {
-                        return true;
+                        return !row_model_clone.name().is_empty();
                     }
 
                     if group.iter().all(|toggle| {
@@ -528,7 +542,6 @@ mod imp {
             }
 
             self.filter.replace(filter.clone());
-
             gtk::FilterListModel::new(Some(tree_list_model), Some(filter))
         }
 
@@ -849,6 +862,20 @@ impl TableView {
     #[inline]
     pub fn format_settings_key(&self, key: &SettingsValues) -> String {
         self.imp().format_settings_key(key)
+    }
+
+    /// Notify the table view that the filter needs to be re-evaluated
+    /// (e.g. when toggling flat mode hides/shows section headers).
+    pub fn invalidate_filter(&self) {
+        self.imp()
+            .filter
+            .borrow()
+            .changed(gtk::FilterChange::Different);
+    }
+
+    /// Get the root ListStore backing the tree model.
+    pub fn root_model(&self) -> Option<&gio::ListStore> {
+        self.imp().root_model.get()
     }
 }
 

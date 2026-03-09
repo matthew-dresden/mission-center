@@ -10,9 +10,12 @@
         <file preprocess="xml-stripblanks">external-link-symbolic.svg</file>
         <file preprocess="xml-stripblanks">info-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-collapse-symbolic.svg</file>
+        <file preprocess="xml-stripblanks">list-expand-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-disable-all-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-drag-handle-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-enable-all-symbolic.svg</file>
+        <file preprocess="xml-stripblanks">view-flat-symbolic.svg</file>
+        <file preprocess="xml-stripblanks">view-tree-symbolic.svg</file>
         <file preprocess="xml-stripblanks">nm-signal-00-symbolic.svg</file>
         <file preprocess="xml-stripblanks">nm-signal-25-symbolic.svg</file>
         <file preprocess="xml-stripblanks">nm-signal-50-symbolic.svg</file>

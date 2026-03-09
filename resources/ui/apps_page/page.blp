@@ -68,7 +68,29 @@ template $AppsPage : Box {
           valign: end;
           spacing: 5;
 
-          Button {
+          Button flat_toggle {
+            margin-end: 5;
+
+            tooltip-text: _("Toggle between tree and flat process list");
+
+            child: Box {
+              spacing: 5;
+
+              halign: center;
+
+              Image flat_toggle_icon {
+                icon-name: "view-flat-symbolic";
+                valign: center;
+              }
+
+              Label flat_toggle_label {
+                label: _("Flat View");
+                valign: center;
+              }
+            };
+          }
+
+          Button collapse_button {
             margin-end: 5;
 
             action-name: "apps-page.collapse-all";
@@ -79,12 +101,14 @@ template $AppsPage : Box {
 
               halign: center;
 
-              Image {
+              Image collapse_icon {
                 icon-name: "list-collapse-symbolic";
+                valign: center;
               }
 
               Label collapse_label {
                 label: _("Collapse All");
+                valign: center;
               }
             };
           }
