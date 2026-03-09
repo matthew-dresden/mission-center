@@ -24,6 +24,10 @@ if get_option('flatpak') == false
     cargo_env += [ 'CARGO_HOME=' + meson.project_build_root()  / 'cargo-home' ]
 endif
 
+if get_option('benchmark')
+    cargo_opt += [ '--features=benchmark' ]
+endif
+
 cargo_opt += [ '--manifest-path', meson.project_source_root() / 'Cargo.toml' ]
 cargo_opt += [ '--target-dir', meson.project_build_root()  / 'src' ]
 cargo_env += [ 'BUILD_ROOT=' + meson.project_build_root() ]

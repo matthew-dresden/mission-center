@@ -25,6 +25,8 @@ use std::{cell::RefCell, collections::HashMap, sync::Arc};
 
 use arrayvec::ArrayString;
 use gtk::glib::{g_critical, g_debug};
+#[cfg(feature = "benchmark")]
+use gtk::glib::g_warning;
 
 use magpie_types::about::{about_response, About};
 use magpie_types::apps::apps_icon_response::AppsIconResponseValue;
@@ -591,12 +593,46 @@ impl Client {
         const START_WAIT_TIME_MS: u64 = 300;
         const RETRY_COUNT: i32 = 50;
 
-        // Let the child process start up
-        for _ in 0..RETRY_COUNT {
-            std::thread::sleep(Duration::from_millis(START_WAIT_TIME_MS / 2));
+        #[cfg(feature = "benchmark")]
+        let connect_start = std::time::Instant::now();
 
+        // Let the child process start up
+        for _attempt in 0..RETRY_COUNT {
+            #[cfg(feature = "benchmark")]
+            let sleep_start = std::time::Instant::now();
+            std::thread::sleep(Duration::from_millis(START_WAIT_TIME_MS / 2));
+            #[cfg(feature = "benchmark")]
+            let pre_sleep = sleep_start.elapsed();
+
+            #[cfg(feature = "benchmark")]
+            let try_start = std::time::Instant::now();
             if connect_socket(&mut *self.socket.borrow_mut(), &self.socket_addr) {
+                #[cfg(feature = "benchmark")]
+                {
+                    let total = connect_start.elapsed();
+                    g_warning!(
+                        "MissionCenter::Gatherer",
+                        "Connected to magpie on attempt {} after {:.1}ms (pre-sleep: {:.1}ms, connect call: {:.1}ms)",
+                        _attempt + 1,
+                        total.as_secs_f64() * 1000.0,
+                        pre_sleep.as_secs_f64() * 1000.0,
+                        try_start.elapsed().as_secs_f64() * 1000.0,
+                    );
+                }
                 return;
+            }
+
+            #[cfg(feature = "benchmark")]
+            {
+                let connect_elapsed = try_start.elapsed();
+                g_warning!(
+                    "MissionCenter::Gatherer",
+                    "Attempt {}: connect failed after {:.1}ms (pre-sleep: {:.1}ms), sleeping another {:.0}ms",
+                    _attempt + 1,
+                    connect_elapsed.as_secs_f64() * 1000.0,
+                    pre_sleep.as_secs_f64() * 1000.0,
+                    START_WAIT_TIME_MS as f64 / 2.0,
+                );
             }
 
             std::thread::sleep(Duration::from_millis(START_WAIT_TIME_MS / 2));

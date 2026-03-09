@@ -32,6 +32,20 @@ use std::{
     path::{Path, PathBuf},
     sync::{Arc, OnceLock},
 };
+
+#[cfg(feature = "benchmark")]
+pub static STARTUP_INSTANT: LazyLock<std::time::Instant> = LazyLock::new(std::time::Instant::now);
+
+#[cfg(feature = "benchmark")]
+pub fn is_benchmark_mode() -> bool {
+    static BENCH: OnceLock<bool> = OnceLock::new();
+    *BENCH.get_or_init(|| env::var("MC_BENCHMARK").is_ok())
+}
+
+#[cfg(not(feature = "benchmark"))]
+pub fn is_benchmark_mode() -> bool {
+    false
+}
 use window::MissionCenterWindow;
 
 use crate::i18n::ni18n_f;
@@ -460,10 +474,17 @@ pub fn show_error_dialog_and_exit(message: &str) -> ! {
 }
 
 fn main() {
+    // Force-initialize the global startup timer
+    #[cfg(feature = "benchmark")]
+    let _ = &*STARTUP_INSTANT;
+
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Unable to bind the text domain");
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
         .expect("Unable to set the text domain encoding");
     textdomain(GETTEXT_PACKAGE).expect("Unable to switch to the text domain");
+
+    #[cfg(feature = "benchmark")]
+    eprintln!("BENCH: gettext init: {:.1}ms", STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0);
 
     let gresource_dir = if let Ok(gresource_dir) = std::env::var("MC_RESOURCE_DIR") {
         gresource_dir
@@ -475,11 +496,17 @@ fn main() {
         .expect("Could not load resources");
     gio::resources_register(&resources);
 
+    #[cfg(feature = "benchmark")]
+    eprintln!("BENCH: resources loaded: {:.1}ms", STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0);
+
     let app = MissionCenterApplication::new(
         "io.missioncenter.MissionCenter",
         &gio::ApplicationFlags::empty(),
     );
     gtk::Application::set_default(app.upcast_ref::<gtk::Application>());
+
+    #[cfg(feature = "benchmark")]
+    eprintln!("BENCH: GTK app created: {:.1}ms", STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0);
 
     let exit_code = app.run();
     std::process::exit(exit_code.get() as _);

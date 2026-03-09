@@ -1088,7 +1088,11 @@ impl MissionCenterWindow {
 
         self.add_css_class("mission-center-window");
 
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
         let ok = self.imp().performance_page.set_initial_readings(&readings);
+        #[cfg(feature = "benchmark")]
+        eprintln!("BENCH:   perf_page.set_initial_readings: {:.1}ms", t.elapsed().as_secs_f64() * 1000.0);
         if !ok {
             g_critical!(
                 "MissionCenter",
@@ -1100,7 +1104,11 @@ impl MissionCenterWindow {
             .performance_page
             .add_css_class("mission-center-performance-page");
 
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
         let ok = self.imp().apps_page.set_initial_readings(&mut readings);
+        #[cfg(feature = "benchmark")]
+        eprintln!("BENCH:   apps_page.set_initial_readings: {:.1}ms", t.elapsed().as_secs_f64() * 1000.0);
         if !ok {
             g_critical!(
                 "MissionCenter",
@@ -1112,7 +1120,11 @@ impl MissionCenterWindow {
             .apps_page
             .add_css_class("mission-center-apps-page");
 
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
         let ok = self.imp().services_page.set_initial_readings(&mut readings);
+        #[cfg(feature = "benchmark")]
+        eprintln!("BENCH:   services_page.set_initial_readings: {:.1}ms", t.elapsed().as_secs_f64() * 1000.0);
         if !ok {
             g_critical!(
                 "MissionCenter",

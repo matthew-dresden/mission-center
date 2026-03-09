@@ -865,25 +865,173 @@ impl MagpieClient {
         running: Arc<AtomicBool>,
         speed: Arc<AtomicU64>,
     ) {
+        #[cfg(feature = "benchmark")]
+        let phase_start = std::time::Instant::now();
         let magpie = Client::new();
-        magpie.start();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "Client::new() took {:.1}ms",
+            phase_start.elapsed().as_secs_f64() * 1000.0,
+        );
 
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        magpie.start();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.start() (spawn + connect) took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
         let (running_processes, network_stats_error) = magpie.processes();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.processes() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let running_apps = magpie.apps();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.apps() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let disks_info = magpie.disks_info();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.disks_info() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let gpus = magpie.gpus();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.gpus() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let cpu = magpie.cpu();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.cpu() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let mem_info = magpie.memory();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.memory() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let mem_devices = magpie.memory_devices();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.memory_devices() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let fans = magpie.fans_info();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.fans_info() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let batteries = magpie.batteries_info();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.batteries_info() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let network_connections = magpie.network_connections();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.network_connections() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let user_services = magpie.user_services();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.user_services() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
+        #[cfg(feature = "benchmark")]
+        let t = std::time::Instant::now();
+        let system_services = magpie.system_services();
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "magpie.system_services() took {:.1}ms",
+            t.elapsed().as_secs_f64() * 1000.0,
+        );
+
         let mut readings = Readings {
             running_processes,
             network_stats_error,
-            running_apps: magpie.apps(),
-            disks_info: magpie.disks_info(),
-            gpus: magpie.gpus(),
-            cpu: magpie.cpu(),
-            mem_info: magpie.memory(),
-            mem_devices: magpie.memory_devices(),
-            fans: magpie.fans_info(),
-            batteries: magpie.batteries_info(),
-            network_connections: magpie.network_connections(),
-            user_services: magpie.user_services(),
-            system_services: magpie.system_services(),
+            running_apps,
+            disks_info,
+            gpus,
+            cpu,
+            mem_info,
+            mem_devices,
+            fans,
+            batteries,
+            network_connections,
+            user_services,
+            system_services,
         };
+
+        #[cfg(feature = "benchmark")]
+        eprintln!(
+            "BENCH: gather_and_proxy all IPC done: {:.1}ms",
+            phase_start.elapsed().as_secs_f64() * 1000.0,
+        );
+        #[cfg(feature = "benchmark")]
+        g_warning!(
+            "MissionCenter::Gatherer",
+            "Total startup (new + start + all initial readings): {:.1}ms",
+            phase_start.elapsed().as_secs_f64() * 1000.0,
+        );
 
         readings
             .disks_info
@@ -894,6 +1042,12 @@ impl MagpieClient {
 
         let mut app_icons =
             magpie.app_icons(readings.running_apps.keys().map(|k| k.clone()).collect());
+
+        #[cfg(feature = "benchmark")]
+        eprintln!(
+            "BENCH: idle_add_once posted: {:.1}ms",
+            crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0,
+        );
 
         idle_add_once({
             let initial_readings = Readings {
@@ -915,11 +1069,22 @@ impl MagpieClient {
             let initial_icons = std::mem::take(&mut app_icons);
 
             move || {
+                #[cfg(feature = "benchmark")]
+                eprintln!(
+                    "BENCH: idle_add_once DISPATCHED on main thread: {:.1}ms",
+                    crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0,
+                );
                 app!().set_app_icons(initial_icons);
                 app!().set_initial_readings(initial_readings);
                 app!().setup_animations();
             }
         });
+
+        #[cfg(feature = "benchmark")]
+        eprintln!(
+            "BENCH: waiting for ContinueReading on bg thread: {:.1}ms",
+            crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0,
+        );
 
         loop {
             match rx.recv() {
