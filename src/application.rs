@@ -110,9 +110,18 @@ mod imp {
             } else {
                 let settings = &self.settings;
 
+                #[cfg(feature = "benchmark")]
+                eprintln!("BENCH: activate() entered: {:.1}ms", crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0);
+
                 let sys_info = crate::magpie_client::MagpieClient::new();
 
+                #[cfg(feature = "benchmark")]
+                eprintln!("BENCH: MagpieClient::new() done: {:.1}ms", crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0);
+
                 let window = crate::MissionCenterWindow::new(&*application, &settings, &sys_info);
+
+                #[cfg(feature = "benchmark")]
+                eprintln!("BENCH: Window::new() done: {:.1}ms", crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0);
 
                 setup_readable_settings_cache(&settings);
 
@@ -291,6 +300,9 @@ impl MissionCenterApplication {
     pub fn set_initial_readings(&self, readings: Readings) {
         use gtk::glib::*;
 
+        #[cfg(feature = "benchmark")]
+        eprintln!("BENCH: set_initial_readings() entered: {:.1}ms", crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0);
+
         let Some(window) = self.window() else {
             g_critical!(
                 "MissionCenter::Application",
@@ -299,7 +311,19 @@ impl MissionCenterApplication {
             return;
         };
 
-        window.set_initial_readings(readings)
+        window.set_initial_readings(readings);
+
+        #[cfg(feature = "benchmark")]
+        {
+            let total = crate::STARTUP_INSTANT.elapsed().as_secs_f64() * 1000.0;
+            eprintln!("BENCH: set_initial_readings() done: {:.1}ms", total);
+            eprintln!("BENCH_TOTAL: {:.1}", total);
+
+            if crate::is_benchmark_mode() {
+                eprintln!("BENCH: benchmark mode, exiting.");
+                std::process::exit(0);
+            }
+        }
     }
 
     pub fn set_app_icons(&self, icons: HashMap<String, Icon>) {
