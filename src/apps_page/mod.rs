@@ -28,10 +28,11 @@ use arrayvec::ArrayString;
 use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::i18n::{i18n, ni18n_f};
-use crate::magpie_client::App;
+use crate::settings;
+use crate::magpie_client::{App, Process};
 use crate::table_view::cached_icon::LightCachedIcon;
 use crate::table_view::{
-    update_apps, update_processes, ContentType, ProcessActionBar, RowModel, RowModelBuilder,
+    update_apps, update_apps_flat, update_processes, ContentType, ProcessActionBar, RowModel, RowModelBuilder,
     SectionType, SettingsNamespace, TableView,
 };
 
@@ -49,7 +50,17 @@ mod imp {
         pub h2: TemplateChild<gtk::Label>,
 
         #[template_child]
+        pub flat_toggle: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub flat_toggle_icon: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub flat_toggle_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub collapse_button: TemplateChild<gtk::Button>,
+        #[template_child]
         pub collapse_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub collapse_icon: TemplateChild<gtk::Image>,
         #[template_child]
         pub table_view: TemplateChild<TableView>,
         #[template_child]
@@ -60,6 +71,7 @@ mod imp {
 
         pub root_process: Cell<u32>,
         pub running_apps: RefCell<HashMap<String, App>>,
+        pub running_processes: RefCell<HashMap<u32, Process>>,
 
         pub row_sorter: OnceCell<gtk::TreeListRowSorter>,
 
@@ -72,7 +84,12 @@ mod imp {
             Self {
                 h1: TemplateChild::default(),
                 h2: TemplateChild::default(),
+                flat_toggle: TemplateChild::default(),
+                flat_toggle_icon: TemplateChild::default(),
+                flat_toggle_label: TemplateChild::default(),
+                collapse_button: TemplateChild::default(),
                 collapse_label: TemplateChild::default(),
+                collapse_icon: TemplateChild::default(),
                 table_view: TemplateChild::default(),
                 process_action_bar: TemplateChild::default(),
 
@@ -89,6 +106,7 @@ mod imp {
 
                 root_process: Cell::new(1),
                 running_apps: RefCell::new(HashMap::new()),
+                running_processes: RefCell::new(HashMap::new()),
 
                 row_sorter: OnceCell::new(),
 
@@ -101,6 +119,7 @@ mod imp {
     impl AppsPage {
         pub fn collapse(&self) {
             self.collapse_label.set_visible(false);
+            self.flat_toggle_label.set_visible(false);
 
             self.h2.set_visible(false);
 
@@ -109,6 +128,7 @@ mod imp {
 
         pub fn expand(&self) {
             self.collapse_label.set_visible(true);
+            self.flat_toggle_label.set_visible(true);
 
             self.h2.set_visible(true);
 
@@ -162,13 +182,15 @@ mod imp {
                         return;
                     };
 
-                    let mut count = 0;
+                    // Collect section headers first — expanding a row mutates the
+                    // model, which shifts indices and can cause us to miss rows.
+                    let mut section_rows = Vec::with_capacity(2);
                     for i in 0..selection_model.n_items() {
                         let Some(row) = selection_model
                             .item(i)
                             .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
                         else {
-                            return;
+                            continue;
                         };
 
                         let Some(row_model) =
@@ -177,16 +199,31 @@ mod imp {
                             continue;
                         };
 
-                        if row_model.content_type() != ContentType::SectionHeader {
-                            continue;
+                        if row_model.content_type() == ContentType::SectionHeader {
+                            section_rows.push(row);
+                            if section_rows.len() >= 2 {
+                                break;
+                            }
                         }
+                    }
 
-                        row.set_expanded(false);
-                        count += 1;
+                    // Determine action from actual row state: if any header is
+                    // expanded we collapse all, otherwise we expand all.
+                    let any_expanded = section_rows.iter().any(|r| r.is_expanded());
+                    let target_expanded = !any_expanded;
 
-                        if count >= 2 {
-                            break;
-                        }
+                    for row in &section_rows {
+                        row.set_expanded(target_expanded);
+                    }
+
+                    if any_expanded {
+                        // We just collapsed everything
+                        imp.collapse_label.set_label(&i18n("Expand All"));
+                        imp.collapse_icon.set_icon_name(Some("list-expand-symbolic"));
+                    } else {
+                        // We just expanded everything
+                        imp.collapse_label.set_label(&i18n("Collapse All"));
+                        imp.collapse_icon.set_icon_name(Some("list-collapse-symbolic"));
                     }
                 }
             });
@@ -194,6 +231,57 @@ mod imp {
             page_actions.add_action(&action_collapse_all);
             self.obj()
                 .insert_action_group("apps-page", Some(&page_actions));
+
+            // Wire up the flat/tree toggle button to GSettings.
+            // We listen to the GSettings key so that both the button click
+            // and the Alt+F shortcut (which writes the key directly in
+            // window.rs) go through the same code path.
+            let settings = settings!();
+            let flat_mode = settings.boolean("apps-page-flat-process-list");
+            self.flat_toggle_icon.set_icon_name(Some(if flat_mode {
+                "view-tree-symbolic"
+            } else {
+                "view-flat-symbolic"
+            }));
+            self.flat_toggle_label.set_label(&i18n(if flat_mode {
+                "Tree View"
+            } else {
+                "Flat View"
+            }));
+
+            // Button click → toggle setting (the connect_changed handler does the rest)
+            self.flat_toggle.connect_clicked({
+                move |_button| {
+                    let settings = settings!();
+                    let current = settings.boolean("apps-page-flat-process-list");
+                    let _ = settings.set_boolean("apps-page-flat-process-list", !current);
+                }
+            });
+
+            // Setting changed (from button OR Alt+F shortcut) → update UI + rebuild
+            settings.connect_changed(Some("apps-page-flat-process-list"), {
+                let this = self.obj().downgrade();
+                move |settings, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+                    let is_flat = settings.boolean("apps-page-flat-process-list");
+
+                    imp.flat_toggle_icon.set_icon_name(Some(if is_flat {
+                        "view-tree-symbolic"
+                    } else {
+                        "view-flat-symbolic"
+                    }));
+                    imp.flat_toggle_label.set_label(&i18n(if is_flat {
+                        "Tree View"
+                    } else {
+                        "Flat View"
+                    }));
+
+                    this.rebuild_view();
+                }
+            });
 
             let process_actions = gio::SimpleActionGroup::new();
             process_actions.add_action(&actions::action_stop(&self.table_view));
@@ -286,35 +374,89 @@ impl AppsPage {
 
         imp.table_view.imp().update_column_titles(readings);
 
-        let mut process_model_map = HashMap::new();
         let root_process = readings.running_processes.keys().min().unwrap_or(&1);
-        if let Some(init) = readings.running_processes.get(root_process) {
-            update_processes(
-                &readings.running_processes,
-                init.children.clone().drain(..).collect(),
-                &imp.processes_section.children(),
-                &imp.app_icons.borrow(),
-                &Default::default(),
-                imp.table_view.imp().use_merged_stats.get(),
-                SectionType::SecondSection,
-                None,
-                &mut process_model_map,
-            );
-        }
         imp.root_process.set(*root_process);
 
-        update_apps(
+        let flat_mode = settings!().boolean("apps-page-flat-process-list");
+        Self::rebuild_view_inner(
+            imp,
+            flat_mode,
             &readings.running_apps,
             &readings.running_processes,
-            &process_model_map,
-            &mut imp.app_icons.borrow_mut(),
-            &imp.apps_section.children(),
+            *root_process,
         );
+        imp.table_view.invalidate_filter();
 
         let _ = std::mem::replace(
             &mut *imp.running_apps.borrow_mut(),
             std::mem::take(&mut readings.running_apps),
         );
+        // Clone instead of take so the services page still has
+        // access to running_processes when it runs after us.
+        *imp.running_processes.borrow_mut() = readings.running_processes.clone();
+    }
+
+    /// Rebuild the flat/tree view using cached data (for instant toggle).
+    fn rebuild_view(&self) {
+        let imp = self.imp();
+        let flat_mode = settings!().boolean("apps-page-flat-process-list");
+        let root_process = imp.root_process.get();
+        let apps = imp.running_apps.borrow();
+        let procs = imp.running_processes.borrow();
+
+        // Clear section children so rebuild starts fresh on a mode toggle.
+        imp.apps_section.children().remove_all();
+        imp.processes_section.children().remove_all();
+
+        Self::rebuild_view_inner(imp, flat_mode, &apps, &procs, root_process);
+    }
+
+    fn rebuild_view_inner(
+        imp: &imp::AppsPage,
+        flat_mode: bool,
+        running_apps: &HashMap<String, App>,
+        running_processes: &HashMap<u32, Process>,
+        root_process: u32,
+    ) {
+        if flat_mode {
+            // Flat mode: keep Apps/Processes section headers but flatten
+            // the contents within each section (no tree hierarchy).
+            imp.apps_section.set_name(i18n("Apps").as_str());
+            imp.processes_section.set_name(i18n("Processes").as_str());
+            update_apps_flat(
+                running_apps,
+                running_processes,
+                &mut imp.app_icons.borrow_mut(),
+                &imp.apps_section.children(),
+                &imp.processes_section.children(),
+                root_process,
+            );
+        } else {
+            imp.apps_section.set_name(i18n("Apps").as_str());
+            imp.processes_section.set_name(i18n("Processes").as_str());
+            let mut process_model_map = HashMap::new();
+            if let Some(init) = running_processes.get(&root_process) {
+                update_processes(
+                    running_processes,
+                    init.children.clone().drain(..).collect(),
+                    &imp.processes_section.children(),
+                    &imp.app_icons.borrow(),
+                    &Default::default(),
+                    imp.table_view.imp().use_merged_stats.get(),
+                    SectionType::SecondSection,
+                    None,
+                    &mut process_model_map,
+                );
+            }
+
+            update_apps(
+                running_apps,
+                running_processes,
+                &process_model_map,
+                &mut imp.app_icons.borrow_mut(),
+                &imp.apps_section.children(),
+            );
+        }
     }
 
     #[inline]

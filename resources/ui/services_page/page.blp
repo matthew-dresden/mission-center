@@ -77,7 +77,7 @@ template $ServicesPage : Box {
             halign: end;
             spacing: 5;
 
-            Button {
+            Button collapse_button {
               margin-end: 5;
 
               action-name: "services-page.collapse-all";
@@ -86,12 +86,14 @@ template $ServicesPage : Box {
               child: Box {
                 spacing: 5;
 
-                Image {
+                Image collapse_icon {
                   icon-name: "list-collapse-symbolic";
+                  valign: center;
                 }
 
-                Label {
+                Label collapse_label {
                   label: _("Collapse All");
+                  valign: center;
                   visible: bind template.collapsed inverted;
                 }
               };

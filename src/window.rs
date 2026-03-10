@@ -90,6 +90,17 @@ fn special_shortcuts(
         result
     }
 
+
+    fn toggle_flat(window: &MissionCenterWindow) -> bool {
+        if window.apps_page_active() {
+            let settings = settings!();
+            let current = settings.boolean("apps-page-flat-process-list");
+            let _ = settings.set_boolean("apps-page-flat-process-list", !current);
+            return true;
+        }
+        false
+    }
+
     fn graph_copy(window: &MissionCenterWindow) -> bool {
         let imp = window.imp();
 
@@ -243,6 +254,11 @@ fn special_shortcuts(
         ctrl_shortcuts.insert(gdk::Key::R, services_restart);
         ctrl_shortcuts.insert(gdk::Key::r, services_restart);
         shortcuts.insert(gdk::ModifierType::CONTROL_MASK, ctrl_shortcuts);
+
+        let mut alt_shortcuts = HashMap::<gdk::Key, fn(&MissionCenterWindow) -> bool>::new();
+        alt_shortcuts.insert(gdk::Key::F, toggle_flat);
+        alt_shortcuts.insert(gdk::Key::f, toggle_flat);
+        shortcuts.insert(gdk::ModifierType::ALT_MASK, alt_shortcuts);
 
         shortcuts
     })

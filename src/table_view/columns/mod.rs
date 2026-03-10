@@ -270,6 +270,12 @@ fn compare_column_entries_by(
         order => return convert_order(sort_order, order),
     }
 
+    // In flat mode skip content-type grouping so Apps and Processes
+    // within the same section sort together by column value.
+    if lhs.is_flat() && rhs.is_flat() {
+        return compare_fn(lhs, rhs);
+    }
+
     match lhs.content_type().cmp(&rhs.content_type()) {
         Ordering::Equal => compare_fn(lhs, rhs),
         order => convert_order(sort_order, order),

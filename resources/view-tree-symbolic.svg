@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tree view: parent row, vertical connector, two indented children -->
+  <!-- Parent row (full width) -->
+  <rect x="1" y="1" width="14" height="3" rx="1" fill="#222222"/>
+  <!-- Vertical tree connector -->
+  <rect x="2" y="4" width="1.5" height="8" fill="#222222"/>
+  <!-- Child row 1 with horizontal branch -->
+  <rect x="2" y="7" width="4" height="1.5" fill="#222222"/>
+  <rect x="6" y="6" width="9" height="3" rx="1" fill="#222222"/>
+  <!-- Child row 2 with horizontal branch -->
+  <rect x="2" y="11" width="4" height="1.5" fill="#222222"/>
+  <rect x="6" y="10" width="9" height="3" rx="1" fill="#222222"/>
+</svg>

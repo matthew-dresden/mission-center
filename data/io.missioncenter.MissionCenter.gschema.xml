@@ -130,6 +130,11 @@
             <summary>Show a separator between each column in the Apps view</summary>
         </key>
 
+        <key name="apps-page-flat-process-list" type="b">
+            <default>false</default>
+            <summary>Show a flat list of all processes instead of grouping by application</summary>
+        </key>
+
         <key name="apps-page-hide-is-zero" type="b">
             <default>false</default>
             <summary>Gray out values that equal zero in the Apps view</summary>
