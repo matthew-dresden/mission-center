@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-01 14:52+0300\n"
-"PO-Revision-Date: 2026-03-10 20:09+0000\n"
+"PO-Revision-Date: 2026-03-12 22:09+0000\n"
 "Last-Translator: தமிழ்நேரம் <tamilneram247@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/mission-center/"
 "mission-center/ta/>\n"
@@ -259,19 +259,16 @@ msgid "The order of columns in the Apps page view"
 msgstr "பயன்பாடுகள் பக்கக் காட்சியில் நெடுவரிசைகளின் வரிசை"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:150
-#, fuzzy
 msgid "The column name by which the Services page view is sorted"
-msgstr "பயன்பாடுகளின் பக்கக் காட்சி வரிசைப்படுத்தப்பட்ட நெடுவரிசை பெயர்"
+msgstr "சேவைகள் பக்கக் காட்சி வரிசைப்படுத்தப்பட்ட நெடுவரிசைப் பெயர்"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:155
-#, fuzzy
 msgid "The sorting direction of the Services page view"
-msgstr "பயன்பாடுகளின் பக்கக் காட்சியின் வரிசையாக்க திசை"
+msgstr "சேவைகள் பக்கக் காட்சியின் வரிசையாக்க திசை"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:160
-#, fuzzy
 msgid "The order of columns in the Services page view"
-msgstr "பயன்பாடுகள் பக்கக் காட்சியில் நெடுவரிசைகளின் வரிசை"
+msgstr "சேவைகள் பக்கக் காட்சியில் உள்ள நெடுவரிசைகளின் வரிசை"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:166
 msgid "Which graph is shown on the CPU performance page"
@@ -333,7 +330,7 @@ msgstr "இடமாற்று வரைபடத்தைக் காட்�
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:232
 msgid "Show the gpu encode-decode graph"
-msgstr "வசெஅ குறியாக்கம்-டெகோட் வரைபடத்தைக் காட்டு"
+msgstr "GPU குறியாக்கம்-டெகோட் வரைபடத்தைக் காட்டு"
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:237
 msgid "The ordering of entries in the application sidebar"
@@ -494,7 +491,7 @@ msgstr "100%"
 
 #: resources/ui/performance_page/cpu.blp:106
 msgid "Change G_raph To"
-msgstr "வரைப்படத்தை மாற்று"
+msgstr "G_RAPH ஐ மாற்றவும்"
 
 #: resources/ui/performance_page/cpu.blp:109
 msgid "Overall U_tilization"
@@ -916,15 +913,15 @@ msgstr "கணினி வட்டு:"
 
 #: resources/ui/performance_page/disk_details.blp:300
 msgid "WWN:"
-msgstr ""
+msgstr "WWN:"
 
 #: resources/ui/performance_page/disk_details.blp:316
 msgid "Serial:"
-msgstr ""
+msgstr "தொடர்:"
 
 #: resources/ui/performance_page/disk_details.blp:332
 msgid "Rotation Rate"
-msgstr ""
+msgstr "சுழற்சி விகிதம்"
 
 #: resources/ui/performance_page/cpu_details.blp:68
 msgid "Speed"
@@ -999,9 +996,8 @@ msgid "Update Interval"
 msgstr "இடைவெளி புதுப்பிக்கவும்"
 
 #: resources/ui/preferences/page.blp:10
-#, fuzzy
 msgid "In seconds"
-msgstr "{} இரண்டாவது {}"
+msgstr "நொடிகளில்"
 
 #: resources/ui/preferences/page.blp:27
 msgid "Chart Data Points"
@@ -1063,9 +1059,8 @@ msgid "Show Fan Information"
 msgstr "ரசிகர்களின் தகவலைக் காட்டு"
 
 #: resources/ui/preferences/page.blp:101
-#, fuzzy
 msgid "App &amp; Service Pages"
-msgstr "சேவைகள் பக்கம்"
+msgstr "ஆப் &amp; பணி பக்கங்கள்"
 
 #: resources/ui/preferences/page.blp:104
 msgid "Merge Process Stats"
@@ -1076,11 +1071,9 @@ msgid "Remember Sorting"
 msgstr "வரிசையாக்கத்தை நினைவில் கொள்க"
 
 #: resources/ui/preferences/page.blp:110
-#, fuzzy
 msgid "Persist sorting by column across app restarts"
 msgstr ""
-"பயன்பாட்டு மறுதொடக்கங்கள் முழுவதும், நெடுவரிசை மூலம் பயன்பாடு மற்றும் செயல்முறை "
-"வரிசையாக்கத்தை தொடருங்கள்"
+"ஆப்ச் மறுதொடக்கம் முழுவதும் நெடுவரிசை வாரியாக வரிசைப்படுத்துவதைத் தொடரவும்"
 
 #: resources/ui/preferences/page.blp:114
 msgid "Remember Column Order"
@@ -1095,11 +1088,8 @@ msgid "Scale CPU Usage to Core Count"
 msgstr "சிபியு பயன்பாட்டை மைய எண்ணிக்கையில் அளவிடவும்"
 
 #: resources/ui/preferences/page.blp:120
-#, fuzzy
 msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
-"கிடைக்கக்கூடிய கோர்களின் எண்ணிக்கையில் அளவிடப்பட்ட பயன்பாடுகள் மற்றும் செயல்முறைகளுக்கான "
-"சிபியு பயன்பாட்டைக் காட்டு"
+msgstr "கிடைக்கும் கோர்களின் எண்ணிக்கையில் சிபியு உபயோகத்தை அளவிடவும்"
 
 #: resources/ui/preferences/page.blp:124
 msgid "Show Column Separators"
@@ -1206,35 +1196,32 @@ msgid "Use Base 2 for Network Interfaces"
 msgstr "பிணைய இடைமுகங்களுக்கு அடிப்படை 2 ஐப் பயன்படுத்தவும்"
 
 #: resources/ui/services_page/page.blp:84
-#, fuzzy
 msgid "Collapse all expanded services"
-msgstr "எல்லா பயன்பாடுகளையும் செயல்முறைகளையும் சரிவு"
+msgstr "அனைத்து விரிவாக்கப்பட்ட சேவைகளையும் சுருக்கவும்"
 
 #: resources/ui/services_page/page.blp:123
-#, fuzzy
 msgid "Filter running processes"
-msgstr "{} இயங்கும் செயல்முறை"
+msgstr "இயங்கும் செயல்முறைகளை வடிகட்டவும்"
 
 #: resources/ui/services_page/page.blp:143
-#, fuzzy
 msgid "Filter failed processes"
-msgstr "மெய்நிகர் செயலிகள்:"
+msgstr "தோல்வியுற்ற செயல்முறைகளை வடிகட்டவும்"
 
 #: resources/ui/services_page/page.blp:163
 msgid "Filter stopped processes"
-msgstr ""
+msgstr "வடிகட்டுதல் நிறுத்தப்பட்ட செயல்முறைகள்"
 
 #: resources/ui/services_page/page.blp:183
 msgid "Filter disabled processes"
-msgstr ""
+msgstr "முடக்கப்பட்ட செயல்முறைகளை வடிகட்டவும்"
 
 #: resources/ui/services_page/page.blp:204
 msgid "Remove all filters"
-msgstr ""
+msgstr "அனைத்து வடிப்பான்களையும் அகற்று"
 
 #: resources/ui/services_page/page.blp:214
 msgid "Remove Filters"
-msgstr ""
+msgstr "வடிப்பான்களை அகற்று"
 
 #: resources/ui/widgets/theme_selector.blp:18
 #: resources/ui/widgets/theme_selector.blp:21
@@ -1260,24 +1247,21 @@ msgid "Global"
 msgstr "உலகளாவிய"
 
 #: resources/ui/keyboard_shortcuts.blp:21
-#, fuzzy
 msgid "Open Menu"
-msgstr "பட்டியல் விளையாடுங்கள்"
+msgstr "மெனுவைத் திற"
 
 #: resources/ui/keyboard_shortcuts.blp:26
 #: resources/ui/keyboard_shortcuts.blp:31
 msgid "Close Window"
-msgstr ""
+msgstr "சாளரத்தை மூடு"
 
 #: resources/ui/keyboard_shortcuts.blp:36
-#, fuzzy
 msgid "Open Preferences"
-msgstr "_ முனைகள்"
+msgstr "விருப்பங்களைத் திறக்கவும்"
 
 #: resources/ui/keyboard_shortcuts.blp:41
-#, fuzzy
 msgid "Show Keyboard Shortcuts"
-msgstr "விசைப்பலகை குறுக்குவழிகள்"
+msgstr "விசைப்பலகை குறுக்குவழிகளைக் காட்டு"
 
 #: resources/ui/keyboard_shortcuts.blp:46
 msgid "Show Performance Page"
@@ -1401,43 +1385,43 @@ msgstr "விவரங்கள்"
 
 #: resources/ui/process_column_view/process_action_bar.blp:108
 msgid "Send Signal"
-msgstr ""
+msgstr "சிக்னல் அனுப்பு"
 
 #: resources/ui/process_column_view/process_action_bar.blp:111
 msgid "Suspend (STOP)"
-msgstr ""
+msgstr "இடைநிறுத்தம் (நிறுத்து)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:116
 msgid "Continue (CONT)"
-msgstr ""
+msgstr "தொடர்க (CONT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:121
 msgid "Hangup (HUP)"
-msgstr ""
+msgstr "ஏங்கப் (HUP)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:126
 msgid "Interrupt (INT)"
-msgstr ""
+msgstr "குறுக்கீடு (INT)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:131
 msgid "Terminate (TERM)"
-msgstr ""
+msgstr "நிறுத்து (TERM)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:136
 msgid "Kill (KILL)"
-msgstr ""
+msgstr "கொல் (கொல்ல)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:141
 msgid "User 1 (USR1)"
-msgstr ""
+msgstr "பயனர் 1 (USR1)"
 
 #: resources/ui/process_column_view/process_action_bar.blp:146
 msgid "User 2 (USR2)"
-msgstr ""
+msgstr "பயனர் 2 (USR2)"
 
 #: resources/ui/process_column_view/process_details_dialog.blp:84
 msgid "App ID"
-msgstr ""
+msgstr "பயன்பாட்டு அடையாளம்"
 
 #: resources/ui/process_column_view/service_action_bar.blp:35
 msgid "Start the selected service"
@@ -1524,59 +1508,53 @@ msgstr "குழு"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:333
 msgid "File Location"
-msgstr ""
+msgstr "கோப்பு இடம்"
 
 #: resources/ui/process_column_view/service_details_dialog.blp:356
 msgid "Logs"
 msgstr "பதிவுகள்"
 
 #: resources/ui/about_system_dialog.blp:36
-#, fuzzy
 msgid "System Info"
-msgstr "கணினி வட்டு:"
+msgstr "கணினி செய்தி"
 
 #: resources/ui/about_system_dialog.blp:65
-#, fuzzy
 msgid "Operating System Information"
-msgstr "சாதன தகவல்களை நகலெடுக்கவும்"
+msgstr "இயக்க முறைமை செய்தி"
 
 #: resources/ui/about_system_dialog.blp:108
 #: resources/ui/about_system_dialog.blp:226
 #: resources/ui/about_system_dialog.blp:288
-#, fuzzy
 msgid "Version"
-msgstr "வல்கன் பதிப்பு:"
+msgstr "பதிப்பு"
 
 #: resources/ui/about_system_dialog.blp:136
 msgid "Package Manager"
-msgstr ""
+msgstr "தொகுப்பு மேலாளர்"
 
 #: resources/ui/about_system_dialog.blp:164
 msgid "Package Manager Version"
-msgstr ""
+msgstr "தொகுப்பு மேலாளர் பதிப்பு"
 
 #: resources/ui/about_system_dialog.blp:183
-#, fuzzy
 msgid "Kernel Information"
-msgstr "ரசிகர்களின் தகவலைக் காட்டு"
+msgstr "கர்னல் செய்தி"
 
 #: resources/ui/about_system_dialog.blp:198
 msgid "Kernel Release"
-msgstr ""
+msgstr "கர்னல் வெளியீடு"
 
 #: resources/ui/about_system_dialog.blp:245
-#, fuzzy
 msgid "Desktop Environment Information"
-msgstr "சாதன தகவல்களை நகலெடுக்கவும்"
+msgstr "டெச்க்டாப் சுற்றுச்சூழல் செய்தி"
 
 #: resources/ui/about_system_dialog.blp:316
 msgid "Windowing System"
-msgstr ""
+msgstr "சாளர அமைப்பு"
 
 #: resources/ui/about_system_dialog.blp:344
-#, fuzzy
 msgid "Virtual Terminal"
-msgstr "மெய்நிகர் இயந்திரம்:"
+msgstr "மெய்நிகர் முனையம்"
 
 #: resources/ui/window.blp:49
 msgid "Enable All"
@@ -1636,18 +1614,18 @@ msgstr "விசைப்பலகை குறுக்குவழிகள�
 
 #: resources/ui/window.blp:249
 msgid "_About System"
-msgstr ""
+msgstr "_ அமைப்பு பற்றி"
 
 #: resources/ui/window.blp:256
 msgid "_About Mission Center"
 msgstr "_அபவுட் மிசன் சென்டர்"
 
 #: src/apps_page/mod.rs:259
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
-msgstr[0] "App} இயங்கும் பயன்பாடு"
-msgstr[1] "}} இயங்கும் பயன்பாடுகள்"
+msgstr[0] "{} இயங்கும் பயன்பாடு"
+msgstr[1] "{} இயங்கும் பயன்பாடுகள்"
 
 #: src/apps_page/mod.rs:269
 #, rust-format
@@ -1821,9 +1799,9 @@ msgstr ""
 "அதிக நினைவகம் தேவைப்படும்போது அது முதலில் மீண்டும் உருவாக்கப்படும்"
 
 #: src/performance_page/widgets/smart_sata_dialog_row.rs:104
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} sectors"
-msgstr "}} துறைகள்"
+msgstr "{} துறைகள்"
 
 #: src/performance_page/cpu.rs:344 src/performance_page/fan.rs:337
 #: src/performance_page/gpu.rs:318
@@ -1934,9 +1912,9 @@ msgid "Total Shared Memory"
 msgstr "மொத்த பகிரப்பட்ட நினைவகம்"
 
 #: src/performance_page/memory.rs:376
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} of {}"
-msgstr "{} of}"
+msgstr "{} இல் {}"
 
 #: src/performance_page/memory.rs:398
 msgid "Getting additional memory information failed"
@@ -1953,11 +1931,11 @@ msgid "{}: {}"
 msgstr "{}: {}"
 
 #: src/services_page/mod.rs:95
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} Total Service"
 msgid_plural "{} Total Services"
-msgstr[0] "சேவையைத் தொடங்கவும்"
-msgstr[1] "சேவையைத் தொடங்கவும்"
+msgstr[0] "{} மொத்த பணி"
+msgstr[1] "{} மொத்த சேவைகள்"
 
 #: src/services_page/mod.rs:107 src/process_tree/service_details_dialog.rs:239
 #: src/process_tree/service_details_dialog.rs:314
@@ -1975,34 +1953,31 @@ msgid "Stopped"
 msgstr "நிறுத்தப்பட்டது"
 
 #: src/services_page/mod.rs:134
-#, fuzzy
 msgid "Disabled"
-msgstr "அனைத்தையும் முடக்கு"
+msgstr "முடக்கப்பட்டது"
 
 #: src/services_page/mod.rs:140
 msgid "No services match the current filters"
-msgstr ""
+msgstr "தற்போதைய வடிப்பான்களுடன் எந்த சேவையும் பொருந்தவில்லை"
 
 #: src/services_page/mod.rs:142
 msgid "No filters applied"
-msgstr ""
+msgstr "வடிப்பான்கள் பயன்படுத்தப்படவில்லை"
 
 #: src/services_page/mod.rs:149
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} {} Service"
 msgid_plural "{} {} Services"
-msgstr[0] "சேவைகள் இயங்கும் சேவைகள்"
-msgstr[1] "சேவைகள் இயங்கும் சேவைகள்"
+msgstr[0] "{} {} பணி"
+msgstr[1] "{} {} சேவைகள்"
 
 #: src/services_page/mod.rs:177
-#, fuzzy
 msgid "User Services"
-msgstr "சேவைகள்"
+msgstr "பயனர் சேவைகள்"
 
 #: src/services_page/mod.rs:182
-#, fuzzy
 msgid "System Services"
-msgstr "சேவையை நிறுத்துங்கள்"
+msgstr "கணினி சேவைகள்"
 
 #: src/services_page/mod.rs:403
 msgid "Not Implemented"
@@ -2013,9 +1988,8 @@ msgid "Section Header"
 msgstr "பிரிவு தலைப்பு"
 
 #: src/process_tree/row_model.rs:264
-#, fuzzy
 msgid "Service"
-msgstr "சேவைகள்"
+msgstr "பணி"
 
 #: src/process_tree/row_model.rs:265
 msgid "App"
@@ -2030,31 +2004,31 @@ msgid "translator-credits"
 msgstr "மொழிபெயர்ப்பாளர்-வரவு"
 
 #: src/main.rs:103
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} year"
 msgid_plural "{} years"
-msgstr[0] "{} ஆண்டு"
-msgstr[1] "}} ஆண்டுகள்"
+msgstr[0] "{} வருடம்"
+msgstr[1] "{} ஆண்டுகள்"
 
 #: src/main.rs:107
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} month"
 msgid_plural "{} months"
 msgstr[0] "{} மாதம்"
-msgstr[1] "}} மாதங்கள்"
+msgstr[1] "{} மாதங்கள்"
 
 #: src/main.rs:111
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} day"
 msgid_plural "{} days"
 msgstr[0] "{} நாள்"
-msgstr[1] "}} நாட்கள்"
+msgstr[1] "{} நாட்கள்"
 
 #: src/main.rs:115
 #, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
-msgstr[0] "{} மணி"
+msgstr[0] "{} மணிநேரம்"
 msgstr[1] "{} மணிநேரம்"
 
 #: src/main.rs:119 src/main.rs:184
@@ -2065,11 +2039,11 @@ msgstr[0] "{} மணித்துளி"
 msgstr[1] "{} நிமிடங்கள்"
 
 #: src/main.rs:123 src/main.rs:182
-#, fuzzy, rust-format
+#, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
-msgstr[0] "}} இரண்டாவது"
-msgstr[1] "}} விநாடிகள்"
+msgstr[0] "{} நொடி"
+msgstr[1] "{} வினாடிகள்"
 
 #. Translators: Used for duration greater than one year. First %s is number of years, second %s is months, third %s is days
 #: src/main.rs:159
