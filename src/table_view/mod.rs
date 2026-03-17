@@ -125,6 +125,8 @@ mod imp {
         #[template_child]
         pub service_menu_model: TemplateChild<gio::MenuModel>,
 
+        pub column_header_menu_model: OnceCell<gio::MenuModel>,
+
         #[property(get, set)]
         pub show_column_separators: Cell<bool>,
         #[property(get)]
@@ -136,7 +138,11 @@ mod imp {
 
         pub row_sorter: OnceCell<gtk::TreeListRowSorter>,
 
+        pub header_action_group: OnceCell<gio::SimpleActionGroup>,
+
         pub use_merged_stats: Cell<bool>,
+
+        pub network_column_system_available: Cell<bool>,
 
         pub settings_namespace: Cell<SettingsNamespace>,
 
@@ -161,6 +167,7 @@ mod imp {
                 context_menu: Default::default(),
                 app_menu_model: Default::default(),
                 service_menu_model: Default::default(),
+                column_header_menu_model: OnceCell::new(),
 
                 show_column_separators: Cell::new(false),
                 selected_item: RefCell::new(RowModelBuilder::new().build()),
@@ -169,7 +176,11 @@ mod imp {
 
                 row_sorter: OnceCell::new(),
 
+                header_action_group: OnceCell::new(),
+
                 use_merged_stats: Cell::new(false),
+
+                network_column_system_available: Cell::new(true),
 
                 settings_namespace: Cell::new(Default::default()),
 
@@ -253,6 +264,8 @@ mod imp {
                 .set_factory(Some(&gpu_memory_list_item_factory()));
             self.gpu_memory_column
                 .set_sorter(Some(&gpu_memory_sorter(&self.column_view)));
+
+            self.setup_column_header_menu();
 
             let action_group = gio::SimpleActionGroup::new();
 
@@ -357,6 +370,7 @@ mod imp {
             self.settings_namespace.set(settings_namespace);
 
             self.update_column_order();
+            self.apply_column_visibility();
 
             let model = gio::ListStore::new::<RowModel>();
             model.append(section_item_1);
@@ -836,6 +850,250 @@ mod imp {
                     let _ = settings.set_string(&order_key, order.as_str());
                 }
             });
+        }
+
+        pub fn setup_column_header_menu(&self) {
+            let toggleable_columns: &[(&gtk::ColumnViewColumn, &str)] = &[
+                (&self.pid_column, "pid"),
+                (&self.cpu_column, "cpu"),
+                (&self.memory_column, "memory"),
+                (&self.shared_memory_column, "shared_memory"),
+                (&self.drive_column, "drive"),
+                (&self.network_usage_column, "network"),
+                (&self.gpu_usage_column, "gpu"),
+                (&self.gpu_memory_column, "gpu_memory"),
+            ];
+
+            let action_group = gio::SimpleActionGroup::new();
+
+            for &(column, col_id) in toggleable_columns {
+                let action_name = format!("toggle-{}", col_id);
+                let action =
+                    gio::SimpleAction::new_stateful(&action_name, None, &true.to_variant());
+
+                action.connect_activate({
+                    let column = column.clone();
+                    let this = self.obj().downgrade();
+                    move |action, _| {
+                        let new_state = !action
+                            .state()
+                            .and_then(|v| v.get::<bool>())
+                            .unwrap_or(true);
+                        action.set_state(&new_state.to_variant());
+                        column.set_visible(new_state);
+
+                        if let Some(this) = this.upgrade() {
+                            this.imp().save_hidden_columns();
+                        }
+                    }
+                });
+
+                action_group.add_action(&action);
+            }
+
+            let hide_all = gio::SimpleAction::new("hide-all", None);
+            hide_all.connect_activate({
+                let this = self.obj().downgrade();
+                move |_, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+                    let columns = imp.column_view.columns();
+                    for i in 0..columns.n_items() {
+                        if let Some(col) = columns
+                            .item(i)
+                            .and_then(|c| c.downcast::<gtk::ColumnViewColumn>().ok())
+                        {
+                            if col.id().as_deref() == Some("name") {
+                                continue;
+                            }
+                            col.set_visible(false);
+                        }
+                    }
+                    imp.sync_action_states();
+                    imp.save_hidden_columns();
+                }
+            });
+            action_group.add_action(&hide_all);
+
+            let show_all = gio::SimpleAction::new("show-all", None);
+            show_all.connect_activate({
+                let this = self.obj().downgrade();
+                move |_, _| {
+                    let Some(this) = this.upgrade() else {
+                        return;
+                    };
+                    let imp = this.imp();
+                    let columns = imp.column_view.columns();
+                    for i in 0..columns.n_items() {
+                        if let Some(col) = columns
+                            .item(i)
+                            .and_then(|c| c.downcast::<gtk::ColumnViewColumn>().ok())
+                        {
+                            if col.id().as_deref() == Some("name") {
+                                continue;
+                            }
+                            col.set_visible(true);
+                        }
+                    }
+                    imp.sync_action_states();
+                    imp.save_hidden_columns();
+                }
+            });
+            action_group.add_action(&show_all);
+
+            self.obj()
+                .insert_action_group("column-header", Some(&action_group));
+            let _ = self.header_action_group.set(action_group);
+
+            // Build the column-header menu programmatically to avoid GTK
+            // template child binding issues with top-level <menu> elements.
+            let menu = gio::Menu::new();
+
+            let toggles_section = gio::Menu::new();
+            let memory_label = i18n("Memory");
+            let shared_memory_label = i18n("Shared Memory");
+            let drive_label = i18n("Drive");
+            let network_label = i18n("Network");
+            let gpu_memory_label = i18n("GPU Memory");
+            let toggle_items: &[(&str, &str)] = &[
+                ("PID", "column-header.toggle-pid"),
+                ("CPU", "column-header.toggle-cpu"),
+                (&memory_label, "column-header.toggle-memory"),
+                (&shared_memory_label, "column-header.toggle-shared_memory"),
+                (&drive_label, "column-header.toggle-drive"),
+                (&network_label, "column-header.toggle-network"),
+                ("GPU", "column-header.toggle-gpu"),
+                (&gpu_memory_label, "column-header.toggle-gpu_memory"),
+            ];
+            for &(label, action) in toggle_items {
+                toggles_section.append(Some(label), Some(action));
+            }
+            menu.append_section(None, &toggles_section);
+
+            let actions_section = gio::Menu::new();
+            actions_section.append(Some(&i18n("Hide All")), Some("column-header.hide-all"));
+            actions_section.append(Some(&i18n("Show All")), Some("column-header.show-all"));
+            menu.append_section(None, &actions_section);
+
+            let menu_model: gio::MenuModel = menu.upcast();
+            let _ = self.column_header_menu_model.set(menu_model);
+
+            let menu_model = self.column_header_menu_model.get().unwrap();
+            let columns = self.column_view.columns();
+            for i in 0..columns.n_items() {
+                if let Some(col) = columns
+                    .item(i)
+                    .and_then(|c| c.downcast::<gtk::ColumnViewColumn>().ok())
+                {
+                    col.set_header_menu(Some(menu_model));
+                }
+            }
+        }
+
+        pub fn save_hidden_columns(&self) {
+            let settings = settings!();
+            let key = "hidden-columns";
+
+            let columns = self.column_view.columns();
+            let mut hidden = String::new();
+            for i in 0..columns.n_items() {
+                if let Some(col) = columns
+                    .item(i)
+                    .and_then(|c| c.downcast::<gtk::ColumnViewColumn>().ok())
+                {
+                    if !col.is_visible() {
+                        if let Some(id) = col.id() {
+                            if !hidden.is_empty() {
+                                hidden.push(';');
+                            }
+                            hidden.push_str(id.as_str());
+                        }
+                    }
+                }
+            }
+
+            let _ = settings.set_string(&key, &hidden);
+        }
+
+        pub fn apply_column_visibility(&self) {
+            let settings = settings!();
+            let hidden_str = settings.string("hidden-columns");
+
+            let hidden_ids: Vec<&str> = if hidden_str.is_empty() {
+                Vec::new()
+            } else {
+                hidden_str.split(';').collect()
+            };
+
+            let columns = self.column_view.columns();
+            for i in 0..columns.n_items() {
+                if let Some(col) = columns
+                    .item(i)
+                    .and_then(|c| c.downcast::<gtk::ColumnViewColumn>().ok())
+                {
+                    if let Some(id) = col.id() {
+                        if id == "name" {
+                            continue;
+                        }
+                        let is_hidden = hidden_ids.contains(&id.as_str());
+                        col.set_visible(!is_hidden);
+                    }
+                }
+            }
+
+            self.sync_action_states();
+        }
+
+        pub fn sync_action_states(&self) {
+            let columns = self.column_view.columns();
+            if let Some(group) = self.header_action_group.get() {
+                for i in 0..columns.n_items() {
+                    if let Some(col) = columns
+                        .item(i)
+                        .and_then(|c| c.downcast::<gtk::ColumnViewColumn>().ok())
+                    {
+                        if let Some(id) = col.id() {
+                            let action_name = format!("toggle-{}", id);
+                            if let Some(action) = group
+                                .lookup_action(&action_name)
+                                .and_downcast::<gio::SimpleAction>()
+                            {
+                                action.set_state(&col.is_visible().to_variant());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        pub fn set_network_column_available(&self, available: bool) {
+            if self.network_column_system_available.get() == available {
+                return;
+            }
+            self.network_column_system_available.set(available);
+
+            if available {
+                // Restore the user's saved column visibility preferences
+                self.apply_column_visibility();
+            } else {
+                // Network is not available (nethogs not installed): hide the
+                // column without writing to settings (user preference is
+                // preserved so it restores correctly when nethogs appears).
+                self.network_usage_column.set_visible(false);
+            }
+
+            // Enable/disable the toggle menu item so the user can't turn on
+            // the network column when nethogs isn't installed.
+            if let Some(group) = self.header_action_group.get() {
+                if let Some(action) = group
+                    .lookup_action("toggle-network")
+                    .and_downcast::<gio::SimpleAction>()
+                {
+                    action.set_enabled(available);
+                }
+            }
         }
 
         #[inline]

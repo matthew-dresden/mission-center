@@ -150,6 +150,11 @@
             <summary>The order of columns in the Apps page view</summary>
         </key>
 
+        <key name="hidden-columns" type="s">
+            <default>""</default>
+            <summary>Columns hidden from the table view (semicolon-separated column IDs, shared across Apps and Services pages)</summary>
+        </key>
+
         <key name="services-page-sorting-column-name" type="s">
             <default>""</default>
             <summary>The column name by which the Services page view is sorted</summary>

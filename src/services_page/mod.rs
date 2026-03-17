@@ -481,13 +481,10 @@ impl ServicesPage {
             row_sorter.changed(gtk::SorterChange::Different)
         }
 
-        if readings.network_stats_error.is_some() {
-            imp.table_view
-                .get()
-                .imp()
-                .network_usage_column
-                .set_visible(false);
-        }
+        imp.table_view
+            .get()
+            .imp()
+            .set_network_column_available(readings.network_stats_error.is_none());
 
         if readings.mem_info.swap_total == 0 {
             imp.table_view.get().imp().swap_column.set_visible(false);
