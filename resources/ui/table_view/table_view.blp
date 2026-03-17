@@ -25,65 +25,65 @@ template $TableView: Box {
     child: ScrolledWindow {
       hexpand: true;
       vexpand: true;
-  
+
       ColumnView column_view {
         styles [
           "rich-list"
         ]
-  
+
         reorderable: true;
         show-row-separators: false;
         show-column-separators: bind template.show-column-separators;
-  
+
         ColumnViewColumn name_column {
           id: "name";
           title: _("Name");
           expand: true;
           resizable: false;
         }
-  
+
         ColumnViewColumn pid_column {
           id: "pid";
           title: _("PID");
           resizable: true;
         }
-  
+
         ColumnViewColumn cpu_column {
           id: "cpu";
           title: _("CPU");
           resizable: true;
         }
-  
+
         ColumnViewColumn memory_column {
           id: "memory";
           title: _("Memory");
           resizable: true;
         }
-  
-        ColumnViewColumn shared_memory_column {
-          id: "shared_memory";
-          title: _("Shared\nMemory");
+
+        ColumnViewColumn swap_column {
+          id: "swap";
+          title: _("Swap");
           resizable: true;
         }
-  
+
         ColumnViewColumn drive_column {
           id: "drive";
           title: _("Drive");
           resizable: true;
         }
-  
+
         ColumnViewColumn network_usage_column {
           id: "network";
           title: _("Network");
           resizable: true;
         }
-  
+
         ColumnViewColumn gpu_usage_column {
           id: "gpu";
           title: _("GPU");
           resizable: true;
         }
-  
+
         ColumnViewColumn gpu_memory_column {
           id: "gpu_memory";
           title: _("GPU Memory");

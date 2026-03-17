@@ -49,9 +49,9 @@ pub use network::list_item_factory as network_list_item_factory;
 pub use network::sorter as network_sorter;
 pub use pid::list_item_factory as pid_list_item_factory;
 pub use pid::sorter as pid_sorter;
-pub use shared_memory::label_formatter as shared_memory_label_formatter;
-pub use shared_memory::list_item_factory as shared_memory_list_item_factory;
-pub use shared_memory::sorter as shared_memory_sorter;
+pub use swap::label_formatter as swap_label_formatter;
+pub use swap::list_item_factory as swap_list_item_factory;
+pub use swap::sorter as swap_sorter;
 
 mod cpu;
 mod drive;
@@ -63,7 +63,7 @@ mod name;
 mod name_cell;
 mod network;
 mod pid;
-mod shared_memory;
+mod swap;
 
 pub const IS_ZERO_OPACITY: f64 = 0.3;
 

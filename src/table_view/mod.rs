@@ -109,7 +109,7 @@ mod imp {
         #[template_child]
         pub memory_column: TemplateChild<gtk::ColumnViewColumn>,
         #[template_child]
-        pub shared_memory_column: TemplateChild<gtk::ColumnViewColumn>,
+        pub swap_column: TemplateChild<gtk::ColumnViewColumn>,
         #[template_child]
         pub drive_column: TemplateChild<gtk::ColumnViewColumn>,
         #[template_child]
@@ -153,7 +153,7 @@ mod imp {
                 pid_column: Default::default(),
                 cpu_column: Default::default(),
                 memory_column: Default::default(),
-                shared_memory_column: Default::default(),
+                swap_column: Default::default(),
                 drive_column: Default::default(),
                 network_usage_column: Default::default(),
                 gpu_usage_column: Default::default(),
@@ -229,10 +229,10 @@ mod imp {
             self.memory_column
                 .set_sorter(Some(&memory_sorter(&self.column_view)));
 
-            self.shared_memory_column
-                .set_factory(Some(&shared_memory_list_item_factory()));
-            self.shared_memory_column
-                .set_sorter(Some(&shared_memory_sorter(&self.column_view)));
+            self.swap_column
+                .set_factory(Some(&swap_list_item_factory()));
+            self.swap_column
+                .set_sorter(Some(&swap_sorter(&self.column_view)));
 
             self.drive_column
                 .set_factory(Some(&drive_list_item_factory()));
@@ -704,6 +704,20 @@ mod imp {
                 let _ = write!(&mut buffer, "{}\n{}%", i18n("Drive"), drive_usage);
             }
             self.drive_column.set_title(Some(buffer.as_str()));
+
+            buffer.clear();
+            if readings.mem_info.swap_total != 0 {
+                let _ = write!(
+                    &mut buffer,
+                    "{}\n{:.0}%",
+                    i18n("Swap"),
+                    100. - (readings.mem_info.swap_free as f64 * 100.)
+                        / (readings.mem_info.swap_total as f64)
+                );
+            } else {
+                let _ = write!(&mut buffer, "{}\n0%", i18n("Swap"));
+            }
+            self.swap_column.set_title(Some(buffer.as_str()));
 
             buffer.clear();
             if readings.running_processes.is_empty() {

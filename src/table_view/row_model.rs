@@ -56,7 +56,7 @@ mod imp {
         #[property(get, set)]
         pub memory_usage: Cell<u64>,
         #[property(get, set)]
-        pub shared_memory_usage: Cell<u64>,
+        pub swap_usage: Cell<u64>,
         #[property(get, set)]
         pub disk_usage: Cell<f32>,
         #[property(get, set)]
@@ -112,7 +112,7 @@ mod imp {
 
                 cpu_usage: Cell::new(0.),
                 memory_usage: Cell::new(0),
-                shared_memory_usage: Cell::new(0),
+                swap_usage: Cell::new(0),
                 disk_usage: Cell::new(0.),
                 network_usage: Cell::new(0.),
                 gpu_usage: Cell::new(0.),
@@ -308,7 +308,7 @@ pub struct RowModelBuilder {
 
     cpu_usage: f32,
     memory_usage: u64,
-    shared_memory_usage: u64,
+    swap_usage: u64,
     disk_usage: f32,
     network_usage: f32,
     gpu_usage: f32,
@@ -346,7 +346,7 @@ impl RowModelBuilder {
 
             cpu_usage: 0.,
             memory_usage: 0,
-            shared_memory_usage: 0,
+            swap_usage: 0,
             disk_usage: 0.,
             network_usage: 0.,
             gpu_usage: 0.,
@@ -414,8 +414,8 @@ impl RowModelBuilder {
         self
     }
 
-    pub fn shared_memory_usage(mut self, shared_memory_usage: u64) -> Self {
-        self.shared_memory_usage = shared_memory_usage;
+    pub fn swap_usage(mut self, swap_usage: u64) -> Self {
+        self.swap_usage = swap_usage;
         self
     }
 
@@ -495,7 +495,7 @@ impl RowModelBuilder {
 
             this.cpu_usage.set(self.cpu_usage);
             this.memory_usage.set(self.memory_usage);
-            this.shared_memory_usage.set(self.shared_memory_usage);
+            this.swap_usage.set(self.swap_usage);
             this.disk_usage.set(self.disk_usage);
             this.network_usage.set(self.network_usage);
             this.gpu_usage.set(self.gpu_usage);

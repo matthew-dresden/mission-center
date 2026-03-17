@@ -59,7 +59,7 @@ mod imp {
         #[template_child]
         memory: TemplateChild<LabelCell>,
         #[template_child]
-        shared_memory: TemplateChild<LabelCell>,
+        swap: TemplateChild<LabelCell>,
         #[template_child]
         drives: TemplateChild<LabelCell>,
         #[template_child]
@@ -87,7 +87,7 @@ mod imp {
 
                 cpu: TemplateChild::default(),
                 memory: TemplateChild::default(),
-                shared_memory: TemplateChild::default(),
+                swap: TemplateChild::default(),
                 drives: TemplateChild::default(),
                 network: TemplateChild::default(),
                 gpu: TemplateChild::default(),
@@ -138,12 +138,9 @@ mod imp {
             self.memory
                 .bind(&*model, "memory-usage", memory_label_formatter);
 
-            shared_memory_label_formatter(&*self.shared_memory, model.shared_memory_usage().into());
-            self.shared_memory.bind(
-                &*model,
-                "shared-memory-usage",
-                shared_memory_label_formatter,
-            );
+            swap_label_formatter(&*self.swap, model.swap_usage().into());
+            self.swap
+                .bind(&*model, "shared-memory-usage", swap_label_formatter);
 
             drive_label_formatter(&*self.drives, model.disk_usage().into());
             self.drives
@@ -164,8 +161,9 @@ mod imp {
         fn unbind(&self) {
             self.cpu.unbind();
             self.memory.unbind();
-            self.shared_memory.unbind();
+            self.swap.unbind();
             self.drives.unbind();
+            self.network.unbind();
             self.gpu.unbind();
             self.gpu_memory.unbind();
         }

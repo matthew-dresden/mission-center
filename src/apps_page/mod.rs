@@ -258,6 +258,10 @@ impl AppsPage {
                 .set_visible(false);
         }
 
+        if readings.mem_info.swap_total == 0 {
+            imp.table_view.get().imp().swap_column.set_visible(false);
+        }
+
         true
     }
 

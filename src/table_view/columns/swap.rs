@@ -27,7 +27,7 @@ use super::{compare_column_entries_by, sort_order, LabelCell};
 use crate::label_cell_factory;
 
 pub fn list_item_factory() -> gtk::SignalListItemFactory {
-    label_cell_factory!("shared-memory-usage", label_formatter)
+    label_cell_factory!("swap-usage", label_formatter)
 }
 
 pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
@@ -38,8 +38,8 @@ pub fn sorter(column_view: &gtk::ColumnView) -> impl IsA<gtk::Sorter> {
         };
 
         compare_column_entries_by(lhs, rhs, sort_order(&column_view), |lhs, rhs| {
-            let lhs = lhs.shared_memory_usage();
-            let rhs = rhs.shared_memory_usage();
+            let lhs = lhs.swap_usage();
+            let rhs = rhs.swap_usage();
 
             lhs.cmp(&rhs)
         })
