@@ -18,10 +18,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 use application::MissionCenterApplication;
-use config::{GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
+use config::{APP_ID, GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain};
 use gtk::gio::Settings;
-use gtk::{gio, prelude::*};
+use gtk::{gio, glib, prelude::*};
 use i18n::{i18n, i18n_f};
 
 use std::cmp::PartialEq;
@@ -459,6 +459,37 @@ pub fn show_error_dialog_and_exit(message: &str) -> ! {
     loop {}
 }
 
+fn app_id(fallback: String) -> String {
+    let mut custom_id: Option<String> = None;
+    let mut prev_arg = String::new();
+    for mut arg in env::args() {
+        if prev_arg == "--app-id" || prev_arg == "-a" {
+            custom_id = Some(arg);
+            break;
+        }
+
+        if let Some(id) = arg.strip_prefix("--app-id=") {
+            custom_id = Some(id.to_owned());
+            break;
+        }
+
+        std::mem::swap(&mut prev_arg, &mut arg);
+    }
+
+    let app_id = custom_id.unwrap_or_else(|| fallback);
+
+    if !gio::Application::id_is_valid(&app_id) {
+        eprintln!(
+            "Error: '{app_id}' is not a valid application ID.\n\
+             A valid ID must only contain ASCII characters and at least one period (e.g. 'my.appid').\n\
+             See https://docs.gtk.org/gio/type_func.Application.id_is_valid.html for details.",
+        );
+        std::process::exit(1);
+    }
+
+    app_id
+}
+
 fn main() {
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Unable to bind the text domain");
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
@@ -475,10 +506,20 @@ fn main() {
         .expect("Could not load resources");
     gio::resources_register(&resources);
 
-    let app = MissionCenterApplication::new(
-        "io.missioncenter.MissionCenter",
-        &gio::ApplicationFlags::empty(),
+    let app_id = app_id(APP_ID.to_owned());
+    let app = MissionCenterApplication::new(&app_id, &gio::ApplicationFlags::empty());
+    // Keep the resource base path fixed so that icons bundled in the
+    // GResource file are still found when a custom app-id is used.
+    app.set_resource_base_path(Some("/io/missioncenter/MissionCenter"));
+    app.add_main_option(
+        "app-id",
+        glib::Char::from(b'a'),
+        glib::OptionFlags::IN_MAIN,
+        glib::OptionArg::String,
+        "Set a custom application ID",
+        Some("ID"),
     );
+
     gtk::Application::set_default(app.upcast_ref::<gtk::Application>());
 
     let exit_code = app.run();
