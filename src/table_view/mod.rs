@@ -254,6 +254,97 @@ mod imp {
             self.gpu_memory_column
                 .set_sorter(Some(&gpu_memory_sorter(&self.column_view)));
 
+            // Arrow key expand/collapse for tree rows.
+            let key_controller = gtk::EventControllerKey::new();
+            key_controller.set_propagation_phase(gtk::PropagationPhase::Capture);
+            key_controller.connect_key_pressed({
+                let column_view = self.column_view.downgrade();
+                move |_, keyval, _, modifier| {
+                    // Only handle plain arrow keys (no Ctrl, Alt, Shift).
+                    // Mask out lock modifiers (Num Lock, Caps Lock, etc.)
+                    // so the handler works regardless of lock state.
+                    let dominated = modifier
+                        & (gdk::ModifierType::CONTROL_MASK
+                            | gdk::ModifierType::ALT_MASK
+                            | gdk::ModifierType::SHIFT_MASK);
+                    if !dominated.is_empty() {
+                        return glib::Propagation::Proceed;
+                    }
+
+                    let is_right = keyval == gdk::Key::Right;
+                    let is_left = keyval == gdk::Key::Left;
+                    if !is_right && !is_left {
+                        return glib::Propagation::Proceed;
+                    }
+
+                    let Some(column_view) = column_view.upgrade() else {
+                        return glib::Propagation::Proceed;
+                    };
+
+                    let Some(selection) = column_view
+                        .model()
+                        .and_then(|m| m.downcast::<gtk::SingleSelection>().ok())
+                    else {
+                        return glib::Propagation::Proceed;
+                    };
+
+                    let selected = selection.selected();
+                    let Some(tree_row) = selection
+                        .selected_item()
+                        .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
+                    else {
+                        return glib::Propagation::Proceed;
+                    };
+
+                    if is_right {
+                        if tree_row.is_expandable() && !tree_row.is_expanded() {
+                            tree_row.set_expanded(true);
+                        } else if tree_row.is_expanded() {
+                            // Move to first child. Use scroll_to with SELECT|FOCUS
+                            // so the ColumnView's internal keyboard cursor is also
+                            // updated — set_selected alone only updates the selection
+                            // model, leaving the cursor behind so Down needs two presses.
+                            column_view.scroll_to(
+                                selected + 1,
+                                None::<&gtk::ColumnViewColumn>,
+                                gtk::ListScrollFlags::SELECT | gtk::ListScrollFlags::FOCUS,
+                                None::<gtk::ScrollInfo>,
+                            );
+                        }
+                        // Leaf node: do nothing, but still Stop so GTK's
+                        // ColumnView doesn't enter column-navigation mode.
+                    } else {
+                        // Left arrow
+                        if tree_row.is_expanded() {
+                            tree_row.set_expanded(false);
+                        } else if let Some(parent) = tree_row.parent() {
+                            // Navigate to parent row
+                            for i in 0..selection.n_items() {
+                                if let Some(candidate) = selection
+                                    .item(i)
+                                    .and_then(|item| item.downcast::<gtk::TreeListRow>().ok())
+                                {
+                                    if candidate == parent {
+                                        selection.set_selected(i);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        // Root-level leaf: do nothing, but still Stop.
+                    }
+
+                    glib::Propagation::Stop
+                }
+            });
+            // Attach to the TableView Box (parent of ColumnView) so the
+            // Capture phase truly fires before ColumnView processes the key.
+            // If the controller were on ColumnView itself (the event target),
+            // GTK would still run ColumnView's own column-focus navigation
+            // before our handler, causing spurious "column nav mode" that
+            // breaks subsequent Up/Down navigation.
+            self.obj().add_controller(key_controller);
+
             let action_group = gio::SimpleActionGroup::new();
 
             let action_show_context_menu =
