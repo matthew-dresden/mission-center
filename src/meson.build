@@ -8,6 +8,7 @@ conf.set_quoted('VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', 'missioncenter')
 conf.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 conf.set_quoted('PKGDATADIR', pkgdatadir)
+conf.set_quoted('APP_ID', 'io.missioncenter.MissionCenter')
 
 configure_file(
     input: 'config.rs.in',
