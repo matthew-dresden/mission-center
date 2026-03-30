@@ -29,7 +29,10 @@ blueprints = custom_target('blueprints',
     'ui/performance_page/page.blp',
     'ui/performance_page/summary_graph.blp',
 
-    'ui/preferences/page.blp',
+    'ui/preferences/apps_services_page.blp',
+    'ui/preferences/general_page.blp',
+    'ui/preferences/performance_page.blp',
+    'ui/preferences/units_page.blp',
     'ui/preferences/window.blp',
 
     'ui/services_page/page.blp',
