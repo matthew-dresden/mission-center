@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: missioncenter\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-23 21:59+0100\n"
+"POT-Creation-Date: 2026-03-30 13:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -191,7 +191,7 @@ msgid ""
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:110
-#: resources/ui/preferences/page.blp:105
+#: resources/ui/preferences/apps_services_page.blp:31
 msgid "Parent and child process stats are shown individually or merged upwards"
 msgstr ""
 
@@ -261,32 +261,32 @@ msgid "Should graphs be animated"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:197
-#: resources/ui/preferences/page.blp:65
+#: resources/ui/preferences/performance_page.blp:70
 msgid "Show CPU information by default"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:202
-#: resources/ui/preferences/page.blp:71
+#: resources/ui/preferences/performance_page.blp:76
 msgid "Show memory information by default"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:207
-#: resources/ui/preferences/page.blp:77
+#: resources/ui/preferences/performance_page.blp:82
 msgid "Show disk information by default"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:212
-#: resources/ui/preferences/page.blp:83
+#: resources/ui/preferences/performance_page.blp:88
 msgid "Show network information by default"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:217
-#: resources/ui/preferences/page.blp:89
+#: resources/ui/preferences/performance_page.blp:94
 msgid "Show GPU information by default"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:222
-#: resources/ui/preferences/page.blp:95
+#: resources/ui/preferences/performance_page.blp:100
 msgid "Show fan information by default"
 msgstr ""
 
@@ -311,7 +311,7 @@ msgid "Graphs that should be hidden in the application sidebar"
 msgstr ""
 
 #: data/io.missioncenter.MissionCenter.gschema.xml:252
-msgid "If it's your first time running mission center'"
+msgid "If it's your first time running Mission Center"
 msgstr ""
 
 #: resources/ui/apps_page/page.blp:75
@@ -351,7 +351,7 @@ msgstr ""
 #: resources/ui/performance_page/cpu.blp:45
 #: resources/ui/table_view/table_view.blp:53
 #: resources/ui/table_view/process_details_dialog.blp:176
-#: src/performance_page/mod.rs:1076 src/table_view/mod.rs:660
+#: src/performance_page/mod.rs:1076 src/table_view/mod.rs:670
 msgid "CPU"
 msgstr ""
 
@@ -533,7 +533,7 @@ msgstr ""
 #: resources/ui/performance_page/memory.blp:41
 #: resources/ui/table_view/table_view.blp:59
 #: resources/ui/table_view/process_details_dialog.blp:201
-#: src/performance_page/mod.rs:1146 src/table_view/mod.rs:681
+#: src/performance_page/mod.rs:1146 src/table_view/mod.rs:691
 msgid "Memory"
 msgstr ""
 
@@ -899,217 +899,238 @@ msgstr ""
 msgid "Power preference:"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:6
+#: resources/ui/preferences/apps_services_page.blp:25
+msgid "Apps & Services"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:30
+msgid "Merge Process Stats"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:35
+msgid "Remember Sorting"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:36
+msgid "Persist sorting by column across app restarts"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:40
+msgid "Remember Column Order"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:41
+msgid "Persist the order of the columns, across app restarts"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:45
+msgid "Scale CPU Usage to Core Count"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:46
+msgid "Show CPU usage scaled to the number of available cores"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:50
+msgid "Show Column Separators"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:51
+msgid "Show a separator between each column"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:55
+msgid "Grey Out Zeroes"
+msgstr ""
+
+#: resources/ui/preferences/apps_services_page.blp:56
+msgid "Gray out values that equal zero"
+msgstr ""
+
+#: resources/ui/preferences/general_page.blp:25
 msgid "General"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:9
+#: resources/ui/preferences/general_page.blp:30
 msgid "Update Interval"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:10
+#: resources/ui/preferences/general_page.blp:31
 msgid "In seconds"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:27
-msgid "Chart Data Points"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:46 resources/ui/keyboard_shortcuts.blp:57
+#: resources/ui/preferences/performance_page.blp:25
+#: resources/ui/keyboard_shortcuts.blp:57
 msgid "Performance Page"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:49
+#: resources/ui/preferences/performance_page.blp:29
+msgid "Graph Settings"
+msgstr ""
+
+#: resources/ui/preferences/performance_page.blp:32
+msgid "Data Points"
+msgstr ""
+
+#: resources/ui/preferences/performance_page.blp:50
 msgid "Smooth Graphs"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:50
+#: resources/ui/preferences/performance_page.blp:51
 msgid "Draw graphs as smooth line instead of jagged line"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:54
+#: resources/ui/preferences/performance_page.blp:55
 msgid "Sliding Graphs"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:55
+#: resources/ui/preferences/performance_page.blp:56
 msgid "Animate graphs (may negatively impact performance)"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:59
+#: resources/ui/preferences/performance_page.blp:60
 msgid "Scale Network Graphs Dynamically"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:60
+#: resources/ui/preferences/performance_page.blp:61
 msgid ""
 "Set network graph to scale dynamically with actual usage or with channel max "
 "speed"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:64
+#: resources/ui/preferences/performance_page.blp:66 resources/ui/window.blp:64
+msgid "Devices"
+msgstr ""
+
+#: resources/ui/preferences/performance_page.blp:69
 msgid "Show CPU Information"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:70
+#: resources/ui/preferences/performance_page.blp:75
 msgid "Show Memory Information"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:76
+#: resources/ui/preferences/performance_page.blp:81
 msgid "Show Disk Information"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:82
+#: resources/ui/preferences/performance_page.blp:87
 msgid "Show Network Information"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:88
+#: resources/ui/preferences/performance_page.blp:93
 msgid "Show GPU Information"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:94
+#: resources/ui/preferences/performance_page.blp:99
 msgid "Show Fan Information"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:101
-msgid "App &amp; Service Pages"
+#: resources/ui/preferences/performance_page.blp:105
+msgid "Show Battery Information"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:104
-msgid "Merge Process Stats"
+#: resources/ui/preferences/performance_page.blp:106
+msgid "Show battery information by default"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:109
-msgid "Remember Sorting"
+#: resources/ui/preferences/units_page.blp:25
+msgid "Units"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:110
-msgid "Persist sorting by column across app restarts"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:114
-msgid "Remember Column Order"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:115
-msgid "Persist the order of the columns, across app restarts"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:119
-msgid "Scale CPU Usage to Core Count"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:120
-msgid "Show CPU usage scaled to the number of available cores"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:124
-msgid "Show Column Separators"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:125
-msgid "Show a separator between each column"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:129
-msgid "Grey Out Zeroes"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:130
-msgid "Gray out values that equal zero"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:135
-msgid "Global Units"
-msgstr ""
-
-#: resources/ui/preferences/page.blp:138
+#: resources/ui/preferences/units_page.blp:30
 msgid "Memory Usage Unit"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:145
+#: resources/ui/preferences/units_page.blp:37
 msgid "Use Bytes as a Unit of Measurement for Memory"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:146 resources/ui/preferences/page.blp:184
-#: resources/ui/preferences/page.blp:222
+#: resources/ui/preferences/units_page.blp:38
+#: resources/ui/preferences/units_page.blp:76
+#: resources/ui/preferences/units_page.blp:114
 msgid "Bytes"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:150
+#: resources/ui/preferences/units_page.blp:42
 msgid "Use Bits as a Unit of Measurement for Memory"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:151 resources/ui/preferences/page.blp:189
-#: resources/ui/preferences/page.blp:227
+#: resources/ui/preferences/units_page.blp:43
+#: resources/ui/preferences/units_page.blp:81
+#: resources/ui/preferences/units_page.blp:119
 msgid "Bits"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:157
+#: resources/ui/preferences/units_page.blp:49
 msgid "Memory Usage Base"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:164
+#: resources/ui/preferences/units_page.blp:56
 msgid "Use Base 10 for Memory"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:165 resources/ui/preferences/page.blp:203
-#: resources/ui/preferences/page.blp:241
+#: resources/ui/preferences/units_page.blp:57
+#: resources/ui/preferences/units_page.blp:95
+#: resources/ui/preferences/units_page.blp:133
 msgid "Base 10"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:169
+#: resources/ui/preferences/units_page.blp:61
 msgid "Use Base 2 for Memory"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:170 resources/ui/preferences/page.blp:208
-#: resources/ui/preferences/page.blp:246
+#: resources/ui/preferences/units_page.blp:62
+#: resources/ui/preferences/units_page.blp:100
+#: resources/ui/preferences/units_page.blp:138
 msgid "Base 2"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:176
+#: resources/ui/preferences/units_page.blp:68
 msgid "Drive Usage Unit"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:183
+#: resources/ui/preferences/units_page.blp:75
 msgid "Use Bytes as a Unit of Measurement for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:188
+#: resources/ui/preferences/units_page.blp:80
 msgid "Use Bits as a Unit of Measurement for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:195
+#: resources/ui/preferences/units_page.blp:87
 msgid "Drive Usage Base"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:202
+#: resources/ui/preferences/units_page.blp:94
 msgid "Use Base 10 for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:207
+#: resources/ui/preferences/units_page.blp:99
 msgid "Use Base 2 for Disk Drives"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:214
+#: resources/ui/preferences/units_page.blp:106
 msgid "Network Usage Unit"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:221
+#: resources/ui/preferences/units_page.blp:113
 msgid "Use Bytes as a Unit of Measurement for Network Interfaces"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:226
+#: resources/ui/preferences/units_page.blp:118
 msgid "Use Bits as a Unit of Measurement for Network Interfaces"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:233
+#: resources/ui/preferences/units_page.blp:125
 msgid "Network Usage Base"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:240
+#: resources/ui/preferences/units_page.blp:132
 msgid "Use Base 10 for Network Interfaces"
 msgstr ""
 
-#: resources/ui/preferences/page.blp:245
+#: resources/ui/preferences/units_page.blp:137
 msgid "Use Base 2 for Network Interfaces"
 msgstr ""
 
@@ -1262,33 +1283,33 @@ msgid "PID"
 msgstr ""
 
 #: resources/ui/table_view/table_view.blp:65
-msgid ""
-"Shared\n"
-"Memory"
+#: resources/ui/table_view/process_details_dialog.blp:226
+#: src/table_view/mod.rs:713 src/table_view/mod.rs:718
+msgid "Swap"
 msgstr ""
 
 #: resources/ui/table_view/table_view.blp:71 src/performance_page/mod.rs:1217
-#: src/table_view/mod.rs:686 src/table_view/mod.rs:694
+#: src/table_view/mod.rs:696 src/table_view/mod.rs:704
 msgid "Drive"
 msgstr ""
 
 #: resources/ui/table_view/table_view.blp:77
 #: resources/ui/table_view/process_details_dialog.blp:276
-#: src/table_view/mod.rs:700 src/table_view/mod.rs:709
+#: src/table_view/mod.rs:724 src/table_view/mod.rs:733
 msgid "Network"
 msgstr ""
 
 #: resources/ui/table_view/table_view.blp:83
 #: resources/ui/table_view/process_details_dialog.blp:301
 #: src/performance_page/gpu.rs:329 src/performance_page/mod.rs:1468
-#: src/performance_page/mod.rs:2318 src/table_view/mod.rs:715
-#: src/table_view/mod.rs:732
+#: src/performance_page/mod.rs:2318 src/table_view/mod.rs:739
+#: src/table_view/mod.rs:756
 msgid "GPU"
 msgstr ""
 
 #: resources/ui/table_view/table_view.blp:89
 #: resources/ui/table_view/process_details_dialog.blp:326
-#: src/table_view/mod.rs:719 src/table_view/mod.rs:738
+#: src/table_view/mod.rs:743 src/table_view/mod.rs:762
 msgid "GPU Memory"
 msgstr ""
 
@@ -1410,10 +1431,6 @@ msgstr ""
 
 #: resources/ui/table_view/process_details_dialog.blp:162
 msgid "Resource Usage"
-msgstr ""
-
-#: resources/ui/table_view/process_details_dialog.blp:226
-msgid "Shared Memory"
 msgstr ""
 
 #: resources/ui/table_view/process_details_dialog.blp:251
@@ -1555,10 +1572,6 @@ msgstr ""
 msgid "Reset to Default"
 msgstr ""
 
-#: resources/ui/window.blp:64
-msgid "Devices"
-msgstr ""
-
 #: resources/ui/window.blp:70
 msgid "Edit Sidebar"
 msgstr ""
@@ -1600,29 +1613,29 @@ msgid "_Keyboard Shortcuts"
 msgstr ""
 
 #: resources/ui/window.blp:249
-msgid "_About System"
+msgid "_System Information"
 msgstr ""
 
 #: resources/ui/window.blp:256
-msgid "Open Wiki"
+msgid "Open _Wiki"
 msgstr ""
 
 #: resources/ui/window.blp:262
-msgid "Show First Run Dialog"
+msgid "Show _First Run Dialog"
 msgstr ""
 
 #: resources/ui/window.blp:269
 msgid "_About Mission Center"
 msgstr ""
 
-#: src/apps_page/mod.rs:271
+#: src/apps_page/mod.rs:275
 #, rust-format
 msgid "{} Running App"
 msgid_plural "{} Running Apps"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/apps_page/mod.rs:281
+#: src/apps_page/mod.rs:285
 #, rust-format
 msgid "{} Running Process"
 msgid_plural "{} Running Processes"
@@ -2010,66 +2023,66 @@ msgstr ""
 msgid "Copy logs to clipboard"
 msgstr ""
 
-#: src/application.rs:507
+#: src/application.rs:521
 msgid "translator-credits"
 msgstr ""
 
-#: src/main.rs:105
+#: src/main.rs:106
 #, rust-format
 msgid "{} year"
 msgid_plural "{} years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:109
+#: src/main.rs:110
 #, rust-format
 msgid "{} month"
 msgid_plural "{} months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:113
+#: src/main.rs:114
 #, rust-format
 msgid "{} day"
 msgid_plural "{} days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:117
+#: src/main.rs:118
 #, rust-format
 msgid "{} hour"
 msgid_plural "{} hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:121 src/main.rs:206
+#: src/main.rs:122 src/main.rs:207
 #, rust-format
 msgid "{} minute"
 msgid_plural "{} minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:125 src/main.rs:204
+#: src/main.rs:126 src/main.rs:205
 #, rust-format
 msgid "{} second"
 msgid_plural "{} seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/main.rs:162
+#: src/main.rs:163
 #, rust-format
 msgid "{}, {} and {}"
 msgstr ""
 
-#: src/main.rs:165 src/main.rs:173 src/main.rs:180 src/main.rs:187
+#: src/main.rs:166 src/main.rs:174 src/main.rs:181 src/main.rs:188
 #, rust-format
 msgid "{} and {}"
 msgstr ""
 
-#: src/main.rs:196
+#: src/main.rs:197
 msgid "Less than a minute"
 msgstr ""
 
-#: src/main.rs:450
+#: src/main.rs:451
 msgid "_Quit"
 msgstr ""

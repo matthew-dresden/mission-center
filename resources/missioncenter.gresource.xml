@@ -8,6 +8,7 @@
         <file preprocess="xml-stripblanks">details-symbolic.svg</file>
         <file preprocess="xml-stripblanks">edit-symbolic.svg</file>
         <file preprocess="xml-stripblanks">external-link-symbolic.svg</file>
+        <file preprocess="xml-stripblanks">general-properties-symbolic.svg</file>
         <file preprocess="xml-stripblanks">info-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-collapse-symbolic.svg</file>
         <file preprocess="xml-stripblanks">list-disable-all-symbolic.svg</file>
@@ -27,6 +28,7 @@
         <file preprocess="xml-stripblanks">sidebar-toggle-right-symbolic.svg</file>
         <file preprocess="xml-stripblanks">speedometer-symbolic.svg</file>
         <file preprocess="xml-stripblanks">padlock2-symbolic.svg</file>
+        <file preprocess="xml-stripblanks">ruler-angled-symbolic.svg</file>
     </gresource>
 
     <gresource prefix="/io/missioncenter/MissionCenter">
@@ -64,7 +66,10 @@
         <file preprocess="xml-stripblanks">ui/performance_page/page.ui</file>
         <file preprocess="xml-stripblanks">ui/performance_page/summary_graph.ui</file>
 
-        <file preprocess="xml-stripblanks">ui/preferences/page.ui</file>
+        <file preprocess="xml-stripblanks">ui/preferences/apps_services_page.ui</file>
+        <file preprocess="xml-stripblanks">ui/preferences/general_page.ui</file>
+        <file preprocess="xml-stripblanks">ui/preferences/performance_page.ui</file>
+        <file preprocess="xml-stripblanks">ui/preferences/units_page.ui</file>
         <file preprocess="xml-stripblanks">ui/preferences/window.ui</file>
 
         <file preprocess="xml-stripblanks">ui/services_page/page.ui</file>

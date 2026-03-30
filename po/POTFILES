@@ -25,8 +25,11 @@ resources/ui/performance_page/disk_smart_failure_dialog.blp
 resources/ui/performance_page/disk_details.blp
 resources/ui/performance_page/cpu_details.blp
 
+resources/ui/preferences/apps_services_page.blp
+resources/ui/preferences/general_page.blp
+resources/ui/preferences/performance_page.blp
+resources/ui/preferences/units_page.blp
 resources/ui/preferences/window.blp
-resources/ui/preferences/page.blp
 
 resources/ui/services_page/page.blp
 
@@ -67,7 +70,10 @@ src/performance_page/network.rs
 src/performance_page/summary_graph.rs
 
 src/preferences/mod.rs
-src/preferences/page.rs
+src/preferences/apps_services_page.rs
+src/preferences/general_page.rs
+src/preferences/performance_page.rs
+src/preferences/units_page.rs
 
 src/magpie_client/spawner.rs
 src/magpie_client/client.rs
@@ -90,7 +96,6 @@ src/table_view/columns/name.rs
 src/table_view/columns/name_cell.rs
 src/table_view/columns/network.rs
 src/table_view/columns/pid.rs
-src/table_view/columns/shared_memory.rs
 src/table_view/mod.rs
 src/table_view/models.rs
 src/table_view/process_action_bar.rs
