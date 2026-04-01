@@ -45,6 +45,8 @@ use crate::performance_page::widgets::{
 };
 use crate::{settings, DataType};
 
+use summary_graph::DeviceType;
+
 mod battery;
 mod cpu;
 mod disk;
@@ -984,7 +986,7 @@ mod imp {
                         );
 
                         let content_provider =
-                            gdk::ContentProvider::for_value(&glib::Value::from(row.index()));
+                            gdk::ContentProvider::for_value(&Value::from(row.index()));
 
                         row.set_visible(false);
                         for sg in summary_graphs.keys() {
@@ -1070,7 +1072,7 @@ mod imp {
             pages: &mut Vec<Pages>,
             readings: &crate::magpie_client::Readings,
         ) {
-            let summary = SummaryGraph::new();
+            let summary = SummaryGraph::new(DeviceType::Cpu);
             summary.set_widget_name("cpu");
 
             summary.set_heading(i18n("CPU"));
@@ -1116,7 +1118,7 @@ mod imp {
             pages: &mut Vec<Pages>,
             readings: &crate::magpie_client::Readings,
         ) {
-            let summary = SummaryGraph::new();
+            let summary = SummaryGraph::new(DeviceType::Memory);
             summary.set_widget_name("memory");
             let mem_info = readings.mem_info;
 
@@ -1245,7 +1247,7 @@ mod imp {
 
             let page_name = Self::disk_page_name(disk.id.as_ref());
 
-            let summary = SummaryGraph::new();
+            let summary = SummaryGraph::new(DeviceType::Disk);
             summary.set_widget_name(&page_name);
 
             self.update_disk_heading(
@@ -1345,7 +1347,7 @@ mod imp {
 
             let settings = settings!();
 
-            let summary = SummaryGraph::new();
+            let summary = SummaryGraph::new(DeviceType::Network);
             summary.set_widget_name(&page_name);
             summary.set_heading(format!("{} ({})", conn_type, if_name));
             {
@@ -1449,7 +1451,7 @@ mod imp {
         ) -> (String, (SummaryGraph, GpuPage)) {
             let page_name = Self::gpu_page_name(&gpu.id);
 
-            let summary = SummaryGraph::new();
+            let summary = SummaryGraph::new(DeviceType::Gpu);
             summary.set_widget_name(&page_name);
 
             let settings = settings!();
@@ -1569,7 +1571,7 @@ mod imp {
 
             let page_name = Self::fan_page_name(fan_static_info);
 
-            let summary = SummaryGraph::new();
+            let summary = SummaryGraph::new(DeviceType::Fan);
             summary.set_widget_name(&page_name);
 
             if let Some(index) = index {
@@ -1667,7 +1669,7 @@ mod imp {
 
             let page_name = Self::battery_page_name(battery_static_info);
 
-            let summary = SummaryGraph::new();
+            let summary = SummaryGraph::new(DeviceType::Battery);
             summary.set_widget_name(&page_name);
 
             if let Some(index) = index {
@@ -1805,6 +1807,46 @@ mod imp {
     }
 
     impl PerformancePage {
+        fn update_device_visibility(&self, settings: &gio::Settings, summary_graphs: &HashMap<SummaryGraph, gtk::DragSource>)
+        {
+            if self.sidebar_edit_mode.get() {
+                return;
+            }
+
+            let show_disks = settings.boolean("performance-show-disks");
+            let show_network = settings.boolean("performance-show-network");
+            let show_gpus = settings.boolean("performance-show-gpus");
+            let show_fans = settings.boolean("performance-show-fans");
+            let show_batteries = settings.boolean("performance-show-batteries");
+
+            for graph in summary_graphs.keys() {
+                match graph.device_type() {
+                    DeviceType::Disk => {
+                        graph.set_is_enabled(show_disks);
+                        graph.parent().map(|parent| parent.set_visible(show_disks));
+                    }
+                    DeviceType::Network => {
+                        graph.set_is_enabled(show_network);
+                        graph.parent().map(|parent| parent.set_visible(show_network));
+                    }
+                    DeviceType::Gpu => {
+                        graph.set_is_enabled(show_gpus);
+                        graph.parent().map(|parent| parent.set_visible(show_gpus));
+                    }
+                    DeviceType::Fan => {
+                        graph.set_is_enabled(show_fans);
+                        graph.parent().map(|parent| parent.set_visible(show_fans));
+                    }
+                    DeviceType::Battery => {
+                        graph.set_is_enabled(show_batteries);
+                        graph.parent().map(|parent| parent.set_visible(show_batteries));
+                    }
+                    DeviceType::Cpu | DeviceType::Memory | DeviceType::Unspecified => {
+                    }
+                }
+            }
+        }
+
         pub fn set_up_pages(
             this: &super::PerformancePage,
             readings: &crate::magpie_client::Readings,
@@ -1868,7 +1910,6 @@ mod imp {
 
                 if hidden_graphs.contains(name.as_str()) {
                     graph.set_is_enabled(false);
-                    row.set_visible(false);
                 }
 
                 row_map.insert(graph.widget_name(), (row, graph));
@@ -1900,9 +1941,6 @@ mod imp {
 
                     sidebar.insert(&graph, i);
                     sidebar.row_at_index(i).and_then(|row| {
-                        if !graph.is_enabled() {
-                            row.set_visible(false);
-                        }
                         Some(row.add_controller(drag_controller))
                     });
                 }
@@ -1963,6 +2001,8 @@ mod imp {
                 }
             }
 
+            let mut summary_graphs = this.imp().summary_graphs.take();
+
             for page in &mut pages {
                 match page {
                     Pages::Cpu(_) => {}    // not dynamic
@@ -1977,8 +2017,6 @@ mod imp {
                             }
                         }
 
-                        let mut summary_graphs = this.imp().summary_graphs.take();
-
                         remove_pages(
                             &pages_to_destroy,
                             disks_pages,
@@ -1987,8 +2025,6 @@ mod imp {
                             &this.imp().page_stack,
                         );
                         pages_to_destroy.clear();
-
-                        this.imp().summary_graphs.set(summary_graphs);
                     }
                     Pages::Network(net_pages) => {
                         for net_page_name in net_pages.keys() {
@@ -2001,8 +2037,6 @@ mod imp {
                             }
                         }
 
-                        let mut summary_graphs = this.imp().summary_graphs.take();
-
                         remove_pages(
                             &pages_to_destroy,
                             net_pages,
@@ -2011,8 +2045,6 @@ mod imp {
                             &this.imp().page_stack,
                         );
                         pages_to_destroy.clear();
-
-                        this.imp().summary_graphs.set(summary_graphs);
                     }
                     Pages::Gpu(gpu_pages) => {
                         for gpu_page_name in gpu_pages.keys() {
@@ -2020,8 +2052,6 @@ mod imp {
                                 pages_to_destroy.push(gpu_page_name.clone());
                             }
                         }
-
-                        let mut summary_graphs = this.imp().summary_graphs.take();
 
                         remove_pages(
                             &pages_to_destroy,
@@ -2031,8 +2061,6 @@ mod imp {
                             &this.imp().page_stack,
                         );
                         pages_to_destroy.clear();
-
-                        this.imp().summary_graphs.set(summary_graphs);
                     }
                     Pages::Fan(fan_pages) => {
                         for fan_page_name in fan_pages.keys() {
@@ -2045,8 +2073,6 @@ mod imp {
                             }
                         }
 
-                        let mut summary_graphs = this.imp().summary_graphs.take();
-
                         remove_pages(
                             &pages_to_destroy,
                             fan_pages,
@@ -2055,8 +2081,6 @@ mod imp {
                             &this.imp().page_stack,
                         );
                         pages_to_destroy.clear();
-
-                        this.imp().summary_graphs.set(summary_graphs);
                     }
                     Pages::Battery(battery_pages) => {
                         for battery_page_name in battery_pages.keys() {
@@ -2067,8 +2091,6 @@ mod imp {
                             }
                         }
 
-                        let mut summary_graphs = this.imp().summary_graphs.take();
-
                         remove_pages(
                             &pages_to_destroy,
                             battery_pages,
@@ -2077,11 +2099,17 @@ mod imp {
                             &this.imp().page_stack,
                         );
                         pages_to_destroy.clear();
-
-                        this.imp().summary_graphs.set(summary_graphs);
                     }
                 }
             }
+
+            let settings = settings!();
+
+            let hidden_graphs = settings.string("performance-sidebar-hidden-graphs");
+            let hidden_graphs = hidden_graphs
+                .split(";")
+                .filter(|g| !g.is_empty())
+                .collect::<HashSet<_>>();
 
             let mut result = true;
 
@@ -2190,6 +2218,8 @@ mod imp {
                             }
                         }
 
+                        let show_disks = settings.boolean("performance-show-disks");
+
                         for new_device_index in new_devices {
                             if readings.disks_info[new_device_index].capacity_bytes == 0 {
                                 continue;
@@ -2208,6 +2238,11 @@ mod imp {
                                     None
                                 },
                             );
+
+                            if !show_disks || hidden_graphs.contains(page.0.widget_name().as_str()) {
+                                page.0.set_is_enabled(false);
+                            }
+
                             pages.insert(disk_id, page);
                         }
                     }
@@ -2502,6 +2537,7 @@ mod imp {
                 }
             }
 
+            this.imp().summary_graphs.set(summary_graphs);
             this.imp().pages.set(pages);
 
             result
