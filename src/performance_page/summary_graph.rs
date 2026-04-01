@@ -1,6 +1,6 @@
 /* performance_page/summary_graph.rs
  *
- * Copyright 2024-2025 Mission Center Developers
+ * Copyright 2026 Mission Center Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use std::cell::Cell;
 use std::collections::HashSet;
 
 use adw::subclass::prelude::*;
@@ -26,6 +27,18 @@ use gtk::{gdk, glib, prelude::*};
 
 use crate::performance_page::widgets::{GraphWidget, SidebarDropHint};
 use crate::settings;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum DeviceType {
+    Cpu,
+    Memory,
+    Disk,
+    Network,
+    Gpu,
+    Fan,
+    Battery,
+    Unspecified,
+}
 
 mod imp {
     use super::*;
@@ -64,6 +77,8 @@ mod imp {
         info1: PhantomData<String>,
         #[property(get = Self::info2, set = Self::set_info2)]
         info2: PhantomData<String>,
+
+        pub device_type: Cell<DeviceType>,
     }
 
     impl Default for SummaryGraph {
@@ -83,6 +98,8 @@ mod imp {
                 heading: PhantomData,
                 info1: PhantomData,
                 info2: PhantomData,
+
+                device_type: Cell::new(DeviceType::Unspecified),
             }
         }
     }
@@ -232,8 +249,10 @@ glib::wrapper! {
 }
 
 impl SummaryGraph {
-    pub fn new() -> Self {
-        glib::Object::builder().build()
+    pub fn new(device_type: DeviceType) -> Self {
+        let this: SummaryGraph = glib::Object::builder().build();
+        this.imp().device_type.set(device_type);
+        this
     }
 
     pub fn set_edit_mode(&self, edit_mode: bool) {
@@ -293,5 +312,9 @@ impl SummaryGraph {
         }
 
         self.imp().drop_hint.next_sibling().is_none()
+    }
+
+    pub fn device_type(&self) -> DeviceType {
+        self.imp().device_type.get()
     }
 }

@@ -52,6 +52,8 @@ mod imp {
         pub show_gpus: TemplateChild<SwitchRow>,
         #[template_child]
         pub show_fans: TemplateChild<SwitchRow>,
+        #[template_child]
+        pub show_batteries: TemplateChild<SwitchRow>,
     }
 
     impl PreferencesPerformancePage {
@@ -122,6 +124,7 @@ mod imp {
             connect_switch_to_setting!(self.show_network, "performance-show-network");
             connect_switch_to_setting!(self.show_gpus, "performance-show-gpus");
             connect_switch_to_setting!(self.show_fans, "performance-show-fans");
+            connect_switch_to_setting!(self.show_batteries, "performance-show-batteries");
         }
     }
 
@@ -164,6 +167,8 @@ impl PreferencesPerformancePage {
             .set_active(settings.boolean("performance-show-gpus"));
         imp.show_fans
             .set_active(settings.boolean("performance-show-fans"));
+        imp.show_batteries
+            .set_active(settings.boolean("performance-show-batteries"));
 
         this
     }

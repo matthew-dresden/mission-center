@@ -222,6 +222,11 @@
             <summary>Show fan information by default</summary>
         </key>
 
+        <key name="performance-show-batteries" type="b">
+            <default>true</default>
+            <summary>Show fan information by default</summary>
+        </key>
+
         <key name="performance-page-memory-composition-visible" type="b">
             <default>true</default>
             <summary>Show the mem composition widget</summary>
