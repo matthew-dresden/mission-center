@@ -278,7 +278,7 @@ mod imp {
 
             let font_desc = pango::FontDescription::from_string("Sans 7");
 
-            for i in 0..=horizontal_lines {
+            for i in 1..horizontal_lines {
                 let fraction = i as f32 / horizontal_lines as f32;
                 let value = high - fraction * (high - low);
                 let label_text = format_tooltip_value(value, kind);
