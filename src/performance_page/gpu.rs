@@ -718,7 +718,7 @@ mod imp {
 
                 self.infobar_content
                     .temperature()
-                    .set_text(&super::fmt_temp_c(temp as f64));
+                    .set_text(&crate::performance_page::fmt_temp_c(temp as f64));
             } else {
                 self.infobar_content.box_temp().set_visible(false);
             }
