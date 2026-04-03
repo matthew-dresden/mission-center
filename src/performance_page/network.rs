@@ -29,7 +29,7 @@ use magpie_types::network::{Connection, ConnectionKind};
 
 use crate::i18n::*;
 use crate::performance_page::widgets::{
-    DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
+    DatasetGroup, DatasetLabel, FillingSettings, GraphWidget, ScalingSettings, TooltipValueKind,
 };
 use crate::{application::INTERVAL_STEP, to_short_human_readable_time};
 use crate::{settings, DataType};
@@ -575,6 +575,29 @@ mod imp {
 
             self.usage_graph.connect_datasets(0, 1);
             self.usage_graph.connect_datasets(1, 0);
+
+            self.usage_graph.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: crate::i18n::i18n("Send"),
+                    value_kind: TooltipValueKind::BytesPerSecond(
+                        crate::DataType::NetworkBytesPerSecond,
+                    ),
+                }],
+            );
+            self.usage_graph.set_dataset_labels(
+                1,
+                vec![DatasetLabel {
+                    name: crate::i18n::i18n("Receive"),
+                    value_kind: TooltipValueKind::BytesPerSecond(
+                        crate::DataType::NetworkBytesPerSecond,
+                    ),
+                }],
+            );
+            self.usage_graph
+                .set_y_axis_label_kind(Some(TooltipValueKind::BytesPerSecond(
+                    crate::DataType::NetworkBytesPerSecond,
+                )));
 
             self.usage_graph.connect_to_settings(&settings!());
 

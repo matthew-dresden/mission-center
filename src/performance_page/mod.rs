@@ -1289,7 +1289,10 @@ mod imp {
                 "{:.0}%{}",
                 disk.busy_percent,
                 if let Some(temp_mk) = disk.temperature_milli_k {
-                    format!(" ({})", fmt_temp_c((temp_mk as i32 + MK_TO_0_C) as f64 / 1000.))
+                    format!(
+                        " ({})",
+                        fmt_temp_c((temp_mk as i32 + MK_TO_0_C) as f64 / 1000.)
+                    )
                 } else {
                     String::new()
                 }

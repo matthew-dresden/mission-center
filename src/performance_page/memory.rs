@@ -25,7 +25,8 @@ use glib::{ParamSpec, Properties, Value};
 use gtk::{gio, glib, prelude::*};
 
 use crate::performance_page::widgets::{
-    DatasetGroup, FillingSettings, GraphWidget, MemoryCompositionWidget,
+    DatasetGroup, DatasetLabel, FillingSettings, GraphWidget, MemoryCompositionWidget,
+    TooltipValueKind,
 };
 use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
@@ -702,11 +703,43 @@ mod imp {
             self.usage_graph.connect_datasets(1, 2);
             self.usage_graph.connect_datasets(2, 0);
 
+            self.usage_graph.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Committed"),
+                    value_kind: TooltipValueKind::Bytes(crate::DataType::MemoryBytes),
+                }],
+            );
+            self.usage_graph.set_dataset_labels(
+                1,
+                vec![DatasetLabel {
+                    name: i18n("Dirty"),
+                    value_kind: TooltipValueKind::Bytes(crate::DataType::MemoryBytes),
+                }],
+            );
+            self.usage_graph.set_dataset_labels(
+                2,
+                vec![DatasetLabel {
+                    name: i18n("Used"),
+                    value_kind: TooltipValueKind::Bytes(crate::DataType::MemoryBytes),
+                }],
+            );
+            self.usage_graph
+                .set_y_axis_label_kind(Some(TooltipValueKind::Bytes(crate::DataType::MemoryBytes)));
             self.usage_graph.connect_to_settings(&settings!());
 
             let swap_dataset = DatasetGroup::new();
 
             self.swap_usage_graph.add_dataset(swap_dataset);
+            self.swap_usage_graph.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Used"),
+                    value_kind: TooltipValueKind::Bytes(crate::DataType::MemoryBytes),
+                }],
+            );
+            self.swap_usage_graph
+                .set_y_axis_label_kind(Some(TooltipValueKind::Bytes(crate::DataType::MemoryBytes)));
             self.swap_usage_graph.connect_to_settings(&settings!());
 
             Self::configure_actions(&this);

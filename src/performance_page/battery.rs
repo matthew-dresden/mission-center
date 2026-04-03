@@ -30,7 +30,9 @@ use super::widgets::{FillingSettings, GraphWidget};
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::widgets::DatasetGroup;
+use crate::performance_page::widgets::DatasetLabel;
 use crate::performance_page::widgets::ScalingSettings;
+use crate::performance_page::widgets::TooltipValueKind;
 use crate::performance_page::PageExt;
 use crate::to_long_human_readable_time;
 use crate::to_short_human_readable_time;
@@ -375,6 +377,27 @@ mod imp {
                 this.energy_rate_min_y.set_visible(false);
             }
             this.energy_rate_graph.add_dataset(energy_rate_graph);
+            if power_supply {
+                this.energy_rate_graph.set_dataset_labels(
+                    0,
+                    vec![DatasetLabel {
+                        name: i18n("Power"),
+                        value_kind: TooltipValueKind::Plain("W".to_string()),
+                    }],
+                );
+                this.energy_rate_graph
+                    .set_y_axis_label_kind(Some(TooltipValueKind::Plain("W".to_string())));
+            } else {
+                this.energy_rate_graph.set_dataset_labels(
+                    0,
+                    vec![DatasetLabel {
+                        name: i18n("Level"),
+                        value_kind: TooltipValueKind::Percentage,
+                    }],
+                );
+                this.energy_rate_graph
+                    .set_y_axis_label_kind(Some(TooltipValueKind::Percentage));
+            }
 
             if power_supply && battery.history.len() >= 2 {
                 update_history(this, battery)

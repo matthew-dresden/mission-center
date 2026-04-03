@@ -27,7 +27,7 @@ use gtk::{gio, glib, prelude::*};
 
 use super::PageExt;
 use crate::performance_page::widgets::{
-    DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
+    DatasetGroup, DatasetLabel, FillingSettings, GraphWidget, ScalingSettings, TooltipValueKind,
 };
 use crate::DataType;
 use crate::{application::INTERVAL_STEP, i18n::*, settings, to_short_human_readable_time};
@@ -803,6 +803,21 @@ mod imp {
 
             overall.add_dataset(usage_group);
             overall.add_dataset(kernel_group);
+            overall.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Total"),
+                    value_kind: TooltipValueKind::Percentage,
+                }],
+            );
+            overall.set_dataset_labels(
+                1,
+                vec![DatasetLabel {
+                    name: i18n("Kernel"),
+                    value_kind: TooltipValueKind::Percentage,
+                }],
+            );
+            overall.set_y_axis_label_kind(Some(TooltipValueKind::Percentage));
 
             graph_widgets.push(overall);
 

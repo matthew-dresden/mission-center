@@ -19,6 +19,7 @@
  */
 
 use std::cmp::PartialEq;
+use std::time::SystemTime;
 
 use adw::gdk;
 use gtk::gsk::{FillRule, PathBuilder, Stroke};
@@ -27,6 +28,35 @@ use gtk::Snapshot;
 
 use crate::performance_page::widgets::GraphWidget;
 use crate::preferences::{MAX_POINTS, MIN_POINTS};
+
+#[derive(Clone, Debug)]
+pub enum TooltipValueKind {
+    Percentage,
+    Bytes(crate::DataType),
+    BytesPerSecond(crate::DataType),
+    Rpm,
+    Temperature,
+    Plain(String),
+}
+
+#[derive(Clone, Debug)]
+pub struct DatasetLabel {
+    pub name: String,
+    pub value_kind: TooltipValueKind,
+}
+
+pub fn format_tooltip_value(value: f32, kind: &TooltipValueKind) -> String {
+    match kind {
+        TooltipValueKind::Percentage => format!("{:.1}%", value),
+        TooltipValueKind::Bytes(dt) => crate::to_human_readable_nice(value, dt),
+        TooltipValueKind::BytesPerSecond(dt) => {
+            format!("{}/s", crate::to_human_readable_nice(value, dt))
+        }
+        TooltipValueKind::Rpm => format!("{:.0} RPM", value),
+        TooltipValueKind::Temperature => crate::performance_page::fmt_temp_c_1dp(value as f64),
+        TooltipValueKind::Plain(unit) => format!("{:.1} {}", value, unit),
+    }
+}
 
 #[derive(Default, Clone, PartialEq)]
 pub enum ScalingSettings {
@@ -82,6 +112,8 @@ pub struct DatasetGroup {
     pub dataset_settings: DatasetSettings,
 
     pub datas: Vec<Dataset>,
+    pub timestamps: Vec<Option<SystemTime>>,
+    pub labels: Vec<DatasetLabel>,
 }
 
 impl DatasetGroup {
@@ -101,6 +133,8 @@ impl DatasetGroup {
                 followed: None,
             },
             datas: vec![Dataset::default()],
+            timestamps: vec![None; MAX_POINTS as usize],
+            labels: Vec::new(),
         }
     }
 
@@ -124,6 +158,8 @@ impl DatasetGroup {
                 followed: None,
             },
             datas,
+            timestamps: vec![None; MAX_POINTS as usize],
+            labels: Vec::new(),
         }
     }
 
@@ -143,6 +179,8 @@ impl DatasetGroup {
                 followed: None,
             },
             datas: vec![Dataset::new_with_fill(v)],
+            timestamps: vec![None; MAX_POINTS as usize],
+            labels: Vec::new(),
         }
     }
 }
@@ -168,6 +206,9 @@ impl DatasetGroup {
     }
 
     pub fn add_data(&mut self, points: &Vec<f32>) {
+        self.timestamps.rotate_right(1);
+        self.timestamps[0] = Some(SystemTime::now());
+
         for (idx, set) in points.iter().enumerate() {
             self.update_single_scaling(idx, *set);
         }
@@ -353,6 +394,9 @@ impl DatasetGroup {
         self.datas
             .iter_mut()
             .for_each(|set| set.update_data_points(new_points));
+
+        // Timestamps are sized to MAX_POINTS; used_data tracks the active range
+        // No resize needed since timestamps vec is always MAX_POINTS
     }
 
     pub fn plot(&self, snapshot: &Snapshot, width: f32, height: f32, parent: &GraphWidget) {
@@ -577,6 +621,14 @@ impl Dataset {
 
     pub fn update_data_points(&mut self, new_points: usize) {
         self.used_data = new_points;
+    }
+
+    pub fn value_at(&self, index: usize) -> Option<f32> {
+        if index < self.used_data {
+            Some(self.data[index])
+        } else {
+            None
+        }
     }
 
     pub fn get_data(&self) -> Vec<f32> {

@@ -30,7 +30,7 @@ use magpie_types::fan::Fan;
 use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::widgets::{
-    DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
+    DatasetGroup, DatasetLabel, FillingSettings, GraphWidget, ScalingSettings, TooltipValueKind,
 };
 use crate::performance_page::{PageExt, MK_TO_0_C};
 use crate::to_short_human_readable_time;
@@ -263,7 +263,9 @@ mod imp {
 
                 this.temp_graph.add_data_point(vec![vec![fan_temp_c]]);
                 this.temp_max_y
-                    .set_text(&crate::performance_page::fmt_temp_c(this.temp_graph.get_dataset_max_scale(0) as f64));
+                    .set_text(&crate::performance_page::fmt_temp_c(
+                        this.temp_graph.get_dataset_max_scale(0) as f64,
+                    ));
             }
 
             this.speed_graph.add_data_point(vec![
@@ -494,6 +496,35 @@ impl PerformancePageFan {
 
         this.imp().speed_graph.add_dataset(speed_dataset);
         this.imp().speed_graph.add_dataset(rpm_dataset);
+
+        this.imp().temp_graph.set_dataset_labels(
+            0,
+            vec![DatasetLabel {
+                name: i18n("Temperature"),
+                value_kind: TooltipValueKind::Temperature,
+            }],
+        );
+        this.imp()
+            .temp_graph
+            .set_y_axis_label_kind(Some(TooltipValueKind::Temperature));
+
+        this.imp().speed_graph.set_dataset_labels(
+            0,
+            vec![DatasetLabel {
+                name: i18n("RPM"),
+                value_kind: TooltipValueKind::Rpm,
+            }],
+        );
+        this.imp().speed_graph.set_dataset_labels(
+            1,
+            vec![DatasetLabel {
+                name: i18n("PWM"),
+                value_kind: TooltipValueKind::Percentage,
+            }],
+        );
+        this.imp()
+            .speed_graph
+            .set_y_axis_label_kind(Some(TooltipValueKind::Rpm));
 
         this.imp().temp_graph.connect_to_settings(settings);
         this.imp().speed_graph.connect_to_settings(settings);

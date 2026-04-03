@@ -31,8 +31,8 @@ use crate::application::INTERVAL_STEP;
 use crate::i18n::*;
 use crate::performance_page::disk_details::DiskDetails;
 use crate::performance_page::widgets::{
-    DatasetGroup, EjectFailureDialog, FillingSettings, GraphWidget, ScalingSettings,
-    SmartDataDialog, SmartFailureDialog,
+    DatasetGroup, DatasetLabel, EjectFailureDialog, FillingSettings, GraphWidget, ScalingSettings,
+    SmartDataDialog, SmartFailureDialog, TooltipValueKind,
 };
 use crate::{app, settings, to_short_human_readable_time, DataType};
 
@@ -506,6 +506,38 @@ mod imp {
             let usage_dataset = DatasetGroup::new();
 
             self.usage_graph.add_dataset(usage_dataset);
+
+            self.disk_transfer_rate_graph.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Read"),
+                    value_kind: TooltipValueKind::BytesPerSecond(
+                        crate::DataType::DriveBytesPerSecond,
+                    ),
+                }],
+            );
+            self.disk_transfer_rate_graph.set_dataset_labels(
+                1,
+                vec![DatasetLabel {
+                    name: i18n("Write"),
+                    value_kind: TooltipValueKind::BytesPerSecond(
+                        crate::DataType::DriveBytesPerSecond,
+                    ),
+                }],
+            );
+            self.disk_transfer_rate_graph.set_y_axis_label_kind(Some(
+                TooltipValueKind::BytesPerSecond(crate::DataType::DriveBytesPerSecond),
+            ));
+
+            self.usage_graph.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Active"),
+                    value_kind: TooltipValueKind::Percentage,
+                }],
+            );
+            self.usage_graph
+                .set_y_axis_label_kind(Some(TooltipValueKind::Percentage));
 
             self.disk_transfer_rate_graph
                 .connect_to_settings(&settings!());

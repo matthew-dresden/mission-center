@@ -32,13 +32,15 @@ use gtk::graphene;
 use gtk::gsk;
 use gtk::gsk::PathBuilder;
 use gtk::gsk::Stroke;
+use gtk::pango;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::Snapshot;
 use gtk::TextDirection;
 
 use crate::performance_page::widgets::graph_widget_utils::{
-    DatasetGroup, FillingSettings, ScalingSettings,
+    format_tooltip_value, DatasetGroup, DatasetLabel, FillingSettings, ScalingSettings,
+    TooltipValueKind,
 };
 
 // no faster than 200 Hz. if everything is going according to plan, we expect two animation frames in quick succession at the start of a new cycle and want to prevent rendering twice
@@ -78,6 +80,10 @@ mod imp {
         cached_snapshot: Cell<Option<gsk::RenderNode>>,
 
         pub data_sets: Cell<Vec<DatasetGroup>>,
+
+        pub hover_x: Cell<Option<f32>>,
+        pub hover_y: Cell<Option<f32>>,
+        pub y_axis_label_kind: Cell<Option<TooltipValueKind>>,
     }
 
     impl Default for GraphWidget {
@@ -98,6 +104,9 @@ mod imp {
                 need_redraw: Cell::new(true),
                 cached_snapshot: Cell::new(None),
                 data_sets: Cell::new(vec![]),
+                hover_x: Cell::new(None),
+                hover_y: Cell::new(None),
+                y_axis_label_kind: Cell::new(None),
             }
         }
     }
@@ -225,6 +234,183 @@ mod imp {
             snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
         }
 
+        fn draw_crosshair(&self, snapshot: &Snapshot, width: f32, height: f32) {
+            let Some(mut hover_x) = self.hover_x.get() else {
+                return;
+            };
+
+            if self.obj().direction() == TextDirection::Rtl {
+                hover_x = width - hover_x;
+            }
+
+            let color = gdk::RGBA::new(1., 1., 1., 0.6);
+            let path_builder = PathBuilder::new();
+            path_builder.move_to(hover_x, 0.0);
+            path_builder.line_to(hover_x, height);
+            let stroke = Stroke::new(1.0);
+            snapshot.append_stroke(&path_builder.to_path(), &stroke, &color);
+        }
+
+        fn draw_y_axis_labels(&self, snapshot: &Snapshot, _width: f32, height: f32) {
+            let y_kind = self.y_axis_label_kind.take();
+            let Some(ref kind) = y_kind else {
+                self.y_axis_label_kind.set(y_kind);
+                return;
+            };
+
+            let data_sets = self.data_sets.take();
+            let (low, high) = data_sets
+                .iter()
+                .find(|g| g.dataset_settings.visible)
+                .map(|g| {
+                    (
+                        g.dataset_settings.low_watermark,
+                        g.dataset_settings.high_watermark,
+                    )
+                })
+                .unwrap_or((0.0, 100.0));
+            self.data_sets.set(data_sets);
+
+            let horizontal_lines = self.obj().horizontal_line_count() + 1;
+            let step_height = height / horizontal_lines as f32;
+
+            let label_color = gdk::RGBA::new(1., 1., 1., 0.5);
+
+            let font_desc = pango::FontDescription::from_string("Sans 7");
+
+            for i in 0..=horizontal_lines {
+                let fraction = i as f32 / horizontal_lines as f32;
+                let value = high - fraction * (high - low);
+                let label_text = format_tooltip_value(value, kind);
+
+                let y = step_height * i as f32;
+
+                let layout = self.obj().create_pango_layout(Some(&label_text));
+                layout.set_font_description(Some(&font_desc));
+                let (_, logical) = layout.pixel_extents();
+
+                snapshot.save();
+                snapshot.translate(&graphene::Point::new(
+                    4.0,
+                    y - logical.height() as f32 / 2.0,
+                ));
+                snapshot.append_layout(&layout, &label_color);
+                snapshot.restore();
+            }
+
+            self.y_axis_label_kind.set(y_kind);
+        }
+
+        fn draw_tooltip(&self, snapshot: &Snapshot, width: f32, _height: f32) {
+            let Some(mut hover_x) = self.hover_x.get() else {
+                return;
+            };
+            let hover_y = self.hover_y.get().unwrap_or(0.0);
+
+            if self.obj().direction() == TextDirection::Rtl {
+                hover_x = width - hover_x;
+            }
+
+            let data_points = self.data_points.get();
+            if data_points < 2 {
+                return;
+            }
+
+            let spacing = width * self.obj().point_spacing_factor();
+            let animation_offset = if self.do_animation.get() {
+                spacing * (1.0 - self.animation_ticks.get())
+            } else {
+                0.0
+            };
+
+            let raw_index = (width - hover_x + animation_offset) / spacing;
+            let index = raw_index.round() as usize;
+            let used_points = data_points as usize;
+            if index >= used_points {
+                return;
+            }
+
+            let data_sets = self.data_sets.take();
+
+            let mut lines: Vec<String> = Vec::new();
+
+            // Timestamp from first group that has one at this index
+            if let Some(ts) = data_sets
+                .iter()
+                .find_map(|g| g.timestamps.get(index).copied().flatten())
+            {
+                if let Ok(duration) = ts.duration_since(std::time::UNIX_EPOCH) {
+                    if let Some(dt) =
+                        glib::DateTime::from_unix_local(duration.as_secs() as i64).ok()
+                    {
+                        if let Some(time_str) = dt.format("%H:%M:%S").ok() {
+                            lines.push(time_str.to_string());
+                        }
+                    }
+                }
+            }
+
+            // Values from each dataset group
+            for group in &data_sets {
+                for (i, dataset) in group.datas.iter().enumerate() {
+                    let Some(value) = dataset.value_at(index) else {
+                        continue;
+                    };
+                    if value.is_nan() {
+                        continue;
+                    }
+
+                    let formatted = if let Some(label) = group.labels.get(i) {
+                        format!(
+                            "{}: {}",
+                            label.name,
+                            format_tooltip_value(value, &label.value_kind)
+                        )
+                    } else {
+                        format!("{:.1}", value)
+                    };
+                    lines.push(formatted);
+                }
+            }
+
+            self.data_sets.set(data_sets);
+
+            if lines.is_empty() {
+                return;
+            }
+
+            let tooltip_text = lines.join("\n");
+            let layout = self.obj().create_pango_layout(Some(&tooltip_text));
+            let font_desc = pango::FontDescription::from_string("Sans 8");
+            layout.set_font_description(Some(&font_desc));
+            let (_, logical) = layout.pixel_extents();
+
+            let pad = 6.0f32;
+            let tooltip_w = logical.width() as f32 + pad * 2.0;
+            let tooltip_h = logical.height() as f32 + pad * 2.0;
+
+            // Position: right of crosshair, flip left if overflows
+            let mut tx = hover_x + 8.0;
+            if tx + tooltip_w > width {
+                tx = hover_x - tooltip_w - 8.0;
+            }
+            let ty = (hover_y - tooltip_h / 2.0).clamp(0.0, _height - tooltip_h);
+
+            // Background
+            let bg_color = gdk::RGBA::new(0.1, 0.1, 0.1, 0.85);
+            snapshot.append_color(
+                &bg_color,
+                &graphene::Rect::new(tx, ty, tooltip_w, tooltip_h),
+            );
+
+            // Text
+            let text_color = gdk::RGBA::new(1., 1., 1., 0.9);
+            snapshot.save();
+            snapshot.translate(&graphene::Point::new(tx + pad, ty + pad));
+            snapshot.append_layout(&layout, &text_color);
+            snapshot.restore();
+        }
+
         fn render(&self, snapshot: &Snapshot, width: f32, height: f32, scale_factor: f64) {
             let base_color = self.base_color.get();
 
@@ -291,9 +477,13 @@ mod imp {
                 snapshot.append_node(baze);
             }
 
+            self.draw_crosshair(snapshot, width, height);
+
             snapshot.pop();
 
             self.draw_outline(snapshot, &bounds, &base_color);
+            self.draw_y_axis_labels(snapshot, width, height);
+            self.draw_tooltip(snapshot, width, height);
         }
     }
 
@@ -330,6 +520,39 @@ mod imp {
 
             // connection has to happen slightly later than GraphWidget::new and this works so that the initial resize is not lost in the void
             self.obj().connect_signals();
+
+            let motion_controller = gtk::EventControllerMotion::new();
+            motion_controller.connect_enter({
+                let this = self.obj().downgrade();
+                move |_, x, y| {
+                    if let Some(this) = this.upgrade() {
+                        this.imp().hover_x.set(Some(x as f32));
+                        this.imp().hover_y.set(Some(y as f32));
+                        this.queue_draw();
+                    }
+                }
+            });
+            motion_controller.connect_motion({
+                let this = self.obj().downgrade();
+                move |_, x, y| {
+                    if let Some(this) = this.upgrade() {
+                        this.imp().hover_x.set(Some(x as f32));
+                        this.imp().hover_y.set(Some(y as f32));
+                        this.queue_draw();
+                    }
+                }
+            });
+            motion_controller.connect_leave({
+                let this = self.obj().downgrade();
+                move |_| {
+                    if let Some(this) = this.upgrade() {
+                        this.imp().hover_x.set(None);
+                        this.imp().hover_y.set(None);
+                        this.queue_draw();
+                    }
+                }
+            });
+            self.obj().add_controller(motion_controller);
         }
 
         fn snapshot(&self, snapshot: &Snapshot) {
@@ -728,5 +951,18 @@ impl GraphWidget {
         Self::apply_followings(&mut datasets);
 
         self.imp().data_sets.set(datasets);
+    }
+
+    pub fn set_dataset_labels(&self, group_index: usize, labels: Vec<DatasetLabel>) {
+        let mut sets = self.imp().data_sets.take();
+        if group_index < sets.len() {
+            sets[group_index].labels = labels;
+        }
+        self.imp().data_sets.set(sets);
+    }
+
+    pub fn set_y_axis_label_kind(&self, kind: Option<TooltipValueKind>) {
+        self.imp().y_axis_label_kind.set(kind);
+        self.force_redraw();
     }
 }

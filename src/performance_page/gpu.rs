@@ -34,7 +34,7 @@ use crate::{
 };
 
 use crate::performance_page::widgets::{
-    DatasetGroup, FillingSettings, GraphWidget, ScalingSettings,
+    DatasetGroup, DatasetLabel, FillingSettings, GraphWidget, ScalingSettings, TooltipValueKind,
 };
 
 use super::{GpuDetails, PageExt};
@@ -786,12 +786,36 @@ mod imp {
 
             self.usage_graph_encode_decode.add_dataset(encode);
             self.usage_graph_encode_decode.add_dataset(decode);
-
+            self.usage_graph_encode_decode.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Encoder"),
+                    value_kind: TooltipValueKind::Percentage,
+                }],
+            );
+            self.usage_graph_encode_decode.set_dataset_labels(
+                1,
+                vec![DatasetLabel {
+                    name: i18n("Decoder"),
+                    value_kind: TooltipValueKind::Percentage,
+                }],
+            );
+            self.usage_graph_encode_decode
+                .set_y_axis_label_kind(Some(TooltipValueKind::Percentage));
             self.usage_graph_encode_decode
                 .connect_to_settings(&settings);
 
             let util = DatasetGroup::new();
             self.graph_utilization.add_dataset(util);
+            self.graph_utilization.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Usage"),
+                    value_kind: TooltipValueKind::Percentage,
+                }],
+            );
+            self.graph_utilization
+                .set_y_axis_label_kind(Some(TooltipValueKind::Percentage));
             self.graph_utilization.connect_to_settings(&settings);
 
             let mem = DatasetGroup::new();
@@ -800,6 +824,22 @@ mod imp {
             idk.dataset_settings.dashed = true;
             idk.dataset_settings.fill = FillingSettings::None;
             self.usage_graph_memory.add_dataset(idk);
+            self.usage_graph_memory.set_dataset_labels(
+                0,
+                vec![DatasetLabel {
+                    name: i18n("Dedicated"),
+                    value_kind: TooltipValueKind::Bytes(crate::DataType::MemoryBytes),
+                }],
+            );
+            self.usage_graph_memory.set_dataset_labels(
+                1,
+                vec![DatasetLabel {
+                    name: i18n("Shared"),
+                    value_kind: TooltipValueKind::Bytes(crate::DataType::MemoryBytes),
+                }],
+            );
+            self.usage_graph_memory
+                .set_y_axis_label_kind(Some(TooltipValueKind::Bytes(crate::DataType::MemoryBytes)));
             self.usage_graph_memory.connect_to_settings(&settings);
 
             let this = self.obj();

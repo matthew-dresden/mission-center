@@ -221,7 +221,7 @@ pub fn to_short_human_readable_time(seconds: u32) -> String {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DataType {
     MemoryBytes,
     DriveBytes,
