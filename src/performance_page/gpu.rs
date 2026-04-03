@@ -718,7 +718,7 @@ mod imp {
 
                 self.infobar_content
                     .temperature()
-                    .set_text(&format!("{} °C", temp.round() as i32));
+                    .set_text(&super::fmt_temp_c(temp as f64));
             } else {
                 self.infobar_content.box_temp().set_visible(false);
             }

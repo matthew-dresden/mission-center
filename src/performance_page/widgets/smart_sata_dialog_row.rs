@@ -102,9 +102,8 @@ impl SmartSataDialogRow {
                     0 => i18n("N/A"),
                     2 => crate::to_long_human_readable_time(pretty as u64 / 1000),
                     3 => i18n_f("{} sectors", &[&format!("{}", pretty)]),
-                    4 => i18n_f(
-                        "{} °C",
-                        &[&format!("{}", (pretty as i32 + MK_TO_0_C) / 1000)],
+                    4 => crate::performance_page::fmt_temp_c(
+                        ((pretty as i32 + MK_TO_0_C) / 1000) as f64,
                     ),
                     _ => format!("{}", pretty),
                 },

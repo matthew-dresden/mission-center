@@ -68,6 +68,12 @@ mod imp {
         pub toggle_net_base_2: TemplateChild<adw::Toggle>,
         #[template_child]
         pub toggle_net_base_10: TemplateChild<adw::Toggle>,
+        #[template_child]
+        pub toggle_group_temp_unit: TemplateChild<adw::ToggleGroup>,
+        #[template_child]
+        pub toggle_temp_unit_fahrenheit: TemplateChild<adw::Toggle>,
+        #[template_child]
+        pub toggle_temp_unit_celsius: TemplateChild<adw::Toggle>,
     }
 
     #[glib::object_subclass]
@@ -119,6 +125,11 @@ mod imp {
                 self.toggle_net_base_2,
                 "performance-page-network-use-base2"
             );
+            connect_toggle_pair_to_setting!(
+                self.toggle_group_temp_unit,
+                self.toggle_temp_unit_fahrenheit,
+                "performance-page-temperature-fahrenheit"
+            );
         }
     }
 
@@ -152,6 +163,8 @@ impl PreferencesUnitsPage {
             .set_active(!settings.boolean("performance-page-network-use-bytes") as u32);
         imp.toggle_group_net_base
             .set_active(settings.boolean("performance-page-network-use-base2") as u32);
+        imp.toggle_group_temp_unit
+            .set_active(!settings.boolean("performance-page-temperature-fahrenheit") as u32);
 
         this
     }

@@ -122,6 +122,25 @@ template $PreferencesUnitsPage: Adw.PreferencesPage {
     }
 
     Adw.ActionRow {
+      title: _("Temperature Unit");
+
+      Adw.ToggleGroup toggle_group_temp_unit {
+        valign: center;
+        homogeneous: true;
+
+        Adw.Toggle toggle_temp_unit_fahrenheit {
+          tooltip: _("Display Temperatures in Fahrenheit");
+          label: _("Fahrenheit");
+        }
+
+        Adw.Toggle toggle_temp_unit_celsius {
+          tooltip: _("Display Temperatures in Celsius");
+          label: _("Celsius");
+        }
+      }
+    }
+
+    Adw.ActionRow {
       title: _("Network Usage Base");
 
       Adw.ToggleGroup toggle_group_net_base {

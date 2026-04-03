@@ -258,12 +258,12 @@ mod imp {
             if let Some(fan_temp_mk) = fan.temp_amount {
                 let fan_temp_c = (fan_temp_mk as i32 + MK_TO_0_C) as f32 / 1000.;
                 if let Some(temp) = this.temp.get() {
-                    temp.set_text(&i18n_f("{} °C", &[&format!("{:.1}", fan_temp_c)]));
+                    temp.set_text(&super::fmt_temp_c_1dp(fan_temp_c as f64));
                 }
 
                 this.temp_graph.add_data_point(vec![vec![fan_temp_c]]);
                 this.temp_max_y
-                    .set_text(&format!("{} °C", this.temp_graph.get_dataset_max_scale(0)));
+                    .set_text(&super::fmt_temp_c(this.temp_graph.get_dataset_max_scale(0) as f64));
             }
 
             this.speed_graph.add_data_point(vec![

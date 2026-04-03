@@ -100,6 +100,11 @@
             <summary>Whether or not to use base-10 (default) or base-2 for network speed</summary>
         </key>
 
+        <key name="performance-page-temperature-fahrenheit" type="b">
+            <default>true</default>
+            <summary>Whether to display temperatures in Fahrenheit (default) or Celsius</summary>
+        </key>
+
         <key name="performance-page-network-dynamic-scaling" type="b">
             <default>true</default>
             <summary>Whether to set graph max to interface max (false) or the max observed (true)</summary>

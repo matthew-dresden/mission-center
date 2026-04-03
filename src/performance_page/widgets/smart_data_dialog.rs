@@ -263,7 +263,7 @@ mod imp {
                 SmartNvmeDialogRow::new(
                     i18n("Warning Temperature"),
                     if let Some(wctemp) = result.warn_composite_temp_thresh {
-                        i18n_f("{} °C", &[&format!("{}", wctemp - 273)])
+                        crate::performance_page::fmt_temp_c((wctemp - 273) as f64)
                     } else {
                         i18n("N/A")
                     },
@@ -271,7 +271,7 @@ mod imp {
                 SmartNvmeDialogRow::new(
                     i18n("Critical Temperature"),
                     if let Some(cctemp) = result.crit_composite_temp_thresh {
-                        i18n_f("{} °C", &[&format!("{}", cctemp - 273)])
+                        crate::performance_page::fmt_temp_c((cctemp - 273) as f64)
                     } else {
                         i18n("N/A")
                     },

@@ -74,6 +74,34 @@ trait PageExt {
 
 const MK_TO_0_C: i32 = -273150;
 
+pub fn use_fahrenheit() -> bool {
+    settings!().boolean("performance-page-temperature-fahrenheit")
+}
+
+pub fn fmt_temp_c(temp_c: f64) -> String {
+    if use_fahrenheit() {
+        format!("{:.0} °F", temp_c * 9.0 / 5.0 + 32.0)
+    } else {
+        format!("{:.0} °C", temp_c)
+    }
+}
+
+pub fn fmt_temp_c_1dp(temp_c: f64) -> String {
+    if use_fahrenheit() {
+        format!("{:.1} °F", temp_c * 9.0 / 5.0 + 32.0)
+    } else {
+        format!("{:.1} °C", temp_c)
+    }
+}
+
+pub fn fmt_temp_c_2dp(temp_c: f64) -> String {
+    if use_fahrenheit() {
+        format!("{:.2}°F", temp_c * 9.0 / 5.0 + 32.0)
+    } else {
+        format!("{:.2}°C", temp_c)
+    }
+}
+
 mod imp {
     use super::*;
 
@@ -1076,7 +1104,7 @@ mod imp {
             summary.set_heading(i18n("CPU"));
             summary.set_info1("0% 0.00 GHz");
             match readings.cpu.temperature_celsius.as_ref() {
-                Some(v) => summary.set_info2(format!("{:.0} °C", *v)),
+                Some(v) => summary.set_info2(fmt_temp_c(*v as f64)),
                 _ => {}
             }
 
@@ -1261,7 +1289,7 @@ mod imp {
                 "{:.0}%{}",
                 disk.busy_percent,
                 if let Some(temp_mk) = disk.temperature_milli_k {
-                    format!(" ({:.0} °C)", (temp_mk as i32 + MK_TO_0_C) as f64 / 1000.)
+                    format!(" ({})", fmt_temp_c((temp_mk as i32 + MK_TO_0_C) as f64 / 1000.))
                 } else {
                     String::new()
                 }
@@ -1479,7 +1507,7 @@ mod imp {
                 let _ = write!(&mut info2, "{v}%");
             }
             if let Some(v) = gpu.temperature_c {
-                let _ = write!(&mut info2, " ({v:.2}°C)");
+                let _ = write!(&mut info2, " ({})", fmt_temp_c_2dp(v as f64));
             }
             summary.set_info2(info2.as_str());
 
@@ -2093,7 +2121,7 @@ mod imp {
                         let mut info2 = ArrayString::<256>::new();
                         let _ = write!(&mut info2, "{}%", readings.cpu.total_usage_percent.round());
                         if let Some(temp) = readings.cpu.temperature_celsius.as_ref() {
-                            let _ = write!(&mut info2, " ({:.0} °C)", temp);
+                            let _ = write!(&mut info2, " ({})", fmt_temp_c(*temp as f64));
                         }
 
                         graph_widget.add_data_point(vec![vec![readings.cpu.total_usage_percent]]);
@@ -2172,10 +2200,11 @@ mod imp {
                                 let graph_widget = summary.graph_widget();
                                 graph_widget.add_data_point(vec![vec![disk.busy_percent]]);
                                 if let Some(temp_mk) = disk.temperature_milli_k {
+                                    let temp_c = (temp_mk as i32 + MK_TO_0_C) as f64 / 1000.;
                                     summary.set_info2(format!(
-                                        "{:.0}% ({:.0} °C)",
+                                        "{:.0}% ({})",
                                         disk.busy_percent,
-                                        (temp_mk as i32 + MK_TO_0_C) as f64 / 1000.
+                                        fmt_temp_c(temp_c)
                                     ));
                                 } else {
                                     summary.set_info2(format!("{:.0}%", disk.busy_percent));
@@ -2323,8 +2352,8 @@ mod imp {
                                     graph_widget.add_data_point(vec![vec![v]]);
                                     let _ = write!(&mut info2, "{v}%");
                                 }
-                                if let Some(v) = gpu.temperature_c.map(|v| v.round() as u32) {
-                                    let _ = write!(&mut info2, " ({v} °C)");
+                                if let Some(v) = gpu.temperature_c {
+                                    let _ = write!(&mut info2, " ({})", fmt_temp_c(v as f64));
                                 }
                                 summary.set_info2(info2.as_str());
 
@@ -2394,10 +2423,8 @@ mod imp {
                                 }
 
                                 let temp_str = if let Some(temp_amount) = fan.temp_amount {
-                                    format!(
-                                        " ({:.0} °C)",
-                                        (temp_amount as i32 + MK_TO_0_C) as f32 / 1000.0
-                                    )
+                                    let temp_c = (temp_amount as i32 + MK_TO_0_C) as f64 / 1000.0;
+                                    format!(" ({})", fmt_temp_c(temp_c))
                                 } else {
                                     String::new()
                                 };
@@ -2466,7 +2493,7 @@ mod imp {
                                     "{:.0}%{}",
                                     battery.percentage * 100.,
                                     if let Some(temp) = battery.temp {
-                                        format!(" ({} °C)", temp)
+                                        format!(" ({})", fmt_temp_c(temp as f64))
                                     } else {
                                         String::new()
                                     }
